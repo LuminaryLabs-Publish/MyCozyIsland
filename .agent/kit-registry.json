@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-07T13:11:20-04:00",
-  "latestTracker": ".agent/trackers/2026-07-07T13-11-20-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland Host Snapshot + Camera Rail / Cloud Cache Fixture Cutover",
+  "lastUpdated": "2026-07-07T14:21:20-04:00",
+  "latestTracker": ".agent/trackers/2026-07-07T14-21-20-04-00/project-breakdown.md",
+  "selectedNextSlice": "MyCozyIsland Source State Authority + Rail Action Result Fixture Cutover",
   "currentExplicitKits": [
     "ocean-island-landform-domain",
     "island-foliage-domain",
@@ -18,8 +18,10 @@
   "runtimeImpliedKits": [
     "cozy-island-static-shell-kit",
     "cozy-cloud-loading-ui-kit",
+    "cozy-error-panel-kit",
     "cozy-island-runtime-entry-kit",
     "cozy-three-render-host-kit",
+    "cozy-scene-source-composition-kit",
     "cozy-scene-lighting-kit",
     "cozy-water-plane-kit",
     "cozy-shoreline-foam-kit",
@@ -29,9 +31,12 @@
     "cozy-island-object-render-kit",
     "cozy-fence-render-kit",
     "cozy-campfire-render-kit",
+    "cozy-fire-animation-kit",
     "cozy-smoke-render-kit",
+    "cozy-smoke-runtime-kit",
     "cozy-grass-instancing-kit",
     "cozy-cloud-point-render-kit",
+    "cozy-cloud-drift-kit",
     "cozy-camera-rail-kit",
     "cozy-scroll-progress-kit",
     "cozy-pointer-look-kit",
@@ -42,10 +47,16 @@
     "cozy-diagnostics-host-kit"
   ],
   "nextCutKits": [
+    "cozy-source-state-profile-kit",
+    "cozy-scene-source-snapshot-kit",
     "cozy-host-snapshot-contract-kit",
     "cozy-gamehost-diagnostics-kit",
     "cozy-action-frame-contract-kit",
+    "cozy-action-result-contract-kit",
+    "cozy-action-rejection-reason-kit",
     "cozy-input-journal-kit",
+    "cozy-scroll-action-reducer-kit",
+    "cozy-pointer-look-result-kit",
     "cozy-camera-rail-state-kit",
     "cozy-camera-rail-snapshot-kit",
     "cozy-camera-rail-fixture-kit",
@@ -54,28 +65,70 @@
     "cozy-cloud-cache-descriptor-kit",
     "cozy-cloud-cache-snapshot-kit",
     "cozy-cloud-fixture-smoke-kit",
-    "cozy-scene-source-snapshot-kit",
     "cozy-kit-status-report-kit",
     "cozy-replay-parity-smoke-kit"
   ],
   "domainFamilies": [
     "static-browser-shell",
     "cloud-loading-ui",
+    "error-panel-diagnostics",
     "scene-source-state",
+    "source-state-composition",
     "three-render-host",
     "ocean-island-landform",
     "ocean-floor-heightfield",
+    "ocean-floor-object-placement",
     "island-foliage-placement",
+    "path-network-source",
     "grass-placement-contract",
+    "grass-static-batch-descriptor",
     "fenced-clearing-boundary",
     "invisible-player-anchor",
-    "camera-rail-scroll-control",
-    "first-person-movement-policy",
     "campfire-object-graph",
+    "smoke-particle-descriptor",
     "smoke-particle-runtime",
     "mattatz-cloud-source-contract",
     "cloud-point-cache",
+    "cloud-drift-runtime",
+    "camera-rail-scroll-control",
+    "camera-rail-sample-curve",
+    "pointer-look-input",
+    "keyboard-movement-input",
+    "first-person-movement-policy",
+    "clearing-boundary-policy",
     "host-snapshot-contract",
+    "action-result-contract",
     "fixture-smoke-runtime"
-  ]
+  ],
+  "services": {
+    "host": [
+      "getState",
+      "getDiagnostics",
+      "getActionJournal",
+      "getCloudCacheSnapshot",
+      "getRailSnapshot",
+      "runSmoke"
+    ],
+    "rail": [
+      "sample progress",
+      "resolve phase",
+      "project camera position",
+      "project look target",
+      "report firstPersonReady"
+    ],
+    "movement": [
+      "accept legal first-person movement",
+      "reject not-first-person-yet",
+      "reject outside clearing",
+      "reject campfire keepout",
+      "journal ActionResult"
+    ],
+    "clouds": [
+      "describe cache key",
+      "report source id",
+      "report point count",
+      "report drift speed",
+      "report bounds"
+    ]
+  }
 }

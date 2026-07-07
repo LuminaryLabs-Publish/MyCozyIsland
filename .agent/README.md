@@ -1,42 +1,44 @@
 # MyCozyIsland agent notes
 
-**Latest tracker:** `.agent/trackers/2026-07-07T15-40-06-04-00/project-breakdown.md`
+**Latest tracker:** `.agent/trackers/2026-07-07T16-49-08-04-00/project-breakdown.md`
 
-**Last updated:** `2026-07-07T15:40:06-04:00`
+**Last updated:** `2026-07-07T16:49:08-04:00`
 
 ## Current status
 
-`MyCozyIsland` is a standalone static Nexus-style Cozy Island app. It vendors domain kits under `src/kits/`, loads through `index.html`, and renders from `src/main.js` with Three.js from jsDelivr.
+`MyCozyIsland` is a public standalone static Cozy Island app. It vendors domain kits under `src/kits/`, loads through `index.html`, and renders from `src/main.js` with Three.js from jsDelivr.
 
-The live runtime already includes landform, ocean floor, foliage, path network, grass, fenced clearing, invisible player anchor, campfire, smoke, water, shoreline foam, low/high point-cloud cloud layers, a scroll-driven sky-to-eye camera rail, and first-person movement inside the clearing.
+The live runtime includes island landform, ocean floor, shoreline foam, water, foliage, path network, grass, fenced clearing, invisible player anchor, campfire, smoke, low/high point-cloud cloud layers, a scroll-driven sky-to-eye camera rail, pointer look, and keyboard first-person movement inside the clearing.
 
 ## Latest breakdown focus
 
 ```txt
-MyCozyIsland Host Diagnostics + Source Snapshot ActionJournal Fixture Cutover
+MyCozyIsland Reducer Gate + Cloud Snapshot Fixture Cutover
 ```
 
-The next safe cutover should make source state, host diagnostics, ActionFrame/ActionResult journals, rail snapshots, movement acceptance, and cloud cache descriptors serializable before render extraction, pointer-lock movement, mobile controls, high-fidelity grass, ocean shader expansion, or save/load work.
+The next safe cutover should keep the visuals unchanged while making source state, host state, scroll/pointer/movement reducers, ActionFrame/ActionResult records, rail snapshots, movement rejection reasons, and cloud cache descriptors serializable and fixture-testable.
 
 ## Immediate next build order
 
 ```txt
-preserve current index.html, src/main.js visual behavior, and globalThis.CozyIsland compatibility
--> expose globalThis.CozyIslandHost beside globalThis.CozyIsland
--> create cozy-source-state-profile-kit as the source-owned composition boundary
--> serialize source summaries for islandState, landform, oceanFloor, graph, clearing, grassPlacement, grassWind, campfireGraph, smokeDescriptor, cloudContract, and player anchor
--> add cozy-scene-source-snapshot-kit with validation and comparison helpers
--> add cozy-action-frame-contract-kit for DOM and fixture input
--> add cozy-action-result-contract-kit with accepted, rejected, unchanged, reason, before, after, frame, elapsed, source, and payload fields
--> add rejection reasons: not_first_person_yet, outside_clearing, campfire_keepout, no_move_vector, invalid_payload, unsupported_action, duplicate_frame
--> move scrollProgress, pointer look, and WASD movement behind result-returning reducers
--> return explicit movement results instead of silent no-ops
--> move railPose sampling into serializable rail state and snapshot kits
--> expose rail phases: sky_approach, island_approach, clearing_approach, shoulder, near_head, first_person
--> expose cloud cache descriptors instead of only saved BufferGeometry references
--> add host helpers for state, diagnostics, action journal, source snapshot, rail snapshot, cloud snapshot, runSmoke, and fixture scripts
--> add DOM-free smoke for source snapshot shape, scroll action, rail stability, movement rejection, movement acceptance, cloud descriptor stability, and action journal replay parity
--> defer render extraction, pointer lock, mobile touch controls, save/load, ocean shader expansion, and high-fidelity grass patch rebuild
+preserve current index.html, src/main.js render output, and globalThis.CozyIsland compatibility
+-> add globalThis.CozyIslandHost as an additive diagnostics host
+-> create cozy-source-state-profile-kit to group all vendored kit source outputs
+-> serialize SourceSnapshot with ids, seeds, counts, bounds, anchor, clearing, and object summaries
+-> create HostState with scrollProgress, player pose, pointer state, input journal, rail phase, cloud summaries, and latest result
+-> normalize wheel, pointer, keyboard, and fixture commands into ActionFrame records
+-> add ActionResult records with status, reason, before, after, payload, frame, elapsed, and source
+-> add stable rejection reasons: not_first_person_yet, outside_clearing, campfire_keepout, no_move_vector, invalid_payload, unsupported_action, duplicate_frame
+-> move scroll wheel changes behind scrollReducer.applyWheelDelta
+-> move pointer delta updates behind pointerReducer.applyPointerDelta
+-> move WASD movement behind movementReducer.applyMoveVector
+-> make valid(next) return a ClearingBoundaryResult instead of boolean only
+-> make campfire keepout return a named CampfireKeepoutResult
+-> move railPose() into railState.sampleRailPose and emit named rail phases
+-> describe cloud geometry cache with key, source id, index, point count, bounds, band, speed, and drift
+-> expose getState, getDiagnostics, getActionJournal, getRailSnapshot, getCloudCacheSnapshot, getSourceSnapshot, runSmoke, applyActionFrame, and applyFixtureScript
+-> add DOM-free smokes for source snapshot shape, scroll action acceptance, pointer gating, rail phase sampling, first-person movement rejection, first-person movement acceptance, cloud snapshot stability, and replay parity
+-> defer pointer lock, touch controls, render extraction, ocean shader upgrades, save/load, and grass patch fidelity rebuild until reducer and fixture parity exist
 ```
 
 ## Kit registry

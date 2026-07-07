@@ -1,23 +1,23 @@
 {
   "schemaVersion": 3,
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-07T18:10:03-04:00",
-  "latestTracker": ".agent/trackers/2026-07-07T18-10-03-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland Host Smoke State + Source Fingerprint Replay Gate",
+  "lastUpdated": "2026-07-07T19:29:28-04:00",
+  "latestTracker": ".agent/trackers/2026-07-07T19-29-28-04-00/project-breakdown.md",
+  "selectedNextSlice": "MyCozyIsland Action Reducer Host Contract + Cloud Snapshot Fixture Gate",
   "selection": {
     "reason": "Oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
     "checkedTimestamps": {
-      "MyCozyIsland": "2026-07-07T16:49:08-04:00",
-      "IntoTheMeadow": "2026-07-07T16:58:09-04:00",
-      "ZombieOrchard": "2026-07-07T17:10:21-04:00",
-      "HorrorCorridor": "2026-07-07T17:20:57-04:00",
-      "TheOpenAbove": "2026-07-07T17:29:51-04:00",
-      "AetherVale": "2026-07-07T17:38:46-04:00",
-      "PhantomCommand": "2026-07-07T17:49:34-04:00",
-      "PrehistoricRush": "2026-07-07T18:00:19-04:00"
+      "MyCozyIsland": "2026-07-07T18:10:03-04:00",
+      "IntoTheMeadow": "2026-07-07T18:19:15-04:00",
+      "ZombieOrchard": "2026-07-07T18:28:54-04:00",
+      "HorrorCorridor": "2026-07-07T18:41:07-04:00",
+      "TheOpenAbove": "2026-07-07T18:49:32-04:00",
+      "AetherVale": "2026-07-07T19:01:37-04:00",
+      "PhantomCommand": "2026-07-07T19:08:52-04:00",
+      "PrehistoricRush": "2026-07-07T19:18:58-04:00"
     }
   },
   "currentExplicitKits": [
@@ -71,11 +71,14 @@
     "cozy-host-snapshot-contract-kit",
     "cozy-gamehost-diagnostics-kit",
     "cozy-action-frame-contract-kit",
+    "cozy-action-batch-contract-kit",
     "cozy-action-result-contract-kit",
     "cozy-action-rejection-reason-kit",
+    "cozy-action-result-journal-kit",
     "cozy-input-journal-kit",
     "cozy-scroll-action-reducer-kit",
     "cozy-pointer-look-result-kit",
+    "cozy-keyboard-state-result-kit",
     "cozy-camera-rail-state-kit",
     "cozy-camera-rail-snapshot-kit",
     "cozy-camera-rail-fixture-kit",
@@ -158,7 +161,9 @@
     "grass-wind-descriptor",
     "mattatz-cloud-source-contract",
     "cloud-point-cache",
+    "cloud-cache-descriptor",
     "cloud-cache-fingerprint",
+    "cloud-cache-snapshot",
     "cloud-point-rendering",
     "cloud-drift-runtime",
     "runtime-frame-loop",
@@ -170,6 +175,7 @@
     "cozy-action-result",
     "cozy-action-rejection-reason",
     "cozy-input-journal",
+    "cozy-fixture-script",
     "cozy-fixture-smoke",
     "cozy-replay-parity"
   ],
@@ -200,20 +206,9 @@
     "cloudPointCountPerCloud": 520,
     "firstPersonThreshold": 0.985,
     "movementSpeedMetersPerSecond": 2.6,
-    "cloudBands": [
-      "low",
-      "low",
-      "high",
-      "high"
-    ],
-    "cloudLowBaseY": [
-      92,
-      108
-    ],
-    "cloudHighBaseY": [
-      255,
-      285
-    ]
+    "cloudBands": ["low", "low", "high", "high"],
+    "cloudLowBaseY": [92, 108],
+    "cloudHighBaseY": [255, 285]
   },
   "services": {
     "current": [
@@ -280,12 +275,15 @@
       "hostState.createInitialHostState",
       "actionFrame.normalizeDomEvent",
       "actionFrame.normalizeFixtureCommand",
+      "actionBatch.normalizeFixtureScript",
       "actionResult.accept",
       "actionResult.reject",
       "actionResult.unchanged",
+      "actionResultJournal.append",
       "actionJournal.append",
       "scrollReducer.applyWheelDelta",
       "pointerReducer.applyPointerDelta",
+      "keyboardReducer.applyKeyEvent",
       "movementReducer.applyMoveVector",
       "clearingBoundary.evaluateMove",
       "campfireKeepout.evaluateMove",
@@ -311,5 +309,10 @@
     "first-person movement acceptance",
     "cloud cache fingerprint stability",
     "action journal replay parity"
-  ]
+  ],
+  "validation": {
+    "runtimeSourceChanged": false,
+    "localBuildRun": false,
+    "localSmokeRun": false
+  }
 }

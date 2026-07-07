@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-07T15:40:06-04:00",
-  "latestTracker": ".agent/trackers/2026-07-07T15-40-06-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland Host Diagnostics + Source Snapshot ActionJournal Fixture Cutover",
+  "lastUpdated": "2026-07-07T16:49:08-04:00",
+  "latestTracker": ".agent/trackers/2026-07-07T16-49-08-04-00/project-breakdown.md",
+  "selectedNextSlice": "MyCozyIsland Reducer Gate + Cloud Snapshot Fixture Cutover",
   "selection": {
     "reason": "Oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
     "checkedTimestamps": {
-      "MyCozyIsland": "2026-07-07T14:21:20-04:00",
-      "IntoTheMeadow": "2026-07-07T14:28:17-04:00",
-      "ZombieOrchard": "2026-07-07T14:40:17-04:00",
-      "HorrorCorridor": "2026-07-07T14:51:44-04:00",
-      "TheOpenAbove": "2026-07-07T15:11:23-04:00",
-      "PhantomCommand": "2026-07-07T15:19:05-04:00",
-      "PrehistoricRush": "2026-07-07T15:29:27-04:00",
-      "AetherVale": "2026-07-07T16-29-18-04-00"
+      "MyCozyIsland": "2026-07-07T15:40:06-04:00",
+      "IntoTheMeadow": "2026-07-07T15:49:14-04:00",
+      "ZombieOrchard": "2026-07-07T15:59:24-04:00",
+      "HorrorCorridor": "2026-07-07T16:09:54-04:00",
+      "TheOpenAbove": "2026-07-07T16:21:09-04:00",
+      "AetherVale": "2026-07-07T16:29:18-04:00",
+      "PhantomCommand": "2026-07-07T16:30:00-04:00",
+      "PrehistoricRush": "2026-07-07T16:40:29-04:00"
     }
   },
   "currentExplicitKits": [
@@ -59,12 +59,14 @@
     "cozy-first-person-anchor-kit",
     "cozy-clearing-movement-kit",
     "cozy-clearing-boundary-policy-kit",
+    "cozy-campfire-keepout-policy-kit",
     "cozy-runtime-frame-kit",
     "cozy-diagnostics-host-kit"
   ],
   "nextCutKits": [
     "cozy-source-state-profile-kit",
     "cozy-scene-source-snapshot-kit",
+    "cozy-host-state-contract-kit",
     "cozy-host-snapshot-contract-kit",
     "cozy-gamehost-diagnostics-kit",
     "cozy-action-frame-contract-kit",
@@ -97,6 +99,7 @@
     "vendored-domain-kit-runtime",
     "scene-source-state",
     "source-state-composition",
+    "source-state-snapshot",
     "height-sampling",
     "mask-sampling",
     "shoreline-contract",
@@ -126,15 +129,19 @@
     "smoke-particle-runtime",
     "mattatz-cloud-source-contract",
     "cloud-point-cache",
+    "cloud-point-cache-descriptor",
     "cloud-point-rendering",
     "cloud-drift-runtime",
     "camera-rail-scroll-control",
     "camera-rail-sample-curve",
     "camera-rail-phase-projection",
+    "camera-rail-snapshot",
     "pointer-look-input",
+    "pointer-look-reducer",
     "keyboard-movement-input",
     "first-person-anchor",
     "first-person-movement-policy",
+    "first-person-movement-result",
     "clearing-boundary-policy",
     "campfire-keepout-policy",
     "runtime-frame-loop",
@@ -145,11 +152,35 @@
     "cozy-action-result",
     "cozy-action-rejection-reason",
     "cozy-input-journal",
-    "cozy-cloud-cache-snapshot",
-    "cozy-rail-snapshot",
     "cozy-fixture-smoke",
     "cozy-replay-parity"
   ],
+  "sourceFactsToPreserve": {
+    "entryScript": "./src/main.js?v=standalone-1",
+    "islandId": "cozy-island-001",
+    "islandSeed": "cozy-island-standalone",
+    "islandRadius": 100,
+    "maxHeight": 18,
+    "beachWidth": 10,
+    "shelfWidth": 36,
+    "heightfieldResolution": 129,
+    "shorelineSegments": 128,
+    "clearingFenceRadiusMeters": 12,
+    "campfireRadiusMeters": 2.25,
+    "oceanFloorSize": 3600,
+    "oceanFloorResolution": 53,
+    "oceanBaseDepth": -128,
+    "oceanShelfDepth": -16,
+    "grassSeed": "cozy-island-grass",
+    "grassPatchCount": 140,
+    "cloudSeed": "cozy-island-clouds",
+    "cloudWeather": "sunrise-haze",
+    "cloudCount": 4,
+    "cloudPointCountPerCloud": 520,
+    "firstPersonThreshold": 0.985,
+    "movementSpeedMetersPerSecond": 2.6,
+    "campfireKeepoutRadiusMeters": 2.35
+  },
   "services": {
     "current": [
       "main.fail",
@@ -209,17 +240,33 @@
     "targetReducersAndFixtures": [
       "sourceProfile.createSourceProfile",
       "sourceSnapshot.serializeSourceSnapshot",
+      "hostState.createInitialHostState",
       "actionFrame.normalizeDomEvent",
       "actionFrame.normalizeFixtureCommand",
       "actionResult.accept",
       "actionResult.reject",
+      "actionResult.unchanged",
       "actionJournal.append",
       "scrollReducer.applyWheelDelta",
       "pointerReducer.applyPointerDelta",
       "movementReducer.applyMoveVector",
       "railState.sampleRailPose",
+      "railSnapshot.serializeRailPose",
       "cloudCache.describeGeometry",
+      "cloudCache.serializeSnapshot",
       "replayFixture.runActionJournalParity"
     ]
-  }
+  },
+  "fixtureMatrix": [
+    "source snapshot shape",
+    "scroll action acceptance",
+    "pointer action gating",
+    "rail phase sampling",
+    "first-person movement rejection before threshold",
+    "outside clearing movement rejection",
+    "campfire keepout movement rejection",
+    "first-person movement acceptance",
+    "cloud snapshot stability",
+    "action journal replay parity"
+  ]
 }

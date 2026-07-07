@@ -1,8 +1,8 @@
 # MyCozyIsland agent notes
 
-**Latest tracker:** `.agent/trackers/2026-07-07T16-49-08-04-00/project-breakdown.md`
+**Latest tracker:** `.agent/trackers/2026-07-07T18-10-03-04-00/project-breakdown.md`
 
-**Last updated:** `2026-07-07T16:49:08-04:00`
+**Last updated:** `2026-07-07T18:10:03-04:00`
 
 ## Current status
 
@@ -13,37 +13,35 @@ The live runtime includes island landform, ocean floor, shoreline foam, water, f
 ## Latest breakdown focus
 
 ```txt
-MyCozyIsland Reducer Gate + Cloud Snapshot Fixture Cutover
+MyCozyIsland Host Smoke State + Source Fingerprint Replay Gate
 ```
 
-The next safe cutover should keep the visuals unchanged while making source state, host state, scroll/pointer/movement reducers, ActionFrame/ActionResult records, rail snapshots, movement rejection reasons, and cloud cache descriptors serializable and fixture-testable.
+The next safe cutover should keep the visuals unchanged while making source profiles, source fingerprints, source snapshots, host state, scroll/pointer/movement reducers, ActionFrame/ActionResult records, rail snapshots, movement rejection reasons, cloud cache descriptors, host smoke state, and replay fixtures serializable and DOM-free.
 
 ## Immediate next build order
 
 ```txt
 preserve current index.html, src/main.js render output, and globalThis.CozyIsland compatibility
--> add globalThis.CozyIslandHost as an additive diagnostics host
--> create cozy-source-state-profile-kit to group all vendored kit source outputs
--> serialize SourceSnapshot with ids, seeds, counts, bounds, anchor, clearing, and object summaries
--> create HostState with scrollProgress, player pose, pointer state, input journal, rail phase, cloud summaries, and latest result
+-> add globalThis.CozyIslandHost as an additive host without removing globalThis.CozyIsland
+-> group all vendored source outputs inside cozy-source-state-profile-kit
+-> create SourceFingerprint from stable ids, seeds, counts, bounds, thresholds, and source kit versions
+-> expose getSourceFingerprint and assert it from runSmoke
+-> serialize SourceSnapshot with island, floor, graph, clearing, grass, campfire, smoke, cloud, and anchor summaries
+-> create HostState with scrollProgress, player pose, pointer state, input journal, rail phase, cloud summaries, last frame, latest result, and smoke status
 -> normalize wheel, pointer, keyboard, and fixture commands into ActionFrame records
--> add ActionResult records with status, reason, before, after, payload, frame, elapsed, and source
--> add stable rejection reasons: not_first_person_yet, outside_clearing, campfire_keepout, no_move_vector, invalid_payload, unsupported_action, duplicate_frame
--> move scroll wheel changes behind scrollReducer.applyWheelDelta
--> move pointer delta updates behind pointerReducer.applyPointerDelta
--> move WASD movement behind movementReducer.applyMoveVector
--> make valid(next) return a ClearingBoundaryResult instead of boolean only
--> make campfire keepout return a named CampfireKeepoutResult
+-> return ActionResult records from scroll, pointer, and movement reducers
+-> use stable rejection reasons: not_first_person_yet, outside_clearing, campfire_keepout, no_move_vector, invalid_payload, unsupported_action, duplicate_frame
+-> make valid(next) return ClearingBoundaryResult and CampfireKeepoutResult records rather than boolean-only control flow
 -> move railPose() into railState.sampleRailPose and emit named rail phases
--> describe cloud geometry cache with key, source id, index, point count, bounds, band, speed, and drift
--> expose getState, getDiagnostics, getActionJournal, getRailSnapshot, getCloudCacheSnapshot, getSourceSnapshot, runSmoke, applyActionFrame, and applyFixtureScript
--> add DOM-free smokes for source snapshot shape, scroll action acceptance, pointer gating, rail phase sampling, first-person movement rejection, first-person movement acceptance, cloud snapshot stability, and replay parity
--> defer pointer lock, touch controls, render extraction, ocean shader upgrades, save/load, and grass patch fidelity rebuild until reducer and fixture parity exist
+-> describe cloud cache entries with key, source id, index, point count, bounds, band, speed, drift, and fingerprint
+-> expose getState, getDiagnostics, getActionJournal, getRailSnapshot, getCloudCacheSnapshot, getSourceSnapshot, getSourceFingerprint, getHostSmokeState, runSmoke, applyActionFrame, and applyFixtureScript
+-> add DOM-free smokes for source fingerprint stability, source snapshot shape, scroll action acceptance, pointer gating, rail phase sampling, movement rejection before threshold, clearing rejection, campfire keepout rejection, movement acceptance, cloud cache fingerprint stability, and action journal replay parity
+-> defer pointer lock, touch controls, renderer extraction, ocean shader upgrades, save/load, and grass patch rebuild until host smoke state and replay parity are stable
 ```
 
 ## Kit registry
 
-See `.agent/kit-registry.json` for current explicit kits, runtime-implied kits, next-cut kits, domain families, and target service surfaces.
+See `.agent/kit-registry.json` for current explicit kits, runtime-implied kits, next-cut kits, domain families, source facts, and target service surfaces.
 
 ## Validation note
 

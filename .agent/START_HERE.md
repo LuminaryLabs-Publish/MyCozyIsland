@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T14-58-49-04-00`
+**Last aligned:** `2026-07-08T17-00-36-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was found that was fully new, absent from th
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected because the repo-local `14:39` `.agent` handoff was newer than the central ledger, and because the host-proof module boundary now needs an exact browser consumer splice map.
+`MyCozyIsland` was selected as the oldest eligible fallback in the current central readback. Its previous central ledger timestamp was `2026-07-08T14-58-49-04-00`, and the unresolved handoff is still the host-proof implementation source manifest plus browser consumer splice.
 
 ## Current product read
 
@@ -35,15 +35,15 @@ index.html
 
 ```txt
 open route
-  -> cloud loader progresses
-  -> local source-domain descriptors are created
-  -> inline Three.js adapters build the island, ocean, grass, clearing, campfire, smoke, and hero-cloud scene
-  -> wheel input advances the sky-to-clearing camera rail
-  -> pointer drag mutates yaw/look state
-  -> keyboard movement unlocks after first-person threshold
-  -> movement is checked against clearing radius and campfire keepout policy
-  -> sea, fire, smoke, clouds, camera, and first-person state animate per frame
-  -> renderer draws the scene
+  -> canvas, cloud loader, and error panel mount from index.html
+  -> src/main-cloudform.js imports Three.js CDN and local source-domain kits
+  -> descriptor kits create island, ocean floor, foliage, grass, wind, clearing, campfire, smoke, and cloud contracts
+  -> inline Three.js adapters build terrain, ocean, foam, path, foliage, fence, campfire, smoke, grass, and cloud objects
+  -> wheel input advances the camera rail progress
+  -> pointer drag mutates yaw/pitch depending on rail progress
+  -> keyboard movement unlocks only near first-person mode
+  -> valid(next) silently accepts/rejects movement by clearing radius and campfire keepout
+  -> frame loop updates sea bob, first-person movement, rail camera, smoke, fire, cloud drift, and renderer
   -> globalThis.CozyIsland exposes compatibility state
   -> target globalThis.CozyIslandHost should expose additive proof records after fixtures pass
 ```
@@ -55,13 +55,14 @@ open route
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md
-.agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md
-.agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md
-.agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md
-.agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md
-.agent/trackers/2026-07-08T14-58-49-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T14-58-49-04-00.md
+.agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
+.agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
+.agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
+.agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
+.agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
+.agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
+.agent/trackers/2026-07-08T17-00-36-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T17-00-36-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -105,7 +106,7 @@ globalThis.CozyIslandHost
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
 ```
 
-Stop that ledge when central tracking points at the current repo-local `.agent` state and the next implementation has a precise pure-module-to-browser-consumer order for route, source, action, movement, rail, cloud, render, and host diagnostics.
+Stop that ledge when exact source files, pure record shapes, fixture rows, and `src/main-cloudform.js` splice points are implemented enough to prove route, source, action, movement, rail, grass, cloud, render, and host diagnostics without changing the player-visible scene.

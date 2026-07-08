@@ -2,26 +2,29 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T08:58:57-04:00`
+**Updated:** `2026-07-08T10-28-44-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Implementation Wire Map
+MyCozyIsland Route Version Authority Sync + Host Proof Fixture Gate
 ```
 
 Preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
 
+The first source-proof target is now `hero-cloud-4`, not `hero-cloud-3`.
+
 ## Implementation checklist
 
-- [ ] Preserve `index.html -> ./src/main-cloudform.js?v=hero-cloud-3`.
+- [ ] Preserve `index.html -> ./src/main-cloudform.js?v=hero-cloud-4`.
 - [ ] Preserve the current player-visible scene.
 - [ ] Preserve `globalThis.CozyIsland` compatibility.
 - [ ] Add an additive `globalThis.CozyIslandHost` diagnostics surface.
 - [ ] Add `src/host-proof/route-version.js`.
-- [ ] Add `RouteVersionResult` with `hero-cloud-3` acceptance and mismatch reasons.
+- [ ] Add `RouteVersionResult` with `hero-cloud-4` acceptance and stale-token mismatch reasons.
+- [ ] Add route fixture rows for accepted `hero-cloud-4`, rejected `hero-cloud-3`, and missing query token.
 - [ ] Add `src/host-proof/source-profile.js`.
-- [ ] Add `SourceProfile` constants for island, floor, cloud, movement, and camera rail assumptions.
+- [ ] Add `SourceProfile` constants for route token, island, floor, cloud, movement, and camera rail assumptions.
 - [ ] Add `src/host-proof/source-fingerprint.js`.
 - [ ] Add deterministic `SourceFingerprint` generation.
 - [ ] Add `src/host-proof/scene-source-snapshot.js`.
@@ -29,7 +32,7 @@ Preserve the current route and visuals while adding proofable host state around 
 - [ ] Add `src/host-proof/action-frame.js`.
 - [ ] Add `ActionFrame` normalizer for wheel, pointer, keyboard, and tick actions.
 - [ ] Add `src/host-proof/action-result.js`.
-- [ ] Add `ActionResult` for accepted/rejected action outcomes.
+- [ ] Add `ActionResult` for accepted/rejected/no-op action outcomes.
 - [ ] Add `src/host-proof/movement-policy-result.js`.
 - [ ] Add `MovementPolicyResult` with explicit rejection reasons.
 - [ ] Add `src/host-proof/camera-rail-snapshot.js`.
@@ -41,7 +44,7 @@ Preserve the current route and visuals while adding proofable host state around 
 - [ ] Add `CloudDriftResult` for fixed `dt/time` inputs.
 - [ ] Add action and input journals.
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
-- [ ] Add fixture IDs from `.agent/host-proof-audit/acceptance-ledger.md`.
+- [ ] Add fixture IDs from the route-version sync and host-proof acceptance ledgers.
 - [ ] Add replay parity smoke for the host result objects.
 - [ ] Wire `src/main-cloudform.js` only after the pure fixture modules pass.
 - [ ] Update `.agent/validation.md` with exact commands and outcomes.
@@ -51,8 +54,8 @@ Preserve the current route and visuals while adding proofable host state around 
 ```txt
 my-cozy-island-host-proof
 ├─ route-authority
-│  ├─ cozy-active-route-version-kit
 │  ├─ cozy-route-script-token-kit
+│  ├─ cozy-active-route-version-kit
 │  └─ cozy-route-version-result-kit
 ├─ source-authority
 │  ├─ cozy-source-profile-kit
@@ -76,6 +79,7 @@ my-cozy-island-host-proof
 │  └─ cozy-cloud-drift-result-kit
 └─ proof-authority
    ├─ cozy-gamehost-diagnostics-kit
+   ├─ cozy-host-snapshot-kit
    ├─ cozy-dom-free-fixture-runner-kit
    └─ cozy-replay-parity-smoke-kit
 ```
@@ -109,19 +113,24 @@ src/main-cloudform.js
 ## Wire-map order
 
 ```txt
-1. Implement pure helpers first.
-2. Run fixture-cases.mjs without DOM, canvas, Three.js, browser, or static server.
-3. Add a stable package script only after fixture-cases.mjs exists.
-4. Wire main-cloudform additively.
-5. Confirm route token remains hero-cloud-3.
-6. Confirm existing globalThis.CozyIsland remains compatible.
-7. Confirm new globalThis.CozyIslandHost is additive and fixture-shaped.
+1. Implement pure route-version helper first.
+2. Prove hero-cloud-4 acceptance and hero-cloud-3 stale-token rejection.
+3. Implement pure source-profile and source-fingerprint helpers.
+4. Implement pure source/action/movement/rail/cloud snapshot helpers.
+5. Run fixture-cases.mjs without DOM, canvas, Three.js, browser, or static server.
+6. Add a stable package script only after fixture-cases.mjs exists.
+7. Wire main-cloudform additively.
+8. Confirm route token remains hero-cloud-4.
+9. Confirm existing globalThis.CozyIsland remains compatible.
+10. Confirm new globalThis.CozyIslandHost is additive and fixture-shaped.
 ```
 
 ## Required fixture cases
 
 ```txt
 cozy-route-version-001
+cozy-route-version-mismatch-001
+cozy-route-version-missing-001
 cozy-source-profile-001
 cozy-source-fingerprint-001
 cozy-scene-source-001

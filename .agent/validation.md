@@ -2,139 +2,137 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T17-09-48-04-00`
+**Updated:** `2026-07-08T19-40-00-04-00`
 
 ## Validation performed in this pass
 
 ```txt
 repo selection:
   listed accessible LuminaryLabs-Publish repos through the GitHub App installation
-  compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and central ledger timestamps
+  compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland because repo-local agent state was newer than central ledger state and the host-proof source manifest/browser consumer fixture gate remains unresolved
+  selected MyCozyIsland as the oldest eligible fallback by sampled root-agent alignment
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
-  read package.json and confirmed static server command only
-  read src/main-cloudform.js imports, descriptor construction, render adapters, input handlers, rail/movement/cloud/frame loop, grass instancing, and legacy global excerpts
-  read .agent/START_HERE.md
-  read .agent/current-audit.md
-  read .agent/known-gaps.md
-  read .agent/next-steps.md
-  read .agent/validation.md
-  read .agent/kit-registry.json
-  read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
+  read package.json and confirmed start script is python3 -m http.server 8080
+  read src/main-cloudform.js imports, descriptor construction, render adapters, grass instancing, cloud cache, input handlers, rail, movement policy, frame loop, and legacy global projection
+  read prior repo-local .agent docs and central ledger status
 
-repo writes on main:
-  created .agent/trackers/2026-07-08T17-09-48-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T17-09-48-04-00.md
-  created .agent/architecture-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-dsk-map.md
-  created .agent/render-audit/2026-07-08T17-09-48-04-00-render-host-source-manifest-sync.md
-  created .agent/interaction-audit/2026-07-08T17-09-48-04-00-action-movement-fixture-sync.md
-  created .agent/cloud-system-audit/2026-07-08T17-09-48-04-00-cloud-cache-drift-fixture-sync.md
-  created .agent/grass-system-audit/2026-07-08T17-09-48-04-00-grass-snapshot-fixture-sync.md
-  created .agent/host-proof-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-and-source-manifest.md
-  updated .agent/START_HERE.md
-  updated .agent/current-audit.md
-  updated .agent/known-gaps.md
-  updated .agent/next-steps.md
-  updated .agent/validation.md
+documentation updates:
+  updated root .agent docs
   updated .agent/kit-registry.json
-
-central writes on main:
-  updated repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created internal-change-log/2026-07-08T17-09-48-04-00-my-cozy-island-ledger-sync-source-manifest.md
+  created architecture audit
+  created render audit
+  created interaction audit
+  created cloud-system audit
+  created grass-system audit
+  created host-proof audit
+  created deploy audit
+  created timestamped tracker
+  created timestamped turn-ledger entry
+  updated central repo ledger
+  created central internal change-log entry
 ```
 
-## Runtime validation not performed
+## Checks not performed
 
 ```txt
-No runtime source code was changed.
-No local checkout was performed.
-No static server was started.
-No browser route check was run.
-No package command was run.
-No Playwright run was performed.
-No GitHub Pages check was performed.
-No DOM-free fixture was run because the host-proof modules do not exist yet.
+runtime source edit: not performed
+local checkout: not available through this connector pass
+npm install: not run
+npm run start: not run
+browser route check: not run
+GitHub Pages live check: not run
+Playwright check: not run
+DOM-free fixture run: not run because fixture files do not exist yet
+branch creation: not performed
+pull request creation: not performed
 ```
 
-## Known command surface for future runtime checks
+## Existing package command
 
 ```bash
 npm run start
 ```
 
-Expected static route after starting the server:
+`package.json` currently maps that to:
 
-```txt
-http://localhost:8080/
+```bash
+python3 -m http.server 8080
 ```
 
-Expected active script:
+## Recommended next validation after source files exist
 
-```txt
-./src/main-cloudform.js?v=hero-cloud-4
+```bash
+node scripts/my-cozy-island-browser-consumer-fixture.mjs
+npm run start
 ```
 
-## Next validation target
+Browser console checks:
 
-After implementing `src/host-proof/fixture-cases.mjs`, add a package script and run it before browser validation.
-
-The fixture must prove:
-
-```txt
-cozy-route-version-accepted-001
-cozy-route-version-stale-hero-cloud-3-001
-cozy-route-version-missing-token-001
-cozy-source-profile-hero-cloud-4-001
-cozy-source-fingerprint-stable-001
-cozy-scene-source-snapshot-001
-cozy-wheel-action-progress-001
-cozy-pointer-action-yaw-001
-cozy-pointer-action-look-001
-cozy-keyboard-before-fp-001
-cozy-keyboard-no-input-001
-cozy-keyboard-clearing-accepted-001
-cozy-keyboard-clearing-boundary-rejected-001
-cozy-keyboard-campfire-keepout-rejected-001
-cozy-camera-rail-samples-001
-cozy-grass-placement-source-001
-cozy-grass-instance-snapshot-001
-cozy-cloud-descriptor-001
-cozy-cloud-cache-001
-cozy-cloud-cache-reuse-001
-cozy-cloud-drift-001
-cozy-render-host-snapshot-001
-cozy-host-snapshot-001
-cozy-host-legacy-compatibility-001
-cozy-host-dom-free-001
-cozy-central-ledger-sync-001
+```js
+globalThis.CozyIsland?.getScrollProgress?.()
+globalThis.CozyIsland?.cloudContract
+globalThis.CozyIsland?.cloudPointCache
+globalThis.CozyIslandHost?.getState?.()
+globalThis.CozyIslandHost?.getState?.().route
+globalThis.CozyIslandHost?.getState?.().source
+globalThis.CozyIslandHost?.getState?.().movement
+globalThis.CozyIslandHost?.getState?.().rail
+globalThis.CozyIslandHost?.getState?.().grass
+globalThis.CozyIslandHost?.getState?.().clouds
+globalThis.CozyIslandHost?.getState?.().render
 ```
 
-## Browser checks after fixture implementation
+Expected route facts:
 
 ```txt
-Open local route.
-Confirm canvas renders.
-Confirm loader fades out.
-Confirm wheel moves the rail.
-Confirm pointer look still works.
-Confirm keyboard movement still unlocks only near first-person mode.
-Confirm campfire keepout still applies.
-Confirm grass still renders as instanced patches.
-Confirm clouds still render and drift.
-Confirm globalThis.CozyIsland remains available.
-Confirm globalThis.CozyIslandHost is additive.
-Confirm no console fatal error.
+index.html loads ./src/main-cloudform.js?v=hero-cloud-4
+src/main-cloudform.js imports Three.js from CDN
+src/main-cloudform.js imports local source-domain kits
+src/main-cloudform.js creates descriptors before render adapters consume them
+src/main-cloudform.js exposes legacy globalThis.CozyIsland
+future host proof adds additive globalThis.CozyIslandHost without removing legacy surface
 ```
 
-## Current validation status
+## Future smoke tests needed
 
 ```txt
-status: documentation-only host-proof source-manifest and central-ledger-sync pass complete
-runtime confidence: not revalidated in this pass
-branch created: no
+route-version-result-smoke
+source-profile-smoke
+source-fingerprint-smoke
+scene-source-snapshot-smoke
+action-frame-smoke
+action-result-smoke
+input-journal-smoke
+movement-policy-result-smoke
+camera-rail-snapshot-smoke
+grass-instance-snapshot-smoke
+hero-cloud-cache-snapshot-smoke
+cloud-drift-result-smoke
+render-host-snapshot-smoke
+cozy-island-host-snapshot-smoke
+browser-consumer-fixture-smoke
+legacy-global-compatibility-smoke
+```
+
+## Pass result
+
+```txt
+runtime source changed: no
+root .agent updated: yes
+new timestamped tracker: yes
+new timestamped turn ledger: yes
+new architecture audit: yes
+new render audit: yes
+new interaction audit: yes
+new cloud-system audit: yes
+new grass-system audit: yes
+new host-proof audit: yes
+new deploy audit: yes
+central ledger updated: yes
+central internal change-log added: yes
 pushed to main: yes
 ```

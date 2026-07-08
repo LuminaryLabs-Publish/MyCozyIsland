@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T13-11-07-04-00`
+**Updated:** `2026-07-08T14-39-38-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest observed eligible fallback in this run.
+MyCozyIsland was selected as the oldest eligible fallback in this run.
 
 TheCavalryOfRome remains excluded.
 ```

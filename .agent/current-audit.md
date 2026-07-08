@@ -2,13 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T14-39-38-04-00`
+**Audit timestamp:** `2026-07-08T14-58-49-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The scene is not the blocker. The blocker is proofability: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
+The scene is not the blocker. The blocker is proofability and host readback: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
+
+This pass also caught a central-ledger freshness gap: repo-local `.agent` state had already advanced to `2026-07-08T14-39-38-04-00`, while `LuminaryLabs-Dev/LuminaryLabs` central tracking still pointed at `2026-07-08T13-11-07-04-00` before this run.
 
 ## Repo selection result
 
@@ -35,7 +37,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  It was the oldest eligible fallback by recent central repo-ledger update ordering and still has a high-value host-proof wire contract seam.
+  MyCozyIsland had the oldest stale central ledger pointer relative to repo-local .agent state and still needs a high-value host-proof browser consumer splice map.
 ```
 
 ## Current route
@@ -123,6 +125,7 @@ render-host-snapshot-next
 legacy-global-diagnostics
 cozy-island-host-next
 fixture-replay-authority-next
+central-ledger-sync
 ```
 
 ## Services currently offered by kits and host adapters
@@ -195,6 +198,7 @@ inline host/render services:
   valid
   fp
   frame
+  globalThis.CozyIsland compatibility projection
 ```
 
 ## Kits identified
@@ -287,20 +291,21 @@ hero-cloud geometry cache is not summarized as HeroCloudCacheSnapshot
 cloud drift mutates objects but is not represented as CloudDriftResult
 render host state is not summarized as RenderHostSnapshot
 legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost proof surface exists
+central repo ledger was stale relative to repo-local .agent state before this run
 ```
 
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md
-.agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md
-.agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md
-.agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md
-.agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md
+.agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md
+.agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md
+.agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md
+.agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md
+.agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
+MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
 ```

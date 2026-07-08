@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T10-28-44-04-00`
+**Updated:** `2026-07-08T11-40-00-04-00`
 
 ## Validation performed in this pass
 
@@ -12,36 +12,35 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs repo-ledger state
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   found no checked non-Cavalry repo that was fully new, ledger-absent, undocumented, or missing root .agent/START_HERE.md
-  selected MyCozyIsland as eligible fallback follow-up target for route-token and host-proof fixture docs
+  selected MyCozyIsland as eligible fallback follow-up target for host snapshot docs
 
 source inspection:
-  read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
+  read README.md and confirmed local domain kits and runtime needs
   read package.json and confirmed the only script is npm run start -> python3 -m http.server 8080
-  read README.md and confirmed the listed local domain kits
-  read src/main-cloudform.js import/composition/frame/host excerpts
+  read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
+  read src/main-cloudform.js import/composition/input/movement/frame/host excerpts
   read .agent/START_HERE.md
   read .agent/current-audit.md
   read .agent/known-gaps.md
   read .agent/next-steps.md
   read .agent/validation.md
-  read .agent/kit-registry.json
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes on main:
-  created .agent/architecture-audit/2026-07-08T10-28-44-04-00-route-host-proof-dsk-breakdown.md
-  created .agent/render-audit/2026-07-08T10-28-44-04-00-render-route-token-readback.md
-  created .agent/interaction-audit/2026-07-08T10-28-44-04-00-action-movement-proof-map.md
-  created .agent/host-proof-audit/2026-07-08T10-28-44-04-00-route-version-authority-sync.md
-  created .agent/trackers/2026-07-08T10-28-44-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T10-28-44-04-00.md
+  created .agent/architecture-audit/2026-07-08T11-40-00-04-00-dsk-domain-breakdown.md
+  created .agent/render-audit/2026-07-08T11-40-00-04-00-render-host-readback.md
+  created .agent/interaction-audit/2026-07-08T11-40-00-04-00-movement-policy-result-matrix.md
+  created .agent/cloud-system-audit/2026-07-08T11-40-00-04-00-hero-cloud-cache-drift-matrix.md
+  created .agent/host-proof-audit/2026-07-08T11-40-00-04-00-host-snapshot-acceptance-matrix.md
+  created .agent/trackers/2026-07-08T11-40-00-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T11-40-00-04-00.md
   updated .agent/START_HERE.md
   updated .agent/current-audit.md
   updated .agent/known-gaps.md
   updated .agent/next-steps.md
   updated .agent/validation.md
-  updated .agent/kit-registry.json
   updated central repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created central internal-change-log/2026-07-08T10-28-44-04-00-my-cozy-island-route-version-sync.md
+  created central internal-change-log/2026-07-08T11-40-00-04-00-my-cozy-island-host-snapshot-matrix.md
 ```
 
 ## Runtime validation not performed
@@ -54,6 +53,7 @@ repo writes on main:
 - No package test was run.
 - No build command was run.
 - No runtime source code was changed.
+- No DOM-free fixture was run because the host-proof modules do not exist yet.
 ```
 
 ## Current known command surface
@@ -106,6 +106,9 @@ cozy-pointer-action-001:
 cozy-keyboard-before-fp-001:
   keyboard move before first-person threshold rejects with locked-before-first-person
 
+cozy-keyboard-no-input-001:
+  no movement input produces no-op no-movement-input
+
 cozy-keyboard-clearing-001:
   movement inside the clearing accepts
 
@@ -130,6 +133,9 @@ cozy-cloud-drift-001:
 cozy-host-snapshot-001:
   additive globalThis.CozyIslandHost exposes proof state
   globalThis.CozyIsland remains compatible and is not required by fixture tests
+
+cozy-host-dom-free-001:
+  host fixture runs without DOM, canvas, Three.js, browser, or static server
 ```
 
 ## Stop condition for next implementation run

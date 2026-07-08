@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T07:30:30-04:00`
+**Updated:** `2026-07-08T08:58:57-04:00`
 
 ## Repo-selection gap status
 
@@ -14,10 +14,10 @@
    Corrected by materializing root .agent state and central ledger entries.
 
 3. This pass found no checked non-Cavalry Publish repo that was fully new, central-ledger absent, or missing root .agent/START_HERE.md state.
-   MyCozyIsland is now tracked as a follow-up target for host-proof acceptance work rather than a missing-root-agent emergency.
+   MyCozyIsland remains an eligible fallback follow-up target.
 
-4. Repo-local kit registry was stale relative to the latest host-proof fixture direction.
-   Updated in this pass.
+4. Prior docs defined the host-proof acceptance cases.
+   This pass added the implementation wire map that tells the next source edit where to attach each proof helper.
 ```
 
 ## Highest-priority product gaps
@@ -54,6 +54,23 @@
     Pages may still deploy by repository settings, but workflow ownership remains undocumented in this repo.
 ```
 
+## Wire-map gaps to close next
+
+```txt
+- route-version helper must read the route token without requiring a browser.
+- source-profile helper must centralize current seeds, radii, cloud profile, movement profile, and rail profile assumptions.
+- source-fingerprint helper must produce a stable hash over source-profile inputs.
+- scene-source-snapshot helper must summarize descriptors, not Three.js meshes.
+- action-frame helper must normalize wheel, pointer, keyboard, and tick inputs.
+- action-result helper must report accepted/rejected results and changed fields.
+- movement-policy-result helper must preserve locked-before-first-person, inside-clearing, clearing-boundary, and campfire-keepout reasons.
+- camera-rail-snapshot helper must sample progress values without a camera object.
+- hero-cloud-snapshot helper must summarize descriptors and cache facts without depending on WebGL.
+- cloud-drift-result helper must reduce fixed dt/time inputs deterministically.
+- fixture-cases.mjs must run without DOM, canvas, Three.js, or a static server.
+- src/main-cloudform.js must wire the helpers additively and keep globalThis.CozyIsland compatibility unchanged.
+```
+
 ## Visual/render gaps
 
 ```txt
@@ -64,7 +81,7 @@
 - Water and foam are present but shader depth, refraction, foam breakup, and shoreline material variation remain simple.
 ```
 
-Do not fix these visual/render gaps before the host-proof acceptance fixture is in place.
+Do not fix these visual/render gaps before the host-proof fixture gate is in place.
 
 ## Architecture gaps
 

@@ -2,12 +2,12 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T07:30:30-04:00`
+**Updated:** `2026-07-08T08:58:57-04:00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Acceptance Fixture Gate
+MyCozyIsland Host Proof Implementation Wire Map
 ```
 
 Preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
@@ -43,6 +43,7 @@ Preserve the current route and visuals while adding proofable host state around 
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
 - [ ] Add fixture IDs from `.agent/host-proof-audit/acceptance-ledger.md`.
 - [ ] Add replay parity smoke for the host result objects.
+- [ ] Wire `src/main-cloudform.js` only after the pure fixture modules pass.
 - [ ] Update `.agent/validation.md` with exact commands and outcomes.
 
 ## Atomic kit split target
@@ -103,6 +104,18 @@ src/main-cloudform.js
   -> imports or calls host-proof helpers
   -> writes globalThis.CozyIslandHost
   -> keeps globalThis.CozyIsland unchanged
+```
+
+## Wire-map order
+
+```txt
+1. Implement pure helpers first.
+2. Run fixture-cases.mjs without DOM, canvas, Three.js, browser, or static server.
+3. Add a stable package script only after fixture-cases.mjs exists.
+4. Wire main-cloudform additively.
+5. Confirm route token remains hero-cloud-3.
+6. Confirm existing globalThis.CozyIsland remains compatible.
+7. Confirm new globalThis.CozyIslandHost is additive and fixture-shaped.
 ```
 
 ## Required fixture cases

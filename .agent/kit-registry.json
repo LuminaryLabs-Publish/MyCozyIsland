@@ -1,12 +1,17 @@
 {
-  "schemaVersion": 9,
+  "schemaVersion": 10,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-08T07:30:30-04:00",
-  "latestTracker": ".agent/trackers/2026-07-08T07-30-30-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T07-30-30-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Proof Acceptance Fixture Gate",
+  "lastUpdated": "2026-07-08T08:58:57-04:00",
+  "latestTracker": ".agent/trackers/2026-07-08T08-58-57-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T08-58-57-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Proof Implementation Wire Map",
+  "latestAuditArtifacts": {
+    "architectureAudit": ".agent/architecture-audit/2026-07-08T08-58-57-04-00-host-proof-dsk-breakdown.md",
+    "renderAudit": ".agent/render-audit/2026-07-08T08-58-57-04-00-render-host-proof-readback.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md"
+  },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, or missing root .agent/START_HERE.md state. MyCozyIsland was selected as a fallback follow-up to convert the host-proof fixture direction into concrete acceptance cases.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, or missing root .agent/START_HERE.md state. MyCozyIsland was selected as oldest eligible fallback to convert the prior host-proof acceptance ledger into exact implementation wiring.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -136,6 +141,7 @@
     "cozy-source-fingerprint-kit",
     "cozy-scene-source-snapshot-kit",
     "cozy-host-state-contract-kit",
+    "cozy-host-snapshot-kit",
     "cozy-action-frame-contract-kit",
     "cozy-action-result-contract-kit",
     "cozy-action-rejection-reason-kit",
@@ -152,6 +158,19 @@
     "cozy-gamehost-diagnostics-kit",
     "cozy-dom-free-fixture-runner-kit",
     "cozy-replay-parity-smoke-kit"
+  ],
+  "hostProofFilesToAdd": [
+    "src/host-proof/route-version.js",
+    "src/host-proof/source-profile.js",
+    "src/host-proof/source-fingerprint.js",
+    "src/host-proof/scene-source-snapshot.js",
+    "src/host-proof/action-frame.js",
+    "src/host-proof/action-result.js",
+    "src/host-proof/movement-policy-result.js",
+    "src/host-proof/camera-rail-snapshot.js",
+    "src/host-proof/hero-cloud-snapshot.js",
+    "src/host-proof/cloud-drift-result.js",
+    "src/host-proof/fixture-cases.mjs"
   ],
   "acceptanceFixtureIds": [
     "cozy-route-version-001",

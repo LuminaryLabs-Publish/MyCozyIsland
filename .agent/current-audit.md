@@ -2,29 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T10-28-44-04-00`
+**Audit timestamp:** `2026-07-08T11-40-00-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
 
-The current visual slice should stay stable. The highest-value seam is still host proof, but this pass narrowed the first implementation step: route version authority must be synchronized first because `index.html` now loads `./src/main-cloudform.js?v=hero-cloud-4`, while earlier `.agent` docs and `kit-registry.json` still referenced `hero-cloud-3`.
+The current visual route should stay stable. The highest-value seam is now the host-proof boundary: route, source, action, movement, camera rail, and hero-cloud runtime facts need fixture-readable result records and an additive `globalThis.CozyIslandHost` surface.
 
 ## Evidence checked
 
 ```txt
 LuminaryLabs-Publish accessible repository list
 LuminaryLabs-Dev/LuminaryLabs repo-ledger state
-index.html
-package.json
 README.md
-src/main-cloudform.js import/composition/frame/host excerpts
+package.json
+index.html
+src/main-cloudform.js import/composition/input/movement/frame/host excerpts
 .agent/START_HERE.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/kit-registry.json
 LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 ```
 
@@ -32,16 +31,16 @@ LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 ```txt
 Checked Publish repos:
-  AetherVale
-  HorrorCorridor
   IntoTheMeadow
-  MyCozyIsland
-  PhantomCommand
-  PrehistoricRush
-  TheCavalryOfRome
-  TheOpenAbove
-  TheUnmappedHouse
+  HorrorCorridor
+  AetherVale
   ZombieOrchard
+  TheUnmappedHouse
+  MyCozyIsland
+  TheOpenAbove
+  PhantomCommand
+  TheCavalryOfRome
+  PrehistoricRush
 
 Excluded:
   TheCavalryOfRome
@@ -56,7 +55,7 @@ Selected repo:
   LuminaryLabs-Publish/MyCozyIsland
 
 Fallback reason:
-  oldest eligible follow-up with stable visual route, unresolved host-proof fixture gate, and stale route-token docs
+  stable visual route with unresolved host-proof fixture gate for route/source/action/movement/camera rail/hero-cloud records
 ```
 
 ## Current route
@@ -156,44 +155,44 @@ my-cozy-island
 ## Services currently offered by kits
 
 ```txt
-ocean-island-landform-domain
+ocean-island-landform-domain:
   createOceanIslandLandformState
   sampleIslandHeight
   sampleIslandMasks
   createOceanIslandLandformRenderContract
 
-island-foliage-domain
+island-foliage-domain:
   createIslandPathNetwork
   createDenseCozyIslandObjectGraph
   createDenseCozyIslandRenderContract
 
-ocean-floor-domain
+ocean-floor-domain:
   createOceanFloorState
   createOceanFloorRenderContract
 
-grass-object-domain
+grass-object-domain:
   createGrassPatchPlacementContract
   createGrassPatchBatchDescriptors
   filters water, beach, wet sand, rock, cliff, path, and exclusion-zone placements
 
-grass-wind-domain
+grass-wind-domain:
   createGrassWindDescriptor
 
-campfire-object-domain
+campfire-object-domain:
   createCampfireObjectGraph
 
-smoke-particle-domain
+smoke-particle-domain:
   createSmokeParticleDescriptor
 
-fenced-clearing-domain
+fenced-clearing-domain:
   createFencedClearingGraph
   emits fence posts, player-avatar anchor, collision boundary, clearance zones, and object-exclusion zones
 
-mattatz-clouds-domain
+mattatz-clouds-domain:
   createMattatzCloudsState
   createMattatzCloudRenderContract
 
-cozy-hero-cloud-form-kit
+cozy-hero-cloud-form-kit:
   creates a readable single hero cloud form descriptor
   hands off point-cloud/lobe/placement/drift intent to the renderer
 ```
@@ -249,7 +248,6 @@ cozy-legacy-global-host-kit
 Next-cut proof kits:
 
 ```txt
-cozy-active-route-version-kit
 cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
@@ -274,7 +272,7 @@ cozy-replay-parity-smoke-kit
 
 ## Current high-value gap
 
-The renderer can stay inline for now. The urgent gap is route and host proof.
+The renderer can stay inline for now.
 
 Browser-host facts are not proof facts yet:
 
@@ -293,18 +291,17 @@ legacy global -> no additive CozyIslandHost proof surface
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T10-28-44-04-00-route-host-proof-dsk-breakdown.md
-.agent/render-audit/2026-07-08T10-28-44-04-00-render-route-token-readback.md
-.agent/interaction-audit/2026-07-08T10-28-44-04-00-action-movement-proof-map.md
-.agent/host-proof-audit/2026-07-08T10-28-44-04-00-route-version-authority-sync.md
+.agent/architecture-audit/2026-07-08T11-40-00-04-00-dsk-domain-breakdown.md
+.agent/render-audit/2026-07-08T11-40-00-04-00-render-host-readback.md
+.agent/interaction-audit/2026-07-08T11-40-00-04-00-movement-policy-result-matrix.md
+.agent/cloud-system-audit/2026-07-08T11-40-00-04-00-hero-cloud-cache-drift-matrix.md
+.agent/host-proof-audit/2026-07-08T11-40-00-04-00-host-snapshot-acceptance-matrix.md
 ```
-
-These docs convert the prior host-proof plan into a route-token-first source ledge.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Route Version Authority Sync + Host Proof Fixture Gate
+MyCozyIsland Host Snapshot Acceptance Matrix + Rail/Cloud Fixture Gate
 ```
 
 Keep the current route, visuals, and `globalThis.CozyIsland` compatibility stable.

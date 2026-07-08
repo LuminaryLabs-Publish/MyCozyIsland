@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T11-40-00-04-00`
+**Last aligned:** `2026-07-08T13-11-07-04-00`
 
 ## Purpose
 
@@ -12,34 +12,34 @@ Read this folder before changing implementation code.
 
 ## Current selection result
 
-The full accessible `LuminaryLabs-Publish` repo list was compared against the central `LuminaryLabs-Dev/LuminaryLabs` repo ledger.
+The full accessible `LuminaryLabs-Publish` repository list was compared against central `LuminaryLabs-Dev/LuminaryLabs` tracking.
 
-No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, undocumented, or missing root `.agent/START_HERE.md` state.
-
-`MyCozyIsland` was selected as a fallback follow-up. The current finding is not missing docs. The current finding is that the visible route is stable, but route/source/action/movement/camera rail/hero-cloud state still lacks fixture-readable host snapshots.
+No checked non-Cavalry Publish repo was found that was fully new, absent from the central ledger, undocumented, recently added but undocumented, or missing sampled root `.agent/START_HERE.md` state.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
+
+`MyCozyIsland` was selected as the oldest observed eligible fallback because its last sampled repo-local alignment was `2026-07-08T11-40-00-04-00`, older than the other checked non-excluded roots, and the host-proof fixture seam is still unresolved.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present
-LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present
-LuminaryLabs-Publish/MyCozyIsland        selected fallback follow-up
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present
+LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / latest sampled alignment 2026-07-08T12-29-17-04-00
+LuminaryLabs-Publish/AetherVale          tracked / root .agent present / latest sampled alignment 2026-07-08T12-01-23-04-00
+LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / latest sampled alignment 2026-07-08T11-49-04-04-00
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present
+LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / latest sampled alignment 2026-07-08T12-41-31-04-00
+LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / latest sampled alignment 2026-07-08T12-09-27-04-00
+LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present / latest sampled alignment 2026-07-08T12-51-50-04-00
+LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / latest sampled alignment 2026-07-08T12-21-20-04-00
+LuminaryLabs-Publish/MyCozyIsland        selected fallback / latest sampled alignment 2026-07-08T11-40-00-04-00
+LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / latest sampled alignment 2026-07-08T12-59-11-04-00
 ```
 
 ## Current product read
 
-`MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
+`MyCozyIsland` is a standalone static Three.js cozy island scene with local source-domain kits for island landform, ocean floor, foliage, grass, wind, fenced clearing, campfire, smoke, Mattatz-style clouds, and a hero-cloud form.
 
-The active route is:
+The current route is:
 
 ```txt
 index.html
@@ -49,37 +49,17 @@ index.html
 ## Current interaction loop
 
 ```txt
-static browser route
-  -> canvas#game, cloud loader, and error panel
-  -> ./src/main-cloudform.js?v=hero-cloud-4
-  -> Three.js CDN and local domain-kit imports
-  -> source contract construction
-  -> Three.js render adapter construction
-  -> wheel changes scroll rail progress
-  -> pointer drag changes orbit or first-person look state
+open route
+  -> cloud loader progresses
+  -> local source-domain descriptors are created
+  -> inline Three.js adapters build the island, ocean, grass, clearing, campfire, smoke, and hero-cloud scene
+  -> wheel input advances the sky-to-clearing camera rail
+  -> pointer drag mutates yaw/look state
   -> keyboard movement unlocks after first-person threshold
-  -> clearing/campfire movement policy accepts or rejects movement inline
-  -> frame loop animates sea, smoke, fire, camera, and clouds
-  -> globalThis.CozyIsland exposes compatibility diagnostics
-```
-
-## Target proof loop
-
-```txt
-RouteVersionResult(hero-cloud-4)
-  -> SourceProfile
-  -> SourceFingerprint
-  -> SceneSourceSnapshot
-  -> ActionFrame
-  -> ActionResult
-  -> MovementPolicyResult
-  -> CameraRailSnapshot
-  -> HeroCloudDescriptorSnapshot
-  -> HeroCloudCacheSnapshot
-  -> CloudDriftResult
-  -> CozyIslandHostSnapshot
-  -> DOM-free fixture cases
-  -> additive globalThis.CozyIslandHost readback
+  -> movement is checked against clearing radius and campfire keepout policy
+  -> sea, fire, smoke, clouds, camera, and first-person state animate per frame
+  -> renderer draws the scene
+  -> globalThis.CozyIsland exposes limited compatibility state
 ```
 
 ## First files to read
@@ -89,13 +69,13 @@ RouteVersionResult(hero-cloud-4)
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T11-40-00-04-00-dsk-domain-breakdown.md
-.agent/render-audit/2026-07-08T11-40-00-04-00-render-host-readback.md
-.agent/interaction-audit/2026-07-08T11-40-00-04-00-movement-policy-result-matrix.md
-.agent/cloud-system-audit/2026-07-08T11-40-00-04-00-hero-cloud-cache-drift-matrix.md
-.agent/host-proof-audit/2026-07-08T11-40-00-04-00-host-snapshot-acceptance-matrix.md
-.agent/trackers/2026-07-08T11-40-00-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T11-40-00-04-00.md
+.agent/architecture-audit/2026-07-08T13-11-07-04-00-host-proof-dsk-breakdown.md
+.agent/render-audit/2026-07-08T13-11-07-04-00-render-host-snapshot-readback.md
+.agent/interaction-audit/2026-07-08T13-11-07-04-00-action-movement-rail-contract.md
+.agent/cloud-system-audit/2026-07-08T13-11-07-04-00-cloud-cache-drift-proof-contract.md
+.agent/host-proof-audit/2026-07-08T13-11-07-04-00-fixture-row-contract.md
+.agent/trackers/2026-07-08T13-11-07-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T13-11-07-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -120,25 +100,22 @@ src/kits/cozy-hero-cloud-form-kit/index.js
 
 ## Main rule
 
-Do not change art direction during the host-proof pass.
+Keep the visible route and current visuals stable.
 
-Do not rewrite the renderer first.
+Do not turn this publish repo into a generic engine repo.
 
-The next runtime change should add pure host-proof helpers and wire them additively:
+The next implementation should add pure host-proof modules first, then wire them additively into `src/main-cloudform.js` through `globalThis.CozyIslandHost`.
+
+Do not remove or change the compatibility surface:
 
 ```txt
-src/host-proof/*
-  -> route/source/action/movement/rail/cloud result records
-  -> DOM-free fixtures
-  -> globalThis.CozyIslandHost
+globalThis.CozyIsland
 ```
-
-Keep `globalThis.CozyIsland` unchanged.
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Snapshot Acceptance Matrix + Rail/Cloud Fixture Gate
+MyCozyIsland Host Proof Fixture Row Contract + CozyIslandHost Snapshot Gate
 ```
 
-Stop that ledge when fixtures prove route/source/action/movement/rail/cloud host records while the visible scene and legacy `globalThis.CozyIsland` compatibility remain unchanged.
+Stop that ledge when fixture rows prove route version, source profile, source fingerprint, scene source snapshot, action results, movement policy, rail samples, hero-cloud descriptor/cache snapshots, cloud drift, render host snapshot, and additive host diagnostics without requiring DOM, canvas, Three.js, browser, or a static server.

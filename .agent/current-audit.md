@@ -2,31 +2,58 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T06:01:57-04:00`
+**Audit timestamp:** `2026-07-08T07:30:30-04:00`
 
 ## Summary
 
-`MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a single readable hero-cloud form.
+`MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
 
-The source-descriptor side is now easier to reason about than the host-proof side. The app has clear local kits and a stable public route, but the route version, source profile, source fingerprint, scene source snapshot, action/result records, camera rail records, movement rejection reasons, hero-cloud cache state, and cloud drift results are still not first-class fixture-readable records.
+The app is visually coherent enough for the next pass to avoid art expansion. The highest-value seam is now host proof: route, source, action, movement, camera, and cloud facts need fixture-readable records that can run without opening the browser.
 
 ## Evidence checked
 
 ```txt
-LuminaryLabs-Publish org repository search result
+LuminaryLabs-Publish accessible repository list
+LuminaryLabs-Dev/LuminaryLabs repo-ledger search results
 README.md
 index.html
 package.json
 src/main-cloudform.js excerpt
-src/kits/grass-object-domain/index.js
-src/kits/fenced-clearing-domain/index.js
-src/kits/mattatz-clouds-domain/index.js
 .agent/START_HERE.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
+.agent/kit-registry.json
 LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
+```
+
+## Repo selection result
+
+```txt
+Checked Publish repos:
+  HorrorCorridor
+  AetherVale
+  TheOpenAbove
+  TheCavalryOfRome
+  PhantomCommand
+  PrehistoricRush
+  ZombieOrchard
+  IntoTheMeadow
+  MyCozyIsland
+  TheUnmappedHouse
+
+Excluded:
+  TheCavalryOfRome
+
+Central ledger state:
+  checked non-excluded repos are represented in LuminaryLabs-Dev/LuminaryLabs repo-ledger
+
+Root .agent state:
+  checked follow-up candidates have root .agent/START_HERE.md state
+
+Selected repo:
+  LuminaryLabs-Publish/MyCozyIsland
 ```
 
 ## Current route
@@ -44,7 +71,7 @@ static browser route
   -> cloud loader + error panel
   -> Three.js CDN import
   -> local domain-kit imports
-  -> build island/ocean/grass/clearing/campfire/smoke/cloud source contracts
+  -> build island/ocean/grass/wind/clearing/campfire/smoke/cloud source contracts
   -> build Three.js scene objects inline
   -> scroll camera rail from sky view into clearing
   -> pointer drag look/yaw
@@ -58,7 +85,7 @@ static browser route
 
 ```txt
 my-cozy-island
-├─ static-shell
+├─ static-browser-shell
 │  ├─ html-canvas-host
 │  ├─ cloud-loader-ui
 │  └─ error-panel-ui
@@ -66,9 +93,9 @@ my-cozy-island
 │  ├─ active-route-script-token
 │  ├─ main-cloudform-entry
 │  ├─ hero-cloud-3-version-string
-│  ├─ missing route-version-result
-│  └─ missing source-fingerprint-result
-├─ source-authoring
+│  ├─ missing RouteVersionResult
+│  └─ missing route mismatch reason
+├─ source-authority
 │  ├─ ocean-island-landform-domain
 │  ├─ island-foliage-domain
 │  ├─ ocean-floor-domain
@@ -78,7 +105,10 @@ my-cozy-island
 │  ├─ smoke-particle-domain
 │  ├─ fenced-clearing-domain
 │  ├─ mattatz-clouds-domain
-│  └─ cozy-hero-cloud-form-kit
+│  ├─ cozy-hero-cloud-form-kit
+│  ├─ missing SourceProfile
+│  ├─ missing SourceFingerprint
+│  └─ missing SceneSourceSnapshot
 ├─ renderer-host
 │  ├─ terrain-mesh-adapter
 │  ├─ ocean-floor-mesh-adapter
@@ -97,19 +127,26 @@ my-cozy-island
 │  ├─ pointer-look-state
 │  ├─ keyboard-movement-state
 │  ├─ first-person-threshold-gate
+│  ├─ missing ActionFrame records
+│  └─ missing ActionResult records
+├─ movement-authority
 │  ├─ clearing-boundary-policy
-│  └─ campfire-keepout-policy
+│  ├─ campfire-keepout-policy
+│  ├─ missing MovementPolicyResult
+│  ├─ missing ClearingBoundaryResult
+│  └─ missing CampfireKeepoutResult
 ├─ cloud-runtime
 │  ├─ hero-cloud-geometry-cache
 │  ├─ hero-cloud-point-cloud-descriptor
 │  ├─ cloud-drift-frame-update
-│  └─ missing cloud-drift-result
+│  ├─ missing HeroCloudDescriptorSnapshot
+│  ├─ missing HeroCloudCacheSnapshot
+│  └─ missing CloudDriftResult
 └─ diagnostics-proof
    ├─ legacy-global-cozy-island
    ├─ missing additive CozyIslandHost surface
-   ├─ missing ActionFrame records
-   ├─ missing ActionResult records
    ├─ missing HostSnapshot records
+   ├─ missing action/input journals
    └─ missing DOM-free host-proof fixture gate
 ```
 
@@ -238,21 +275,29 @@ The renderer can stay inline for now. The urgent gap is not a visual rewrite.
 The urgent gap is that browser-host facts are not proof facts:
 
 ```txt
-route token -> no route result
+route token -> no RouteVersionResult
 source constants -> no SourceProfile
 composed descriptors -> no SceneSourceSnapshot
 scroll/pointer/keyboard events -> no ActionFrame
 policy checks -> no MovementPolicyResult
-camera rail state -> no RailSnapshot
+camera rail state -> no CameraRailSnapshot
 cloud cache -> no HeroCloudCacheSnapshot
 cloud animation -> no CloudDriftResult
 legacy global -> no additive CozyIslandHost proof surface
 ```
 
+## New audit artifact
+
+```txt
+.agent/host-proof-audit/acceptance-ledger.md
+```
+
+This ledger defines pass/fail cases for the next code pass.
+
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Fixture Matrix
+MyCozyIsland Host Proof Acceptance Fixture Gate
 ```
 
 Keep the current route, visuals, and `globalThis.CozyIsland` compatibility stable.

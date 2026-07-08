@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T06:01:57-04:00`
+**Updated:** `2026-07-08T07:30:30-04:00`
 
 ## Repo-selection gap status
 
@@ -13,8 +13,11 @@
 2. Central ledger already referenced .agent paths before the publish repo had them.
    Corrected by materializing root .agent state and central ledger entries.
 
-3. This follow-up found no checked non-Cavalry Publish repo that was fully new, central-ledger absent, or missing root .agent/START_HERE.md state.
-   MyCozyIsland is now tracked as a follow-up target for host-proof fixture work rather than a missing-root-agent emergency.
+3. This pass found no checked non-Cavalry Publish repo that was fully new, central-ledger absent, or missing root .agent/START_HERE.md state.
+   MyCozyIsland is now tracked as a follow-up target for host-proof acceptance work rather than a missing-root-agent emergency.
+
+4. Repo-local kit registry was stale relative to the latest host-proof fixture direction.
+   Updated in this pass.
 ```
 
 ## Highest-priority product gaps
@@ -24,7 +27,7 @@
    It owns source construction, renderer construction, DOM input, animation, cloud cache, movement policy, and diagnostics.
 
 2. Active route version is not a first-class result.
-   index.html uses ?v=hero-cloud-3, but the runtime does not expose that value as an inspectable route-version record.
+   index.html uses ?v=hero-cloud-3, but the runtime does not expose that value as an inspectable RouteVersionResult.
 
 3. Source profile and source fingerprint are missing.
    Seeds, island radius, cloud point count, cloud placement, camera rail assumptions, and movement bounds are implicit runtime facts.
@@ -36,7 +39,7 @@
    Wheel, pointer, keyboard, and tick actions are handled inline rather than normalized as command/result records.
 
 6. Movement rejection reasons are missing.
-   Clearing boundary and campfire keepout decisions need explicit accepted/rejected result objects.
+   Clearing boundary, first-person lock, and campfire keepout decisions need explicit accepted/rejected result objects.
 
 7. Camera rail snapshots are missing.
    Scroll progress and camera positions are visible at runtime but not fixture-readable.
@@ -47,7 +50,7 @@
 9. Renderer adapters are local inline functions, not named render-handoff kits.
    This is acceptable for the current publish app but should not be expanded before host-proof records exist.
 
-10. No deploy workflow was found during the earlier root-agent pass.
+10. No deploy workflow was found during earlier root-agent passes.
     Pages may still deploy by repository settings, but workflow ownership remains undocumented in this repo.
 ```
 
@@ -61,6 +64,8 @@
 - Water and foam are present but shader depth, refraction, foam breakup, and shoreline material variation remain simple.
 ```
 
+Do not fix these visual/render gaps before the host-proof acceptance fixture is in place.
+
 ## Architecture gaps
 
 ```txt
@@ -72,6 +77,8 @@
 - ActionFrame is missing.
 - ActionResult is missing.
 - MovementPolicyResult is missing.
+- ClearingBoundaryResult is missing.
+- CampfireKeepoutResult is missing.
 - CameraRailSnapshot is missing.
 - HeroCloudDescriptorSnapshot is missing.
 - HeroCloudCacheSnapshot is missing.

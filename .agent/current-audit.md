@@ -2,18 +2,18 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T13-11-07-04-00`
+**Audit timestamp:** `2026-07-08T14-39-38-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The current scene is not the blocker. The blocker is proofability: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
+The scene is not the blocker. The blocker is proofability: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
 
 ## Repo selection result
 
 ```txt
-Checked full accessible Publish list:
+Checked accessible Publish list:
   HorrorCorridor
   AetherVale
   TheOpenAbove
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  It was the oldest observed eligible fallback by sampled alignment time and still has a high-value host-proof fixture seam.
+  It was the oldest eligible fallback by recent central repo-ledger update ordering and still has a high-value host-proof wire contract seam.
 ```
 
 ## Current route
@@ -74,12 +74,12 @@ static-browser-shell
 cloud-loader-ui
 error-panel-ui
 module-entry-route
-active-route-version-authority
+active-route-token-authority
 three-cdn-runtime
 local-source-domain-runtime
-source-profile-authority
-source-fingerprint-authority
-scene-source-snapshot
+source-profile-authority-next
+source-fingerprint-authority-next
+scene-source-snapshot-next
 island-landform-source
 heightfield-sampling
 mask-sampling
@@ -119,9 +119,10 @@ pointer-look-state
 keyboard-input-state
 first-person-threshold-gate
 movement-policy-authority
+render-host-snapshot-next
 legacy-global-diagnostics
 cozy-island-host-next
-fixture-replay-authority
+fixture-replay-authority-next
 ```
 
 ## Services currently offered by kits and host adapters
@@ -145,7 +146,7 @@ ocean-floor-domain:
 
 grass-object-domain:
   createGrassPatchPlacementContract
-  exclusion-aware grass placement
+  createGrassPatchBatchDescriptors
 
 grass-wind-domain:
   createGrassWindDescriptor
@@ -169,7 +170,8 @@ mattatz-clouds-domain:
 
 cozy-hero-cloud-form-kit:
   readable hero cloud form descriptor
-  point cloud placement/drift intent
+  cloud placement intent
+  point-cloud drift intent
 
 inline host/render services:
   fail
@@ -246,6 +248,8 @@ cozy-legacy-global-host-kit
 Next-cut proof kits:
 
 ```txt
+cozy-route-script-token-kit
+cozy-active-route-version-kit
 cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
@@ -258,11 +262,13 @@ cozy-input-journal-kit
 cozy-movement-policy-result-kit
 cozy-clearing-boundary-result-kit
 cozy-campfire-keepout-result-kit
+cozy-rail-state-kit
 cozy-camera-rail-snapshot-kit
 cozy-hero-cloud-descriptor-snapshot-kit
 cozy-hero-cloud-cache-snapshot-kit
 cozy-cloud-drift-result-kit
 cozy-render-host-snapshot-kit
+cozy-host-state-contract-kit
 cozy-host-snapshot-kit
 cozy-gamehost-diagnostics-kit
 cozy-dom-free-fixture-runner-kit
@@ -286,15 +292,15 @@ legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost pr
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T13-11-07-04-00-host-proof-dsk-breakdown.md
-.agent/render-audit/2026-07-08T13-11-07-04-00-render-host-snapshot-readback.md
-.agent/interaction-audit/2026-07-08T13-11-07-04-00-action-movement-rail-contract.md
-.agent/cloud-system-audit/2026-07-08T13-11-07-04-00-cloud-cache-drift-proof-contract.md
-.agent/host-proof-audit/2026-07-08T13-11-07-04-00-fixture-row-contract.md
+.agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md
+.agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md
+.agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md
+.agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md
+.agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Fixture Row Contract + CozyIslandHost Snapshot Gate
+MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
 ```

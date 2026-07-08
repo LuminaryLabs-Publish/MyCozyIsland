@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T08:58:57-04:00`
+**Updated:** `2026-07-08T10-28-44-04-00`
 
 ## Validation performed in this pass
 
@@ -11,27 +11,29 @@ repo selection:
   listed the accessible LuminaryLabs-Publish org repo list
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs repo-ledger state
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
-  found no checked non-Cavalry repo that was fully new, ledger-absent, or missing root .agent/START_HERE.md
-  selected MyCozyIsland as eligible fallback follow-up target for host-proof implementation wire-map docs
+  found no checked non-Cavalry repo that was fully new, ledger-absent, undocumented, or missing root .agent/START_HERE.md
+  selected MyCozyIsland as eligible fallback follow-up target for route-token and host-proof fixture docs
 
 source inspection:
-  read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-3
-  read src/main-cloudform.js import/host excerpt
+  read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
+  read package.json and confirmed the only script is npm run start -> python3 -m http.server 8080
+  read README.md and confirmed the listed local domain kits
+  read src/main-cloudform.js import/composition/frame/host excerpts
   read .agent/START_HERE.md
   read .agent/current-audit.md
   read .agent/known-gaps.md
   read .agent/next-steps.md
   read .agent/validation.md
-  read .agent/host-proof-audit/acceptance-ledger.md
   read .agent/kit-registry.json
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes on main:
-  created .agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md
-  created .agent/architecture-audit/2026-07-08T08-58-57-04-00-host-proof-dsk-breakdown.md
-  created .agent/render-audit/2026-07-08T08-58-57-04-00-render-host-proof-readback.md
-  created .agent/trackers/2026-07-08T08-58-57-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T08-58-57-04-00.md
+  created .agent/architecture-audit/2026-07-08T10-28-44-04-00-route-host-proof-dsk-breakdown.md
+  created .agent/render-audit/2026-07-08T10-28-44-04-00-render-route-token-readback.md
+  created .agent/interaction-audit/2026-07-08T10-28-44-04-00-action-movement-proof-map.md
+  created .agent/host-proof-audit/2026-07-08T10-28-44-04-00-route-version-authority-sync.md
+  created .agent/trackers/2026-07-08T10-28-44-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T10-28-44-04-00.md
   updated .agent/START_HERE.md
   updated .agent/current-audit.md
   updated .agent/known-gaps.md
@@ -39,7 +41,7 @@ repo writes on main:
   updated .agent/validation.md
   updated .agent/kit-registry.json
   updated central repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created central internal-change-log/2026-07-08T08-58-57-04-00-my-cozy-island-host-proof-wire-map.md
+  created central internal-change-log/2026-07-08T10-28-44-04-00-my-cozy-island-route-version-sync.md
 ```
 
 ## Runtime validation not performed
@@ -77,49 +79,55 @@ http://localhost:8080/
 Add a DOM-free fixture script that imports the host-proof/result modules once they exist and verifies:
 
 ```txt
-cozy-route-version-001
-  route version resolves to hero-cloud-3
+cozy-route-version-001:
+  route version resolves to hero-cloud-4
 
-cozy-source-profile-001
-  source profile exposes fixed island/floor/cloud/movement/rail assumptions
+cozy-route-version-mismatch-001:
+  hero-cloud-3 is rejected as stale unless index.html intentionally rolls back
 
-cozy-source-fingerprint-001
+cozy-route-version-missing-001:
+  missing query token is rejected with missing-version-token
+
+cozy-source-profile-001:
+  source profile exposes fixed route/island/floor/cloud/movement/rail assumptions
+
+cozy-source-fingerprint-001:
   source fingerprint is deterministic
 
-cozy-scene-source-001
+cozy-scene-source-001:
   scene source snapshot is stable for fixed seeds
 
-cozy-wheel-action-001
+cozy-wheel-action-001:
   wheel action changes rail progress through an ActionResult
 
-cozy-pointer-action-001
+cozy-pointer-action-001:
   pointer drag action changes yaw/look state through an ActionResult
 
-cozy-keyboard-before-fp-001
+cozy-keyboard-before-fp-001:
   keyboard move before first-person threshold rejects with locked-before-first-person
 
-cozy-keyboard-clearing-001
+cozy-keyboard-clearing-001:
   movement inside the clearing accepts
 
-cozy-keyboard-boundary-001
+cozy-keyboard-boundary-001:
   movement outside the clearing rejects with clearing-boundary
 
-cozy-keyboard-campfire-001
+cozy-keyboard-campfire-001:
   campfire keepout rejection has a distinct campfire-keepout reason
 
-cozy-camera-rail-001
+cozy-camera-rail-001:
   camera rail snapshots are deterministic for fixed progress samples
 
-cozy-cloud-descriptor-001
+cozy-cloud-descriptor-001:
   hero cloud descriptor snapshot is stable
 
-cozy-cloud-cache-001
+cozy-cloud-cache-001:
   hero cloud cache snapshot reports stable geometry and point counts
 
-cozy-cloud-drift-001
+cozy-cloud-drift-001:
   cloud drift result is deterministic for fixed dt/tick input
 
-cozy-host-snapshot-001
+cozy-host-snapshot-001:
   additive globalThis.CozyIslandHost exposes proof state
   globalThis.CozyIsland remains compatible and is not required by fixture tests
 ```
@@ -129,5 +137,5 @@ cozy-host-snapshot-001
 Stop after the host-proof fixture can run without opening a browser and after the current public route still loads through:
 
 ```txt
-index.html -> ./src/main-cloudform.js?v=hero-cloud-3
+index.html -> ./src/main-cloudform.js?v=hero-cloud-4
 ```

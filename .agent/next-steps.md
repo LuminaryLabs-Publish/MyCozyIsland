@@ -2,17 +2,17 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T14-58-49-04-00`
+**Updated:** `2026-07-08T17-00-36-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
 ```
 
 ## Goal
 
-Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules and a clear browser-consumer splice order for route/source/action/movement/rail/cloud/render/host state.
+Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules, exact source-file boundaries, fixture rows, and a safe browser-consumer splice order for route/source/action/movement/rail/grass/cloud/render/host state.
 
 The implementation should make `hero-cloud-4` an explicit accepted route result and expose an additive `globalThis.CozyIslandHost` surface only after fixtures pass.
 
@@ -26,7 +26,7 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add `src/host-proof/source-profile.js`.
 - [ ] Add `SourceProfile` for route token, island, floor, grass, wind, clearing, campfire, smoke, cloud, movement, and rail assumptions.
 - [ ] Add `src/host-proof/source-fingerprint.js`.
-- [ ] Add deterministic `SourceFingerprint` generation.
+- [ ] Add deterministic `SourceFingerprint` generation from serializable source facts only.
 - [ ] Add `src/host-proof/scene-source-snapshot.js`.
 - [ ] Add `SceneSourceSnapshot` for descriptor outputs only, not Three.js meshes.
 - [ ] Add `src/host-proof/action-frame.js`.
@@ -37,6 +37,8 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add distinct movement reasons for locked-before-first-person, no-movement-input, clearing-boundary, and campfire-keepout.
 - [ ] Add `src/host-proof/camera-rail-snapshot.js`.
 - [ ] Add deterministic `CameraRailSnapshot` rows for fixed progress samples.
+- [ ] Add `src/host-proof/grass-instance-snapshot.js`.
+- [ ] Add `GrassInstanceSnapshot` and grass placement readback for count, seed, exclusion policy, and instance matrix-intent facts.
 - [ ] Add `src/host-proof/hero-cloud-snapshot.js`.
 - [ ] Add `HeroCloudDescriptorSnapshot` and `HeroCloudCacheSnapshot`.
 - [ ] Add `src/host-proof/cloud-drift-result.js`.
@@ -44,11 +46,11 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add `src/host-proof/host-snapshot.js`.
 - [ ] Add `RenderHostSnapshot` and `CozyIslandHostSnapshot` projection helpers.
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
-- [ ] Add fixture rows for route, source, action, movement, rail, cloud, render, host, and compatibility records.
+- [ ] Add fixture rows for route, source, action, movement, rail, grass, cloud, render, host, and compatibility records.
 - [ ] Run the host-proof fixture without DOM, canvas, Three.js, browser, or static server.
 - [ ] Add package script only after the fixture exists.
 - [ ] Import proven host-proof helpers into `src/main-cloudform.js`.
-- [ ] Splice helper calls beside current descriptor creation, event handlers, rail, movement, cloud drift, render, and global exports.
+- [ ] Splice helper calls beside current descriptor creation, event handlers, rail, movement, grass, cloud drift, render, and global exports.
 - [ ] Expose `globalThis.CozyIslandHost` without changing `globalThis.CozyIsland`.
 - [ ] Update validation with exact command output.
 
@@ -77,6 +79,9 @@ my-cozy-island-host-proof
 ├─ camera-rail-authority
 │  ├─ cozy-rail-state-kit
 │  └─ cozy-camera-rail-snapshot-kit
+├─ grass-authority
+│  ├─ cozy-grass-source-readback-kit
+│  └─ cozy-grass-instance-snapshot-kit
 ├─ cloud-authority
 │  ├─ cozy-hero-cloud-descriptor-snapshot-kit
 │  ├─ cozy-hero-cloud-cache-snapshot-kit
@@ -103,6 +108,7 @@ src/host-proof/
 ├─ action-result.js
 ├─ movement-policy-result.js
 ├─ camera-rail-snapshot.js
+├─ grass-instance-snapshot.js
 ├─ hero-cloud-snapshot.js
 ├─ cloud-drift-result.js
 ├─ host-snapshot.js
@@ -118,10 +124,11 @@ src/host-proof/
 4. Wrap wheel/pointer/key/frame actions with ActionFrame / ActionResult records.
 5. Wrap valid(next) and fp(dt) with MovementPolicyResult records.
 6. Project CameraRailSnapshot records from rail().
-7. Project HeroCloudDescriptorSnapshot and HeroCloudCacheSnapshot after heroCloudGroup(contract).
-8. Project CloudDriftResult during frame(now) without changing drift math.
-9. Project RenderHostSnapshot from renderer, camera, scene, and count facts.
-10. Expose globalThis.CozyIslandHost.getState() additively.
+7. Project GrassInstanceSnapshot after grass placement and after grassMesh(grass).
+8. Project HeroCloudDescriptorSnapshot and HeroCloudCacheSnapshot after heroCloudGroup(contract).
+9. Project CloudDriftResult during frame(now) without changing drift math.
+10. Project RenderHostSnapshot from renderer, camera, scene, and count facts.
+11. Expose globalThis.CozyIslandHost.getState() additively.
 ```
 
 ## Required fixture rows
@@ -142,6 +149,8 @@ cozy-keyboard-clearing-accepted-001
 cozy-keyboard-clearing-boundary-rejected-001
 cozy-keyboard-campfire-keepout-rejected-001
 cozy-camera-rail-samples-001
+cozy-grass-placement-source-001
+cozy-grass-instance-snapshot-001
 cozy-cloud-descriptor-001
 cozy-cloud-cache-001
 cozy-cloud-cache-reuse-001

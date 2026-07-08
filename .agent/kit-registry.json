@@ -1,153 +1,103 @@
 {
-  "schemaVersion": 7,
-  "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-08T01:00:43-04:00",
-  "latestTracker": ".agent/trackers/2026-07-08T01-00-43-04-00/project-breakdown.md",
+  "schemaVersion": 8,
+  "repository": "LuminaryLabs-Publish/MyCozyIsland",
+  "lastUpdated": "2026-07-08T02:09:17-04:00",
+  "latestTracker": ".agent/trackers/2026-07-08T02-09-17-04-00/project-breakdown.md",
   "selectedNextSlice": "MyCozyIsland Cloudform Route Version Authority + Host Action Fixture Gate",
   "selection": {
-    "reason": "Oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
+    "reason": "Root publish .agent/START_HERE.md was missing even though the central ledger already documented MyCozyIsland.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
-    "checkedTimestamps": {
-      "MyCozyIsland": "2026-07-07T23:31:44-04:00",
-      "IntoTheMeadow": "2026-07-07T23:40:40-04:00",
-      "ZombieOrchard": "2026-07-07T23:48:44-04:00",
-      "HorrorCorridor": "2026-07-08T00:00:20-04:00",
-      "TheUnmappedHouse": "2026-07-08T00:08:03-04:00",
-      "TheOpenAbove": "2026-07-08T00:21:15-04:00",
-      "AetherVale": "2026-07-08T00:28:42-04:00",
-      "PhantomCommand": "2026-07-08T00:41:39-04:00",
-      "PrehistoricRush": "2026-07-08T00:49:44-04:00"
-    },
-    "accessiblePublishReposChecked": {
-      "LuminaryLabs-Publish/AetherVale": { "visibility": "private", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/HorrorCorridor": { "visibility": "public", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/IntoTheMeadow": { "visibility": "public", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/MyCozyIsland": { "visibility": "public", "defaultBranch": "main", "selected": true },
-      "LuminaryLabs-Publish/PhantomCommand": { "visibility": "public", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/PrehistoricRush": { "visibility": "public", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/TheCavalryOfRome": { "visibility": "public", "defaultBranch": "main", "excluded": true },
-      "LuminaryLabs-Publish/TheOpenAbove": { "visibility": "public", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/TheUnmappedHouse": { "visibility": "private", "defaultBranch": "main" },
-      "LuminaryLabs-Publish/ZombieOrchard": { "visibility": "public", "defaultBranch": "main" }
-    }
+    "selectionRule": "Compare the full LuminaryLabs-Publish repo list against LuminaryLabs-Dev/LuminaryLabs tracking and prioritize new, ledger-absent, undocumented, or missing-.agent repos before oldest eligible repo selection."
   },
   "activeRoute": {
     "html": "index.html",
     "canvas": "#game",
     "loader": "#cloud-loader",
     "errorPanel": "#error",
-    "entryScript": "./src/main-cloudform.js?v=hero-cloud-3",
-    "previousDocumentedEntryScript": "./src/main-cloudform.js?v=hero-cloud-2",
-    "legacyReferenceScript": "./src/main.js",
-    "routeCorrection": "index.html now loads ./src/main-cloudform.js?v=hero-cloud-3. The previous .agent pass still documented hero-cloud-2."
+    "entryScript": "./src/main-cloudform.js?v=hero-cloud-3"
   },
-  "interactionLoop": {
-    "currentBoot": [
-      "index.html mounts canvas, loader, and error panel",
-      "module route loads ./src/main-cloudform.js?v=hero-cloud-3",
-      "main-cloudform imports Three.js 0.160.0 from CDN and local domain kits",
-      "main() creates landform, ocean floor, foliage, grass, clearing, campfire, smoke, and hero cloud source contracts",
-      "runtime adapts source contracts into Three.js meshes and groups",
-      "frame loop animates campfire, smoke, cloud drift, camera rail, and first-person movement"
-    ],
-    "currentPlayer": [
-      "start at sky/island view",
-      "wheel scroll advances camera rail progress",
-      "pointer drag changes look/yaw",
-      "camera moves toward island and into clearing",
-      "keyboard movement activates after firstPersonThreshold",
-      "movement is silently accepted or rejected by clearing/campfire boolean policy",
-      "hero cloud drifts every frame",
-      "legacy globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress"
-    ],
-    "targetAuthority": [
-      "active route descriptor resolves hero-cloud-3",
-      "SourceProfile captures seeds, counts, radii, thresholds, dimensions, and route query token",
-      "SourceFingerprint records deterministic source identity",
-      "ActionFrame normalizes wheel, pointer, key, frame, host, and fixture actions",
-      "ActionResult records accepted, rejected, or unchanged outcomes with stable reasons",
-      "MovementPolicyResult splits outside-clearing and campfire-keepout rejection",
-      "RailSnapshot exposes progress, eased phase, camera, look target, and first-person gate",
-      "HeroCloudDescriptorSnapshot and HeroCloudCacheSnapshot expose replayable cloud facts",
-      "CloudDriftResult records deterministic drift application",
-      "globalThis.CozyIslandHost exposes diagnostics and fixture replay without replacing globalThis.CozyIsland"
-    ]
-  },
-  "domainFamilies": [
-    "static-browser-shell",
-    "module-entry-route",
-    "active-route-version-authority",
-    "route-query-token-authority",
-    "three-cdn-runtime",
-    "renderer-host",
-    "scene-source-authority",
-    "source-profile-authority",
-    "source-fingerprint-authority",
-    "source-snapshot-authority",
-    "island-landform-source",
-    "heightfield-sampling",
-    "mask-sampling",
-    "shoreline-contract",
-    "terrain-render-adapter",
-    "ocean-floor-source",
-    "ocean-floor-heightfield",
-    "ocean-floor-object-placement",
-    "water-plane-render",
-    "shoreline-foam-render",
-    "path-network-source",
-    "path-segment-rendering",
-    "foliage-object-graph",
-    "object-exclusion-policy",
-    "grass-placement-contract",
-    "grass-static-batch-descriptor",
-    "grass-wind-descriptor",
-    "fenced-clearing-source",
-    "player-avatar-anchor",
-    "clearing-collision-boundary",
-    "clearing-boundary-policy",
-    "campfire-keepout-policy",
-    "campfire-object-graph",
-    "campfire-render-graph",
-    "smoke-particle-descriptor",
-    "smoke-particle-runtime",
-    "mattatz-cloud-source-contract",
-    "cozy-hero-cloud-form-source",
-    "cozy-hero-cloud-layer-source",
-    "cozy-hero-cloud-render-contract",
-    "hero-cloud-point-cache",
-    "hero-cloud-cache-snapshot",
-    "hero-cloud-drift-runtime",
-    "scroll-progress-state",
-    "camera-rail-sample-curve",
-    "camera-rail-snapshot",
-    "pointer-look-state",
-    "keyboard-input-state",
-    "first-person-threshold-gate",
-    "first-person-movement-policy",
-    "legacy-global-cozy-island",
-    "cozy-island-host-next",
-    "host-state-contract",
-    "diagnostics-snapshot",
-    "action-frame-contract",
-    "action-result-contract",
-    "action-journal",
-    "input-journal",
-    "fixture-script",
-    "replay-parity-smoke"
-  ],
-  "currentExplicitKits": [
-    "ocean-island-landform-domain",
-    "island-foliage-domain",
-    "ocean-floor-domain",
-    "grass-object-domain",
-    "grass-wind-domain",
-    "campfire-object-domain",
-    "smoke-particle-domain",
-    "fenced-clearing-domain",
-    "mattatz-clouds-domain",
-    "cozy-hero-cloud-form-kit"
+  "implementedLocalKits": [
+    {
+      "name": "ocean-island-landform-domain",
+      "path": "src/kits/ocean-island-landform-domain/index.js",
+      "services": [
+        "createOceanIslandLandformState",
+        "sampleIslandHeight",
+        "sampleIslandMasks",
+        "createOceanIslandLandformRenderContract"
+      ]
+    },
+    {
+      "name": "island-foliage-domain",
+      "path": "src/kits/island-foliage-domain/index.js",
+      "services": [
+        "createIslandPathNetwork",
+        "createDenseCozyIslandObjectGraph",
+        "createDenseCozyIslandRenderContract"
+      ]
+    },
+    {
+      "name": "ocean-floor-domain",
+      "path": "src/kits/ocean-floor-domain/index.js",
+      "services": [
+        "createOceanFloorState",
+        "createOceanFloorRenderContract"
+      ]
+    },
+    {
+      "name": "grass-object-domain",
+      "path": "src/kits/grass-object-domain/index.js",
+      "services": [
+        "createGrassPatchPlacementContract"
+      ]
+    },
+    {
+      "name": "grass-wind-domain",
+      "path": "src/kits/grass-wind-domain/index.js",
+      "services": [
+        "createGrassWindDescriptor"
+      ]
+    },
+    {
+      "name": "campfire-object-domain",
+      "path": "src/kits/campfire-object-domain/index.js",
+      "services": [
+        "createCampfireObjectGraph"
+      ]
+    },
+    {
+      "name": "smoke-particle-domain",
+      "path": "src/kits/smoke-particle-domain/index.js",
+      "services": [
+        "createSmokeParticleDescriptor"
+      ]
+    },
+    {
+      "name": "fenced-clearing-domain",
+      "path": "src/kits/fenced-clearing-domain/index.js",
+      "services": [
+        "createFencedClearingGraph"
+      ]
+    },
+    {
+      "name": "mattatz-clouds-domain",
+      "path": "src/kits/mattatz-clouds-domain/index.js",
+      "services": [
+        "createMattatzCloudsState",
+        "createMattatzCloudRenderContract"
+      ]
+    },
+    {
+      "name": "cozy-hero-cloud-form-kit",
+      "path": "src/kits/cozy-hero-cloud-form-kit/index.js",
+      "services": [
+        "create readable hero cloud form descriptor",
+        "keep cloud outside camera corridor",
+        "handoff cached point-cloud puff descriptor intent"
+      ]
+    }
   ],
   "runtimeImpliedKits": [
     "cozy-static-shell-kit",
@@ -199,182 +149,5 @@
     "cozy-fixture-script-runner-kit",
     "cozy-replay-parity-smoke-kit"
   ],
-  "deferredKits": [
-    "cozy-render-extraction-kit",
-    "cozy-pointer-lock-kit",
-    "cozy-touch-controls-kit",
-    "cozy-save-load-kit",
-    "cozy-ocean-shader-upgrade-kit",
-    "cozy-grass-fidelity-rebuild-kit",
-    "cozy-performance-budget-kit",
-    "cozy-pages-health-kit"
-  ],
-  "services": {
-    "currentExplicitKitServices": {
-      "ocean-island-landform-domain": [
-        "createOceanIslandLandformState",
-        "sampleIslandHeight",
-        "sampleIslandMasks",
-        "createOceanIslandLandformRenderContract"
-      ],
-      "island-foliage-domain": [
-        "createIslandPathNetwork",
-        "createDenseCozyIslandObjectGraph",
-        "createDenseCozyIslandRenderContract"
-      ],
-      "ocean-floor-domain": [
-        "createOceanFloorState",
-        "sampleOceanFloorHeight",
-        "createOceanFloorHeightfield",
-        "createOceanFloorObjectPlacements",
-        "createOceanFloorRenderContract"
-      ],
-      "grass-object-domain": [
-        "createGrassPatchPlacementContract",
-        "createGrassPatchBatchDescriptors"
-      ],
-      "grass-wind-domain": [
-        "createGrassWindDescriptor"
-      ],
-      "campfire-object-domain": [
-        "createCampfireObjectGraph",
-        "createCampfireObject"
-      ],
-      "smoke-particle-domain": [
-        "createSmokeParticleDescriptor"
-      ],
-      "fenced-clearing-domain": [
-        "createFencedClearingGraph"
-      ],
-      "cozy-hero-cloud-form-kit": [
-        "createCozyHeroCloudFormDescriptor",
-        "createCozyHeroCloudLayerDescriptor",
-        "createCozyHeroCloudRenderContract"
-      ],
-      "mattatz-clouds-domain": [
-        "createMattatzCloudsState",
-        "createMattatzCloudRenderContract"
-      ]
-    },
-    "currentRuntimeAdapters": [
-      "fail",
-      "setLoad",
-      "meshGrid",
-      "terrainMesh",
-      "floorMesh",
-      "waterMesh",
-      "foamMesh",
-      "pathMesh",
-      "objGroup",
-      "fenceGroup",
-      "campfireMesh",
-      "smokeMesh",
-      "updateSmoke",
-      "grassMesh",
-      "rand",
-      "cloudMaterial",
-      "heroCloudGeometry",
-      "heroCloudGroup",
-      "main"
-    ],
-    "neededNextServices": [
-      "resolve active route version from index.html/module URL",
-      "produce SourceProfile constants",
-      "produce SourceFingerprint",
-      "produce SceneSourceSnapshot without renderer object references",
-      "normalize wheel/pointer/key/frame/host/fixture actions",
-      "emit ActionResult accepted/rejected/unchanged records",
-      "split movement rejection into outside_clearing and campfire_keepout",
-      "produce RailSnapshot from current rail sampling",
-      "produce HeroCloudDescriptorSnapshot",
-      "produce HeroCloudCacheSnapshot",
-      "produce deterministic CloudDriftResult",
-      "journal actions, inputs, results, and drift summaries",
-      "expose additive globalThis.CozyIslandHost diagnostics",
-      "run DOM-free fixture scripts and replay parity smoke"
-    ]
-  },
-  "sourceFactsToPreserve": {
-    "activeEntryScript": "./src/main-cloudform.js?v=hero-cloud-3",
-    "previousDocumentedEntryScript": "./src/main-cloudform.js?v=hero-cloud-2",
-    "legacyReferenceScript": "./src/main.js",
-    "threeVersion": "0.160.0",
-    "islandId": "cozy-island-001",
-    "islandSeed": "cozy-island-standalone",
-    "islandRadius": 100,
-    "maxHeight": 18,
-    "beachWidth": 10,
-    "shelfWidth": 36,
-    "heightfieldResolution": 129,
-    "shorelineSegments": 128,
-    "clearingFenceRadiusMeters": 12,
-    "clearingCampfireRadiusMeters": 2.25,
-    "campfireGraphRadiusMeters": 1.45,
-    "campfireKeepoutRadiusMeters": 2.35,
-    "oceanFloorSize": 3600,
-    "oceanFloorResolution": 53,
-    "oceanBaseDepth": -128,
-    "oceanShelfDepth": -16,
-    "grassSeed": "cozy-island-grass",
-    "grassPatchCount": 140,
-    "cloudSeed": "cozy-island-clouds",
-    "cloudFocus": "cozy-hero-cloud-form-kit",
-    "cloudCount": 1,
-    "heroCloudId": "cozy-hero-cloud-main",
-    "heroCloudLayerId": "cozy-hero-cloud-layer",
-    "heroCloudPointCount": 420,
-    "heroCloudLobeCount": 7,
-    "heroCloudPosition": { "x": 0, "y": 132, "z": -26 },
-    "heroCloudScale": { "x": 360, "y": 118, "z": 260 },
-    "heroCloudDrift": { "x": 0.32, "z": 0.05 },
-    "heroCloudDriftSpeed": 0.012,
-    "firstPersonThreshold": 0.985,
-    "movementSpeedMetersPerSecond": 2.6,
-    "pointerYawFirstPersonScale": 0.0025,
-    "pointerYawRailScale": 0.0045,
-    "wheelScrollScale": -0.0014
-  },
-  "activeBlockers": [
-    "index.html now points to ./src/main-cloudform.js?v=hero-cloud-3, while previous docs still recorded hero-cloud-2.",
-    "main-cloudform.js is compacted heavily, making source seams hard to audit and patch safely.",
-    "Route version and query token are not represented as first-class source authority.",
-    "Source construction is deterministic but has no SourceProfile or SourceFingerprint service.",
-    "DOM wheel/pointer/key events mutate runtime state directly.",
-    "valid(next) returns boolean and collapses outside-clearing and campfire-keepout reasons.",
-    "First-person movement silently ignores rejected movement.",
-    "Rail sampling does not expose serializable RailSnapshot data.",
-    "Hero cloud cache has no descriptor snapshot, attribute range snapshot, or cache fingerprint.",
-    "Hero cloud drift is frame-mutation only and has no CloudDriftResult.",
-    "globalThis.CozyIsland has no diagnostics, fixture runner, or replay parity surface."
-  ],
-  "fixtureMatrixNext": [
-    "active route version reports hero-cloud-3",
-    "source fingerprint stable across two builds",
-    "scene source snapshot excludes renderer object references",
-    "hero cloud descriptor shape stable",
-    "hero cloud cache snapshot stable",
-    "scroll accepted and clamped",
-    "pointer action gated before first person",
-    "rail phase snapshot stable",
-    "first-person movement rejected before threshold",
-    "clearing boundary rejection returns outside_clearing",
-    "campfire keepout rejection returns campfire_keepout",
-    "movement acceptance updates host player pose",
-    "cloud drift replay matches fixture delta",
-    "action journal parity stable across replay"
-  ],
-  "acceptanceTarget": [
-    "No visual regression to the current cloudform scene.",
-    "globalThis.CozyIsland remains backward-compatible.",
-    "globalThis.CozyIslandHost is additive.",
-    "Route version snapshot reports hero-cloud-3.",
-    "Source, rail, movement, cloud descriptor, cloud cache, and drift snapshots are serializable.",
-    "DOM-free smoke proves accepted, rejected, unchanged, and replay parity cases."
-  ],
-  "validation": {
-    "runtimeSourceChanged": false,
-    "localBuildRun": false,
-    "localSmokeRun": false,
-    "note": "Documentation and central tracking update only."
-  }
+  "nextSafeLedge": "Add additive host/action/fixture proof without changing the public route or visible scene."
 }

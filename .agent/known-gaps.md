@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T14-39-38-04-00`
+**Updated:** `2026-07-08T14-58-49-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible fallback in this run.
+MyCozyIsland was selected because central tracking lagged behind repo-local .agent state and because the host-proof consumer splice remains unresolved.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -82,6 +82,18 @@ Scene object counts are not exposed.
 Grass instance count, smoke particle count, cloud point count, and cached geometry counts are not summarized.
 globalThis.CozyIslandHost does not exist yet.
 globalThis.CozyIsland remains compatibility-only and does not carry proof records.
+```
+
+## Consumer splice gaps
+
+```txt
+No pure-to-browser splice order exists in source yet.
+src/main-cloudform.js does not import host-proof helpers.
+src/main-cloudform.js does not build source snapshots from descriptors.
+Event handlers do not record ActionFrame / ActionResult data.
+valid(next) does not record rejection reasons.
+rail() does not return a stable serializable snapshot.
+frame(now) does not record CloudDriftResult or RenderHostSnapshot.
 ```
 
 ## Concrete missing files for next implementation

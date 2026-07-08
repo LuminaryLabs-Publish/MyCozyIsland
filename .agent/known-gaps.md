@@ -2,40 +2,47 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T02:09:17-04:00`
+**Updated:** `2026-07-08T04:10:24-04:00`
 
-## Highest-priority gaps
+## Repo-selection gap status
 
 ```txt
 1. Root .agent state was missing in the publish repo.
-   Fixed by this documentation pass.
+   Fixed in the 2026-07-08T02:09:17-04:00 documentation pass.
 
 2. Central ledger already referenced .agent paths before the publish repo had them.
-   This is now corrected by materializing the root .agent state.
+   Corrected by materializing the root .agent state and central ledger entry.
 
-3. src/main-cloudform.js is still the dominant host/composition/runtime file.
+3. This follow-up found no checked non-Cavalry Publish repo that was fully new, central-ledger-absent, or missing root .agent/START_HERE.md state.
+   MyCozyIsland is now being tracked as an oldest eligible follow-up target rather than a missing-root-agent emergency.
+```
+
+## Highest-priority product gaps
+
+```txt
+1. src/main-cloudform.js is still the dominant host/composition/runtime file.
    It owns source construction, renderer construction, DOM input, animation, cloud cache, movement policy, and diagnostics.
 
-4. There is no explicit active route version authority.
+2. There is no explicit active route version authority.
    index.html uses ?v=hero-cloud-3, but the runtime does not expose that as a first-class descriptor/result.
 
-5. There is no DOM-free action result fixture gate.
+3. There is no DOM-free action result fixture gate.
    Movement acceptance/rejection and camera rail behavior are visible at runtime but not yet replayed through a fixture script.
 
-6. There is no first-class ActionFrame -> ActionResult contract.
-   Pointer, wheel, and keyboard input are handled inline rather than normalized as command frames.
+4. There is no first-class ActionFrame -> ActionResult contract.
+   Pointer, wheel, keyboard, and tick input are handled inline rather than normalized as command frames.
 
-7. There is no formal movement rejection reason output.
+5. There is no formal movement rejection reason output.
    Clearing boundary and campfire keepout decisions need explicit result objects.
 
-8. Hero cloud descriptor/cache/drift state is useful but not snapshotted as stable host data.
+6. Hero cloud descriptor/cache/drift state is useful but not snapshotted as stable host data.
    The renderer has cache behavior, but replay/diagnostic parity is not yet formalized.
 
-9. Renderer adapters are local inline functions, not named render-handoff kits.
+7. Renderer adapters are local inline functions, not named render-handoff kits.
    This is acceptable for the current publish app but should be isolated before more visual complexity is added.
 
-10. No GitHub Actions deploy workflow was found during this pass.
-    Pages may still deploy by repository settings, but workflow ownership is not documented in this repo.
+8. No GitHub Actions deploy workflow was found during the earlier root-agent pass.
+   Pages may still deploy by repository settings, but workflow ownership is not documented in this repo.
 ```
 
 ## Visual/render gaps
@@ -59,10 +66,11 @@
 - Input journal is missing.
 - Replay parity smoke is missing.
 - Diagnostics are limited to legacy globalThis.CozyIsland.
+- The planned additive globalThis.CozyIslandHost surface does not exist yet.
 ```
 
 ## Safe interpretation
 
 The repo is not broken by these gaps.
 
-The issue is that the app has moved faster than its operating memory and proof layer. The next pass should add host/action/replay proof without changing the route or visuals.
+The app has moved faster than its operating memory and proof layer. The next pass should add host/action/replay proof without changing the route or visuals.

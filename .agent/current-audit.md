@@ -2,27 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T08:58:57-04:00`
+**Audit timestamp:** `2026-07-08T10-28-44-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
 
-The current visual slice is stable enough that the next high-value pass should not expand art direction. The highest-value seam is still host proof, now narrowed from broad acceptance cases into an implementation wire map: preserve the current route and visible scene while adding pure route/source/action/movement/camera/cloud records and a DOM-free fixture path.
+The current visual slice should stay stable. The highest-value seam is still host proof, but this pass narrowed the first implementation step: route version authority must be synchronized first because `index.html` now loads `./src/main-cloudform.js?v=hero-cloud-4`, while earlier `.agent` docs and `kit-registry.json` still referenced `hero-cloud-3`.
 
 ## Evidence checked
 
 ```txt
 LuminaryLabs-Publish accessible repository list
-LuminaryLabs-Dev/LuminaryLabs repo-ledger search results
+LuminaryLabs-Dev/LuminaryLabs repo-ledger state
 index.html
-src/main-cloudform.js import and host excerpt
+package.json
+README.md
+src/main-cloudform.js import/composition/frame/host excerpts
 .agent/START_HERE.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/host-proof-audit/acceptance-ledger.md
 .agent/kit-registry.json
 LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 ```
@@ -55,14 +56,14 @@ Selected repo:
   LuminaryLabs-Publish/MyCozyIsland
 
 Fallback reason:
-  oldest eligible follow-up with a stable visual route and unresolved host-proof implementation wiring
+  oldest eligible follow-up with stable visual route, unresolved host-proof fixture gate, and stale route-token docs
 ```
 
 ## Current route
 
 ```txt
 index.html
-  -> ./src/main-cloudform.js?v=hero-cloud-3
+  -> ./src/main-cloudform.js?v=hero-cloud-4
 ```
 
 ## Current interaction loop
@@ -79,7 +80,7 @@ static browser route
   -> pointer drag look/yaw
   -> keyboard first-person movement after threshold
   -> movement policy accepts or rejects movement against clearing/campfire rules
-  -> campfire, smoke, hero cloud drift, camera, and movement animate per frame
+  -> campfire, smoke, sea, hero cloud drift, camera, and movement animate per frame
   -> limited globalThis.CozyIsland diagnostics surface
 ```
 
@@ -94,9 +95,9 @@ my-cozy-island
 ├─ route-authority
 │  ├─ active-route-script-token
 │  ├─ main-cloudform-entry
-│  ├─ hero-cloud-3-version-string
+│  ├─ hero-cloud-4-version-string
 │  ├─ missing RouteVersionResult
-│  └─ missing route mismatch reason
+│  └─ missing route mismatch reasons
 ├─ source-authority
 │  ├─ ocean-island-landform-domain
 │  ├─ island-foliage-domain
@@ -194,7 +195,7 @@ mattatz-clouds-domain
 
 cozy-hero-cloud-form-kit
   creates a readable single hero cloud form descriptor
-  hands off point-cloud/lobe/placement intent to the renderer
+  hands off point-cloud/lobe/placement/drift intent to the renderer
 ```
 
 ## Kits identified
@@ -221,6 +222,7 @@ cozy-static-shell-kit
 cozy-cloud-loader-kit
 cozy-error-panel-kit
 cozy-cloudform-entry-kit
+cozy-route-script-token-kit
 cozy-three-render-host-kit
 cozy-scene-composition-kit
 cozy-terrain-render-kit
@@ -248,7 +250,6 @@ Next-cut proof kits:
 
 ```txt
 cozy-active-route-version-kit
-cozy-route-script-token-kit
 cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
@@ -273,12 +274,12 @@ cozy-replay-parity-smoke-kit
 
 ## Current high-value gap
 
-The renderer can stay inline for now. The urgent gap is not a visual rewrite.
+The renderer can stay inline for now. The urgent gap is route and host proof.
 
-The urgent gap is that browser-host facts are not proof facts:
+Browser-host facts are not proof facts yet:
 
 ```txt
-route token -> no RouteVersionResult
+route token -> active source is hero-cloud-4, but no RouteVersionResult exists
 source constants -> no SourceProfile
 composed descriptors -> no SceneSourceSnapshot
 scroll/pointer/keyboard events -> no ActionFrame
@@ -289,18 +290,21 @@ cloud animation -> no CloudDriftResult
 legacy global -> no additive CozyIslandHost proof surface
 ```
 
-## New audit artifact
+## New audit artifacts
 
 ```txt
-.agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md
+.agent/architecture-audit/2026-07-08T10-28-44-04-00-route-host-proof-dsk-breakdown.md
+.agent/render-audit/2026-07-08T10-28-44-04-00-render-route-token-readback.md
+.agent/interaction-audit/2026-07-08T10-28-44-04-00-action-movement-proof-map.md
+.agent/host-proof-audit/2026-07-08T10-28-44-04-00-route-version-authority-sync.md
 ```
 
-This map converts the prior acceptance ledger into exact implementation modules, browser attach points, fixture order, and stop lines.
+These docs convert the prior host-proof plan into a route-token-first source ledge.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Implementation Wire Map
+MyCozyIsland Route Version Authority Sync + Host Proof Fixture Gate
 ```
 
 Keep the current route, visuals, and `globalThis.CozyIsland` compatibility stable.

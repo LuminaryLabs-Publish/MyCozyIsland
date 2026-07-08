@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T17-09-48-04-00`
+**Updated:** `2026-07-08T19-40-00-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected because repo-local .agent state had advanced beyond the central ledger and the host-proof browser splice remains unresolved.
+MyCozyIsland was selected as the oldest eligible fallback by sampled root-agent alignment.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -18,132 +18,105 @@ TheCavalryOfRome remains excluded.
 
 ```txt
 index.html loads ./src/main-cloudform.js?v=hero-cloud-4.
-The route token is not yet returned by a pure RouteVersionResult.
-There is no fixture row for accepted hero-cloud-4.
-There is no fixture row for stale hero-cloud-3 rejection.
-There is no fixture row for missing-token rejection.
+The route token is visible but not projected as RouteVersionResult.
+There is no accepted/rejected route version row.
+There is no source fingerprint that ties the route token to descriptor outputs.
 ```
 
-## Source gaps
+## Source authority gaps
 
 ```txt
-SourceProfile is missing.
-SourceFingerprint is missing.
-SceneSourceSnapshot is missing.
-Seeds, island radius, floor profile, grass count, cloud profile, movement threshold, rail control points, and route token are still implicit runtime facts.
-Source descriptors are created from local kits, but no DOM-free summary proves the descriptor bundle without opening the browser.
+main-cloudform.js creates landform, floor, clearing, foliage, fire, smoke, grass, and cloud descriptors inline in main().
+Descriptor source facts are not summarized as SourceProfile.
+Scene source facts are not summarized as SceneSourceSnapshot.
+No stable source fingerprint exists for same-input replay.
+Local kit outputs are consumed immediately by render adapters, not first journaled as proof data.
 ```
 
-## Interaction gaps
+## Interaction and movement gaps
 
 ```txt
-Wheel, pointer, keyboard, and frame actions are not normalized as ActionFrame records.
-Accepted, rejected, and no-op outcomes are not normalized as ActionResult records.
-Input history is not journaled.
-Action result history is not journaled.
-```
-
-## Movement gaps
-
-```txt
-Keyboard movement is locked until progress >= 0.985, but this is not returned as locked-before-first-person.
-No-input movement is not returned as no-movement-input.
-Clearing-boundary rejection is silent.
-Campfire-keepout rejection is folded into valid(next) and is not distinct.
-MovementPolicyResult, ClearingBoundaryResult, and CampfireKeepoutResult are missing.
+wheel input mutates progress directly.
+pointer drag mutates yaw/pitch directly.
+keyboard input mutates player movement directly after progress >= 0.985.
+valid(next) returns boolean only.
+movement rejection has no stable reason for outside-clearing or campfire-keepout rejection.
+no ActionFrame / ActionResult / InputJournal exists.
 ```
 
 ## Camera rail gaps
 
 ```txt
-rail() samples camera position/look directly from runtime state.
-No CameraRailSnapshot exists for fixed progress values.
-No fixture rows prove progress 0, 0.25, 0.5, 0.85, 0.985, and 1.0.
-No rail readback is exposed through a host snapshot.
+rail() returns position/look but not CameraRailSnapshot.
+first-person threshold behavior is not represented as a fixture-readable gate result.
+current camera path cannot be replayed without Three.js runtime objects.
 ```
 
-## Grass-system gaps
+## Grass gaps
 
 ```txt
-createGrassPatchPlacementContract returns placement data, and grassMesh turns it into an InstancedMesh.
-The grass count is visible in source as 140 but not exposed as a stable GrassInstanceSnapshot.
-There is no fixture row proving grass seed, exclusion policy, placement count, or instance render intent.
-There is no host readback field for grass patches, instance count, or excluded clearing/campfire zones.
+grass placement contract is consumed by grassMesh() but not summarized as GrassInstanceSnapshot.
+instanced mesh count is not compared against placement.patches.length in a fixture.
+grass wind descriptor exists but does not yet participate in host proof readback.
 ```
 
-## Cloud-system gaps
+## Hero-cloud gaps
 
 ```txt
-HeroCloudDescriptorSnapshot is missing.
-HeroCloudCacheSnapshot is missing.
-CloudDriftResult is missing.
-The cloudCache Map is private to src/main-cloudform.js.
-Per-frame cloud drift mutates Three.js point objects directly.
-legacy globalThis.CozyIsland.cloudPointCache exposes geometry references, not stable summaries.
+cloudCache is an internal Map without stable host-facing summary.
+heroCloudGeometry caches geometry by cloud id but no HeroCloudCacheSnapshot exists.
+heroCloudGroup stores savedPointClouds but legacy host only exposes raw cache data.
+frame() mutates cloud drift without CloudDriftResult records.
+cloud point count, geometry reuse, drift deltas, and saved point-cloud counts need DOM-free fixture rows.
 ```
 
-## Render/host gaps
+## Render and host gaps
 
 ```txt
-RenderHostSnapshot is missing.
-Renderer adapters are inline and not summarized.
-Scene object counts are not exposed.
-Grass instance count, smoke particle count, cloud point count, and cached geometry counts are not summarized.
-globalThis.CozyIslandHost does not exist yet.
-globalThis.CozyIsland remains compatibility-only and does not carry proof records.
+renderer, scene, camera, water, flame, smoke, clouds, and render calls are inline.
+render host state is not summarized as RenderHostSnapshot.
+globalThis.CozyIsland exists but only exposes cloudContract, cloudPointCache, and getScrollProgress.
+no additive globalThis.CozyIslandHost.getState() exists yet.
+no BrowserConsumerFixture exists to prove legacy compatibility plus new host proof.
 ```
 
-## Consumer splice gaps
+## Kit gaps
 
 ```txt
-No pure-to-browser splice order exists in source yet.
-src/main-cloudform.js does not import host-proof helpers.
-src/main-cloudform.js does not build source snapshots from descriptors.
-Event handlers do not record ActionFrame / ActionResult data.
-valid(next) does not record rejection reasons.
-rail() does not return a stable serializable snapshot.
-grassMesh(grass) does not emit GrassInstanceSnapshot.
-frame(now) does not record CloudDriftResult or RenderHostSnapshot.
+cozy-route-version-result-kit is not materialized.
+cozy-source-profile-kit is not materialized.
+cozy-scene-source-snapshot-kit is not materialized.
+cozy-action-frame-contract-kit is not materialized.
+cozy-action-result-contract-kit is not materialized.
+cozy-input-journal-kit is not materialized.
+cozy-movement-policy-result-kit is not materialized.
+cozy-camera-rail-snapshot-kit is not materialized.
+cozy-grass-instance-snapshot-kit is not materialized.
+cozy-hero-cloud-cache-snapshot-kit is not materialized.
+cozy-cloud-drift-result-kit is not materialized.
+cozy-render-host-snapshot-kit is not materialized.
+cozy-host-snapshot-kit is not materialized.
+cozy-browser-consumer-fixture-kit is not materialized.
 ```
 
-## Central tracking gaps
+## Documentation gaps fixed by this pass
 
 ```txt
-central repo ledger must be updated in the same pass as repo-local .agent state
-internal change log must point at the same tracker and turn ledger as START_HERE
-kit-registry.json must not lag START_HERE.md
+.agent/START_HERE.md refreshed
+.agent/current-audit.md refreshed
+.agent/known-gaps.md refreshed
+.agent/next-steps.md refreshed
+.agent/validation.md refreshed
+.agent/kit-registry.json refreshed
+.agent/architecture-audit/2026-07-08T19-40-00-04-00-host-proof-browser-consumer-dsk-map.md added
+.agent/render-audit/2026-07-08T19-40-00-04-00-render-host-consumer-readback.md added
+.agent/interaction-audit/2026-07-08T19-40-00-04-00-action-movement-browser-consumer-map.md added
+.agent/cloud-system-audit/2026-07-08T19-40-00-04-00-hero-cloud-cache-drift-consumer-map.md added
+.agent/grass-system-audit/2026-07-08T19-40-00-04-00-grass-instance-host-readback-map.md added
+.agent/host-proof-audit/2026-07-08T19-40-00-04-00-browser-consumer-fixture-manifest.md added
+.agent/deploy-audit/2026-07-08T19-40-00-04-00-static-route-validation-map.md added
+.agent/trackers/2026-07-08T19-40-00-04-00/project-breakdown.md added
+.agent/turn-ledger/2026-07-08T19-40-00-04-00.md added
+central repo ledger refreshed
+central internal change log added
 ```
-
-## Concrete missing files for next implementation
-
-```txt
-src/host-proof/route-version.js
-src/host-proof/source-profile.js
-src/host-proof/source-fingerprint.js
-src/host-proof/scene-source-snapshot.js
-src/host-proof/action-frame.js
-src/host-proof/action-result.js
-src/host-proof/movement-policy-result.js
-src/host-proof/camera-rail-snapshot.js
-src/host-proof/grass-instance-snapshot.js
-src/host-proof/hero-cloud-snapshot.js
-src/host-proof/cloud-drift-result.js
-src/host-proof/host-snapshot.js
-src/host-proof/fixture-cases.mjs
-```
-
-## Validation gaps
-
-```txt
-No runtime validation was run during this documentation-only pass.
-No local static server was started.
-No package test was run.
-No browser route check was run.
-No DOM-free fixture was run because host-proof modules do not exist yet.
-```
-
-## Safe interpretation
-
-The repo is not broken by these gaps.
-
-The active route is `hero-cloud-4`; the next implementation should make that route and host runtime state fixture-readable before adding visual upgrades or promoting shared kits.

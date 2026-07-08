@@ -2,19 +2,21 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T13-11-07-04-00`
+**Updated:** `2026-07-08T14-39-38-04-00`
 
 ## Validation performed in this pass
 
 ```txt
 repo selection:
   listed accessible LuminaryLabs-Publish repos through the GitHub App installation
-  compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking
+  compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and recent central commit ordering
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as oldest observed eligible fallback
+  selected MyCozyIsland as oldest eligible fallback
 
 source inspection:
+  read README.md and confirmed included local domain kits
+  read package.json and confirmed only static-server start script
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
   read src/main-cloudform.js imports, descriptor construction, render adapters, input handlers, rail/movement/cloud/frame loop, and legacy global excerpts
   read .agent/START_HERE.md
@@ -26,13 +28,13 @@ source inspection:
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes on main:
-  created .agent/trackers/2026-07-08T13-11-07-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T13-11-07-04-00.md
-  created .agent/architecture-audit/2026-07-08T13-11-07-04-00-host-proof-dsk-breakdown.md
-  created .agent/render-audit/2026-07-08T13-11-07-04-00-render-host-snapshot-readback.md
-  created .agent/interaction-audit/2026-07-08T13-11-07-04-00-action-movement-rail-contract.md
-  created .agent/cloud-system-audit/2026-07-08T13-11-07-04-00-cloud-cache-drift-proof-contract.md
-  created .agent/host-proof-audit/2026-07-08T13-11-07-04-00-fixture-row-contract.md
+  created .agent/trackers/2026-07-08T14-39-38-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T14-39-38-04-00.md
+  created .agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md
+  created .agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md
+  created .agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md
+  created .agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md
+  created .agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md
   updated .agent/START_HERE.md
   updated .agent/current-audit.md
   updated .agent/known-gaps.md
@@ -42,7 +44,7 @@ repo writes on main:
 
 central writes on main:
   updated repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created internal-change-log/2026-07-08T13-11-07-04-00-my-cozy-island-host-proof-fixture-row-contract.md
+  created internal-change-log/2026-07-08T14-39-38-04-00-my-cozy-island-host-wire-contract.md
 ```
 
 ## Runtime validation not performed
@@ -127,7 +129,7 @@ Confirm no console fatal error.
 ## Current validation status
 
 ```txt
-status: documentation-only host-proof fixture-row-contract pass complete
+status: documentation-only host-proof module-boundary pass complete
 runtime confidence: not revalidated in this pass
 branch created: no
 pushed to main: yes

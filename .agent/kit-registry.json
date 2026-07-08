@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-07T19:29:28-04:00",
-  "latestTracker": ".agent/trackers/2026-07-07T19-29-28-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland Action Reducer Host Contract + Cloud Snapshot Fixture Gate",
+  "lastUpdated": "2026-07-07T20:50:10-04:00",
+  "latestTracker": ".agent/trackers/2026-07-07T20-50-10-04-00/project-breakdown.md",
+  "selectedNextSlice": "MyCozyIsland CozyIslandHost Smoke Fixture + Rail Cloud Replay Lock",
   "selection": {
     "reason": "Oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
     "checkedTimestamps": {
-      "MyCozyIsland": "2026-07-07T18:10:03-04:00",
-      "IntoTheMeadow": "2026-07-07T18:19:15-04:00",
-      "ZombieOrchard": "2026-07-07T18:28:54-04:00",
-      "HorrorCorridor": "2026-07-07T18:41:07-04:00",
-      "TheOpenAbove": "2026-07-07T18:49:32-04:00",
-      "AetherVale": "2026-07-07T19:01:37-04:00",
-      "PhantomCommand": "2026-07-07T19:08:52-04:00",
-      "PrehistoricRush": "2026-07-07T19:18:58-04:00"
+      "MyCozyIsland": "2026-07-07T19:29:28-04:00",
+      "IntoTheMeadow": "2026-07-07T19:42:05-04:00",
+      "ZombieOrchard": "2026-07-07T19:51:43-04:00",
+      "HorrorCorridor": "2026-07-07T20:00:46-04:00",
+      "TheOpenAbove": "2026-07-07T20:10:49-04:00",
+      "AetherVale": "2026-07-07T20:21:40-04:00",
+      "PhantomCommand": "2026-07-07T20:31:21-04:00",
+      "PrehistoricRush": "2026-07-07T20:38:27-04:00"
     }
   },
   "currentExplicitKits": [
@@ -169,11 +169,14 @@
     "runtime-frame-loop",
     "ambient-animation-loop",
     "cozy-host-compatibility",
+    "cozy-host-state-contract",
     "cozy-host-snapshot",
     "cozy-host-diagnostics",
     "cozy-action-frame",
+    "cozy-action-batch",
     "cozy-action-result",
     "cozy-action-rejection-reason",
+    "cozy-action-result-journal",
     "cozy-input-journal",
     "cozy-fixture-script",
     "cozy-fixture-smoke",
@@ -208,8 +211,21 @@
     "movementSpeedMetersPerSecond": 2.6,
     "cloudBands": ["low", "low", "high", "high"],
     "cloudLowBaseY": [92, 108],
-    "cloudHighBaseY": [255, 285]
+    "cloudHighBaseY": [255, 285],
+    "railCameraDistances": [520, 260, 95, 12, 3.2, "eye"],
+    "railCameraHeights": [155, 105, 42, 7, 2.2, "eyeHeight"],
+    "pointerYawFirstPersonScale": 0.0025,
+    "pointerYawRailScale": 0.0045,
+    "wheelScrollScale": -0.0014
   },
+  "activeBlockers": [
+    "DOM input mutates scrollProgress, drag state, and keys directly.",
+    "firstPerson(dt) mutates player pose and silently ignores rejected movement.",
+    "valid(next) returns boolean only and collapses outside-clearing and campfire-keepout reasons.",
+    "railPose() does not expose phase, control-point, or look-target snapshots.",
+    "cloudGeometry() caches generated BufferGeometry but does not expose stable descriptor, bounds, or fingerprint facts.",
+    "globalThis.CozyIsland exposes source objects but not a stable host state, diagnostics surface, action journal, fixture runner, or replay surface."
+  ],
   "services": {
     "current": [
       "main.fail",

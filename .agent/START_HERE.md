@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T06:01:57-04:00`
+**Last aligned:** `2026-07-08T07:30:30-04:00`
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The full accessible `LuminaryLabs-Publish` repo list was compared against the ce
 
 No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, or missing root `.agent/START_HERE.md` state.
 
-`MyCozyIsland` was selected as a follow-up target because its route and visual composition are stable, its source descriptor kits are clear, and the remaining next-safe implementation seam is now the host-proof fixture matrix.
+`MyCozyIsland` was selected as a fallback follow-up target because the previous docs identified the correct host-proof fixture direction, but the repo-local acceptance target still needed concrete pass/fail contracts and the kit registry was stale relative to the latest `.agent` state.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -44,14 +44,17 @@ The repo vendors its runtime domain kits under `src/kits/` so the public app doe
 .agent/cloud-system-audit/hero-cloud-cache-and-drift.md
 .agent/interaction-audit/host-action-fixture-gate.md
 .agent/host-proof-audit/fixture-matrix.md
-.agent/trackers/2026-07-08T06-01-57-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T06-01-57-04-00.md
+.agent/host-proof-audit/acceptance-ledger.md
+.agent/trackers/2026-07-08T07-30-30-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T07-30-30-04-00.md
 .agent/kit-registry.json
 ```
 
 Earlier breakdown entries:
 
 ```txt
+.agent/trackers/2026-07-08T06-01-57-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T06-01-57-04-00.md
 .agent/trackers/2026-07-08T04-10-24-04-00/project-breakdown.md
 .agent/turn-ledger/2026-07-08T04-10-24-04-00.md
 .agent/trackers/2026-07-08T02-09-17-04-00/project-breakdown.md
@@ -81,12 +84,12 @@ docs/cloud-kits.md
 
 Do not let this publish repo become a generic kit foundry.
 
-The repo should compose and prove the cozy island app. Reusable engine, renderer, cloud, terrain, grass, host, and replay logic should move toward `NexusRealtime-ProtoKits` or `NexusEngine` only after the local proof is stable and documented.
+The repo should compose and prove the cozy island app. Reusable engine, renderer, cloud, terrain, grass, host, and replay logic should move toward `NexusRealtime-ProtoKits` or `NexusEngine` only after the local proof is stable, documented, and covered by fixtures.
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Fixture Matrix
+MyCozyIsland Host Proof Acceptance Fixture Gate
 ```
 
-Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3`, current visuals, and `globalThis.CozyIsland` stable while adding additive route-version, source-profile, source-fingerprint, scene-source-snapshot, ActionFrame, ActionResult, MovementPolicyResult, camera-rail snapshot, hero-cloud snapshot, cloud-cache snapshot, cloud-drift result, `globalThis.CozyIslandHost`, and DOM-free fixture records.
+Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3`, current visuals, and `globalThis.CozyIsland` stable while adding additive host-proof records and DOM-free fixture cases for route version, source profile, source fingerprint, scene source snapshot, action frames/results, movement policy results, camera rail snapshots, hero-cloud descriptor/cache snapshots, cloud drift results, and `globalThis.CozyIslandHost` diagnostics.

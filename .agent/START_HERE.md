@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T14-39-38-04-00`
+**Last aligned:** `2026-07-08T14-58-49-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was found that was fully new, absent from th
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible fallback from recent central repo-ledger update ordering.
+`MyCozyIsland` was selected because the repo-local `14:39` `.agent` handoff was newer than the central ledger, and because the host-proof module boundary now needs an exact browser consumer splice map.
 
 ## Current product read
 
@@ -44,7 +44,8 @@ open route
   -> movement is checked against clearing radius and campfire keepout policy
   -> sea, fire, smoke, clouds, camera, and first-person state animate per frame
   -> renderer draws the scene
-  -> globalThis.CozyIsland exposes limited compatibility state
+  -> globalThis.CozyIsland exposes compatibility state
+  -> target globalThis.CozyIslandHost should expose additive proof records after fixtures pass
 ```
 
 ## First files to read
@@ -54,13 +55,13 @@ open route
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md
-.agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md
-.agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md
-.agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md
-.agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md
-.agent/trackers/2026-07-08T14-39-38-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T14-39-38-04-00.md
+.agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md
+.agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md
+.agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md
+.agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md
+.agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md
+.agent/trackers/2026-07-08T14-58-49-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T14-58-49-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -89,18 +90,22 @@ Keep the visible route and current visuals stable.
 
 Do not turn this publish repo into a generic engine repo.
 
-The next implementation should add pure host-proof modules first, then wire them additively into `src/main-cloudform.js` through `globalThis.CozyIslandHost`.
-
 Do not remove or change the compatibility surface:
 
 ```txt
 globalThis.CozyIsland
 ```
 
+The next implementation should add pure host-proof modules first, prove them in DOM-free fixture rows, then wire them additively into `src/main-cloudform.js` through:
+
+```txt
+globalThis.CozyIslandHost
+```
+
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
+MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
 ```
 
-Stop that ledge when fixture rows prove route version, source profile, source fingerprint, scene source snapshot, action results, movement policy, rail samples, hero-cloud descriptor/cache snapshots, cloud drift, render host snapshot, legacy compatibility, and additive host diagnostics without requiring DOM, canvas, Three.js, browser, or a static server.
+Stop that ledge when central tracking points at the current repo-local `.agent` state and the next implementation has a precise pure-module-to-browser-consumer order for route, source, action, movement, rail, cloud, render, and host diagnostics.

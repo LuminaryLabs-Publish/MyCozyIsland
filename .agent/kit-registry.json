@@ -1,23 +1,34 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-07T20:50:10-04:00",
-  "latestTracker": ".agent/trackers/2026-07-07T20-50-10-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland CozyIslandHost Smoke Fixture + Rail Cloud Replay Lock",
+  "lastUpdated": "2026-07-07T22:11:41-04:00",
+  "latestTracker": ".agent/trackers/2026-07-07T22-11-41-04-00/project-breakdown.md",
+  "selectedNextSlice": "MyCozyIsland Host Action Result Contract + Replay Diagnostics Gate",
   "selection": {
     "reason": "Oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
+    "accessiblePublishReposChecked": {
+      "LuminaryLabs-Publish/MyCozyIsland": { "visibility": "public", "defaultBranch": "main", "selected": true },
+      "LuminaryLabs-Publish/IntoTheMeadow": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/ZombieOrchard": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/HorrorCorridor": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/TheOpenAbove": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/AetherVale": { "visibility": "private", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/PhantomCommand": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/PrehistoricRush": { "visibility": "public", "defaultBranch": "main" },
+      "LuminaryLabs-Publish/TheCavalryOfRome": { "visibility": "public", "defaultBranch": "main", "excluded": true }
+    },
     "checkedTimestamps": {
-      "MyCozyIsland": "2026-07-07T19:29:28-04:00",
-      "IntoTheMeadow": "2026-07-07T19:42:05-04:00",
-      "ZombieOrchard": "2026-07-07T19:51:43-04:00",
-      "HorrorCorridor": "2026-07-07T20:00:46-04:00",
-      "TheOpenAbove": "2026-07-07T20:10:49-04:00",
-      "AetherVale": "2026-07-07T20:21:40-04:00",
-      "PhantomCommand": "2026-07-07T20:31:21-04:00",
-      "PrehistoricRush": "2026-07-07T20:38:27-04:00"
+      "MyCozyIsland": "2026-07-07T20:50:10-04:00",
+      "IntoTheMeadow": "2026-07-07T20:59:30-04:00",
+      "ZombieOrchard": "2026-07-07T21:09:57-04:00",
+      "HorrorCorridor": "2026-07-07T21:18:45-04:00",
+      "TheOpenAbove": "2026-07-07T21:29:47-04:00",
+      "AetherVale": "2026-07-07T21:39:36-04:00",
+      "PhantomCommand": "2026-07-07T21:50:56-04:00",
+      "PrehistoricRush": "2026-07-07T21:59:06-04:00"
     }
   },
   "currentExplicitKits": [
@@ -219,11 +230,12 @@
     "wheelScrollScale": -0.0014
   },
   "activeBlockers": [
-    "DOM input mutates scrollProgress, drag state, and keys directly.",
+    "DOM input mutates scrollProgress, drag state, and key state directly.",
     "firstPerson(dt) mutates player pose and silently ignores rejected movement.",
     "valid(next) returns boolean only and collapses outside-clearing and campfire-keepout reasons.",
     "railPose() does not expose phase, control-point, or look-target snapshots.",
     "cloudGeometry() caches generated BufferGeometry but does not expose stable descriptor, bounds, or fingerprint facts.",
+    "cloud drift mutates object positions in frame() without a host-owned cloud summary.",
     "globalThis.CozyIsland exposes source objects but not a stable host state, diagnostics surface, action journal, fixture runner, or replay surface."
   ],
   "services": {
@@ -314,21 +326,30 @@
     ]
   },
   "fixtureMatrix": [
-    "source fingerprint stability",
-    "source snapshot shape",
-    "scroll action acceptance",
-    "pointer action gating",
-    "rail phase sampling",
-    "first-person movement rejection before threshold",
-    "outside clearing movement rejection",
-    "campfire keepout movement rejection",
-    "first-person movement acceptance",
-    "cloud cache fingerprint stability",
-    "action journal replay parity"
+    "source-fingerprint-stability",
+    "source-snapshot-shape",
+    "scroll-action-acceptance",
+    "scroll-action-bounds-clamp",
+    "pointer-action-rail-yaw",
+    "pointer-action-first-person-yaw-pitch",
+    "pointer-action-not-dragging-unchanged",
+    "keyboard-action-down-up",
+    "first-person-gate-rejection",
+    "movement-no-vector-unchanged",
+    "movement-clearing-boundary-rejection",
+    "movement-campfire-keepout-rejection",
+    "movement-accepted-updates-player-pose",
+    "rail-snapshot-phase-sampling",
+    "cloud-cache-fingerprint-stability",
+    "cloud-cache-snapshot-shape",
+    "action-journal-append-order",
+    "accepted-replay-parity",
+    "rejected-replay-no-mutation",
+    "host-smoke-state-shape"
   ],
   "validation": {
     "runtimeSourceChanged": false,
     "localBuildRun": false,
-    "localSmokeRun": false
+    "smokeRun": false
   }
 }

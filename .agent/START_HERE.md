@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T10-28-44-04-00`
+**Last aligned:** `2026-07-08T11-40-00-04-00`
 
 ## Purpose
 
@@ -16,23 +16,23 @@ The full accessible `LuminaryLabs-Publish` repo list was compared against the ce
 
 No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, undocumented, or missing root `.agent/START_HERE.md` state.
 
-`MyCozyIsland` was selected as the oldest eligible fallback follow-up. The new finding is not a missing root agent. The new finding is a stale route-token planning gap: `index.html` currently loads `./src/main-cloudform.js?v=hero-cloud-4`, while prior `.agent` docs and registry entries still referenced `hero-cloud-3`.
+`MyCozyIsland` was selected as a fallback follow-up. The current finding is not missing docs. The current finding is that the visible route is stable, but route/source/action/movement/camera rail/hero-cloud state still lacks fixture-readable host snapshots.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/AetherVale          ledgered with root .agent; last seen 2026-07-08T10-19-57-04-00
-LuminaryLabs-Publish/HorrorCorridor      ledgered with root .agent; last seen 2026-07-08T09:40:52-04:00
-LuminaryLabs-Publish/IntoTheMeadow       ledgered with root .agent; last seen 2026-07-08T09:11:03-04:00
-LuminaryLabs-Publish/MyCozyIsland        selected fallback follow-up; stale hero-cloud route token docs found
-LuminaryLabs-Publish/PhantomCommand      ledgered with root .agent; last seen 2026-07-08T09:19:43-04:00
-LuminaryLabs-Publish/PrehistoricRush     ledgered with root .agent; last seen 2026-07-08T09:29:20-04:00
+LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present
+LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present
+LuminaryLabs-Publish/AetherVale          tracked / root .agent present
+LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present
+LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present
+LuminaryLabs-Publish/MyCozyIsland        selected fallback follow-up
+LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present
+LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/TheOpenAbove        ledgered with root .agent; last seen 2026-07-08T10-10-34-04-00
-LuminaryLabs-Publish/TheUnmappedHouse    ledgered with root .agent; last seen 2026-07-08T10-01-57-04-00
-LuminaryLabs-Publish/ZombieOrchard       ledgered with root .agent; last seen 2026-07-08T09-48-58-04-00
+LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present
 ```
 
 ## Current product read
@@ -66,8 +66,7 @@ static browser route
 ## Target proof loop
 
 ```txt
-RouteScriptToken
-  -> RouteVersionResult(hero-cloud-4)
+RouteVersionResult(hero-cloud-4)
   -> SourceProfile
   -> SourceFingerprint
   -> SceneSourceSnapshot
@@ -90,14 +89,13 @@ RouteScriptToken
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T10-28-44-04-00-route-host-proof-dsk-breakdown.md
-.agent/render-audit/2026-07-08T10-28-44-04-00-render-route-token-readback.md
-.agent/interaction-audit/2026-07-08T10-28-44-04-00-action-movement-proof-map.md
-.agent/host-proof-audit/2026-07-08T10-28-44-04-00-route-version-authority-sync.md
-.agent/host-proof-audit/acceptance-ledger.md
-.agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md
-.agent/trackers/2026-07-08T10-28-44-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T10-28-44-04-00.md
+.agent/architecture-audit/2026-07-08T11-40-00-04-00-dsk-domain-breakdown.md
+.agent/render-audit/2026-07-08T11-40-00-04-00-render-host-readback.md
+.agent/interaction-audit/2026-07-08T11-40-00-04-00-movement-policy-result-matrix.md
+.agent/cloud-system-audit/2026-07-08T11-40-00-04-00-hero-cloud-cache-drift-matrix.md
+.agent/host-proof-audit/2026-07-08T11-40-00-04-00-host-snapshot-acceptance-matrix.md
+.agent/trackers/2026-07-08T11-40-00-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T11-40-00-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -122,31 +120,25 @@ src/kits/cozy-hero-cloud-form-kit/index.js
 
 ## Main rule
 
-Do not change art direction during the route/host-proof pass.
+Do not change art direction during the host-proof pass.
 
-Do not rewrite the renderer.
+Do not rewrite the renderer first.
 
-The next runtime change should add route token and host proof as additive source helpers:
+The next runtime change should add pure host-proof helpers and wire them additively:
 
 ```txt
-index route token
-  -> RouteVersionResult(hero-cloud-4)
-  -> SourceProfile
-  -> SourceFingerprint
-  -> SceneSourceSnapshot
-  -> ActionFrame / ActionResult
-  -> MovementPolicyResult
-  -> CameraRailSnapshot
-  -> HeroCloudDescriptorSnapshot / HeroCloudCacheSnapshot
-  -> CloudDriftResult
-  -> CozyIslandHostSnapshot
+src/host-proof/*
+  -> route/source/action/movement/rail/cloud result records
   -> DOM-free fixtures
+  -> globalThis.CozyIslandHost
 ```
+
+Keep `globalThis.CozyIsland` unchanged.
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Route Version Authority Sync + Host Proof Fixture Gate
+MyCozyIsland Host Snapshot Acceptance Matrix + Rail/Cloud Fixture Gate
 ```
 
-Stop that ledge when fixtures prove `hero-cloud-4` route authority and source/host proof records while the visible scene and legacy `globalThis.CozyIsland` compatibility remain unchanged.
+Stop that ledge when fixtures prove route/source/action/movement/rail/cloud host records while the visible scene and legacy `globalThis.CozyIsland` compatibility remain unchanged.

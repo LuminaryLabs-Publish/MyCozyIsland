@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T13-11-07-04-00`
+**Last aligned:** `2026-07-08T14-39-38-04-00`
 
 ## Purpose
 
@@ -18,22 +18,7 @@ No checked non-Cavalry Publish repo was found that was fully new, absent from th
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest observed eligible fallback because its last sampled repo-local alignment was `2026-07-08T11-40-00-04-00`, older than the other checked non-excluded roots, and the host-proof fixture seam is still unresolved.
-
-## Publish repos checked
-
-```txt
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / latest sampled alignment 2026-07-08T12-29-17-04-00
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / latest sampled alignment 2026-07-08T12-01-23-04-00
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / latest sampled alignment 2026-07-08T11-49-04-04-00
-LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / latest sampled alignment 2026-07-08T12-41-31-04-00
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / latest sampled alignment 2026-07-08T12-09-27-04-00
-LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present / latest sampled alignment 2026-07-08T12-51-50-04-00
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / latest sampled alignment 2026-07-08T12-21-20-04-00
-LuminaryLabs-Publish/MyCozyIsland        selected fallback / latest sampled alignment 2026-07-08T11-40-00-04-00
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / latest sampled alignment 2026-07-08T12-59-11-04-00
-```
+`MyCozyIsland` was selected as the oldest eligible fallback from recent central repo-ledger update ordering.
 
 ## Current product read
 
@@ -69,13 +54,13 @@ open route
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T13-11-07-04-00-host-proof-dsk-breakdown.md
-.agent/render-audit/2026-07-08T13-11-07-04-00-render-host-snapshot-readback.md
-.agent/interaction-audit/2026-07-08T13-11-07-04-00-action-movement-rail-contract.md
-.agent/cloud-system-audit/2026-07-08T13-11-07-04-00-cloud-cache-drift-proof-contract.md
-.agent/host-proof-audit/2026-07-08T13-11-07-04-00-fixture-row-contract.md
-.agent/trackers/2026-07-08T13-11-07-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T13-11-07-04-00.md
+.agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md
+.agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md
+.agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md
+.agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md
+.agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md
+.agent/trackers/2026-07-08T14-39-38-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T14-39-38-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -115,7 +100,7 @@ globalThis.CozyIsland
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Fixture Row Contract + CozyIslandHost Snapshot Gate
+MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
 ```
 
-Stop that ledge when fixture rows prove route version, source profile, source fingerprint, scene source snapshot, action results, movement policy, rail samples, hero-cloud descriptor/cache snapshots, cloud drift, render host snapshot, and additive host diagnostics without requiring DOM, canvas, Three.js, browser, or a static server.
+Stop that ledge when fixture rows prove route version, source profile, source fingerprint, scene source snapshot, action results, movement policy, rail samples, hero-cloud descriptor/cache snapshots, cloud drift, render host snapshot, legacy compatibility, and additive host diagnostics without requiring DOM, canvas, Three.js, browser, or a static server.

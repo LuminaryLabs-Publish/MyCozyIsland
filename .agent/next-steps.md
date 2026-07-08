@@ -2,19 +2,19 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T14-39-38-04-00`
+**Updated:** `2026-07-08T14-58-49-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
+MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
 ```
 
 ## Goal
 
-Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules and DOM-free fixture rows for route/source/action/movement/rail/cloud/render/host state.
+Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules and a clear browser-consumer splice order for route/source/action/movement/rail/cloud/render/host state.
 
-The implementation should make `hero-cloud-4` an explicit accepted route result and expose an additive `globalThis.CozyIslandHost` surface after fixtures pass.
+The implementation should make `hero-cloud-4` an explicit accepted route result and expose an additive `globalThis.CozyIslandHost` surface only after fixtures pass.
 
 ## Implementation checklist
 
@@ -47,7 +47,8 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add fixture rows for route, source, action, movement, rail, cloud, render, host, and compatibility records.
 - [ ] Run the host-proof fixture without DOM, canvas, Three.js, browser, or static server.
 - [ ] Add package script only after the fixture exists.
-- [ ] Wire `src/main-cloudform.js` additively after pure fixture proof.
+- [ ] Import proven host-proof helpers into `src/main-cloudform.js`.
+- [ ] Splice helper calls beside current descriptor creation, event handlers, rail, movement, cloud drift, render, and global exports.
 - [ ] Expose `globalThis.CozyIslandHost` without changing `globalThis.CozyIsland`.
 - [ ] Update validation with exact command output.
 
@@ -106,6 +107,21 @@ src/host-proof/
 ├─ cloud-drift-result.js
 ├─ host-snapshot.js
 └─ fixture-cases.mjs
+```
+
+## Consumer splice order
+
+```txt
+1. Prove pure host-proof modules through fixture-cases.mjs.
+2. Import helper functions in src/main-cloudform.js after local kit imports.
+3. Build route/source/fingerprint snapshots after descriptor construction.
+4. Wrap wheel/pointer/key/frame actions with ActionFrame / ActionResult records.
+5. Wrap valid(next) and fp(dt) with MovementPolicyResult records.
+6. Project CameraRailSnapshot records from rail().
+7. Project HeroCloudDescriptorSnapshot and HeroCloudCacheSnapshot after heroCloudGroup(contract).
+8. Project CloudDriftResult during frame(now) without changing drift math.
+9. Project RenderHostSnapshot from renderer, camera, scene, and count facts.
+10. Expose globalThis.CozyIslandHost.getState() additively.
 ```
 
 ## Required fixture rows

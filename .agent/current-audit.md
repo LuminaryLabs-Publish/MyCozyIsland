@@ -2,15 +2,13 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T14-58-49-04-00`
+**Audit timestamp:** `2026-07-08T17-00-36-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The scene is not the blocker. The blocker is proofability and host readback: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
-
-This pass also caught a central-ledger freshness gap: repo-local `.agent` state had already advanced to `2026-07-08T14-39-38-04-00`, while `LuminaryLabs-Dev/LuminaryLabs` central tracking still pointed at `2026-07-08T13-11-07-04-00` before this run.
+The visual scene is already coherent enough for the current slice. The blocker is proofability: route, source, interaction, movement, camera rail, grass, hero-cloud cache/drift, render readback, and host diagnostics are still mostly inline browser facts inside `src/main-cloudform.js` rather than pure, fixture-readable result records.
 
 ## Repo selection result
 
@@ -37,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland had the oldest stale central ledger pointer relative to repo-local .agent state and still needs a high-value host-proof browser consumer splice map.
+  MyCozyIsland was the oldest eligible central-ledger fallback in the current readback and still needs a concrete host-proof source-file manifest plus browser consumer fixture gate.
 ```
 
 ## Current route
@@ -93,6 +91,7 @@ object-exclusion-policy
 path-network-source
 grass-placement-contract
 grass-wind-descriptor
+grass-instance-readback-next
 fenced-clearing-source
 player-anchor-source
 clearing-collision-boundary
@@ -252,8 +251,8 @@ cozy-legacy-global-host-kit
 Next-cut proof kits:
 
 ```txt
-cozy-route-script-token-kit
 cozy-active-route-version-kit
+cozy-route-script-token-kit
 cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
@@ -268,6 +267,8 @@ cozy-clearing-boundary-result-kit
 cozy-campfire-keepout-result-kit
 cozy-rail-state-kit
 cozy-camera-rail-snapshot-kit
+cozy-grass-instance-snapshot-kit
+cozy-grass-source-readback-kit
 cozy-hero-cloud-descriptor-snapshot-kit
 cozy-hero-cloud-cache-snapshot-kit
 cozy-cloud-drift-result-kit
@@ -287,25 +288,26 @@ source descriptors are created but not summarized as SourceProfile / SourceFinge
 input actions mutate local state but are not captured as ActionFrame / ActionResult
 movement rejection is silent and lacks MovementPolicyResult reasons
 rail samples are not fixture-readable as CameraRailSnapshot records
+grass instance count and placement contract are not summarized as GrassInstanceSnapshot
 hero-cloud geometry cache is not summarized as HeroCloudCacheSnapshot
 cloud drift mutates objects but is not represented as CloudDriftResult
 render host state is not summarized as RenderHostSnapshot
 legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost proof surface exists
-central repo ledger was stale relative to repo-local .agent state before this run
 ```
 
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md
-.agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md
-.agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md
-.agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md
-.agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md
+.agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
+.agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
+.agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
+.agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
+.agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
+.agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
 ```

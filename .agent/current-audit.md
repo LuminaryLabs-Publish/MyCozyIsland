@@ -2,66 +2,49 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T11-40-00-04-00`
+**Audit timestamp:** `2026-07-08T13-11-07-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
+`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The current visual route should stay stable. The highest-value seam is now the host-proof boundary: route, source, action, movement, camera rail, and hero-cloud runtime facts need fixture-readable result records and an additive `globalThis.CozyIslandHost` surface.
-
-## Evidence checked
-
-```txt
-LuminaryLabs-Publish accessible repository list
-LuminaryLabs-Dev/LuminaryLabs repo-ledger state
-README.md
-package.json
-index.html
-src/main-cloudform.js import/composition/input/movement/frame/host excerpts
-.agent/START_HERE.md
-.agent/current-audit.md
-.agent/known-gaps.md
-.agent/next-steps.md
-.agent/validation.md
-LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-```
+The current scene is not the blocker. The blocker is proofability: route, source, interaction, movement, rail, hero-cloud, render, and host state are still mostly inline in `src/main-cloudform.js` rather than stable fixture-readable result records.
 
 ## Repo selection result
 
 ```txt
-Checked Publish repos:
-  IntoTheMeadow
+Checked full accessible Publish list:
   HorrorCorridor
   AetherVale
-  ZombieOrchard
-  TheUnmappedHouse
-  MyCozyIsland
   TheOpenAbove
-  PhantomCommand
   TheCavalryOfRome
+  PhantomCommand
   PrehistoricRush
+  ZombieOrchard
+  IntoTheMeadow
+  MyCozyIsland
+  TheUnmappedHouse
 
 Excluded:
   TheCavalryOfRome
 
-Central ledger state:
-  checked non-excluded repos are represented in LuminaryLabs-Dev/LuminaryLabs repo-ledger
+Central/root-agent comparison:
+  No checked non-Cavalry repo was fully new, absent from central tracking, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md.
 
-Root .agent state:
-  checked follow-up candidates have root .agent/START_HERE.md state
-
-Selected repo:
+Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
-Fallback reason:
-  stable visual route with unresolved host-proof fixture gate for route/source/action/movement/camera rail/hero-cloud records
+Reason:
+  It was the oldest observed eligible fallback by sampled alignment time and still has a high-value host-proof fixture seam.
 ```
 
 ## Current route
 
 ```txt
 index.html
+  -> canvas#game
+  -> cloud loader
+  -> error panel
   -> ./src/main-cloudform.js?v=hero-cloud-4
 ```
 
@@ -69,102 +52,92 @@ index.html
 
 ```txt
 static browser route
-  -> canvas#game
-  -> cloud loader + error panel
-  -> Three.js CDN import
-  -> local domain-kit imports
-  -> build island/ocean/grass/wind/clearing/campfire/smoke/cloud source contracts
-  -> build Three.js scene objects inline
-  -> scroll camera rail from sky view into clearing
-  -> pointer drag look/yaw
-  -> keyboard first-person movement after threshold
-  -> movement policy accepts or rejects movement against clearing/campfire rules
-  -> campfire, smoke, sea, hero cloud drift, camera, and movement animate per frame
-  -> limited globalThis.CozyIsland diagnostics surface
+  -> load src/main-cloudform.js?v=hero-cloud-4
+  -> import Three.js CDN
+  -> import local domain descriptor kits
+  -> create island, floor, foliage, grass, wind, clearing, campfire, smoke, and cloud descriptors
+  -> create Three.js scene, renderer, camera, meshes, points, lights, fog, water, foam, path, grass, cloud geometry cache
+  -> install resize, keyboard, wheel, pointerdown, pointerup, pointermove handlers
+  -> wheel changes scroll progress
+  -> rail() samples position/look along sky-to-eye camera curve
+  -> pointer mutates yaw before first-person and yaw/pitch after first-person
+  -> keyboard movement unlocks at progress >= 0.985
+  -> valid(next) accepts or rejects movement by clearing radius and campfire keepout
+  -> updateSmoke, flame animation, sea bob, cloud drift, camera, and renderer run every frame
+  -> globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress
 ```
 
-## Current domain shape
+## Domains in use
 
 ```txt
-my-cozy-island
-├─ static-browser-shell
-│  ├─ html-canvas-host
-│  ├─ cloud-loader-ui
-│  └─ error-panel-ui
-├─ route-authority
-│  ├─ active-route-script-token
-│  ├─ main-cloudform-entry
-│  ├─ hero-cloud-4-version-string
-│  ├─ missing RouteVersionResult
-│  └─ missing route mismatch reasons
-├─ source-authority
-│  ├─ ocean-island-landform-domain
-│  ├─ island-foliage-domain
-│  ├─ ocean-floor-domain
-│  ├─ grass-object-domain
-│  ├─ grass-wind-domain
-│  ├─ campfire-object-domain
-│  ├─ smoke-particle-domain
-│  ├─ fenced-clearing-domain
-│  ├─ mattatz-clouds-domain
-│  ├─ cozy-hero-cloud-form-kit
-│  ├─ missing SourceProfile
-│  ├─ missing SourceFingerprint
-│  └─ missing SceneSourceSnapshot
-├─ renderer-host
-│  ├─ terrain-mesh-adapter
-│  ├─ ocean-floor-mesh-adapter
-│  ├─ water-plane-adapter
-│  ├─ shoreline-foam-adapter
-│  ├─ path-mesh-adapter
-│  ├─ foliage-object-adapter
-│  ├─ fence-object-adapter
-│  ├─ campfire-object-adapter
-│  ├─ smoke-particle-runtime
-│  ├─ grass-instancing-adapter
-│  └─ hero-cloud-point-renderer
-├─ interaction-host
-│  ├─ scroll-progress-state
-│  ├─ camera-rail-sampler
-│  ├─ pointer-look-state
-│  ├─ keyboard-movement-state
-│  ├─ first-person-threshold-gate
-│  ├─ missing ActionFrame records
-│  └─ missing ActionResult records
-├─ movement-authority
-│  ├─ clearing-boundary-policy
-│  ├─ campfire-keepout-policy
-│  ├─ missing MovementPolicyResult
-│  ├─ missing ClearingBoundaryResult
-│  └─ missing CampfireKeepoutResult
-├─ cloud-runtime
-│  ├─ hero-cloud-geometry-cache
-│  ├─ hero-cloud-point-cloud-descriptor
-│  ├─ cloud-drift-frame-update
-│  ├─ missing HeroCloudDescriptorSnapshot
-│  ├─ missing HeroCloudCacheSnapshot
-│  └─ missing CloudDriftResult
-└─ diagnostics-proof
-   ├─ legacy-global-cozy-island
-   ├─ missing additive CozyIslandHost surface
-   ├─ missing HostSnapshot records
-   ├─ missing action/input journals
-   └─ missing DOM-free host-proof fixture gate
+static-browser-shell
+cloud-loader-ui
+error-panel-ui
+module-entry-route
+active-route-version-authority
+three-cdn-runtime
+local-source-domain-runtime
+source-profile-authority
+source-fingerprint-authority
+scene-source-snapshot
+island-landform-source
+heightfield-sampling
+mask-sampling
+shoreline-contract
+ocean-floor-source
+ocean-floor-heightfield
+foliage-object-graph
+object-exclusion-policy
+path-network-source
+grass-placement-contract
+grass-wind-descriptor
+fenced-clearing-source
+player-anchor-source
+clearing-collision-boundary
+campfire-keepout-policy
+campfire-object-graph
+smoke-particle-descriptor
+mattatz-cloud-source
+hero-cloud-form-source
+hero-cloud-cache-runtime
+hero-cloud-drift-runtime
+renderer-host
+terrain-render-adapter
+ocean-floor-render-adapter
+water-plane-render-adapter
+shoreline-foam-render-adapter
+path-render-adapter
+foliage-render-adapter
+fence-render-adapter
+campfire-render-adapter
+smoke-runtime-adapter
+grass-instancing-adapter
+hero-cloud-point-render-adapter
+scroll-progress-state
+camera-rail-authority
+pointer-look-state
+keyboard-input-state
+first-person-threshold-gate
+movement-policy-authority
+legacy-global-diagnostics
+cozy-island-host-next
+fixture-replay-authority
 ```
 
-## Services currently offered by kits
+## Services currently offered by kits and host adapters
 
 ```txt
 ocean-island-landform-domain:
   createOceanIslandLandformState
+  createOceanIslandLandformRenderContract
   sampleIslandHeight
   sampleIslandMasks
-  createOceanIslandLandformRenderContract
 
 island-foliage-domain:
-  createIslandPathNetwork
   createDenseCozyIslandObjectGraph
-  createDenseCozyIslandRenderContract
+  object graph generation
+  path network generation
+  object exclusion support
 
 ocean-floor-domain:
   createOceanFloorState
@@ -172,8 +145,7 @@ ocean-floor-domain:
 
 grass-object-domain:
   createGrassPatchPlacementContract
-  createGrassPatchBatchDescriptors
-  filters water, beach, wet sand, rock, cliff, path, and exclusion-zone placements
+  exclusion-aware grass placement
 
 grass-wind-domain:
   createGrassWindDescriptor
@@ -186,15 +158,41 @@ smoke-particle-domain:
 
 fenced-clearing-domain:
   createFencedClearingGraph
-  emits fence posts, player-avatar anchor, collision boundary, clearance zones, and object-exclusion zones
+  player avatar anchor
+  collision boundary
+  clearance zones
+  object exclusion zones
 
 mattatz-clouds-domain:
   createMattatzCloudsState
   createMattatzCloudRenderContract
 
 cozy-hero-cloud-form-kit:
-  creates a readable single hero cloud form descriptor
-  hands off point-cloud/lobe/placement/drift intent to the renderer
+  readable hero cloud form descriptor
+  point cloud placement/drift intent
+
+inline host/render services:
+  fail
+  meshGrid
+  terrainMesh
+  floorMesh
+  waterMesh
+  foamMesh
+  pathMesh
+  objGroup
+  fenceGroup
+  campfireMesh
+  smokeMesh
+  updateSmoke
+  grassMesh
+  rand
+  cloudMaterial
+  heroCloudGeometry
+  heroCloudGroup
+  rail
+  valid
+  fp
+  frame
 ```
 
 ## Kits identified
@@ -252,10 +250,11 @@ cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
 cozy-scene-source-snapshot-kit
-cozy-host-snapshot-kit
 cozy-action-frame-contract-kit
 cozy-action-result-contract-kit
 cozy-action-rejection-reason-kit
+cozy-action-journal-kit
+cozy-input-journal-kit
 cozy-movement-policy-result-kit
 cozy-clearing-boundary-result-kit
 cozy-campfire-keepout-result-kit
@@ -263,8 +262,8 @@ cozy-camera-rail-snapshot-kit
 cozy-hero-cloud-descriptor-snapshot-kit
 cozy-hero-cloud-cache-snapshot-kit
 cozy-cloud-drift-result-kit
-cozy-action-journal-kit
-cozy-input-journal-kit
+cozy-render-host-snapshot-kit
+cozy-host-snapshot-kit
 cozy-gamehost-diagnostics-kit
 cozy-dom-free-fixture-runner-kit
 cozy-replay-parity-smoke-kit
@@ -272,38 +271,30 @@ cozy-replay-parity-smoke-kit
 
 ## Current high-value gap
 
-The renderer can stay inline for now.
-
-Browser-host facts are not proof facts yet:
-
 ```txt
-route token -> active source is hero-cloud-4, but no RouteVersionResult exists
-source constants -> no SourceProfile
-composed descriptors -> no SceneSourceSnapshot
-scroll/pointer/keyboard events -> no ActionFrame
-policy checks -> no MovementPolicyResult
-camera rail state -> no CameraRailSnapshot
-cloud cache -> no HeroCloudCacheSnapshot
-cloud animation -> no CloudDriftResult
-legacy global -> no additive CozyIslandHost proof surface
+route token is visible in index.html but not a RouteVersionResult
+source descriptors are created but not summarized as SourceProfile / SourceFingerprint / SceneSourceSnapshot
+input actions mutate local state but are not captured as ActionFrame / ActionResult
+movement rejection is silent and lacks MovementPolicyResult reasons
+rail samples are not fixture-readable as CameraRailSnapshot records
+hero-cloud geometry cache is not summarized as HeroCloudCacheSnapshot
+cloud drift mutates objects but is not represented as CloudDriftResult
+render host state is not summarized as RenderHostSnapshot
+legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost proof surface exists
 ```
 
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T11-40-00-04-00-dsk-domain-breakdown.md
-.agent/render-audit/2026-07-08T11-40-00-04-00-render-host-readback.md
-.agent/interaction-audit/2026-07-08T11-40-00-04-00-movement-policy-result-matrix.md
-.agent/cloud-system-audit/2026-07-08T11-40-00-04-00-hero-cloud-cache-drift-matrix.md
-.agent/host-proof-audit/2026-07-08T11-40-00-04-00-host-snapshot-acceptance-matrix.md
+.agent/architecture-audit/2026-07-08T13-11-07-04-00-host-proof-dsk-breakdown.md
+.agent/render-audit/2026-07-08T13-11-07-04-00-render-host-snapshot-readback.md
+.agent/interaction-audit/2026-07-08T13-11-07-04-00-action-movement-rail-contract.md
+.agent/cloud-system-audit/2026-07-08T13-11-07-04-00-cloud-cache-drift-proof-contract.md
+.agent/host-proof-audit/2026-07-08T13-11-07-04-00-fixture-row-contract.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Snapshot Acceptance Matrix + Rail/Cloud Fixture Gate
+MyCozyIsland Host Proof Fixture Row Contract + CozyIslandHost Snapshot Gate
 ```
-
-Keep the current route, visuals, and `globalThis.CozyIsland` compatibility stable.
-
-Add pure host-proof modules and fixture cases first, then wire the browser runtime to them additively through `globalThis.CozyIslandHost`.

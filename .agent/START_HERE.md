@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T17-00-36-04-00`
+**Last aligned:** `2026-07-08T17-09-48-04-00`
 
 ## Purpose
 
@@ -12,13 +12,13 @@ Read this folder before changing implementation code.
 
 ## Current selection result
 
-The full accessible `LuminaryLabs-Publish` repository list was compared against central `LuminaryLabs-Dev/LuminaryLabs` tracking.
+The accessible `LuminaryLabs-Publish` repository list was compared against central `LuminaryLabs-Dev/LuminaryLabs` tracking and sampled root `.agent` state.
 
 No checked non-Cavalry Publish repo was found that was fully new, absent from the central ledger, undocumented, recently added but undocumented, or missing sampled root `.agent/START_HERE.md` state.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible fallback in the current central readback. Its previous central ledger timestamp was `2026-07-08T14-58-49-04-00`, and the unresolved handoff is still the host-proof implementation source manifest plus browser consumer splice.
+`MyCozyIsland` was selected because repo-local `.agent` state had advanced beyond the central ledger, and the unresolved handoff is still the host-proof source manifest plus browser consumer fixture gate.
 
 ## Current product read
 
@@ -37,7 +37,7 @@ index.html
 open route
   -> canvas, cloud loader, and error panel mount from index.html
   -> src/main-cloudform.js imports Three.js CDN and local source-domain kits
-  -> descriptor kits create island, ocean floor, foliage, grass, wind, clearing, campfire, smoke, and cloud contracts
+  -> descriptor kits create island, ocean, foliage, grass, wind, clearing, campfire, smoke, and cloud contracts
   -> inline Three.js adapters build terrain, ocean, foam, path, foliage, fence, campfire, smoke, grass, and cloud objects
   -> wheel input advances the camera rail progress
   -> pointer drag mutates yaw/pitch depending on rail progress
@@ -55,14 +55,14 @@ open route
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
-.agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
-.agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
-.agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
-.agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
-.agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
-.agent/trackers/2026-07-08T17-00-36-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T17-00-36-04-00.md
+.agent/architecture-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-dsk-map.md
+.agent/render-audit/2026-07-08T17-09-48-04-00-render-host-source-manifest-sync.md
+.agent/interaction-audit/2026-07-08T17-09-48-04-00-action-movement-fixture-sync.md
+.agent/cloud-system-audit/2026-07-08T17-09-48-04-00-cloud-cache-drift-fixture-sync.md
+.agent/grass-system-audit/2026-07-08T17-09-48-04-00-grass-snapshot-fixture-sync.md
+.agent/host-proof-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-and-source-manifest.md
+.agent/trackers/2026-07-08T17-09-48-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T17-09-48-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -106,7 +106,7 @@ globalThis.CozyIslandHost
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate + Central Ledger Sync
 ```
 
-Stop that ledge when exact source files, pure record shapes, fixture rows, and `src/main-cloudform.js` splice points are implemented enough to prove route, source, action, movement, rail, grass, cloud, render, and host diagnostics without changing the player-visible scene.
+Stop that ledge when exact source files, pure record shapes, fixture rows, `src/main-cloudform.js` splice points, and central ledger alignment are implemented enough to prove route, source, action, movement, rail, grass, cloud, render, and host diagnostics without changing the player-visible scene.

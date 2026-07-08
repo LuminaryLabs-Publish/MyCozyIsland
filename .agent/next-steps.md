@@ -2,24 +2,24 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T10-28-44-04-00`
+**Updated:** `2026-07-08T11-40-00-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Route Version Authority Sync + Host Proof Fixture Gate
+MyCozyIsland Host Snapshot Acceptance Matrix + Rail/Cloud Fixture Gate
 ```
 
-Preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
+Preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, action results, movement policy, camera rail state, hero cloud descriptors, cache state, and cloud drift.
 
-The first source-proof target is now `hero-cloud-4`, not `hero-cloud-3`.
+The active source-proof target remains `hero-cloud-4`.
 
 ## Implementation checklist
 
 - [ ] Preserve `index.html -> ./src/main-cloudform.js?v=hero-cloud-4`.
 - [ ] Preserve the current player-visible scene.
 - [ ] Preserve `globalThis.CozyIsland` compatibility.
-- [ ] Add an additive `globalThis.CozyIslandHost` diagnostics surface.
+- [ ] Add an additive `globalThis.CozyIslandHost` diagnostics/proof surface.
 - [ ] Add `src/host-proof/route-version.js`.
 - [ ] Add `RouteVersionResult` with `hero-cloud-4` acceptance and stale-token mismatch reasons.
 - [ ] Add route fixture rows for accepted `hero-cloud-4`, rejected `hero-cloud-3`, and missing query token.
@@ -42,9 +42,11 @@ The first source-proof target is now `hero-cloud-4`, not `hero-cloud-3`.
 - [ ] Add `HeroCloudCacheSnapshot`.
 - [ ] Add `src/host-proof/cloud-drift-result.js`.
 - [ ] Add `CloudDriftResult` for fixed `dt/time` inputs.
+- [ ] Add `src/host-proof/host-snapshot.js`.
+- [ ] Add `CozyIslandHostSnapshot` projection.
 - [ ] Add action and input journals.
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
-- [ ] Add fixture IDs from the route-version sync and host-proof acceptance ledgers.
+- [ ] Add fixture IDs from the host snapshot acceptance matrix.
 - [ ] Add replay parity smoke for the host result objects.
 - [ ] Wire `src/main-cloudform.js` only after the pure fixture modules pass.
 - [ ] Update `.agent/validation.md` with exact commands and outcomes.
@@ -98,6 +100,7 @@ src/host-proof/
 ├─ camera-rail-snapshot.js
 ├─ hero-cloud-snapshot.js
 ├─ cloud-drift-result.js
+├─ host-snapshot.js
 └─ fixture-cases.mjs
 ```
 
@@ -137,6 +140,7 @@ cozy-scene-source-001
 cozy-wheel-action-001
 cozy-pointer-action-001
 cozy-keyboard-before-fp-001
+cozy-keyboard-no-input-001
 cozy-keyboard-clearing-001
 cozy-keyboard-boundary-001
 cozy-keyboard-campfire-001
@@ -145,6 +149,8 @@ cozy-cloud-descriptor-001
 cozy-cloud-cache-001
 cozy-cloud-drift-001
 cozy-host-snapshot-001
+cozy-host-legacy-001
+cozy-host-dom-free-001
 ```
 
 ## Guardrails

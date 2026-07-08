@@ -2,17 +2,17 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T13-11-07-04-00`
+**Updated:** `2026-07-08T14-39-38-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Fixture Row Contract + CozyIslandHost Snapshot Gate
+MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract
 ```
 
 ## Goal
 
-Preserve the current route, visuals, and compatibility globals while adding pure host-proof records and DOM-free fixture rows for route/source/action/movement/rail/cloud/render/host state.
+Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules and DOM-free fixture rows for route/source/action/movement/rail/cloud/render/host state.
 
 The implementation should make `hero-cloud-4` an explicit accepted route result and expose an additive `globalThis.CozyIslandHost` surface after fixtures pass.
 
@@ -44,6 +44,7 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add `src/host-proof/host-snapshot.js`.
 - [ ] Add `RenderHostSnapshot` and `CozyIslandHostSnapshot` projection helpers.
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
+- [ ] Add fixture rows for route, source, action, movement, rail, cloud, render, host, and compatibility records.
 - [ ] Run the host-proof fixture without DOM, canvas, Three.js, browser, or static server.
 - [ ] Add package script only after the fixture exists.
 - [ ] Wire `src/main-cloudform.js` additively after pure fixture proof.
@@ -83,6 +84,7 @@ my-cozy-island-host-proof
 │  └─ cozy-render-host-snapshot-kit
 └─ proof-authority
    ├─ cozy-gamehost-diagnostics-kit
+   ├─ cozy-host-state-contract-kit
    ├─ cozy-host-snapshot-kit
    ├─ cozy-dom-free-fixture-runner-kit
    └─ cozy-replay-parity-smoke-kit

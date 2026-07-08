@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 8,
+  "schemaVersion": 9,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-08T02:09:17-04:00",
-  "latestTracker": ".agent/trackers/2026-07-08T02-09-17-04-00/project-breakdown.md",
-  "selectedNextSlice": "MyCozyIsland Cloudform Route Version Authority + Host Action Fixture Gate",
+  "lastUpdated": "2026-07-08T07:30:30-04:00",
+  "latestTracker": ".agent/trackers/2026-07-08T07-30-30-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T07-30-30-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Proof Acceptance Fixture Gate",
   "selection": {
-    "reason": "Root publish .agent/START_HERE.md was missing even though the central ledger already documented MyCozyIsland.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, or missing root .agent/START_HERE.md state. MyCozyIsland was selected as a fallback follow-up to convert the host-proof fixture direction into concrete acceptance cases.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -50,7 +51,8 @@
       "name": "grass-object-domain",
       "path": "src/kits/grass-object-domain/index.js",
       "services": [
-        "createGrassPatchPlacementContract"
+        "createGrassPatchPlacementContract",
+        "createGrassPatchBatchDescriptors"
       ]
     },
     {
@@ -122,12 +124,14 @@
     "cozy-scroll-camera-rail-kit",
     "cozy-pointer-look-kit",
     "cozy-keyboard-movement-kit",
-    "cozy-clearing-boundary-kit",
-    "cozy-campfire-keepout-kit",
+    "cozy-clearing-boundary-policy-kit",
+    "cozy-campfire-keepout-policy-kit",
     "cozy-legacy-global-host-kit"
   ],
   "nextCutKits": [
     "cozy-active-route-version-kit",
+    "cozy-route-script-token-kit",
+    "cozy-route-version-result-kit",
     "cozy-source-profile-kit",
     "cozy-source-fingerprint-kit",
     "cozy-scene-source-snapshot-kit",
@@ -138,7 +142,7 @@
     "cozy-action-journal-kit",
     "cozy-input-journal-kit",
     "cozy-rail-state-kit",
-    "cozy-rail-snapshot-kit",
+    "cozy-camera-rail-snapshot-kit",
     "cozy-movement-policy-result-kit",
     "cozy-clearing-boundary-result-kit",
     "cozy-campfire-keepout-result-kit",
@@ -146,8 +150,25 @@
     "cozy-hero-cloud-cache-snapshot-kit",
     "cozy-cloud-drift-result-kit",
     "cozy-gamehost-diagnostics-kit",
-    "cozy-fixture-script-runner-kit",
+    "cozy-dom-free-fixture-runner-kit",
     "cozy-replay-parity-smoke-kit"
   ],
-  "nextSafeLedge": "Add additive host/action/fixture proof without changing the public route or visible scene."
+  "acceptanceFixtureIds": [
+    "cozy-route-version-001",
+    "cozy-source-profile-001",
+    "cozy-source-fingerprint-001",
+    "cozy-scene-source-001",
+    "cozy-wheel-action-001",
+    "cozy-pointer-action-001",
+    "cozy-keyboard-before-fp-001",
+    "cozy-keyboard-clearing-001",
+    "cozy-keyboard-boundary-001",
+    "cozy-keyboard-campfire-001",
+    "cozy-camera-rail-001",
+    "cozy-cloud-descriptor-001",
+    "cozy-cloud-cache-001",
+    "cozy-cloud-drift-001",
+    "cozy-host-snapshot-001"
+  ],
+  "nextSafeLedge": "Add additive host/action/fixture proof without changing the public route, visible scene, or globalThis.CozyIsland compatibility."
 }

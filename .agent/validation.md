@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T04:10:24-04:00`
+**Updated:** `2026-07-08T06:01:57-04:00`
 
 ## Validation performed in this pass
 
@@ -12,28 +12,34 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs repo-ledger state
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   found no checked non-Cavalry repo that was fully new, ledger-absent, or missing root .agent/START_HERE.md
-  selected MyCozyIsland as oldest eligible root-agent follow-up target
+  selected MyCozyIsland as eligible follow-up target for host-proof fixture-matrix docs
 
 source inspection:
+  read README.md
+  read index.html
+  read package.json
+  read src/main-cloudform.js excerpt
+  read src/kits/grass-object-domain/index.js
+  read src/kits/fenced-clearing-domain/index.js
+  read src/kits/mattatz-clouds-domain/index.js
   read .agent/START_HERE.md
   read .agent/current-audit.md
   read .agent/known-gaps.md
   read .agent/next-steps.md
   read .agent/validation.md
-  read index.html
-  read src/main-cloudform.js excerpt
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
-repo writes:
-  created .agent/trackers/2026-07-08T04-10-24-04-00/project-breakdown.md on main
-  created .agent/turn-ledger/2026-07-08T04-10-24-04-00.md on main
-  updated .agent/START_HERE.md on main
-  updated .agent/current-audit.md on main
-  updated .agent/known-gaps.md on main
-  updated .agent/next-steps.md on main
-  updated .agent/validation.md on main
-  created central internal change-log entry on main
-  updated central MyCozyIsland repo ledger on main
+repo writes on main:
+  created .agent/trackers/2026-07-08T06-01-57-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T06-01-57-04-00.md
+  created .agent/host-proof-audit/fixture-matrix.md
+  updated .agent/START_HERE.md
+  updated .agent/current-audit.md
+  updated .agent/known-gaps.md
+  updated .agent/next-steps.md
+  updated .agent/validation.md
+  updated central repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
+  created central internal-change-log/2026-07-08T06-01-57-04-00-my-cozy-island-host-proof-fixture-matrix.md
 ```
 
 ## Runtime validation not performed
@@ -76,10 +82,10 @@ Add a DOM-free fixture script that imports the host-proof/result modules once th
 - scene source snapshot is stable for fixed seeds
 - camera rail snapshot is deterministic for fixed progress samples
 - movement inside the clearing is accepted
-- movement outside the clearing is rejected with an explicit reason
-- campfire keepout rejection has a distinct reason
+- movement outside the clearing is rejected with an explicit clearing-boundary reason
+- campfire keepout rejection has a distinct campfire-keepout reason
 - hero cloud descriptor snapshot is stable
-- hero cloud cache snapshot reports stable point counts
+- hero cloud cache snapshot reports stable geometry and point counts
 - cloud drift result is deterministic for fixed dt/tick input
 - additive globalThis.CozyIslandHost exposes proof state
 - globalThis.CozyIsland remains compatible and not required by fixture tests
@@ -87,4 +93,8 @@ Add a DOM-free fixture script that imports the host-proof/result modules once th
 
 ## Stop condition for next implementation run
 
-Stop after the host-proof fixture can run without opening a browser and after the current public route still loads through `index.html -> ./src/main-cloudform.js?v=hero-cloud-3`.
+Stop after the host-proof fixture can run without opening a browser and after the current public route still loads through:
+
+```txt
+index.html -> ./src/main-cloudform.js?v=hero-cloud-3
+```

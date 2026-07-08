@@ -2,15 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T06:01:57-04:00`
+**Updated:** `2026-07-08T07:30:30-04:00`
 
 ## Next safe ledge
 
 ```txt
-Add the MyCozyIsland Host Proof Fixture Matrix.
+MyCozyIsland Host Proof Acceptance Fixture Gate
 ```
 
-This should preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
+Preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
 
 ## Implementation checklist
 
@@ -18,19 +18,30 @@ This should preserve the current route and visuals while adding proofable host s
 - [ ] Preserve the current player-visible scene.
 - [ ] Preserve `globalThis.CozyIsland` compatibility.
 - [ ] Add an additive `globalThis.CozyIslandHost` diagnostics surface.
-- [ ] Extract route version into a descriptor/result.
-- [ ] Add `SourceProfile` constants.
+- [ ] Add `src/host-proof/route-version.js`.
+- [ ] Add `RouteVersionResult` with `hero-cloud-3` acceptance and mismatch reasons.
+- [ ] Add `src/host-proof/source-profile.js`.
+- [ ] Add `SourceProfile` constants for island, floor, cloud, movement, and camera rail assumptions.
+- [ ] Add `src/host-proof/source-fingerprint.js`.
 - [ ] Add deterministic `SourceFingerprint` generation.
+- [ ] Add `src/host-proof/scene-source-snapshot.js`.
 - [ ] Add `SceneSourceSnapshot` for island, floor, grass, clearing, campfire, smoke, wind, and cloud source descriptors.
+- [ ] Add `src/host-proof/action-frame.js`.
 - [ ] Add `ActionFrame` normalizer for wheel, pointer, keyboard, and tick actions.
+- [ ] Add `src/host-proof/action-result.js`.
 - [ ] Add `ActionResult` for accepted/rejected action outcomes.
+- [ ] Add `src/host-proof/movement-policy-result.js`.
 - [ ] Add `MovementPolicyResult` with explicit rejection reasons.
+- [ ] Add `src/host-proof/camera-rail-snapshot.js`.
 - [ ] Add `CameraRailSnapshot` for fixed scroll/progress samples.
+- [ ] Add `src/host-proof/hero-cloud-snapshot.js`.
 - [ ] Add `HeroCloudDescriptorSnapshot`.
 - [ ] Add `HeroCloudCacheSnapshot`.
-- [ ] Add `CloudDriftResult`.
+- [ ] Add `src/host-proof/cloud-drift-result.js`.
+- [ ] Add `CloudDriftResult` for fixed `dt/time` inputs.
 - [ ] Add action and input journals.
-- [ ] Add a DOM-free fixture script.
+- [ ] Add `src/host-proof/fixture-cases.mjs`.
+- [ ] Add fixture IDs from `.agent/host-proof-audit/acceptance-ledger.md`.
 - [ ] Add replay parity smoke for the host result objects.
 - [ ] Update `.agent/validation.md` with exact commands and outcomes.
 
@@ -40,7 +51,8 @@ This should preserve the current route and visuals while adding proofable host s
 my-cozy-island-host-proof
 ├─ route-authority
 │  ├─ cozy-active-route-version-kit
-│  └─ cozy-route-script-token-kit
+│  ├─ cozy-route-script-token-kit
+│  └─ cozy-route-version-result-kit
 ├─ source-authority
 │  ├─ cozy-source-profile-kit
 │  ├─ cozy-source-fingerprint-kit
@@ -93,21 +105,24 @@ src/main-cloudform.js
   -> keeps globalThis.CozyIsland unchanged
 ```
 
-## First fixture cases
+## Required fixture cases
 
 ```txt
-1. route token resolves to hero-cloud-3
-2. source profile has stable seed/radius/cloud profile
-3. source fingerprint is deterministic
-4. scene source snapshot contains landform, floor, grass, clearing, campfire, smoke, wind, and cloud summaries
-5. wheel action changes rail progress through an ActionResult
-6. pointer drag action changes yaw through an ActionResult
-7. keyboard movement inside clearing is accepted
-8. keyboard movement outside clearing is rejected with clearing-boundary reason
-9. keyboard movement into campfire keepout is rejected with campfire-keepout reason
-10. cloud descriptor snapshot reports stable point count/lobe count/placement
-11. cloud cache snapshot reports saved geometry count and point count
-12. cloud drift result is deterministic for fixed dt/time
+cozy-route-version-001
+cozy-source-profile-001
+cozy-source-fingerprint-001
+cozy-scene-source-001
+cozy-wheel-action-001
+cozy-pointer-action-001
+cozy-keyboard-before-fp-001
+cozy-keyboard-clearing-001
+cozy-keyboard-boundary-001
+cozy-keyboard-campfire-001
+cozy-camera-rail-001
+cozy-cloud-descriptor-001
+cozy-cloud-cache-001
+cozy-cloud-drift-001
+cozy-host-snapshot-001
 ```
 
 ## Guardrails
@@ -119,4 +134,5 @@ src/main-cloudform.js
 - Do not turn this publish repo into a generic engine repo.
 - Prefer additive diagnostics and fixture files over risky runtime rewrites.
 - Keep renderer, DOM, browser input, and Three.js adapters outside reusable proof helpers where possible.
+- Stop after the DOM-free host-proof fixture runs and the public route remains stable.
 ```

@@ -20,6 +20,7 @@ campfire-object-domain
 smoke-particle-domain
 fenced-clearing-domain
 mattatz-clouds-domain
+cozy-hero-cloud-form-kit
 ```
 
 ## Runtime needs covered
@@ -35,7 +36,14 @@ fenced clearing and invisible player anchor
 campfire object graph
 wind-reactive smoke particles
 cached high-fidelity point-cloud clouds
+single readable hero cloud form descriptor
 scroll-driven sky-to-first-person camera rail
+```
+
+## Cloud kit docs
+
+```txt
+docs/cloud-kits.md
 ```
 
 ## Local development

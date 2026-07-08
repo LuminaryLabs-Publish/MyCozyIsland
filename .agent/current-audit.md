@@ -2,24 +2,26 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T02:09:17-04:00`
+**Audit timestamp:** `2026-07-08T04:10:24-04:00`
 
 ## Summary
 
 `MyCozyIsland` is a small static Three.js publish app that proves a cozy island scene with a scroll-driven sky-to-first-person camera rail, local domain-kit source descriptors, a hero cloud system, campfire, smoke, grass, foliage, shoreline, ocean floor, and water surface.
 
-The repo has useful local kits and a working route shape, but the runtime host is still concentrated in `src/main-cloudform.js` rather than split into small source, action, host, replay, and render-handoff services.
+The repo now has the required root `.agent` operating state. The current follow-up finding is that the source-domain side is healthier than the host-proof side: the active route token, source fingerprint, scene source snapshot, camera rail, movement rejection reasons, hero-cloud cache state, and cloud drift results are not yet first-class result objects.
 
 ## Evidence checked
 
 ```txt
+LuminaryLabs-Publish org repository search result
 README.md
 index.html
 package.json
-src/main-cloudform.js
-src/kits/ocean-island-landform-domain/index.js
-src/kits/island-foliage-domain/index.js
-docs/cloud-kits.md
+src/main-cloudform.js excerpt
+.agent/START_HERE.md
+.agent/known-gaps.md
+.agent/next-steps.md
+.agent/validation.md
 LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 ```
 
@@ -57,8 +59,9 @@ my-cozy-island
 │  ├─ cloud-loader-ui
 │  └─ error-panel-ui
 ├─ route-entry
-│  ├─ module-version-token
-│  └─ main-cloudform-entry
+│  ├─ active-route-script-token
+│  ├─ main-cloudform-entry
+│  └─ missing route-version descriptor/result
 ├─ source-authoring
 │  ├─ ocean-island-landform-domain
 │  ├─ island-foliage-domain
@@ -96,7 +99,8 @@ my-cozy-island
 │  └─ cloud-drift-frame-update
 └─ diagnostics
    ├─ legacy-global-cozy-island
-   └─ missing-host-action-fixture-gate
+   ├─ missing additive CozyIslandHost surface
+   └─ missing DOM-free host-action fixture gate
 ```
 
 ## Services currently offered by kits
@@ -142,8 +146,87 @@ cozy-hero-cloud-form-kit
   hands off cached point-cloud puff intent to the renderer
 ```
 
+## Kits identified
+
+Implemented explicit kits:
+
+```txt
+ocean-island-landform-domain
+island-foliage-domain
+ocean-floor-domain
+grass-object-domain
+grass-wind-domain
+campfire-object-domain
+smoke-particle-domain
+fenced-clearing-domain
+mattatz-clouds-domain
+cozy-hero-cloud-form-kit
+```
+
+Runtime-implied kits:
+
+```txt
+cozy-static-shell-kit
+cozy-cloud-loader-kit
+cozy-error-panel-kit
+cozy-cloudform-entry-kit
+cozy-three-render-host-kit
+cozy-scene-composition-kit
+cozy-terrain-render-kit
+cozy-ocean-floor-render-kit
+cozy-water-plane-kit
+cozy-shoreline-foam-kit
+cozy-path-render-kit
+cozy-foliage-render-kit
+cozy-fence-render-kit
+cozy-campfire-render-kit
+cozy-smoke-runtime-kit
+cozy-grass-instancing-kit
+cozy-hero-cloud-point-render-kit
+cozy-hero-cloud-cache-kit
+cozy-hero-cloud-drift-kit
+cozy-scroll-camera-rail-kit
+cozy-pointer-look-kit
+cozy-keyboard-movement-kit
+cozy-clearing-boundary-kit
+cozy-campfire-keepout-kit
+cozy-legacy-global-host-kit
+```
+
+Next-cut proof kits:
+
+```txt
+cozy-active-route-version-kit
+cozy-route-query-token-kit
+cozy-source-profile-kit
+cozy-source-fingerprint-kit
+cozy-scene-source-snapshot-kit
+cozy-action-frame-contract-kit
+cozy-action-result-contract-kit
+cozy-action-rejection-reason-kit
+cozy-movement-policy-result-kit
+cozy-clearing-boundary-result-kit
+cozy-campfire-keepout-result-kit
+cozy-rail-state-kit
+cozy-rail-snapshot-kit
+cozy-hero-cloud-descriptor-snapshot-kit
+cozy-hero-cloud-cache-snapshot-kit
+cozy-cloud-drift-result-kit
+cozy-action-journal-kit
+cozy-input-journal-kit
+cozy-gamehost-diagnostics-kit
+cozy-fixture-script-runner-kit
+cozy-replay-parity-smoke-kit
+```
+
 ## Main architectural finding
 
 The local source kits are already fairly atomic for content generation, but `src/main-cloudform.js` still acts as a large composite host that owns renderer construction, animation, camera rail, DOM events, movement gating, cloud geometry cache, and global diagnostics.
 
 The next improvement should not be more visual churn. It should be host-action authority and replay proof so the scene can be validated without only looking at the browser.
+
+## Current next safe ledge
+
+Build the **Cloudform Route Version Authority + Host Action Fixture Gate**.
+
+Preserve the current route, visuals, local domain kits, and `globalThis.CozyIsland` compatibility surface while adding additive result objects and fixture checks.

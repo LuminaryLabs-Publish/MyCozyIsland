@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T19-40-00-04-00`
+**Updated:** `2026-07-08T19-50-20-04-00`
 
 ## Next safe ledge
 
-Build a browser-consumer fixture gate and additive host proof snapshot around the existing route.
+Build a central-ledger catch-up and browser-consumer fixture scope around the existing route.
 
 ```txt
-MyCozyIsland Browser Consumer Fixture Gate + Host Proof Snapshot
+MyCozyIsland Central Ledger Catch-up + Host Proof Browser Consumer Fixture Scope
 ```
 
 Preserve the current game first:
@@ -41,7 +41,8 @@ create HeroCloudCacheSnapshot from cloudCache and savedPointClouds
 create CloudDriftResult from per-cloud drift deltas
 create RenderHostSnapshot from renderer, camera, scene, and frame metadata
 expose additive globalThis.CozyIslandHost.getState()
-add DOM-free fixture rows for route/source/action/movement/rail/grass/cloud/render/host
+add DOM-free fixture rows for route/source/action/movement/rail/grass/cloud/render/host proof
+keep central LuminaryLabs ledger aligned in the same pass
 ```
 
 ## Implementation checklist
@@ -71,6 +72,7 @@ add DOM-free fixture rows for route/source/action/movement/rail/grass/cloud/rend
 - [ ] Keep `globalThis.CozyIsland` unchanged and add `globalThis.CozyIslandHost` as an additive proof surface.
 - [ ] Add fixture rows for DOM-free route/source/action/movement/rail/grass/cloud/render/host proof.
 - [ ] Update `.agent/validation.md` with exact fixture command and browser checks after source files exist.
+- [ ] Update `LuminaryLabs-Dev/LuminaryLabs` central ledger in the same implementation pass.
 
 ## DSK extraction order
 
@@ -96,6 +98,7 @@ add DOM-free fixture rows for route/source/action/movement/rail/grass/cloud/rend
 19. cozy-browser-consumer-fixture-kit
 20. cozy-dom-free-fixture-runner-kit
 21. cozy-replay-parity-smoke-kit
+22. cozy-central-ledger-sync-kit
 ```
 
 ## Fixture rows to create first
@@ -117,6 +120,7 @@ add DOM-free fixture rows for route/source/action/movement/rail/grass/cloud/rend
 14_render_host_snapshot_reports_renderer_camera_scene_frame
 15_cozy_island_host_get_state_exposes_route_source_action_movement_rail_grass_cloud_render
 16_legacy_global_cozy_island_remains_compatible
+17_central_ledger_points_to_latest_repo_local_agent_state
 ```
 
 ## Do not do next

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T14-58-49-04-00`
+**Updated:** `2026-07-08T17-00-36-04-00`
 
 ## Validation performed in this pass
 
@@ -12,11 +12,12 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and central ledger timestamps
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland because repo-local .agent state had advanced beyond central ledger state and host-proof consumer wiring remains unresolved
+  selected MyCozyIsland as the oldest eligible fallback with unresolved host-proof source manifest and browser consumer fixture gate
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
-  read src/main-cloudform.js imports, descriptor construction, render adapters, input handlers, rail/movement/cloud/frame loop, and legacy global excerpts
+  read package.json and confirmed static server command only
+  read src/main-cloudform.js imports, descriptor construction, render adapters, input handlers, rail/movement/cloud/frame loop, grass instancing, and legacy global excerpts
   read .agent/START_HERE.md
   read .agent/current-audit.md
   read .agent/known-gaps.md
@@ -26,13 +27,14 @@ source inspection:
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes on main:
-  created .agent/trackers/2026-07-08T14-58-49-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T14-58-49-04-00.md
-  created .agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md
-  created .agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md
-  created .agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md
-  created .agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md
-  created .agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md
+  created .agent/trackers/2026-07-08T17-00-36-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T17-00-36-04-00.md
+  created .agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
+  created .agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
+  created .agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
+  created .agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
+  created .agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
+  created .agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
   updated .agent/START_HERE.md
   updated .agent/current-audit.md
   updated .agent/known-gaps.md
@@ -42,7 +44,7 @@ repo writes on main:
 
 central writes on main:
   updated repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created internal-change-log/2026-07-08T14-58-49-04-00-my-cozy-island-host-proof-consumer-splice-map.md
+  created internal-change-log/2026-07-08T17-00-36-04-00-my-cozy-island-host-proof-source-manifest.md
 ```
 
 ## Runtime validation not performed
@@ -98,6 +100,8 @@ cozy-keyboard-clearing-accepted-001
 cozy-keyboard-clearing-boundary-rejected-001
 cozy-keyboard-campfire-keepout-rejected-001
 cozy-camera-rail-samples-001
+cozy-grass-placement-source-001
+cozy-grass-instance-snapshot-001
 cozy-cloud-descriptor-001
 cozy-cloud-cache-001
 cozy-cloud-cache-reuse-001
@@ -118,6 +122,7 @@ Confirm wheel moves the rail.
 Confirm pointer look still works.
 Confirm keyboard movement still unlocks only near first-person mode.
 Confirm campfire keepout still applies.
+Confirm grass still renders as instanced patches.
 Confirm clouds still render and drift.
 Confirm globalThis.CozyIsland remains available.
 Confirm globalThis.CozyIslandHost is additive.
@@ -127,7 +132,7 @@ Confirm no console fatal error.
 ## Current validation status
 
 ```txt
-status: documentation-only host-proof consumer-splice pass complete
+status: documentation-only host-proof source-manifest pass complete
 runtime confidence: not revalidated in this pass
 branch created: no
 pushed to main: yes

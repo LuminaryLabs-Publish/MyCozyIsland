@@ -2,30 +2,30 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T04:10:24-04:00`
+**Updated:** `2026-07-08T06:01:57-04:00`
 
 ## Next safe ledge
 
 ```txt
-Add the MyCozyIsland Cloudform Route Version Authority + Host Action Fixture Gate.
+Add the MyCozyIsland Host Proof Fixture Matrix.
 ```
 
-This should preserve the current route and visuals while adding proofable host state around route version, source identity, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
+This should preserve the current route and visuals while adding proofable host state around route version, source identity, scene source snapshots, camera rail state, movement policy, hero cloud descriptors, cache state, and cloud drift.
 
 ## Implementation checklist
 
 - [ ] Preserve `index.html -> ./src/main-cloudform.js?v=hero-cloud-3`.
-- [ ] Preserve the existing player-visible scene.
+- [ ] Preserve the current player-visible scene.
 - [ ] Preserve `globalThis.CozyIsland` compatibility.
 - [ ] Add an additive `globalThis.CozyIslandHost` diagnostics surface.
 - [ ] Extract route version into a descriptor/result.
 - [ ] Add `SourceProfile` constants.
 - [ ] Add deterministic `SourceFingerprint` generation.
-- [ ] Add `SceneSourceSnapshot` for island, floor, grass, clearing, campfire, smoke, and cloud source descriptors.
+- [ ] Add `SceneSourceSnapshot` for island, floor, grass, clearing, campfire, smoke, wind, and cloud source descriptors.
 - [ ] Add `ActionFrame` normalizer for wheel, pointer, keyboard, and tick actions.
 - [ ] Add `ActionResult` for accepted/rejected action outcomes.
 - [ ] Add `MovementPolicyResult` with explicit rejection reasons.
-- [ ] Add `RailSnapshot` for scroll/camera rail state.
+- [ ] Add `CameraRailSnapshot` for fixed scroll/progress samples.
 - [ ] Add `HeroCloudDescriptorSnapshot`.
 - [ ] Add `HeroCloudCacheSnapshot`.
 - [ ] Add `CloudDriftResult`.
@@ -40,7 +40,7 @@ This should preserve the current route and visuals while adding proofable host s
 my-cozy-island-host-proof
 ├─ route-authority
 │  ├─ cozy-active-route-version-kit
-│  └─ cozy-route-query-token-kit
+│  └─ cozy-route-script-token-kit
 ├─ source-authority
 │  ├─ cozy-source-profile-kit
 │  ├─ cozy-source-fingerprint-kit
@@ -56,14 +56,14 @@ my-cozy-island-host-proof
 │  └─ cozy-campfire-keepout-result-kit
 ├─ camera-rail-authority
 │  ├─ cozy-rail-state-kit
-│  └─ cozy-rail-snapshot-kit
+│  └─ cozy-camera-rail-snapshot-kit
 ├─ cloud-authority
 │  ├─ cozy-hero-cloud-descriptor-snapshot-kit
 │  ├─ cozy-hero-cloud-cache-snapshot-kit
 │  └─ cozy-cloud-drift-result-kit
 └─ proof-authority
    ├─ cozy-gamehost-diagnostics-kit
-   ├─ cozy-fixture-script-runner-kit
+   ├─ cozy-dom-free-fixture-runner-kit
    └─ cozy-replay-parity-smoke-kit
 ```
 
@@ -78,10 +78,10 @@ src/host-proof/
 ├─ action-frame.js
 ├─ action-result.js
 ├─ movement-policy-result.js
-├─ rail-snapshot.js
+├─ camera-rail-snapshot.js
 ├─ hero-cloud-snapshot.js
 ├─ cloud-drift-result.js
-└─ replay-fixture.mjs
+└─ fixture-cases.mjs
 ```
 
 Additive integration point:
@@ -91,6 +91,23 @@ src/main-cloudform.js
   -> imports or calls host-proof helpers
   -> writes globalThis.CozyIslandHost
   -> keeps globalThis.CozyIsland unchanged
+```
+
+## First fixture cases
+
+```txt
+1. route token resolves to hero-cloud-3
+2. source profile has stable seed/radius/cloud profile
+3. source fingerprint is deterministic
+4. scene source snapshot contains landform, floor, grass, clearing, campfire, smoke, wind, and cloud summaries
+5. wheel action changes rail progress through an ActionResult
+6. pointer drag action changes yaw through an ActionResult
+7. keyboard movement inside clearing is accepted
+8. keyboard movement outside clearing is rejected with clearing-boundary reason
+9. keyboard movement into campfire keepout is rejected with campfire-keepout reason
+10. cloud descriptor snapshot reports stable point count/lobe count/placement
+11. cloud cache snapshot reports saved geometry count and point count
+12. cloud drift result is deterministic for fixed dt/time
 ```
 
 ## Guardrails

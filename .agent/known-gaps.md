@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T17-00-36-04-00`
+**Updated:** `2026-07-08T17-09-48-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible central-ledger fallback and because the host-proof browser splice remains unresolved.
+MyCozyIsland was selected because repo-local .agent state had advanced beyond the central ledger and the host-proof browser splice remains unresolved.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -104,6 +104,14 @@ valid(next) does not record rejection reasons.
 rail() does not return a stable serializable snapshot.
 grassMesh(grass) does not emit GrassInstanceSnapshot.
 frame(now) does not record CloudDriftResult or RenderHostSnapshot.
+```
+
+## Central tracking gaps
+
+```txt
+central repo ledger must be updated in the same pass as repo-local .agent state
+internal change log must point at the same tracker and turn ledger as START_HERE
+kit-registry.json must not lag START_HERE.md
 ```
 
 ## Concrete missing files for next implementation

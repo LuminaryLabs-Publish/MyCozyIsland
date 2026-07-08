@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T07:30:30-04:00`
+**Last aligned:** `2026-07-08T08:58:57-04:00`
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The full accessible `LuminaryLabs-Publish` repo list was compared against the ce
 
 No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, or missing root `.agent/START_HERE.md` state.
 
-`MyCozyIsland` was selected as a fallback follow-up target because the previous docs identified the correct host-proof fixture direction, but the repo-local acceptance target still needed concrete pass/fail contracts and the kit registry was stale relative to the latest `.agent` state.
+`MyCozyIsland` was selected as an oldest eligible fallback follow-up because its public route and visual scene are stable, but its host-proof acceptance ledger still needed an implementation wire map that identifies exactly where route, source, action, movement, camera, and cloud proof modules should attach to `src/main-cloudform.js` without turning the publish repo into a generic kit foundry.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -40,19 +40,24 @@ The repo vendors its runtime domain kits under `src/kits/` so the public app doe
 .agent/next-steps.md
 .agent/validation.md
 .agent/architecture-audit/domain-service-breakdown.md
+.agent/architecture-audit/2026-07-08T08-58-57-04-00-host-proof-dsk-breakdown.md
 .agent/render-audit/cloudform-render-audit.md
+.agent/render-audit/2026-07-08T08-58-57-04-00-render-host-proof-readback.md
 .agent/cloud-system-audit/hero-cloud-cache-and-drift.md
 .agent/interaction-audit/host-action-fixture-gate.md
 .agent/host-proof-audit/fixture-matrix.md
 .agent/host-proof-audit/acceptance-ledger.md
-.agent/trackers/2026-07-08T07-30-30-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T07-30-30-04-00.md
+.agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md
+.agent/trackers/2026-07-08T08-58-57-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T08-58-57-04-00.md
 .agent/kit-registry.json
 ```
 
 Earlier breakdown entries:
 
 ```txt
+.agent/trackers/2026-07-08T07-30-30-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T07-30-30-04-00.md
 .agent/trackers/2026-07-08T06-01-57-04-00/project-breakdown.md
 .agent/turn-ledger/2026-07-08T06-01-57-04-00.md
 .agent/trackers/2026-07-08T04-10-24-04-00/project-breakdown.md
@@ -89,7 +94,7 @@ The repo should compose and prove the cozy island app. Reusable engine, renderer
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Acceptance Fixture Gate
+MyCozyIsland Host Proof Implementation Wire Map
 ```
 
-Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3`, current visuals, and `globalThis.CozyIsland` stable while adding additive host-proof records and DOM-free fixture cases for route version, source profile, source fingerprint, scene source snapshot, action frames/results, movement policy results, camera rail snapshots, hero-cloud descriptor/cache snapshots, cloud drift results, and `globalThis.CozyIslandHost` diagnostics.
+Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3`, current visuals, and `globalThis.CozyIsland` stable while adding additive host-proof modules, fixture cases, and an additive `globalThis.CozyIslandHost` surface that can expose route version, source profile, source fingerprint, scene source snapshot, action frames/results, movement policy results, camera rail snapshots, hero-cloud descriptor/cache snapshots, cloud drift results, and host journals without requiring DOM or Three.js fixtures.

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T19-40-00-04-00`
+**Last aligned:** `2026-07-08T19-50-20-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible fallback by current sampled root-agent alignment. Its previous root alignment was `2026-07-08T17-09-48-04-00`, older than the other checked non-excluded repos after the same comparison pass.
+`MyCozyIsland` was selected again because its repo-local root-agent state had advanced to `2026-07-08T19-40-00-04-00` while the central ledger still needed catch-up and the browser-consumer host proof fixture scope remains unresolved.
 
 ## Publish repos checked
 
@@ -31,7 +31,7 @@ LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / sampled
 LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / sampled alignment 2026-07-08T19-30-31-04-00
 LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present / sampled alignment 2026-07-08T19-21-15-04-00
 LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / sampled alignment 2026-07-08T18-09-21-04-00
-LuminaryLabs-Publish/MyCozyIsland        selected / oldest eligible fallback / previous alignment 2026-07-08T17-09-48-04-00
+LuminaryLabs-Publish/MyCozyIsland        selected / central catch-up plus unresolved host-proof fixture gate
 LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / sampled alignment 2026-07-08T18-51-55-04-00
 ```
 
@@ -87,6 +87,7 @@ RouteToken
   -> RenderHostSnapshot
   -> CozyIslandHost.getState()
   -> DOM-free browser consumer fixture rows
+  -> central ledger sync
 ```
 
 ## First files to read
@@ -96,15 +97,15 @@ RouteToken
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T19-40-00-04-00-host-proof-browser-consumer-dsk-map.md
-.agent/render-audit/2026-07-08T19-40-00-04-00-render-host-consumer-readback.md
-.agent/interaction-audit/2026-07-08T19-40-00-04-00-action-movement-browser-consumer-map.md
-.agent/cloud-system-audit/2026-07-08T19-40-00-04-00-hero-cloud-cache-drift-consumer-map.md
-.agent/grass-system-audit/2026-07-08T19-40-00-04-00-grass-instance-host-readback-map.md
-.agent/host-proof-audit/2026-07-08T19-40-00-04-00-browser-consumer-fixture-manifest.md
-.agent/deploy-audit/2026-07-08T19-40-00-04-00-static-route-validation-map.md
-.agent/trackers/2026-07-08T19-40-00-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T19-40-00-04-00.md
+.agent/architecture-audit/2026-07-08T19-50-20-04-00-host-proof-central-catchup-dsk-map.md
+.agent/render-audit/2026-07-08T19-50-20-04-00-render-host-readback-fixture-gap.md
+.agent/interaction-audit/2026-07-08T19-50-20-04-00-route-action-movement-result-gap.md
+.agent/cloud-system-audit/2026-07-08T19-50-20-04-00-cloud-cache-drift-readback-gap.md
+.agent/grass-system-audit/2026-07-08T19-50-20-04-00-grass-instance-parity-gap.md
+.agent/host-proof-audit/2026-07-08T19-50-20-04-00-central-ledger-catchup-fixture-scope.md
+.agent/deploy-audit/2026-07-08T19-50-20-04-00-static-route-proof-validation.md
+.agent/trackers/2026-07-08T19-50-20-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T19-50-20-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -116,3 +117,11 @@ package.json
 src/main-cloudform.js
 src/kits/**/index.js
 ```
+
+## Current next safe ledge
+
+```txt
+MyCozyIsland Central Ledger Catch-up + Host Proof Browser Consumer Fixture Scope
+```
+
+Preserve the current visible route and legacy `globalThis.CozyIsland` surface. Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.getState()` before any visual rewrite or shared-kit promotion.

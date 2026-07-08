@@ -1,24 +1,24 @@
 # MyCozyIsland agent notes
 
-**Latest tracker:** `.agent/trackers/2026-07-07T19-29-28-04-00/project-breakdown.md`
+**Latest tracker:** `.agent/trackers/2026-07-07T20-50-10-04-00/project-breakdown.md`
 
-**Last updated:** `2026-07-07T19:29:28-04:00`
+**Last updated:** `2026-07-07T20:50:10-04:00`
 
 ## Current status
 
-`MyCozyIsland` is a public standalone static Cozy Island app. It vendors domain kits under `src/kits/`, loads through `index.html`, and renders from `src/main.js` with Three.js from jsDelivr.
+`MyCozyIsland` is a public standalone static Cozy Island app. It vendors domain kits under `src/kits/`, loads through `index.html`, and renders from `src/main.js` with Three.js `0.160.0` from jsDelivr.
 
-The live runtime includes island landform, ocean floor, shoreline foam, water, foliage, path network, grass, fenced clearing, invisible player anchor, campfire, smoke, low/high point-cloud cloud layers, a scroll-driven sky-to-eye camera rail, pointer look, and keyboard first-person movement inside the clearing.
+The live runtime includes island landform, ocean floor, shoreline foam, water, foliage, path network, grass, fenced clearing, invisible player anchor, campfire, smoke, low/high point-cloud cloud layers, a scroll-driven sky-to-eye camera rail, pointer look, and keyboard first-person movement inside the clearing once `scrollProgress >= 0.985`.
 
-The active blocker is runtime authority. Host state, reducer results, source fingerprints, cloud-cache descriptors, movement rejection records, and replay fixtures are still implicit inside `src/main.js`.
+The active blocker is runtime authority. Host state, reducer results, source fingerprints, rail snapshots, cloud-cache descriptors, movement rejection records, and replay fixtures are still implicit inside `src/main.js`.
 
 ## Latest breakdown focus
 
 ```txt
-MyCozyIsland Action Reducer Host Contract + Cloud Snapshot Fixture Gate
+MyCozyIsland CozyIslandHost Smoke Fixture + Rail Cloud Replay Lock
 ```
 
-The next safe cutover should keep visuals and `globalThis.CozyIsland` compatibility unchanged while adding additive `globalThis.CozyIslandHost`, stable source profiles, source fingerprints, source snapshots, action frames, action results, rail snapshots, cloud cache snapshots, host smoke state, and DOM-free replay fixtures.
+The next safe cutover should keep visuals and `globalThis.CozyIsland` compatibility unchanged while adding additive `globalThis.CozyIslandHost`, stable source profiles, source fingerprints, source snapshots, ActionFrame records, ActionResult records, rail snapshots, cloud cache snapshots, host smoke state, and DOM-free replay fixtures.
 
 ## Immediate next build order
 
@@ -40,7 +40,7 @@ preserve index.html, current visuals, and globalThis.CozyIsland compatibility
 
 ## Kit registry
 
-See `.agent/kit-registry.json` for current explicit kits, runtime-implied kits, next-cut kits, domain families, source facts, and target service surfaces.
+See `.agent/kit-registry.json` for current explicit kits, runtime-implied kits, next-cut kits, domain families, source facts, fixture matrix, and target service surfaces.
 
 ## Validation note
 

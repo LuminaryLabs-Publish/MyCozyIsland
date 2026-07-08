@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T04:10:24-04:00`
+**Updated:** `2026-07-08T06:01:57-04:00`
 
 ## Repo-selection gap status
 
@@ -11,10 +11,10 @@
    Fixed in the 2026-07-08T02:09:17-04:00 documentation pass.
 
 2. Central ledger already referenced .agent paths before the publish repo had them.
-   Corrected by materializing the root .agent state and central ledger entry.
+   Corrected by materializing root .agent state and central ledger entries.
 
-3. This follow-up found no checked non-Cavalry Publish repo that was fully new, central-ledger-absent, or missing root .agent/START_HERE.md state.
-   MyCozyIsland is now being tracked as an oldest eligible follow-up target rather than a missing-root-agent emergency.
+3. This follow-up found no checked non-Cavalry Publish repo that was fully new, central-ledger absent, or missing root .agent/START_HERE.md state.
+   MyCozyIsland is now tracked as a follow-up target for host-proof fixture work rather than a missing-root-agent emergency.
 ```
 
 ## Highest-priority product gaps
@@ -23,26 +23,32 @@
 1. src/main-cloudform.js is still the dominant host/composition/runtime file.
    It owns source construction, renderer construction, DOM input, animation, cloud cache, movement policy, and diagnostics.
 
-2. There is no explicit active route version authority.
-   index.html uses ?v=hero-cloud-3, but the runtime does not expose that as a first-class descriptor/result.
+2. Active route version is not a first-class result.
+   index.html uses ?v=hero-cloud-3, but the runtime does not expose that value as an inspectable route-version record.
 
-3. There is no DOM-free action result fixture gate.
-   Movement acceptance/rejection and camera rail behavior are visible at runtime but not yet replayed through a fixture script.
+3. Source profile and source fingerprint are missing.
+   Seeds, island radius, cloud point count, cloud placement, camera rail assumptions, and movement bounds are implicit runtime facts.
 
-4. There is no first-class ActionFrame -> ActionResult contract.
-   Pointer, wheel, keyboard, and tick input are handled inline rather than normalized as command frames.
+4. Scene source snapshot is missing.
+   The source descriptors are created from local kits, but there is no durable summary fixture that can prove landform, ocean floor, grass, clearing, campfire, smoke, wind, and cloud state without opening the browser.
 
-5. There is no formal movement rejection reason output.
-   Clearing boundary and campfire keepout decisions need explicit result objects.
+5. ActionFrame -> ActionResult contract is missing.
+   Wheel, pointer, keyboard, and tick actions are handled inline rather than normalized as command/result records.
 
-6. Hero cloud descriptor/cache/drift state is useful but not snapshotted as stable host data.
-   The renderer has cache behavior, but replay/diagnostic parity is not yet formalized.
+6. Movement rejection reasons are missing.
+   Clearing boundary and campfire keepout decisions need explicit accepted/rejected result objects.
 
-7. Renderer adapters are local inline functions, not named render-handoff kits.
-   This is acceptable for the current publish app but should be isolated before more visual complexity is added.
+7. Camera rail snapshots are missing.
+   Scroll progress and camera positions are visible at runtime but not fixture-readable.
 
-8. No GitHub Actions deploy workflow was found during the earlier root-agent pass.
-   Pages may still deploy by repository settings, but workflow ownership is not documented in this repo.
+8. Hero cloud descriptor/cache/drift state is not proof state yet.
+   The renderer builds and caches point geometry, but cache summaries and drift updates are not stable diagnostic records.
+
+9. Renderer adapters are local inline functions, not named render-handoff kits.
+   This is acceptable for the current publish app but should not be expanded before host-proof records exist.
+
+10. No deploy workflow was found during the earlier root-agent pass.
+    Pages may still deploy by repository settings, but workflow ownership remains undocumented in this repo.
 ```
 
 ## Visual/render gaps
@@ -58,10 +64,18 @@
 ## Architecture gaps
 
 ```txt
-- Source profile is implicit.
-- Source fingerprint is missing.
-- Scene source snapshot is missing.
-- Host state contract is missing.
+- RouteVersionResult is missing.
+- SourceProfile is missing.
+- SourceFingerprint is missing.
+- SceneSourceSnapshot is missing.
+- HostSnapshot is missing.
+- ActionFrame is missing.
+- ActionResult is missing.
+- MovementPolicyResult is missing.
+- CameraRailSnapshot is missing.
+- HeroCloudDescriptorSnapshot is missing.
+- HeroCloudCacheSnapshot is missing.
+- CloudDriftResult is missing.
 - Action journal is missing.
 - Input journal is missing.
 - Replay parity smoke is missing.
@@ -73,4 +87,4 @@
 
 The repo is not broken by these gaps.
 
-The app has moved faster than its operating memory and proof layer. The next pass should add host/action/replay proof without changing the route or visuals.
+The app has a coherent visual slice and a useful set of local domain kits. The next pass should make the host layer inspectable before visual expansion continues.

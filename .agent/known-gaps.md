@@ -2,119 +2,117 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T11-40-00-04-00`
+**Updated:** `2026-07-08T13-11-07-04-00`
 
-## Repo-selection gap status
+## Selection / ledger gaps
 
 ```txt
-1. Root .agent state was missing in the publish repo.
-   Fixed in the 2026-07-08T02:09:17-04:00 documentation pass.
+No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-2. Central ledger already referenced .agent paths before the publish repo had them.
-   Corrected by materializing root .agent state and central ledger entries.
+MyCozyIsland was selected as the oldest observed eligible fallback in this run.
 
-3. No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, or missing root .agent/START_HERE.md state in this pass.
-   MyCozyIsland remains an eligible fallback follow-up target.
-
-4. Prior stale route-token docs were aligned to hero-cloud-4.
-   The remaining gap is not route naming; it is fixture-readable host proof.
+TheCavalryOfRome remains excluded.
 ```
 
-## Highest-priority product gaps
+## Route gaps
 
 ```txt
-1. Active route token is not a first-class result.
-   index.html uses ?v=hero-cloud-4, but the runtime does not expose that value as an inspectable RouteVersionResult.
-
-2. src/main-cloudform.js is still the dominant host/composition/runtime file.
-   It owns source construction, renderer construction, DOM input, animation, cloud cache, movement policy, and diagnostics.
-
-3. Source profile and source fingerprint are missing.
-   Seeds, island radius, cloud point count, cloud placement, camera rail assumptions, movement bounds, and route token are implicit runtime facts.
-
-4. Scene source snapshot is missing.
-   The source descriptors are created from local kits, but there is no durable summary fixture that can prove landform, ocean floor, grass, clearing, campfire, smoke, wind, and cloud state without opening the browser.
-
-5. ActionFrame -> ActionResult contract is missing.
-   Wheel, pointer, keyboard, and tick actions are handled inline rather than normalized as command/result records.
-
-6. Movement rejection reasons are missing.
-   Clearing boundary, first-person lock, no-input, and campfire keepout decisions need explicit accepted/rejected/no-op result objects.
-
-7. Camera rail snapshots are missing.
-   Scroll progress and camera positions are visible at runtime but not fixture-readable.
-
-8. Hero cloud descriptor/cache/drift state is not proof state yet.
-   The renderer builds and caches point geometry, but cache summaries and drift updates are not stable diagnostic records.
-
-9. Host snapshot is missing.
-   globalThis.CozyIsland is compatibility state, not a full proof surface.
-
-10. Renderer adapters are local inline functions, not named render-handoff kits.
-    This is acceptable for the current publish app but should not be expanded before host-proof records exist.
-
-11. No deploy workflow was found during earlier root-agent passes.
-    Pages may still deploy by repository settings, but workflow ownership remains undocumented in this repo.
+index.html loads ./src/main-cloudform.js?v=hero-cloud-4.
+The route token is not yet returned by a pure RouteVersionResult.
+There is no fixture row for accepted hero-cloud-4.
+There is no fixture row for stale hero-cloud-3 rejection.
+There is no fixture row for missing-token rejection.
 ```
 
-## Wire-map gaps to close next
+## Source gaps
 
 ```txt
-- route-version helper must accept hero-cloud-4 as the current route token.
-- route-version helper must reject hero-cloud-3 as stale unless index.html is intentionally rolled back.
-- source-profile helper must centralize current seeds, radii, cloud profile, movement profile, rail profile, and active route token.
-- source-fingerprint helper must produce a stable hash over source-profile inputs.
-- scene-source-snapshot helper must summarize descriptors, not Three.js meshes.
-- action-frame helper must normalize wheel, pointer, keyboard, and tick inputs.
-- action-result helper must report accepted/rejected/no-op results and changed fields.
-- movement-policy-result helper must preserve locked-before-first-person, no-movement-input, inside-clearing, clearing-boundary, and campfire-keepout reasons.
-- camera-rail-snapshot helper must sample progress values without a camera object.
-- hero-cloud-snapshot helper must summarize descriptors and cache facts without depending on WebGL.
-- cloud-drift-result helper must reduce fixed dt/time inputs deterministically.
-- host-snapshot helper must collect route/source/interaction/movement/rail/cloud/render compatibility facts.
-- fixture-cases.mjs must run without DOM, canvas, Three.js, or a static server.
-- src/main-cloudform.js must wire helpers additively and keep globalThis.CozyIsland compatibility unchanged.
+SourceProfile is missing.
+SourceFingerprint is missing.
+SceneSourceSnapshot is missing.
+Seeds, island radius, floor profile, grass count, cloud profile, movement threshold, rail control points, and route token are still implicit runtime facts.
+Source descriptors are created from local kits, but no DOM-free summary proves the descriptor bundle without opening the browser.
 ```
 
-## Visual/render gaps
+## Interaction gaps
 
 ```txt
-- Tree and foliage rendering is still simplified into primitive shapes.
-- Grass uses instanced cone geometry rather than textured clumps or varied plane batches.
-- Smoke uses points and inline update logic rather than a reusable particle descriptor runtime.
-- Cloud point geometry is generated inline and cached in the browser host.
-- Water and foam are present but shader depth, refraction, foam breakup, and shoreline material variation remain simple.
+Wheel, pointer, keyboard, and frame actions are not normalized as ActionFrame records.
+Accepted, rejected, and no-op outcomes are not normalized as ActionResult records.
+Input history is not journaled.
+Action result history is not journaled.
 ```
 
-Do not fix these visual/render gaps before the route/host-proof fixture gate is in place.
-
-## Architecture gaps
+## Movement gaps
 
 ```txt
-- RouteVersionResult is missing.
-- Route token mismatch reasons are missing.
-- SourceProfile is missing.
-- SourceFingerprint is missing.
-- SceneSourceSnapshot is missing.
-- HostSnapshot is missing.
-- ActionFrame is missing.
-- ActionResult is missing.
-- MovementPolicyResult is missing.
-- ClearingBoundaryResult is missing.
-- CampfireKeepoutResult is missing.
-- CameraRailSnapshot is missing.
-- HeroCloudDescriptorSnapshot is missing.
-- HeroCloudCacheSnapshot is missing.
-- CloudDriftResult is missing.
-- Action journal is missing.
-- Input journal is missing.
-- Replay parity smoke is missing.
-- Diagnostics are limited to legacy globalThis.CozyIsland.
-- The planned additive globalThis.CozyIslandHost surface does not exist yet.
+Keyboard movement is locked until progress >= 0.985, but this is not returned as locked-before-first-person.
+No-input movement is not returned as no-movement-input.
+Clearing-boundary rejection is silent.
+Campfire-keepout rejection is folded into valid(next) and is not distinct.
+MovementPolicyResult, ClearingBoundaryResult, and CampfireKeepoutResult are missing.
+```
+
+## Camera rail gaps
+
+```txt
+rail() samples camera position/look directly from runtime state.
+No CameraRailSnapshot exists for fixed progress values.
+No fixture rows prove progress 0, 0.25, 0.5, 0.85, 0.985, and 1.0.
+No rail readback is exposed through a host snapshot.
+```
+
+## Cloud-system gaps
+
+```txt
+HeroCloudDescriptorSnapshot is missing.
+HeroCloudCacheSnapshot is missing.
+CloudDriftResult is missing.
+The cloudCache Map is private to src/main-cloudform.js.
+Per-frame cloud drift mutates Three.js point objects directly.
+legacy globalThis.CozyIsland.cloudPointCache exposes geometry references, not stable summaries.
+```
+
+## Render/host gaps
+
+```txt
+RenderHostSnapshot is missing.
+Renderer adapters are inline and not summarized.
+Scene object counts are not exposed.
+Grass instance count, smoke particle count, cloud point count, and cached geometry counts are not summarized.
+globalThis.CozyIslandHost does not exist yet.
+globalThis.CozyIsland remains compatibility-only and does not carry proof records.
+```
+
+## Concrete missing files for next implementation
+
+```txt
+src/host-proof/route-version.js
+src/host-proof/source-profile.js
+src/host-proof/source-fingerprint.js
+src/host-proof/scene-source-snapshot.js
+src/host-proof/action-frame.js
+src/host-proof/action-result.js
+src/host-proof/movement-policy-result.js
+src/host-proof/camera-rail-snapshot.js
+src/host-proof/hero-cloud-snapshot.js
+src/host-proof/cloud-drift-result.js
+src/host-proof/host-snapshot.js
+src/host-proof/fixture-cases.mjs
+```
+
+## Validation gaps
+
+```txt
+No runtime validation was run during this documentation-only pass.
+No local static server was started.
+No package test was run.
+No browser route check was run.
+No DOM-free fixture was run because host-proof modules do not exist yet.
 ```
 
 ## Safe interpretation
 
 The repo is not broken by these gaps.
 
-The active source route is `hero-cloud-4`; the next implementation should make that route token and the host runtime state fixture-readable before adding visual expansion or shared-kit promotion.
+The active route is `hero-cloud-4`; the next implementation should make that route and host runtime state fixture-readable before adding visual upgrades or promoting shared kits.

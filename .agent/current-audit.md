@@ -2,13 +2,13 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T17-09-48-04-00`
+**Audit timestamp:** `2026-07-08T19-40-00-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The visual scene is already coherent enough for the current slice. The blocker is proofability and tracking alignment: route, source, interaction, movement, camera rail, grass, hero-cloud cache/drift, render readback, host diagnostics, and central ledger sync need pure, fixture-readable records.
+The visual scene is coherent enough for the current slice. The blocker is proofability: route version, source profile, interaction/action, movement rejection, camera rail, grass instances, hero-cloud cache/drift, render host state, host diagnostics, and central ledger alignment need pure browser-consumer records and DOM-free fixture rows.
 
 ## Repo selection result
 
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland had repo-local root-agent state newer than central ledger state and still needs a concrete host-proof source-file manifest plus browser consumer fixture gate.
+  MyCozyIsland had the oldest sampled root-agent alignment among eligible non-excluded repos and still needs a browser-consumer fixture proof for host/source/render/movement/cloud/grass records.
 ```
 
 ## Current route
@@ -63,7 +63,7 @@ static browser route
   -> pointer mutates yaw before first-person and yaw/pitch after first-person
   -> keyboard movement unlocks at progress >= 0.985
   -> valid(next) accepts or rejects movement by clearing radius and campfire keepout
-  -> updateSmoke, flame animation, sea bob, cloud drift, camera, and renderer run every frame
+  -> frame updates sea bob, movement, rail/camera, smoke, flame, cloud drift, renderer
   -> globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress
 ```
 
@@ -74,12 +74,9 @@ static-browser-shell
 cloud-loader-ui
 error-panel-ui
 module-entry-route
-active-route-token-authority
+route-version-token
 three-cdn-runtime
 local-source-domain-runtime
-source-profile-authority-next
-source-fingerprint-authority-next
-scene-source-snapshot-next
 island-landform-source
 heightfield-sampling
 mask-sampling
@@ -91,7 +88,7 @@ object-exclusion-policy
 path-network-source
 grass-placement-contract
 grass-wind-descriptor
-grass-instance-readback-next
+grass-instance-readback
 fenced-clearing-source
 player-anchor-source
 clearing-collision-boundary
@@ -120,10 +117,10 @@ pointer-look-state
 keyboard-input-state
 first-person-threshold-gate
 movement-policy-authority
-render-host-snapshot-next
+render-host-snapshot
 legacy-global-diagnostics
-cozy-island-host-next
-fixture-replay-authority-next
+cozy-island-host-proof
+browser-consumer-fixture-authority
 central-ledger-sync
 ```
 
@@ -275,6 +272,7 @@ cozy-render-host-snapshot-kit
 cozy-host-state-contract-kit
 cozy-host-snapshot-kit
 cozy-gamehost-diagnostics-kit
+cozy-browser-consumer-fixture-kit
 cozy-dom-free-fixture-runner-kit
 cozy-replay-parity-smoke-kit
 cozy-central-ledger-sync-kit
@@ -293,22 +291,24 @@ hero-cloud geometry cache is not summarized as HeroCloudCacheSnapshot
 cloud drift mutates objects but is not represented as CloudDriftResult
 render host state is not summarized as RenderHostSnapshot
 legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost proof surface exists
+browser consumer fixture rows do not exist yet
 central ledger can fall behind repo-local agent state if the central entry is not updated in the same pass
 ```
 
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-dsk-map.md
-.agent/render-audit/2026-07-08T17-09-48-04-00-render-host-source-manifest-sync.md
-.agent/interaction-audit/2026-07-08T17-09-48-04-00-action-movement-fixture-sync.md
-.agent/cloud-system-audit/2026-07-08T17-09-48-04-00-cloud-cache-drift-fixture-sync.md
-.agent/grass-system-audit/2026-07-08T17-09-48-04-00-grass-snapshot-fixture-sync.md
-.agent/host-proof-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-and-source-manifest.md
+.agent/architecture-audit/2026-07-08T19-40-00-04-00-host-proof-browser-consumer-dsk-map.md
+.agent/render-audit/2026-07-08T19-40-00-04-00-render-host-consumer-readback.md
+.agent/interaction-audit/2026-07-08T19-40-00-04-00-action-movement-browser-consumer-map.md
+.agent/cloud-system-audit/2026-07-08T19-40-00-04-00-hero-cloud-cache-drift-consumer-map.md
+.agent/grass-system-audit/2026-07-08T19-40-00-04-00-grass-instance-host-readback-map.md
+.agent/host-proof-audit/2026-07-08T19-40-00-04-00-browser-consumer-fixture-manifest.md
+.agent/deploy-audit/2026-07-08T19-40-00-04-00-static-route-validation-map.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate + Central Ledger Sync
+MyCozyIsland Browser Consumer Fixture Gate + Host Proof Snapshot
 ```

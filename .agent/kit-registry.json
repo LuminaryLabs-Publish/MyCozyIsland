@@ -1,20 +1,21 @@
 {
-  "schemaVersion": 14,
+  "schemaVersion": 15,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-08T14-58-49-04-00",
-  "status": "host-proof-consumer-splice-map-and-central-ledger-catch-up-planned",
-  "latestTracker": ".agent/trackers/2026-07-08T14-58-49-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T14-58-49-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up",
+  "lastUpdated": "2026-07-08T17-00-36-04-00",
+  "status": "host-proof-source-manifest-browser-consumer-fixture-gate-planned",
+  "latestTracker": ".agent/trackers/2026-07-08T17-00-36-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T17-00-36-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md",
-    "renderAudit": ".agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md",
+    "renderAudit": ".agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected because repo-local .agent state had advanced beyond central ledger state and the host-proof consumer splice remains unresolved.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible fallback in the current central readback and because host-proof source manifest plus browser consumer fixture gate remains unresolved.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -161,6 +162,8 @@
     "cozy-campfire-keepout-result-kit",
     "cozy-rail-state-kit",
     "cozy-camera-rail-snapshot-kit",
+    "cozy-grass-source-readback-kit",
+    "cozy-grass-instance-snapshot-kit",
     "cozy-hero-cloud-descriptor-snapshot-kit",
     "cozy-hero-cloud-cache-snapshot-kit",
     "cozy-cloud-drift-result-kit",
@@ -180,6 +183,7 @@
     "src/host-proof/action-result.js",
     "src/host-proof/movement-policy-result.js",
     "src/host-proof/camera-rail-snapshot.js",
+    "src/host-proof/grass-instance-snapshot.js",
     "src/host-proof/hero-cloud-snapshot.js",
     "src/host-proof/cloud-drift-result.js",
     "src/host-proof/host-snapshot.js",
@@ -187,7 +191,9 @@
   ],
   "browserConsumerSplicePoints": [
     "src/main-cloudform.js imports",
+    "route token read from active script URL",
     "descriptor construction block",
+    "grass placement and grassMesh(grass)",
     "wheel handler",
     "pointer handlers",
     "fp(dt)",
@@ -215,6 +221,8 @@
     "cozy-keyboard-clearing-boundary-rejected-001",
     "cozy-keyboard-campfire-keepout-rejected-001",
     "cozy-camera-rail-samples-001",
+    "cozy-grass-placement-source-001",
+    "cozy-grass-instance-snapshot-001",
     "cozy-cloud-descriptor-001",
     "cozy-cloud-cache-001",
     "cozy-cloud-cache-reuse-001",
@@ -224,6 +232,6 @@
     "cozy-host-legacy-compatibility-001",
     "cozy-host-dom-free-001"
   ],
-  "nextSafeLedge": "MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up",
+  "nextSafeLedge": "MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate",
   "compatibilityRule": "Keep globalThis.CozyIsland unchanged and add globalThis.CozyIslandHost only after pure fixture rows pass."
 }

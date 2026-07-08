@@ -1,20 +1,20 @@
 {
-  "schemaVersion": 13,
+  "schemaVersion": 14,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-08T14-39-38-04-00",
-  "status": "host-proof-module-boundary-and-cozy-island-host-wire-contract-planned",
-  "latestTracker": ".agent/trackers/2026-07-08T14-39-38-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T14-39-38-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract",
+  "lastUpdated": "2026-07-08T14-58-49-04-00",
+  "status": "host-proof-consumer-splice-map-and-central-ledger-catch-up-planned",
+  "latestTracker": ".agent/trackers/2026-07-08T14-58-49-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T14-58-49-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-08T14-39-38-04-00-host-proof-module-boundary.md",
-    "renderAudit": ".agent/render-audit/2026-07-08T14-39-38-04-00-render-readback-wire-map.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-08T14-39-38-04-00-action-result-consumer-wire-map.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-08T14-39-38-04-00-hero-cloud-snapshot-wire-map.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-08T14-39-38-04-00-cozy-island-host-wire-contract.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-08T14-58-49-04-00-host-proof-consumer-dsk-breakdown.md",
+    "renderAudit": ".agent/render-audit/2026-07-08T14-58-49-04-00-render-host-snapshot-consumer-map.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-08T14-58-49-04-00-action-movement-consumer-splice-map.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-08T14-58-49-04-00-cloud-cache-drift-consumer-map.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-08T14-58-49-04-00-cozy-island-host-consumer-splice-map.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible fallback from recent central repo-ledger update ordering and still needs a host-proof wire contract.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected because repo-local .agent state had advanced beyond central ledger state and the host-proof consumer splice remains unresolved.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -185,6 +185,20 @@
     "src/host-proof/host-snapshot.js",
     "src/host-proof/fixture-cases.mjs"
   ],
+  "browserConsumerSplicePoints": [
+    "src/main-cloudform.js imports",
+    "descriptor construction block",
+    "wheel handler",
+    "pointer handlers",
+    "fp(dt)",
+    "valid(next)",
+    "rail()",
+    "heroCloudGeometry/cloudCache",
+    "heroCloudGroup(contract)",
+    "frame(now) cloud drift",
+    "renderer/camera/scene projection",
+    "globalThis.CozyIslandHost additive export"
+  ],
   "acceptanceFixtureIds": [
     "cozy-route-version-accepted-001",
     "cozy-route-version-stale-hero-cloud-3-001",
@@ -210,6 +224,6 @@
     "cozy-host-legacy-compatibility-001",
     "cozy-host-dom-free-001"
   ],
-  "nextSafeLedge": "MyCozyIsland Host Proof Module Boundary + CozyIslandHost Wire Contract",
+  "nextSafeLedge": "MyCozyIsland Host Proof Consumer Splice Map + Central Ledger Catch-up",
   "compatibilityRule": "Keep globalThis.CozyIsland unchanged and add globalThis.CozyIslandHost only after pure fixture rows pass."
 }

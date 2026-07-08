@@ -2,17 +2,17 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T17-00-36-04-00`
+**Updated:** `2026-07-08T17-09-48-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate + Central Ledger Sync
 ```
 
 ## Goal
 
-Preserve the current route, visuals, and compatibility globals while adding pure host-proof modules, exact source-file boundaries, fixture rows, and a safe browser-consumer splice order for route/source/action/movement/rail/grass/cloud/render/host state.
+Preserve the current route, visuals, compatibility globals, and local source-domain kits while adding pure host-proof modules, exact source-file boundaries, fixture rows, browser-consumer splice order, and central ledger alignment for route/source/action/movement/rail/grass/cloud/render/host state.
 
 The implementation should make `hero-cloud-4` an explicit accepted route result and expose an additive `globalThis.CozyIslandHost` surface only after fixtures pass.
 
@@ -24,7 +24,7 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add `src/host-proof/route-version.js`.
 - [ ] Add `RouteVersionResult` for accepted `hero-cloud-4`, stale `hero-cloud-3`, and missing token.
 - [ ] Add `src/host-proof/source-profile.js`.
-- [ ] Add `SourceProfile` for route token, island, floor, grass, wind, clearing, campfire, smoke, cloud, movement, and rail assumptions.
+- [ ] Add `SourceProfile` for route token, island, floor, grass, wind, clearing, campfire, smoke, cloud, movement, rail, and central-ledger assumptions.
 - [ ] Add `src/host-proof/source-fingerprint.js`.
 - [ ] Add deterministic `SourceFingerprint` generation from serializable source facts only.
 - [ ] Add `src/host-proof/scene-source-snapshot.js`.
@@ -46,12 +46,13 @@ The implementation should make `hero-cloud-4` an explicit accepted route result 
 - [ ] Add `src/host-proof/host-snapshot.js`.
 - [ ] Add `RenderHostSnapshot` and `CozyIslandHostSnapshot` projection helpers.
 - [ ] Add `src/host-proof/fixture-cases.mjs`.
-- [ ] Add fixture rows for route, source, action, movement, rail, grass, cloud, render, host, and compatibility records.
+- [ ] Add fixture rows for route, source, action, movement, rail, grass, cloud, render, host, compatibility, and central-ledger sync records.
 - [ ] Run the host-proof fixture without DOM, canvas, Three.js, browser, or static server.
 - [ ] Add package script only after the fixture exists.
 - [ ] Import proven host-proof helpers into `src/main-cloudform.js`.
 - [ ] Splice helper calls beside current descriptor creation, event handlers, rail, movement, grass, cloud drift, render, and global exports.
 - [ ] Expose `globalThis.CozyIslandHost` without changing `globalThis.CozyIsland`.
+- [ ] Keep central `LuminaryLabs-Dev/LuminaryLabs` repo ledger aligned with repo-local `.agent` state.
 - [ ] Update validation with exact command output.
 
 ## Atomic kit split target
@@ -65,7 +66,8 @@ my-cozy-island-host-proof
 ├─ source-authority
 │  ├─ cozy-source-profile-kit
 │  ├─ cozy-source-fingerprint-kit
-│  └─ cozy-scene-source-snapshot-kit
+│  ├─ cozy-scene-source-snapshot-kit
+│  └─ cozy-source-file-manifest-kit
 ├─ action-authority
 │  ├─ cozy-action-frame-contract-kit
 │  ├─ cozy-action-result-contract-kit
@@ -88,12 +90,15 @@ my-cozy-island-host-proof
 │  └─ cozy-cloud-drift-result-kit
 ├─ render-readback-authority
 │  └─ cozy-render-host-snapshot-kit
-└─ proof-authority
-   ├─ cozy-gamehost-diagnostics-kit
-   ├─ cozy-host-state-contract-kit
-   ├─ cozy-host-snapshot-kit
-   ├─ cozy-dom-free-fixture-runner-kit
-   └─ cozy-replay-parity-smoke-kit
+├─ proof-authority
+│  ├─ cozy-gamehost-diagnostics-kit
+│  ├─ cozy-host-state-contract-kit
+│  ├─ cozy-host-snapshot-kit
+│  ├─ cozy-dom-free-fixture-runner-kit
+│  └─ cozy-replay-parity-smoke-kit
+└─ tracking-authority
+   ├─ cozy-central-ledger-sync-kit
+   └─ cozy-agent-state-sync-kit
 ```
 
 ## First implementation shape
@@ -129,6 +134,7 @@ src/host-proof/
 9. Project CloudDriftResult during frame(now) without changing drift math.
 10. Project RenderHostSnapshot from renderer, camera, scene, and count facts.
 11. Expose globalThis.CozyIslandHost.getState() additively.
+12. Confirm central ledger points at the same tracker/turn-ledger timestamp.
 ```
 
 ## Required fixture rows
@@ -159,6 +165,7 @@ cozy-render-host-snapshot-001
 cozy-host-snapshot-001
 cozy-host-legacy-compatibility-001
 cozy-host-dom-free-001
+cozy-central-ledger-sync-001
 ```
 
 ## Guardrails

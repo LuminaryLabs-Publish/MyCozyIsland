@@ -2,13 +2,13 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T17-00-36-04-00`
+**Audit timestamp:** `2026-07-08T17-09-48-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The visual scene is already coherent enough for the current slice. The blocker is proofability: route, source, interaction, movement, camera rail, grass, hero-cloud cache/drift, render readback, and host diagnostics are still mostly inline browser facts inside `src/main-cloudform.js` rather than pure, fixture-readable result records.
+The visual scene is already coherent enough for the current slice. The blocker is proofability and tracking alignment: route, source, interaction, movement, camera rail, grass, hero-cloud cache/drift, render readback, host diagnostics, and central ledger sync need pure, fixture-readable records.
 
 ## Repo selection result
 
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland was the oldest eligible central-ledger fallback in the current readback and still needs a concrete host-proof source-file manifest plus browser consumer fixture gate.
+  MyCozyIsland had repo-local root-agent state newer than central ledger state and still needs a concrete host-proof source-file manifest plus browser consumer fixture gate.
 ```
 
 ## Current route
@@ -252,7 +252,6 @@ Next-cut proof kits:
 
 ```txt
 cozy-active-route-version-kit
-cozy-route-script-token-kit
 cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
@@ -278,6 +277,7 @@ cozy-host-snapshot-kit
 cozy-gamehost-diagnostics-kit
 cozy-dom-free-fixture-runner-kit
 cozy-replay-parity-smoke-kit
+cozy-central-ledger-sync-kit
 ```
 
 ## Current high-value gap
@@ -293,21 +293,22 @@ hero-cloud geometry cache is not summarized as HeroCloudCacheSnapshot
 cloud drift mutates objects but is not represented as CloudDriftResult
 render host state is not summarized as RenderHostSnapshot
 legacy globalThis.CozyIsland exists but no additive globalThis.CozyIslandHost proof surface exists
+central ledger can fall behind repo-local agent state if the central entry is not updated in the same pass
 ```
 
 ## New audit artifacts
 
 ```txt
-.agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
-.agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
-.agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
-.agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
-.agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
-.agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
+.agent/architecture-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-dsk-map.md
+.agent/render-audit/2026-07-08T17-09-48-04-00-render-host-source-manifest-sync.md
+.agent/interaction-audit/2026-07-08T17-09-48-04-00-action-movement-fixture-sync.md
+.agent/cloud-system-audit/2026-07-08T17-09-48-04-00-cloud-cache-drift-fixture-sync.md
+.agent/grass-system-audit/2026-07-08T17-09-48-04-00-grass-snapshot-fixture-sync.md
+.agent/host-proof-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-and-source-manifest.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Source Manifest + Browser Consumer Fixture Gate + Central Ledger Sync
 ```

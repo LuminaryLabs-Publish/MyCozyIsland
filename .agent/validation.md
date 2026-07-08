@@ -2,31 +2,38 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T02:09:17-04:00`
+**Updated:** `2026-07-08T04:10:24-04:00`
 
 ## Validation performed in this pass
 
 ```txt
 repo selection:
-  checked full installed LuminaryLabs-Publish repo search results
-  compared against central LuminaryLabs-Dev/LuminaryLabs ledger search results
-  verified MyCozyIsland central ledger exists
-  verified MyCozyIsland root .agent/START_HERE.md was missing before this pass
+  searched the accessible LuminaryLabs-Publish org repo list
+  compared checked repos against central LuminaryLabs-Dev/LuminaryLabs repo-ledger state
+  excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
+  found no checked non-Cavalry repo that was fully new, ledger-absent, or missing root .agent/START_HERE.md
+  selected MyCozyIsland as oldest eligible root-agent follow-up target
 
 source inspection:
-  read README.md
+  read .agent/START_HERE.md
+  read .agent/current-audit.md
+  read .agent/known-gaps.md
+  read .agent/next-steps.md
+  read .agent/validation.md
   read index.html
-  read package.json
   read src/main-cloudform.js excerpt
-  read src/kits/ocean-island-landform-domain/index.js
-  read src/kits/island-foliage-domain/index.js
-  read docs/cloud-kits.md
-  attempted .github/workflows/deploy.yml and confirmed it was not found through fetch
+  read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes:
-  created root .agent operating state in LuminaryLabs-Publish/MyCozyIsland on main
-  created central internal change-log entry in LuminaryLabs-Dev/LuminaryLabs on main
-  updated central MyCozyIsland repo ledger in LuminaryLabs-Dev/LuminaryLabs on main
+  created .agent/trackers/2026-07-08T04-10-24-04-00/project-breakdown.md on main
+  created .agent/turn-ledger/2026-07-08T04-10-24-04-00.md on main
+  updated .agent/START_HERE.md on main
+  updated .agent/current-audit.md on main
+  updated .agent/known-gaps.md on main
+  updated .agent/next-steps.md on main
+  updated .agent/validation.md on main
+  created central internal change-log entry on main
+  updated central MyCozyIsland repo ledger on main
 ```
 
 ## Runtime validation not performed
@@ -36,8 +43,9 @@ repo writes:
 - No GitHub Pages URL was opened.
 - No local static server was started.
 - No Playwright test was run.
-- No package test was run because package.json only declares a start script.
-- No build command was run because no build script was present in package.json.
+- No package test was run.
+- No build command was run.
+- No runtime source code was changed.
 ```
 
 ## Current known command surface
@@ -65,6 +73,7 @@ Add a DOM-free fixture script that imports the host-proof/result modules once th
 ```txt
 - route version resolves to hero-cloud-3
 - source fingerprint is deterministic
+- scene source snapshot is stable for fixed seeds
 - camera rail snapshot is deterministic for fixed progress samples
 - movement inside the clearing is accepted
 - movement outside the clearing is rejected with an explicit reason
@@ -72,5 +81,10 @@ Add a DOM-free fixture script that imports the host-proof/result modules once th
 - hero cloud descriptor snapshot is stable
 - hero cloud cache snapshot reports stable point counts
 - cloud drift result is deterministic for fixed dt/tick input
-- globalThis.CozyIsland remains additive and not required by fixture tests
+- additive globalThis.CozyIslandHost exposes proof state
+- globalThis.CozyIsland remains compatible and not required by fixture tests
 ```
+
+## Stop condition for next implementation run
+
+Stop after the host-proof fixture can run without opening a browser and after the current public route still loads through `index.html -> ./src/main-cloudform.js?v=hero-cloud-3`.

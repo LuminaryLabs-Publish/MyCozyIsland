@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T02:09:17-04:00`
+**Last aligned:** `2026-07-08T04:10:24-04:00`
 
 ## Purpose
 
@@ -10,11 +10,13 @@ This `.agent/` folder is the repo-local operating memory for scheduled and manua
 
 Read this folder before changing implementation code.
 
-## Selection reason
+## Current selection result
 
-`MyCozyIsland` was selected from the full `LuminaryLabs-Publish` repo list because the central `LuminaryLabs-Dev/LuminaryLabs` ledger already documented the repo, but the actual publish repo was still missing root `.agent/START_HERE.md` when checked in this run.
+The full accessible `LuminaryLabs-Publish` repo list was compared against the central `LuminaryLabs-Dev/LuminaryLabs` repo ledger.
 
-The current selection rule prefers Publish repos that are new, ledger-absent, undocumented, or missing root `.agent` state before falling back to oldest eligible repo selection.
+No checked non-Cavalry Publish repo was found that was fully new, central-ledger-absent, or missing root `.agent/START_HERE.md` state.
+
+`MyCozyIsland` was selected as the oldest eligible root-agent follow-up target among checked repos because its previous root alignment was `2026-07-08T02:09:17-04:00`, and its next safe ledge is still a high-value host/action proof seam.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -22,7 +24,11 @@ The current selection rule prefers Publish repos that are new, ledger-absent, un
 
 `MyCozyIsland` is a standalone static Three.js cozy island scene.
 
-The app is opened through `index.html` and currently boots `./src/main-cloudform.js?v=hero-cloud-3`.
+The active route is still:
+
+```txt
+index.html -> ./src/main-cloudform.js?v=hero-cloud-3
+```
 
 The repo vendors its runtime domain kits under `src/kits/` so the public app does not depend on `NexusEngine-Experiments` or `NexusRealtime-ProtoKits` at runtime.
 
@@ -37,9 +43,16 @@ The repo vendors its runtime domain kits under `src/kits/` so the public app doe
 .agent/render-audit/cloudform-render-audit.md
 .agent/cloud-system-audit/hero-cloud-cache-and-drift.md
 .agent/interaction-audit/host-action-fixture-gate.md
+.agent/trackers/2026-07-08T04-10-24-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T04-10-24-04-00.md
+.agent/kit-registry.json
+```
+
+Earlier breakdown entry:
+
+```txt
 .agent/trackers/2026-07-08T02-09-17-04-00/project-breakdown.md
 .agent/turn-ledger/2026-07-08T02-09-17-04-00.md
-.agent/kit-registry.json
 ```
 
 ## Source files to inspect next
@@ -69,6 +82,6 @@ The repo should compose and prove the cozy island app. Reusable engine, renderer
 
 ## Current next safe ledge
 
-Materialize the host-action fixture gate without changing the public look.
+Materialize the **Cloudform Route Version Authority + Host Action Fixture Gate** without changing the public look.
 
-Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3` stable, preserve `globalThis.CozyIsland`, and add additive host diagnostics for route version, source fingerprint, camera rail, movement acceptance/rejection, cloud descriptor/cache state, and cloud drift results.
+Keep `index.html -> src/main-cloudform.js?v=hero-cloud-3` stable, preserve `globalThis.CozyIsland`, and add additive host diagnostics for route version, source fingerprint, scene source snapshot, camera rail, movement acceptance/rejection, cloud descriptor/cache state, cloud drift results, and DOM-free fixture replay.

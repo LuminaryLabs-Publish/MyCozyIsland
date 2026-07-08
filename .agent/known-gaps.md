@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T14-58-49-04-00`
+**Updated:** `2026-07-08T17-00-36-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected because central tracking lagged behind repo-local .agent state and because the host-proof consumer splice remains unresolved.
+MyCozyIsland was selected as the oldest eligible central-ledger fallback and because the host-proof browser splice remains unresolved.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -62,6 +62,15 @@ No fixture rows prove progress 0, 0.25, 0.5, 0.85, 0.985, and 1.0.
 No rail readback is exposed through a host snapshot.
 ```
 
+## Grass-system gaps
+
+```txt
+createGrassPatchPlacementContract returns placement data, and grassMesh turns it into an InstancedMesh.
+The grass count is visible in source as 140 but not exposed as a stable GrassInstanceSnapshot.
+There is no fixture row proving grass seed, exclusion policy, placement count, or instance render intent.
+There is no host readback field for grass patches, instance count, or excluded clearing/campfire zones.
+```
+
 ## Cloud-system gaps
 
 ```txt
@@ -93,6 +102,7 @@ src/main-cloudform.js does not build source snapshots from descriptors.
 Event handlers do not record ActionFrame / ActionResult data.
 valid(next) does not record rejection reasons.
 rail() does not return a stable serializable snapshot.
+grassMesh(grass) does not emit GrassInstanceSnapshot.
 frame(now) does not record CloudDriftResult or RenderHostSnapshot.
 ```
 
@@ -107,6 +117,7 @@ src/host-proof/action-frame.js
 src/host-proof/action-result.js
 src/host-proof/movement-policy-result.js
 src/host-proof/camera-rail-snapshot.js
+src/host-proof/grass-instance-snapshot.js
 src/host-proof/hero-cloud-snapshot.js
 src/host-proof/cloud-drift-result.js
 src/host-proof/host-snapshot.js

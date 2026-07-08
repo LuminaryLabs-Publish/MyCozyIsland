@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T19-40-00-04-00`
+**Updated:** `2026-07-08T19-50-20-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible fallback by sampled root-agent alignment.
+MyCozyIsland was selected because repo-local .agent state had advanced beyond the central ledger and the host-proof browser consumer fixture remains unresolved.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -108,15 +108,15 @@ cozy-browser-consumer-fixture-kit is not materialized.
 .agent/next-steps.md refreshed
 .agent/validation.md refreshed
 .agent/kit-registry.json refreshed
-.agent/architecture-audit/2026-07-08T19-40-00-04-00-host-proof-browser-consumer-dsk-map.md added
-.agent/render-audit/2026-07-08T19-40-00-04-00-render-host-consumer-readback.md added
-.agent/interaction-audit/2026-07-08T19-40-00-04-00-action-movement-browser-consumer-map.md added
-.agent/cloud-system-audit/2026-07-08T19-40-00-04-00-hero-cloud-cache-drift-consumer-map.md added
-.agent/grass-system-audit/2026-07-08T19-40-00-04-00-grass-instance-host-readback-map.md added
-.agent/host-proof-audit/2026-07-08T19-40-00-04-00-browser-consumer-fixture-manifest.md added
-.agent/deploy-audit/2026-07-08T19-40-00-04-00-static-route-validation-map.md added
-.agent/trackers/2026-07-08T19-40-00-04-00/project-breakdown.md added
-.agent/turn-ledger/2026-07-08T19-40-00-04-00.md added
+.agent/architecture-audit/2026-07-08T19-50-20-04-00-host-proof-central-catchup-dsk-map.md added
+.agent/render-audit/2026-07-08T19-50-20-04-00-render-host-readback-fixture-gap.md added
+.agent/interaction-audit/2026-07-08T19-50-20-04-00-route-action-movement-result-gap.md added
+.agent/cloud-system-audit/2026-07-08T19-50-20-04-00-cloud-cache-drift-readback-gap.md added
+.agent/grass-system-audit/2026-07-08T19-50-20-04-00-grass-instance-parity-gap.md added
+.agent/host-proof-audit/2026-07-08T19-50-20-04-00-central-ledger-catchup-fixture-scope.md added
+.agent/deploy-audit/2026-07-08T19-50-20-04-00-static-route-proof-validation.md added
+.agent/trackers/2026-07-08T19-50-20-04-00/project-breakdown.md added
+.agent/turn-ledger/2026-07-08T19-50-20-04-00.md added
 central repo ledger refreshed
 central internal change log added
 ```

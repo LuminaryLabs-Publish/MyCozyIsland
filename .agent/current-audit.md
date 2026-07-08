@@ -2,28 +2,27 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T07:30:30-04:00`
+**Audit timestamp:** `2026-07-08T08:58:57-04:00`
 
 ## Summary
 
 `MyCozyIsland` is a standalone static Three.js publish app that proves a cozy island scene with local source descriptor kits, a scroll-driven sky-to-first-person camera rail, a fenced campfire clearing, grass, foliage, shoreline, ocean floor, smoke, and a readable hero-cloud form.
 
-The app is visually coherent enough for the next pass to avoid art expansion. The highest-value seam is now host proof: route, source, action, movement, camera, and cloud facts need fixture-readable records that can run without opening the browser.
+The current visual slice is stable enough that the next high-value pass should not expand art direction. The highest-value seam is still host proof, now narrowed from broad acceptance cases into an implementation wire map: preserve the current route and visible scene while adding pure route/source/action/movement/camera/cloud records and a DOM-free fixture path.
 
 ## Evidence checked
 
 ```txt
 LuminaryLabs-Publish accessible repository list
 LuminaryLabs-Dev/LuminaryLabs repo-ledger search results
-README.md
 index.html
-package.json
-src/main-cloudform.js excerpt
+src/main-cloudform.js import and host excerpt
 .agent/START_HERE.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
+.agent/host-proof-audit/acceptance-ledger.md
 .agent/kit-registry.json
 LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 ```
@@ -32,16 +31,16 @@ LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 ```txt
 Checked Publish repos:
-  HorrorCorridor
   AetherVale
-  TheOpenAbove
-  TheCavalryOfRome
-  PhantomCommand
-  PrehistoricRush
-  ZombieOrchard
+  HorrorCorridor
   IntoTheMeadow
   MyCozyIsland
+  PhantomCommand
+  PrehistoricRush
+  TheCavalryOfRome
+  TheOpenAbove
   TheUnmappedHouse
+  ZombieOrchard
 
 Excluded:
   TheCavalryOfRome
@@ -54,6 +53,9 @@ Root .agent state:
 
 Selected repo:
   LuminaryLabs-Publish/MyCozyIsland
+
+Fallback reason:
+  oldest eligible follow-up with a stable visual route and unresolved host-proof implementation wiring
 ```
 
 ## Current route
@@ -247,6 +249,7 @@ Next-cut proof kits:
 ```txt
 cozy-active-route-version-kit
 cozy-route-script-token-kit
+cozy-route-version-result-kit
 cozy-source-profile-kit
 cozy-source-fingerprint-kit
 cozy-scene-source-snapshot-kit
@@ -289,17 +292,17 @@ legacy global -> no additive CozyIslandHost proof surface
 ## New audit artifact
 
 ```txt
-.agent/host-proof-audit/acceptance-ledger.md
+.agent/host-proof-audit/2026-07-08T08-58-57-04-00-implementation-wire-map.md
 ```
 
-This ledger defines pass/fail cases for the next code pass.
+This map converts the prior acceptance ledger into exact implementation modules, browser attach points, fixture order, and stop lines.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Acceptance Fixture Gate
+MyCozyIsland Host Proof Implementation Wire Map
 ```
 
 Keep the current route, visuals, and `globalThis.CozyIsland` compatibility stable.
 
-Add pure host-proof modules and fixture cases first, then wire the browser runtime to them additively.
+Add pure host-proof modules and fixture cases first, then wire the browser runtime to them additively through `globalThis.CozyIslandHost`.

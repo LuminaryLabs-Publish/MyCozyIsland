@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T17-00-36-04-00`
+**Updated:** `2026-07-08T17-09-48-04-00`
 
 ## Validation performed in this pass
 
@@ -12,7 +12,7 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and central ledger timestamps
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the oldest eligible fallback with unresolved host-proof source manifest and browser consumer fixture gate
+  selected MyCozyIsland because repo-local agent state was newer than central ledger state and the host-proof source manifest/browser consumer fixture gate remains unresolved
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
@@ -27,14 +27,14 @@ source inspection:
   read LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
 
 repo writes on main:
-  created .agent/trackers/2026-07-08T17-00-36-04-00/project-breakdown.md
-  created .agent/turn-ledger/2026-07-08T17-00-36-04-00.md
-  created .agent/architecture-audit/2026-07-08T17-00-36-04-00-host-proof-source-manifest-dsk-breakdown.md
-  created .agent/render-audit/2026-07-08T17-00-36-04-00-render-snapshot-source-readback.md
-  created .agent/interaction-audit/2026-07-08T17-00-36-04-00-action-movement-result-rows.md
-  created .agent/cloud-system-audit/2026-07-08T17-00-36-04-00-cloud-cache-drift-source-readback.md
-  created .agent/grass-system-audit/2026-07-08T17-00-36-04-00-grass-instance-source-readback.md
-  created .agent/host-proof-audit/2026-07-08T17-00-36-04-00-source-file-manifest-browser-splice.md
+  created .agent/trackers/2026-07-08T17-09-48-04-00/project-breakdown.md
+  created .agent/turn-ledger/2026-07-08T17-09-48-04-00.md
+  created .agent/architecture-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-dsk-map.md
+  created .agent/render-audit/2026-07-08T17-09-48-04-00-render-host-source-manifest-sync.md
+  created .agent/interaction-audit/2026-07-08T17-09-48-04-00-action-movement-fixture-sync.md
+  created .agent/cloud-system-audit/2026-07-08T17-09-48-04-00-cloud-cache-drift-fixture-sync.md
+  created .agent/grass-system-audit/2026-07-08T17-09-48-04-00-grass-snapshot-fixture-sync.md
+  created .agent/host-proof-audit/2026-07-08T17-09-48-04-00-central-ledger-sync-and-source-manifest.md
   updated .agent/START_HERE.md
   updated .agent/current-audit.md
   updated .agent/known-gaps.md
@@ -44,7 +44,7 @@ repo writes on main:
 
 central writes on main:
   updated repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-  created internal-change-log/2026-07-08T17-00-36-04-00-my-cozy-island-host-proof-source-manifest.md
+  created internal-change-log/2026-07-08T17-09-48-04-00-my-cozy-island-ledger-sync-source-manifest.md
 ```
 
 ## Runtime validation not performed
@@ -110,6 +110,7 @@ cozy-render-host-snapshot-001
 cozy-host-snapshot-001
 cozy-host-legacy-compatibility-001
 cozy-host-dom-free-001
+cozy-central-ledger-sync-001
 ```
 
 ## Browser checks after fixture implementation
@@ -132,7 +133,7 @@ Confirm no console fatal error.
 ## Current validation status
 
 ```txt
-status: documentation-only host-proof source-manifest pass complete
+status: documentation-only host-proof source-manifest and central-ledger-sync pass complete
 runtime confidence: not revalidated in this pass
 branch created: no
 pushed to main: yes

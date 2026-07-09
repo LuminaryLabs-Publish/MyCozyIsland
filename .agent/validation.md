@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T00-20-08-04-00`
+**Updated:** `2026-07-09T02-31-41-04-00`
 
 ## Validation performed in this pass
 
@@ -17,6 +17,7 @@ repo selection:
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
   read package.json and confirmed start script is python3 -m http.server 8080
+  read README.md and confirmed local vendored domain-kit list
   read src/main-cloudform.js imports, descriptor construction, render adapters, grass instancing, cloud cache, input handlers, rail, movement policy, frame loop, and legacy global projection
   read grass-object-domain placement contract and static-batch descriptor seam
   read mattatz-clouds-domain and cozy-hero-cloud-form-kit cloud descriptor seams
@@ -92,6 +93,6 @@ globalThis.CozyIslandHost?.getState?.().validation
 
 ## Validation conclusion
 
-This was a documentation and operating-memory pass only. It made no runtime changes and did not prove the route in browser.
+This was a documentation and operating-memory pass only. It made no runtime source changes and did not prove the route in browser.
 
 The next implementation pass should add the DOM-free fixture and host-proof modules before changing `src/main-cloudform.js`.

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T02-31-41-04-00`
+**Last aligned:** `2026-07-09T05-30-27-04-00`
 
 ## Purpose
 
@@ -18,21 +18,21 @@ No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocu
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible sampled fallback for this pass. The repo is visually stable, but the next source cut still needs a narrower proof gate around the existing cloud/grass/rail consumers: route token readback, deterministic descriptor summaries, host projection, and browser-consumer fixture rows must exist before any visual rewrite or shared-kit promotion.
+`MyCozyIsland` was selected as the oldest eligible central fallback for this pass. Its product surface is stable, but the proof seam is still under-owned: the browser route exposes `globalThis.CozyIsland`, while the next durable host surface needs additive `globalThis.CozyIslandHost.getState()` records for route token, source profile, input/movement decisions, rail state, grass placement, cloud cache/drift, and render-readback snapshots.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present
-LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present
-LuminaryLabs-Publish/AetherVale           tracked / root .agent present
-LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present
-LuminaryLabs-Publish/MyCozyIsland         selected / oldest eligible sampled fallback
-LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-09T04-30-54-04-00
+LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest 2026-07-09T02-50-39-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-09T03-29-29-04-00
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
-LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T04-50-00-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T03-10-05-04-00
+LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present / central latest 2026-07-09T05-11-22-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T03-50-12-04-00
+LuminaryLabs-Publish/MyCozyIsland         selected / oldest eligible central fallback / previous central latest 2026-07-09T02-31-41-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T05-20-42-04-00
 ```
 
 ## Current product read
@@ -66,7 +66,7 @@ static browser route
   -> pointer mutates yaw before first-person and yaw/pitch after first-person
   -> keyboard movement unlocks at progress >= 0.985
   -> valid(next) accepts or rejects movement by clearing boundary and campfire keepout only
-  -> frame updates sea bob, first-person movement or rail camera, smoke, flame, cloud drift, and renderer
+  -> frame updates sea bob, first-person movement or rail camera, smoke, flame, cloud drift, flame scale, and renderer
   -> globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress
 ```
 
@@ -99,15 +99,15 @@ RouteTokenReadback
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T02-31-41-04-00-browser-consumer-proof-dsk-map.md
-.agent/render-audit/2026-07-09T02-31-41-04-00-cloud-grass-render-readback-map.md
-.agent/interaction-audit/2026-07-09T02-31-41-04-00-input-rail-movement-fixture-map.md
-.agent/cloud-system-audit/2026-07-09T02-31-41-04-00-cloud-cache-drift-readback-contract.md
-.agent/grass-system-audit/2026-07-09T02-31-41-04-00-grass-static-batch-readback-contract.md
-.agent/host-proof-audit/2026-07-09T02-31-41-04-00-host-state-projection-contract.md
-.agent/deploy-audit/2026-07-09T02-31-41-04-00-fixture-command-gate.md
-.agent/trackers/2026-07-09T02-31-41-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T02-31-41-04-00.md
+.agent/architecture-audit/2026-07-09T05-30-27-04-00-host-proof-consumer-freeze-dsk-map.md
+.agent/render-audit/2026-07-09T05-30-27-04-00-cloud-grass-render-host-readback.md
+.agent/interaction-audit/2026-07-09T05-30-27-04-00-input-movement-rail-result-contract.md
+.agent/cloud-system-audit/2026-07-09T05-30-27-04-00-hero-cloud-cache-drift-fixture-contract.md
+.agent/grass-system-audit/2026-07-09T05-30-27-04-00-grass-placement-instance-fixture-contract.md
+.agent/host-proof-audit/2026-07-09T05-30-27-04-00-cozy-island-host-state-contract.md
+.agent/deploy-audit/2026-07-09T05-30-27-04-00-browser-consumer-fixture-wire-map.md
+.agent/trackers/2026-07-09T05-30-27-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T05-30-27-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -161,5 +161,5 @@ Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.ge
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Browser Consumer Proof Split + Cloud/Grass Readback Fixture Gate
+MyCozyIsland Host Proof Consumer Freeze + Cloud/Grass Fixture Readback Gate
 ```

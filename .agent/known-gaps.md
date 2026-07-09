@@ -2,105 +2,40 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T14-28-45-04-00`
+**Updated:** `2026-07-09T14-39-07-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible documented fallback and host-readback pointer repair target.
+MyCozyIsland was selected because repo-local docs had advanced to 2026-07-09T14-28-45-04-00 while the central ledger still pointed at 2026-07-09T11-39-50-04-00.
 
-Same-hour catch-up work had partially advanced repo-local docs. This pass records a complete 2026-07-09T14-28-45-04-00 audit set and central ledger sync.
+This pass normalizes root docs, timestamped audits, tracker, turn ledger, kit registry, central ledger, and central internal change log to 2026-07-09T14-39-07-04-00.
 
 TheCavalryOfRome remains excluded.
 ```
 
-## Route gaps
+## Source/host gaps
 
 ```txt
-index.html loads ./src/main-cloudform.js?v=hero-cloud-4.
-The route token is not exposed as a first-class RouteTokenReadback record.
-The route has only the legacy globalThis.CozyIsland diagnostic object.
-There is no additive globalThis.CozyIslandHost.getState() proof surface yet.
+No source fingerprint module exists.
+No normalized scene source snapshot exists.
+No browser input action result rows exist.
+No movement accepted/rejected ledger exists.
+No camera rail snapshot module exists.
+No grass placement/render instance parity row exists.
+No cloud descriptor/cache/drift parity row exists.
+No render host snapshot exists.
+No compatibility-safe globalThis.CozyIslandHost.getState() exists yet.
+Legacy globalThis.CozyIsland only exposes cloudContract, cloudPointCache, and getScrollProgress.
 ```
 
-## Source descriptor gaps
+## Validation gaps
 
 ```txt
-source descriptor construction happens inline in src/main-cloudform.js.
-There is no SourceProfile object.
-There is no SourceFingerprint object.
-There is no stable SceneSourceSnapshot summary.
-There is no fixture row proving the island/clearing/grass/cloud descriptors match the browser route.
+package.json has npm start only.
+No npm run check exists.
+No DOM-free browser consumer fixture exists.
+No browser smoke was run in this documentation-only pass.
 ```
-
-## Input / interaction gaps
-
-```txt
-keyboard state is a raw Set.
-wheel input mutates progress directly.
-pointer drag mutates yaw/pitch directly.
-There is no BrowserInputActionFrame.
-There is no ActionResult for accepted/rejected/skipped input.
-There is no bounded InputJournal.
-```
-
-## Movement / rail gaps
-
-```txt
-first-person movement only unlocks at progress >= 0.985.
-valid(next) only checks clearing radius and campfire keepout.
-accepted movement and rejected movement are not recorded.
-rail() computes camera position/look directly without a CameraRailSnapshot.
-there is no fixture row for start/mid/near/first-person rail states.
-```
-
-## Grass gaps
-
-```txt
-grass placement exists as a source descriptor.
-grass rendering uses one InstancedMesh with cone geometry.
-instance count and accepted patch summaries are not exposed through host readback.
-wind descriptor exists, but grass wind is not tied to a readback result.
-there is no grass placement/instance fixture.
-```
-
-## Cloud gaps
-
-```txt
-cloud descriptors exist through mattatz clouds domain.
-hero cloud geometry is cached by cloud id.
-cloud drift mutates Three.js point positions directly during frame updates.
-cloud cache point counts are only reachable through globalThis.CozyIsland.cloudPointCache.
-there is no HeroCloudDescriptorSnapshot, HeroCloudCacheSnapshot, or CloudDriftResult.
-```
-
-## Render gaps
-
-```txt
-renderer setup is inline.
-render pass emits no RenderHostSnapshot.
-scene object counts, camera mode, pixel ratio, tone mapping, route token, and visible descriptor counts are not fixture-readable.
-render readback cannot prove grass/cloud descriptors were consumed.
-```
-
-## Deploy / validation gaps
-
-```txt
-package.json only exposes npm start.
-No npm check script exists.
-No browser-consumer fixture script exists.
-No DOM-free fixture is wired.
-No GitHub Pages smoke was run in this pass.
-```
-
-## Main blocked implementation
-
-```txt
-MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
-```
-
-## Risk
-
-If the next implementation changes the scene before adding host proof, the repo will keep accumulating visual systems that cannot be fixture-read, compared, or safely consumed by downstream automation.

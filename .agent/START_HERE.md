@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T08-11-12-04-00`
+**Last aligned:** `2026-07-09T08-29-38-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocu
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible central-ledger fallback for this pass. The unresolved next cut is still fixture-readable host-state proof around route/source/action/movement/rail/grass/cloud/render records.
+`MyCozyIsland` was selected because the central ledger pointer for this repo was still the oldest eligible fallback (`2026-07-09T05-38-20-04-00`) even though repo-local `.agent` state had already advanced. This pass refreshes the repo-local docs again and closes the central-ledger lag with a new timestamped tracker entry.
 
 ## Publish repos checked
 
@@ -31,8 +31,8 @@ LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / centra
 LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T06-10-35-04-00
 LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present / central latest 2026-07-09T07-41-29-04-00
 LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T06-28-53-04-00
-LuminaryLabs-Publish/MyCozyIsland         selected / oldest eligible central latest 2026-07-09T05-38-20-04-00
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T07-48-29-04-00
+LuminaryLabs-Publish/MyCozyIsland         selected / central ledger lagged at 2026-07-09T05-38-20-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T08-02-33-04-00
 ```
 
 ## Current product read
@@ -99,15 +99,15 @@ RouteTokenReadback
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T08-11-12-04-00-host-state-ledger-refresh-dsk-map.md
-.agent/render-audit/2026-07-09T08-11-12-04-00-render-host-cloud-grass-consumer-readback.md
-.agent/interaction-audit/2026-07-09T08-11-12-04-00-input-movement-rail-readback-contract.md
-.agent/cloud-system-audit/2026-07-09T08-11-12-04-00-hero-cloud-cache-drift-consumer-freeze.md
-.agent/grass-system-audit/2026-07-09T08-11-12-04-00-grass-placement-instance-consumer-freeze.md
-.agent/host-proof-audit/2026-07-09T08-11-12-04-00-route-source-host-state-ledger-freeze.md
-.agent/deploy-audit/2026-07-09T08-11-12-04-00-browser-consumer-fixture-check-wire.md
-.agent/trackers/2026-07-09T08-11-12-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T08-11-12-04-00.md
+.agent/architecture-audit/2026-07-09T08-29-38-04-00-central-ledger-host-proof-dsk-map.md
+.agent/render-audit/2026-07-09T08-29-38-04-00-render-host-cloud-grass-readback-freeze.md
+.agent/interaction-audit/2026-07-09T08-29-38-04-00-input-movement-rail-consumer-freeze.md
+.agent/cloud-system-audit/2026-07-09T08-29-38-04-00-hero-cloud-cache-drift-readback-freeze.md
+.agent/grass-system-audit/2026-07-09T08-29-38-04-00-grass-placement-instance-readback-freeze.md
+.agent/host-proof-audit/2026-07-09T08-29-38-04-00-central-ledger-host-state-contract.md
+.agent/deploy-audit/2026-07-09T08-29-38-04-00-browser-consumer-fixture-central-sync.md
+.agent/trackers/2026-07-09T08-29-38-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T08-29-38-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -161,5 +161,5 @@ Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.ge
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
 ```

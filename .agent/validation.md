@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-20-00-04-00`
+**Updated:** `2026-07-09T08-11-12-04-00`
 
 ## Validation performed in this pass
 
@@ -18,7 +18,9 @@ source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
   read package.json and confirmed only npm start exists
   read src/main-cloudform.js imports, source descriptor construction, input handling, rail, movement, frame loop, and legacy host surface
-  read existing repo-local .agent state and kit registry
+  read grass-object-domain source/readback needs through existing .agent and source route
+  read cloud source/cache/drift path through src/main-cloudform.js
+  read existing repo-local .agent state
 
 repo-local docs:
   updated START_HERE.md

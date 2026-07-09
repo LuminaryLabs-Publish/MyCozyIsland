@@ -2,67 +2,61 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T14-39-07-04-00`
+**Last aligned:** `2026-07-09T17-38-53-04-00`
 
 ## Purpose
 
-This `.agent/` folder is the repo-local operating memory for scheduled and manual breakdown work on `MyCozyIsland`.
+This `.agent/` folder is the repo-local operating memory for scheduled and manual work on `MyCozyIsland`.
 
-Read this folder before changing implementation code.
+Read it before changing runtime source.
 
-## Current selection result
+## Selection result
 
-The accessible `LuminaryLabs-Publish` organization repo list was compared against central tracking in `LuminaryLabs-Dev/LuminaryLabs` and sampled root `.agent/START_HERE.md` state.
+The full accessible `LuminaryLabs-Publish` repository list was compared with `LuminaryLabs-Dev/LuminaryLabs` central ledger state.
 
-No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, missing sampled root `.agent/START_HERE.md` state, or otherwise undocumented.
+No eligible non-Cavalry repository was new, ledger-absent, recorded without root `.agent` state, or otherwise undocumented. `MyCozyIsland` was selected under the oldest documented-selection fallback because its central ledger timestamp was `2026-07-09T14-39-07-04-00`, older than every other eligible current entry.
 
-`LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
+`LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
-`MyCozyIsland` was selected because repo-local `.agent` state had advanced to `2026-07-09T14-28-45-04-00` while central tracking still pointed at `2026-07-09T11-39-50-04-00`. This pass refreshes repo-local and central pointers to the host readback parity fixture gate.
-
-## Publish repos checked
+## Publish repositories checked
 
 ```txt
-LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-09T12-30-09-04-00
-LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest 2026-07-09T14-16-00-04-00
-LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-09T11-50-08-04-00
-LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T13-00-37-04-00
-LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T12-00-36-04-00
-LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present / central latest 2026-07-09T13-18-48-04-00
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T12-08-46-04-00
-LuminaryLabs-Publish/MyCozyIsland         selected / repo-local ahead of central
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T13-38-15-04-00
+HorrorCorridor       central latest 2026-07-09T16-00-13-04-00
+AetherVale           central latest 2026-07-09T17-08-15-04-00
+TheOpenAbove         central latest 2026-07-09T15-09-09-04-00
+TheCavalryOfRome     excluded
+PhantomCommand       central latest 2026-07-09T16-29-23-04-00
+PrehistoricRush      central latest 2026-07-09T15-31-40-04-00
+ZombieOrchard        central latest 2026-07-09T16-38-14-04-00
+IntoTheMeadow        central latest 2026-07-09T15-39-08-04-00
+MyCozyIsland         selected; prior central latest 2026-07-09T14-39-07-04-00
+TheUnmappedHouse     central latest 2026-07-09T16-58-52-04-00
 ```
 
 ## Current route
 
 ```txt
 index.html
-  -> canvas#game, #cloud-loader, #error
   -> ./src/main-cloudform.js?v=hero-cloud-4
-  -> Three.js CDN
-  -> local source-domain descriptor kits
-  -> inline renderer/input/movement/camera/smoke/flame/cloud/grass consumers
+  -> Three.js 0.160.0 CDN
+  -> local source-domain kits
+  -> inline render/input/camera/movement/animation consumers
   -> globalThis.CozyIsland legacy diagnostics
 ```
 
 ## Current interaction loop
 
 ```txt
-static browser route
-  -> load src/main-cloudform.js?v=hero-cloud-4
-  -> import Three.js CDN and local source-domain kits
-  -> construct island, ocean floor, foliage graph, clearing graph, grass placement, grass wind, campfire, smoke, clouds, and hero-cloud descriptors
-  -> create Three.js renderer, scene, camera, lights, fog, water, terrain, floor, foam, path, foliage, fence, campfire, smoke, grass, and point-cloud clouds
-  -> install resize, keyboard, wheel, pointerdown, pointerup, and pointermove handlers
-  -> wheel mutates scroll progress directly
-  -> pointer mutates yaw before first-person and yaw/pitch after first-person
-  -> rail() samples the sky-to-eye camera curve while progress < 0.985
-  -> keyboard movement unlocks at progress >= 0.985
-  -> valid(next) accepts movement only inside clearing radius and outside campfire keepout
-  -> frame updates sea bob, first-person movement or rail camera, smoke, flame, cloud drift, flame scale, and renderer
-  -> globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress
+build source descriptors
+  -> project Three.js scene objects
+  -> install browser input handlers
+  -> wheel changes progress
+  -> pointer changes yaw/pitch by progress range
+  -> rail camera while progress < 0.985
+  -> first-person WASD movement while progress >= 0.985
+  -> movement silently accepted/rejected by clearing and campfire radii
+  -> frame updates sea, smoke, flame, clouds, camera, and renderer
+  -> expose legacy cloud/progress diagnostics
 ```
 
 ## Latest files
@@ -72,22 +66,22 @@ static browser route
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T14-39-07-04-00-host-readback-central-parity-dsk-map.md
-.agent/render-audit/2026-07-09T14-39-07-04-00-render-grass-cloud-host-consumer-readback.md
-.agent/interaction-audit/2026-07-09T14-39-07-04-00-input-rail-movement-result-ledger.md
-.agent/cloud-system-audit/2026-07-09T14-39-07-04-00-cloud-descriptor-cache-drift-readback.md
-.agent/grass-system-audit/2026-07-09T14-39-07-04-00-grass-placement-instance-fixture.md
-.agent/host-proof-audit/2026-07-09T14-39-07-04-00-host-state-central-parity-contract.md
-.agent/deploy-audit/2026-07-09T14-39-07-04-00-browser-consumer-fixture-check-map.md
-.agent/trackers/2026-07-09T14-39-07-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T14-39-07-04-00.md
 .agent/kit-registry.json
+.agent/trackers/2026-07-09T17-38-53-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T17-38-53-04-00.md
+.agent/architecture-audit/2026-07-09T17-38-53-04-00-source-consumer-parity-dsk-map.md
+.agent/render-audit/2026-07-09T17-38-53-04-00-render-consumption-parity-ledger.md
+.agent/interaction-audit/2026-07-09T17-38-53-04-00-input-result-camera-movement-contract.md
+.agent/grass-system-audit/2026-07-09T17-38-53-04-00-grass-source-instance-parity.md
+.agent/cloud-system-audit/2026-07-09T17-38-53-04-00-cloud-descriptor-cache-drift-parity.md
+.agent/host-proof-audit/2026-07-09T17-38-53-04-00-additive-host-snapshot-contract.md
+.agent/deploy-audit/2026-07-09T17-38-53-04-00-browser-fixture-check-gate.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Readback Central Parity + Browser Consumer Fixture Gate
+MyCozyIsland Source/Consumer Parity Ledger + Input Result Fixture Gate
 ```
 
 ## Operating rules
@@ -96,5 +90,5 @@ MyCozyIsland Host Readback Central Parity + Browser Consumer Fixture Gate
 Only push to main.
 Do not create branches.
 Do not work on TheCavalryOfRome.
-Keep scheduled repo breakdowns moving; do not pause the loop.
+Keep scheduled breakdown work moving.
 ```

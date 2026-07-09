@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-29-38-04-00`
+**Updated:** `2026-07-09T11-11-08-04-00`
 
 ## Validation performed in this pass
 
@@ -12,10 +12,10 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland because the central ledger pointer still lagged and was the oldest eligible fallback pointer
+  selected MyCozyIsland as the eligible host-proof fallback
 
 source inspection:
-  read index.html route state through existing .agent state
+  read index.html route state
   read src/main-cloudform.js imports, descriptor creation, input handling, camera rail, movement, frame loop, grass instancing, cloud cache, cloud drift, and legacy host surface
   read existing repo-local .agent state
   read central LuminaryLabs repo ledger pointer for MyCozyIsland
@@ -73,4 +73,15 @@ scripts/my-cozy-island-browser-consumer-fixture.mjs does not exist yet.
 5. Browser route should continue to expose globalThis.CozyIsland.
 6. Browser route should also expose additive globalThis.CozyIslandHost.getState().
 7. No visual regression should be introduced.
+```
+
+## Current validation status
+
+```txt
+repo-local .agent updated: yes
+central repo ledger update: yes after central write
+central internal change log: yes after central write
+pushed to main: yes
+branch created: no
+pull request created: no
 ```

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T05-30-27-04-00`
+**Updated:** `2026-07-09T05-38-20-04-00`
 
 ## Selection / ledger gaps
 
@@ -40,7 +40,7 @@ keyboard state is a raw Set.
 wheel input mutates progress directly.
 pointer drag mutates yaw/pitch directly.
 There is no BrowserInputActionFrame.
-There is no ActionResult for accepted/rejected input.
+There is no ActionResult for accepted/rejected/skipped input.
 There is no bounded InputJournal.
 ```
 
@@ -96,5 +96,5 @@ No GitHub Pages smoke was run in this pass.
 ## Main blocked implementation
 
 ```txt
-MyCozyIsland Host Proof Consumer Freeze + Cloud/Grass Fixture Readback Gate
+MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
 ```

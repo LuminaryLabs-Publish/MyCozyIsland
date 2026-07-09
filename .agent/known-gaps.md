@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T19-50-20-04-00`
+**Updated:** `2026-07-08T21-58-34-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected because repo-local .agent state had advanced beyond the central ledger and the host-proof browser consumer fixture remains unresolved.
+MyCozyIsland was selected as the oldest eligible fallback by current central alignment.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -18,7 +18,7 @@ TheCavalryOfRome remains excluded.
 
 ```txt
 index.html loads ./src/main-cloudform.js?v=hero-cloud-4.
-The route token is visible but not projected as RouteVersionResult.
+The route token is visible in HTML but not projected as a typed RouteVersionResult.
 There is no accepted/rejected route version row.
 There is no source fingerprint that ties the route token to descriptor outputs.
 ```
@@ -38,85 +38,63 @@ Local kit outputs are consumed immediately by render adapters, not first journal
 ```txt
 wheel input mutates progress directly.
 pointer drag mutates yaw/pitch directly.
-keyboard input mutates player movement directly after progress >= 0.985.
+keyboard state is held in a Set without ActionFrame rows.
+progress >= 0.985 is an implicit first-person gate, not a MovementUnlockResult.
 valid(next) returns boolean only.
-movement rejection has no stable reason for outside-clearing or campfire-keepout rejection.
-no ActionFrame / ActionResult / InputJournal exists.
+movement rejection reason is not recorded.
+clearing-boundary rejection and campfire-keepout rejection are not distinguishable.
+accepted movement is not recorded as a MovementPolicyResult.
 ```
 
 ## Camera rail gaps
 
 ```txt
-rail() returns position/look but not CameraRailSnapshot.
-first-person threshold behavior is not represented as a fixture-readable gate result.
-current camera path cannot be replayed without Three.js runtime objects.
+rail() constructs CatmullRom curves every call.
+rail control points are not exported as a CameraRailSource.
+rail output is not recorded as CameraRailSnapshot.
+no fixture proves progress 0, middle, threshold, and eye-position samples.
 ```
 
-## Grass gaps
+## Render host gaps
 
 ```txt
-grass placement contract is consumed by grassMesh() but not summarized as GrassInstanceSnapshot.
-instanced mesh count is not compared against placement.patches.length in a fixture.
-grass wind descriptor exists but does not yet participate in host proof readback.
+renderer, scene, camera, mesh counts, and frame counters are not projected to a render host snapshot.
+terrain, floor, foam, path, foliage, fence, fire, smoke, grass, and cloud render consumption is not summarized.
+render-readback cannot be validated without opening the browser.
 ```
 
-## Hero-cloud gaps
+## Grass system gaps
 
 ```txt
-cloudCache is an internal Map without stable host-facing summary.
-heroCloudGeometry caches geometry by cloud id but no HeroCloudCacheSnapshot exists.
-heroCloudGroup stores savedPointClouds but legacy host only exposes raw cache data.
-frame() mutates cloud drift without CloudDriftResult records.
-cloud point count, geometry reuse, drift deltas, and saved point-cloud counts need DOM-free fixture rows.
+grass placement returns requestedCount, patchCount, and patches.
+grassMesh creates an InstancedMesh from placement.patches.
+There is no GrassInstanceSnapshot that proves placement.patchCount equals the WebGL instance count.
+There is no fixture row for exclusion zones, path clearance, or deterministic seed replay.
 ```
 
-## Render and host gaps
+## Cloud system gaps
 
 ```txt
-renderer, scene, camera, water, flame, smoke, clouds, and render calls are inline.
-render host state is not summarized as RenderHostSnapshot.
-globalThis.CozyIsland exists but only exposes cloudContract, cloudPointCache, and getScrollProgress.
-no additive globalThis.CozyIslandHost.getState() exists yet.
-no BrowserConsumerFixture exists to prove legacy compatibility plus new host proof.
+mattatz-clouds-domain currently delegates to cozy-hero-cloud-form-kit.
+heroCloudGeometry caches geometry by cloud id in a module-level Map.
+cloud point-count, savedPointClouds, geometry cache hits, and drift delta are not projected as proof records.
+CloudDriftResult does not exist yet.
 ```
 
-## Kit gaps
+## Host proof gaps
 
 ```txt
-cozy-route-version-result-kit is not materialized.
-cozy-source-profile-kit is not materialized.
-cozy-scene-source-snapshot-kit is not materialized.
-cozy-action-frame-contract-kit is not materialized.
-cozy-action-result-contract-kit is not materialized.
-cozy-input-journal-kit is not materialized.
-cozy-movement-policy-result-kit is not materialized.
-cozy-camera-rail-snapshot-kit is not materialized.
-cozy-grass-instance-snapshot-kit is not materialized.
-cozy-hero-cloud-cache-snapshot-kit is not materialized.
-cozy-cloud-drift-result-kit is not materialized.
-cozy-render-host-snapshot-kit is not materialized.
-cozy-host-snapshot-kit is not materialized.
-cozy-browser-consumer-fixture-kit is not materialized.
+globalThis.CozyIsland remains the only browser diagnostic surface.
+globalThis.CozyIslandHost does not exist yet.
+There is no additive host state projection for route, source, action, movement, rail, grass, cloud, render, or validation rows.
+No DOM-free fixture exists for the browser consumer splice.
 ```
 
-## Documentation gaps fixed by this pass
+## Validation gaps
 
 ```txt
-.agent/START_HERE.md refreshed
-.agent/current-audit.md refreshed
-.agent/known-gaps.md refreshed
-.agent/next-steps.md refreshed
-.agent/validation.md refreshed
-.agent/kit-registry.json refreshed
-.agent/architecture-audit/2026-07-08T19-50-20-04-00-host-proof-central-catchup-dsk-map.md added
-.agent/render-audit/2026-07-08T19-50-20-04-00-render-host-readback-fixture-gap.md added
-.agent/interaction-audit/2026-07-08T19-50-20-04-00-route-action-movement-result-gap.md added
-.agent/cloud-system-audit/2026-07-08T19-50-20-04-00-cloud-cache-drift-readback-gap.md added
-.agent/grass-system-audit/2026-07-08T19-50-20-04-00-grass-instance-parity-gap.md added
-.agent/host-proof-audit/2026-07-08T19-50-20-04-00-central-ledger-catchup-fixture-scope.md added
-.agent/deploy-audit/2026-07-08T19-50-20-04-00-static-route-proof-validation.md added
-.agent/trackers/2026-07-08T19-50-20-04-00/project-breakdown.md added
-.agent/turn-ledger/2026-07-08T19-50-20-04-00.md added
-central repo ledger refreshed
-central internal change log added
+package.json has only npm run start.
+There is no npm test or fixture script yet.
+No runtime source changed in this documentation pass.
+No browser or GitHub Pages live validation ran in this documentation pass.
 ```

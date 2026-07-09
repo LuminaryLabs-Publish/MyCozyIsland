@@ -1,25 +1,25 @@
 {
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T08-29-38-04-00",
-  "status": "central-ledger-host-proof-refresh-browser-consumer-fixture-gate-planned",
+  "lastUpdated": "2026-07-09T11-11-08-04-00",
+  "status": "host-proof-ledger-parity-browser-consumer-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T08-29-38-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T08-29-38-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T11-11-08-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T11-11-08-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Proof Ledger Parity + Browser Consumer Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T08-29-38-04-00-central-ledger-host-proof-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T08-29-38-04-00-render-host-cloud-grass-readback-freeze.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T08-29-38-04-00-input-movement-rail-consumer-freeze.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T08-29-38-04-00-hero-cloud-cache-drift-readback-freeze.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T08-29-38-04-00-grass-placement-instance-readback-freeze.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T08-29-38-04-00-central-ledger-host-state-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T08-29-38-04-00-browser-consumer-fixture-central-sync.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T11-11-08-04-00-host-proof-ledger-parity-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T11-11-08-04-00-render-host-cloud-grass-readback.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T11-11-08-04-00-input-rail-movement-contract.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T11-11-08-04-00-hero-cloud-cache-drift-contract.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T11-11-08-04-00-grass-placement-instance-contract.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T11-11-08-04-00-route-source-host-fixture-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T11-11-08-04-00-browser-fixture-check-wire.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected because the central ledger pointer still lagged behind repo-local state and was the oldest eligible fallback pointer.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as an eligible host-proof fallback because its live route is descriptor-rich but still lacks fixture-readable source/host state.",
     "excludedRepos": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "selectionRule": "Compare the full LuminaryLabs-Publish repo list against LuminaryLabs-Dev/LuminaryLabs tracking and prioritize new, ledger-absent, undocumented, missing-.agent, or recently added but undocumented repos before oldest eligible fallback selection."
+    "selectionRule": "Compare the full LuminaryLabs-Publish repo list against LuminaryLabs-Dev/LuminaryLabs tracking and prioritize new, ledger-absent, undocumented, missing-.agent, or recently added but undocumented repos before fallback selection."
   },
   "activeRoute": {
     "html": "index.html",
@@ -27,6 +27,7 @@
     "loader": "#cloud-loader",
     "errorPanel": "#error",
     "script": "./src/main-cloudform.js?v=hero-cloud-4",
+    "routeToken": "hero-cloud-4",
     "source": "src/main-cloudform.js"
   },
   "implementedKits": [
@@ -91,11 +92,45 @@
     "browser-consumer-fixture-kit",
     "central-ledger-readback-kit"
   ],
+  "services": [
+    "route HTML shell",
+    "route token/version selection",
+    "cloud loader progress projection",
+    "error display projection",
+    "Three.js module import",
+    "island heightfield and mask sampling",
+    "ocean floor heightfield construction",
+    "shoreline contract creation",
+    "path network mesh projection",
+    "foliage object graph projection",
+    "fenced clearing object/collision zone construction",
+    "campfire graph projection",
+    "smoke particle descriptor creation and animation",
+    "grass wind descriptor creation",
+    "grass patch placement creation",
+    "grass instanced mesh projection",
+    "hero cloud descriptor creation",
+    "hero cloud point geometry caching",
+    "cloud shader material creation",
+    "cloud drift frame update",
+    "resize handling",
+    "keyboard capture",
+    "wheel-to-scroll-progress mutation",
+    "pointer yaw/pitch mutation",
+    "rail camera sampling",
+    "first-person movement integration",
+    "movement validity check",
+    "frame render submission",
+    "legacy host diagnostic exposure",
+    "planned source/host proof readback",
+    "planned DOM-free fixture validation"
+  ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmCheckRun": false,
-    "browserSmokeRun": false
+    "browserSmokeRun": false,
+    "documentationOnly": true
   }
 }

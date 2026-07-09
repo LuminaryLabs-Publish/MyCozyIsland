@@ -2,28 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T00-20-08-04-00`
+**Audit timestamp:** `2026-07-09T02-31-41-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The active gap is not a new visual pass; it is proofability of the browser consumer path.
+`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is still proofability, but this pass narrows it: the next source cut should split browser consumer proof into route/source, input/movement/rail, cloud, grass, render, and host projection records.
 
-`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and legacy globals inline. The next implementation should add fixture-readable host-proof records before changing visuals or promoting shared kits.
+`src/main-cloudform.js` owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline. That is usable today, but not fixture-readable enough for durable DSK promotion.
 
 ## Repo selection result
 
 ```txt
 Checked accessible Publish list:
+  IntoTheMeadow
   HorrorCorridor
   AetherVale
-  TheOpenAbove
-  TheCavalryOfRome
-  PhantomCommand
-  PrehistoricRush
   ZombieOrchard
-  IntoTheMeadow
-  MyCozyIsland
   TheUnmappedHouse
+  MyCozyIsland
+  TheOpenAbove
+  PhantomCommand
+  TheCavalryOfRome
+  PrehistoricRush
 
 Excluded:
   TheCavalryOfRome
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland was the oldest eligible sampled fallback. It still needs browser-consumer readback for route/source/action/movement/rail/grass/cloud/render/host records.
+  MyCozyIsland was the oldest eligible sampled fallback in this pass. It still needs browser-consumer proof for route/source/action/movement/rail/grass/cloud/render/host records.
 ```
 
 ## Current route
@@ -55,11 +55,11 @@ static browser route
   -> load src/main-cloudform.js?v=hero-cloud-4
   -> import Three.js CDN
   -> import local domain descriptor kits
-  -> create island, floor, foliage, grass, wind, clearing, campfire, smoke, and cloud descriptors
+  -> create island, floor, foliage, grass, wind, clearing, campfire, smoke, cloud, and hero-cloud descriptors
   -> create Three.js scene, renderer, camera, meshes, points, lights, fog, water, foam, path, grass, cloud geometry cache
   -> install resize, keyboard, wheel, pointerdown, pointerup, pointermove handlers
   -> wheel changes scroll progress directly
-  -> rail() samples position/look along sky-to-eye camera curve
+  -> rail() samples position/look along a sky-to-eye camera curve
   -> pointer mutates yaw before first-person and yaw/pitch after first-person
   -> keyboard movement unlocks at progress >= 0.985
   -> valid(next) accepts or rejects movement by clearing radius and campfire keepout
@@ -99,6 +99,7 @@ fence-render-consumer
 campfire-render-consumer
 smoke-runtime-consumer
 grass-instancing-consumer
+grass-static-batch-readiness
 hero-cloud-point-render-consumer
 hero-cloud-geometry-cache
 hero-cloud-drift-runtime
@@ -128,12 +129,15 @@ implemented descriptor services:
   createOceanFloorState
   createOceanFloorRenderContract
   createGrassPatchPlacementContract
+  createGrassPatchBatchDescriptors
   createGrassWindDescriptor
   createCampfireObjectGraph
   createSmokeParticleDescriptor
   createFencedClearingGraph
   createMattatzCloudsState
   createMattatzCloudRenderContract
+  createCozyHeroCloudFormDescriptor
+  createCozyHeroCloudLayerDescriptor
   createCozyHeroCloudRenderContract
 
 implemented inline host services:
@@ -149,6 +153,7 @@ implemented inline host services:
   smokeMesh
   updateSmoke
   grassMesh
+  cloudMaterial
   heroCloudGeometry
   heroCloudGroup
   resize
@@ -159,7 +164,7 @@ implemented inline host services:
   globalThis.CozyIsland
 
 needed proof services:
-  createRouteVersionResult
+  createRouteTokenReadback
   createSourceProfile
   createSourceFingerprint
   createSceneSourceSnapshot
@@ -167,7 +172,8 @@ needed proof services:
   createActionResult
   appendInputJournalEntry
   createMovementPolicyResult
-  createCameraRailSnapshot
+  ️createCameraRailSnapshot
+  createGrassPlacementSnapshot
   createGrassInstanceSnapshot
   createHeroCloudDescriptorSnapshot
   createHeroCloudCacheSnapshot
@@ -210,6 +216,7 @@ runtime-implied kits:
   cozy-campfire-render-kit
   cozy-smoke-runtime-kit
   cozy-grass-instancing-kit
+  cozy-grass-static-batch-readiness-kit
   cozy-hero-cloud-point-render-kit
   cozy-hero-cloud-cache-kit
   cozy-hero-cloud-drift-kit
@@ -221,7 +228,7 @@ runtime-implied kits:
   cozy-legacy-global-host-kit
 
 next-cut proof kits:
-  cozy-route-version-result-kit
+  cozy-route-token-readback-kit
   cozy-source-profile-kit
   cozy-source-fingerprint-kit
   cozy-scene-source-snapshot-kit
@@ -230,6 +237,7 @@ next-cut proof kits:
   cozy-input-journal-kit
   cozy-movement-policy-result-kit
   cozy-camera-rail-snapshot-kit
+  cozy-grass-placement-snapshot-kit
   cozy-grass-instance-snapshot-kit
   cozy-hero-cloud-descriptor-snapshot-kit
   cozy-hero-cloud-cache-snapshot-kit
@@ -244,6 +252,6 @@ next-cut proof kits:
 
 ## Main finding
 
-The route has enough source-domain kits to describe the island. The problem is that browser runtime consumption is not recorded as audit-grade proof: accepted/rejected input effects, movement rejection reasons, rail samples, grass instance readback, hero-cloud cache readback, drift deltas, render consumers, and host state projections are not stable records.
+The scene already has enough source-domain kits. The weak point is that browser runtime consumption is still invisible to fixtures: accepted/rejected input effects, movement rejection reasons, rail samples, grass placement and instance parity, static-batch readiness, hero-cloud cache readback, drift deltas, render consumers, and host state projections are not stable records.
 
-The next pass should add pure `src/host-proof/` modules first, then splice them into `src/main-cloudform.js` additively. Preserve `globalThis.CozyIsland`, and expose a new `globalThis.CozyIslandHost.getState()` projection only after fixture rows prove the source records without WebGL.
+The next pass should add pure `src/host-proof/` modules first, then splice them into `src/main-cloudform.js` additively. Preserve `globalThis.CozyIsland`; expose `globalThis.CozyIslandHost.getState()` only after fixture rows prove route/source/action/movement/rail/grass/cloud/render records without WebGL.

@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T05-30-27-04-00`
+**Updated:** `2026-07-09T05-38-20-04-00`
 
 ## Next safe ledge
 
-Build a narrowed browser-consumer proof split around the existing route.
+Build an additive host-state readback layer around the existing route.
 
 ```txt
-MyCozyIsland Host Proof Consumer Freeze + Cloud/Grass Fixture Readback Gate
+MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
 ```
 
 ## Preserve first

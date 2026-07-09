@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T19-40-00-04-00`
+**Updated:** `2026-07-08T19-50-20-04-00`
 
 ## Validation performed in this pass
 
@@ -12,7 +12,7 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the oldest eligible fallback by sampled root-agent alignment
+  selected MyCozyIsland because repo-local .agent state was ahead of central ledger and host proof fixture scope remains unresolved
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
@@ -95,6 +95,7 @@ src/main-cloudform.js imports local source-domain kits
 src/main-cloudform.js creates descriptors before render adapters consume them
 src/main-cloudform.js exposes legacy globalThis.CozyIsland
 future host proof adds additive globalThis.CozyIslandHost without removing legacy surface
+central repo ledger is updated in the same pass as repo-local .agent state
 ```
 
 ## Future smoke tests needed
@@ -116,6 +117,7 @@ render-host-snapshot-smoke
 cozy-island-host-snapshot-smoke
 browser-consumer-fixture-smoke
 legacy-global-compatibility-smoke
+central-ledger-sync-smoke
 ```
 
 ## Pass result

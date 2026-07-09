@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T14-20-00-04-00`
+**Updated:** `2026-07-09T14-26-56-04-00`
 
 ## Validation performed in this pass
 
@@ -12,7 +12,7 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the oldest eligible host-readback fixture fallback
+  selected MyCozyIsland as the oldest eligible host-readback central-sync fallback
 
 source inspection:
   read index.html route state
@@ -62,6 +62,8 @@ pull request created: no
 
 ```txt
 scripts/my-cozy-island-browser-consumer-fixture.mjs does not exist yet.
+package.json does not include npm run check yet.
+globalThis.CozyIslandHost.getState() does not exist yet.
 ```
 
 ## Required next validation

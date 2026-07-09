@@ -2,15 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T14-28-45-04-00`
+**Updated:** `2026-07-09T14-39-07-04-00`
 
 ## Next safe ledge
 
-Build an additive host-state readback layer around the existing route, then wire a DOM-free browser consumer fixture.
-
 ```txt
-MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
+MyCozyIsland Host Readback Central Parity + Browser Consumer Fixture Gate
 ```
+
+Build an additive host-state readback layer around the existing route, then wire a DOM-free browser consumer fixture.
 
 ## Preserve first
 
@@ -18,87 +18,49 @@ MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
 preserve index.html
 preserve ./src/main-cloudform.js?v=hero-cloud-4
 preserve current Three.js CDN import
-preserve current visible cloud/island/grass/campfire look
-preserve current rail threshold progress >= 0.985
-preserve current clearing radius and campfire keepout movement rule
-preserve legacy globalThis.CozyIsland shape
-push only to main
-create no branches
+preserve local source-domain kits
+preserve globalThis.CozyIsland
+preserve scroll threshold 0.985
+preserve clearing boundary and campfire keepout policy
+preserve current grass and cloud visual consumers
 ```
 
-## Implement in this order
+## Add next
 
 ```txt
-1. Add route/source proof modules.
-   - src/host-proof/route-token-readback.js
-   - src/host-proof/source-profile.js
-   - src/host-proof/source-fingerprint.js
-   - src/host-proof/scene-source-snapshot.js
-
-2. Add input and movement proof modules.
-   - src/host-proof/browser-input-action-frame.js
-   - src/host-proof/action-result.js
-   - src/host-proof/input-journal.js
-   - src/host-proof/movement-policy-result.js
-
-3. Add rail proof module.
-   - src/host-proof/camera-rail-snapshot.js
-   - capture mode, progress, eased progress, camera position, look target, and player anchor
-
-4. Add grass readback modules.
-   - src/host-proof/grass-placement-snapshot.js
-   - src/host-proof/grass-instance-snapshot.js
-   - expose seed, requested patch count, accepted patch count, instance count, and exclusion rule summary
-
-5. Add cloud readback modules.
-   - src/host-proof/hero-cloud-descriptor-snapshot.js
-   - src/host-proof/hero-cloud-cache-snapshot.js
-   - src/host-proof/cloud-drift-result.js
-   - expose cloud count, point count, cache key count, drift step summary, and cache reuse result
-
-6. Add render/host proof modules.
-   - src/host-proof/render-host-snapshot.js
-   - src/host-proof/cozy-island-host-snapshot.js
-   - src/host-proof/browser-consumer-fixture.js
-   - attach additive globalThis.CozyIslandHost.getState()
-
-7. Add fixture script and package check.
-   - scripts/my-cozy-island-browser-consumer-fixture.mjs
-   - npm run check should execute the DOM-free fixture
-
-8. Keep central tracking synced.
-   - update LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
-   - add an internal-change-log entry for every future pass
+src/host-proof/source-profile.js
+src/host-proof/source-fingerprint.js
+src/host-proof/scene-source-snapshot.js
+src/host-proof/input-action-frame.js
+src/host-proof/action-result.js
+src/host-proof/input-journal.js
+src/host-proof/movement-policy-result.js
+src/host-proof/camera-rail-snapshot.js
+src/host-proof/grass-readback.js
+src/host-proof/cloud-readback.js
+src/host-proof/render-host-snapshot.js
+src/host-proof/cozy-island-host-snapshot.js
+scripts/cozy-island-browser-consumer-fixture.mjs
 ```
 
-## Acceptance checklist
+## Fixture rows to prove
 
 ```txt
-route token readback reports hero-cloud-4
-source fingerprint is stable across repeated runs
-scene source snapshot reports island, floor, clearing, grass, smoke, and cloud descriptors
-input action frame records wheel, pointer, and keyboard effects without requiring DOM mutation
-movement policy result distinguishes accepted, rejected-outside-clearing, and rejected-campfire-keepout
-camera rail snapshot reports rail progress and first-person handoff state
-grass placement snapshot reports 140 requested patches and accepted render instances
-cloud descriptor snapshot reports mattatz cloud descriptors and cached point geometries
-cloud drift result reports per-frame movement without relying only on Three.js object mutation
-render host snapshot reports renderer/camera/scene summary
-CozyIslandHost.getState() is additive and does not break globalThis.CozyIsland
-browser consumer fixture can run without launching a browser
-package.json exposes npm run check
-central LuminaryLabs ledger points to the newest tracker and turn-ledger paths
+route token row
+source fingerprint row
+scene source snapshot row
+wheel progress accepted/clamped row
+pointer look accepted/clamped row
+movement accepted row
+movement rejected row
+camera rail sample row
+first-person camera row
+grass source/render parity row
+cloud descriptor/cache/drift row
+render host snapshot row
+legacy parity row
 ```
 
-## Do not do next
+## Stop condition
 
-```txt
-do not rewrite the scene visually
-do not replace cloud rendering
-do not replace grass rendering
-do not extract the whole renderer yet
-do not change the camera rail timing
-do not remove the legacy CozyIsland diagnostic surface
-do not create a branch
-do not open a PR
-```
+Stop the ledge when `npm run check` can run the DOM-free fixture and `globalThis.CozyIslandHost.getState()` remains additive and compatibility-safe.

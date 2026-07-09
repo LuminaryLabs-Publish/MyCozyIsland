@@ -2,28 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T05-30-27-04-00`
+**Audit timestamp:** `2026-07-09T05-38-20-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is not visual quality; it is proofability and host-state authority.
 
-`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline. That is usable today, but not fixture-readable enough for durable DSK promotion.
+`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
 
 ## Repo selection result
 
 ```txt
 Checked accessible Publish list:
+  IntoTheMeadow
   HorrorCorridor
   AetherVale
-  TheOpenAbove
-  TheCavalryOfRome
-  PhantomCommand
-  PrehistoricRush
   ZombieOrchard
-  IntoTheMeadow
-  MyCozyIsland
   TheUnmappedHouse
+  MyCozyIsland
+  TheOpenAbove
+  PhantomCommand
+  TheCavalryOfRome
+  PrehistoricRush
 
 Excluded:
   TheCavalryOfRome
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland had the oldest central alignment among the checked eligible fallback repos and still needs browser-consumer proof for route/source/action/movement/rail/grass/cloud/render/host records.
+  MyCozyIsland had the oldest central ledger alignment among checked eligible fallback repos and still needs browser-consumer proof for route/source/action/movement/rail/grass/cloud/render/host records.
 ```
 
 ## Interaction loop
@@ -87,8 +87,9 @@ movement-validity-domain
 camera-rail-domain
 render-frame-domain
 legacy-host-diagnostics-domain
-planned-host-proof-domain
+planned-host-state-readback-domain
 planned-browser-consumer-fixture-domain
+central-ledger-sync-domain
 ```
 
 ## Services in use
@@ -190,6 +191,7 @@ next-cut proof kits:
   render-host-snapshot-kit
   cozy-island-host-snapshot-kit
   browser-consumer-fixture-kit
+  central-ledger-readback-kit
 ```
 
 ## Main finding
@@ -199,5 +201,5 @@ The next cut should not touch the look of the island. It should only add readbac
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Consumer Freeze + Cloud/Grass Fixture Readback Gate
+MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
 ```

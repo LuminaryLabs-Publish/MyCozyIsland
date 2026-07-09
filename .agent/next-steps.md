@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T00-20-08-04-00`
+**Updated:** `2026-07-09T02-31-41-04-00`
 
 ## Next safe ledge
 
-Build a host projection fixture catch-up and browser consumer readback gate around the existing route.
+Build a narrowed browser-consumer proof split around the existing route.
 
 ```txt
-MyCozyIsland Host Projection Fixture Catch-up + Browser Consumer Readback Gate
+MyCozyIsland Browser Consumer Proof Split + Cloud/Grass Readback Fixture Gate
 ```
 
 ## Preserve first
@@ -28,7 +28,7 @@ preserve current grass, smoke, water, flame, and cloud drift visuals
 ## Add fixture-readable records around current behavior
 
 ```txt
-RouteVersionResult:
+RouteTokenReadback:
   read index route token hero-cloud-4
   prove active script path and token are stable
 
@@ -54,7 +54,10 @@ MovementPolicyResult:
   distinguish clearing-boundary rejection from campfire-keepout rejection
 
 CameraRailSnapshot:
-  capture rail control points and sampled camera/look vectors at progress 0, middle, threshold, and first-person handoff
+  capture rail control points and sampled camera/look vectors at progress 0, middle, threshold, handoff, and first-person eye
+
+GrassPlacementSnapshot:
+  capture requestedCount, patchCount, exclusion policy, path clearance, and batchKey distribution
 
 GrassInstanceSnapshot:
   prove grass placement patch count equals WebGL InstancedMesh count
@@ -70,7 +73,7 @@ CloudDriftResult:
   record x/z drift and y bob deltas without WebGL
 
 RenderHostSnapshot:
-  record renderer, scene, camera, mesh consumer, and frame counter facts
+  record renderer, scene, camera, mesh consumer, point-cloud, and frame counter facts
 
 CozyIslandHostSnapshot:
   expose additive globalThis.CozyIslandHost.getState() without changing globalThis.CozyIsland
@@ -97,7 +100,7 @@ BrowserConsumerFixture:
 ## Target source files
 
 ```txt
-src/host-proof/route-version-result.js
+src/host-proof/route-token-readback.js
 src/host-proof/source-profile.js
 src/host-proof/source-fingerprint.js
 src/host-proof/scene-source-snapshot.js
@@ -106,6 +109,7 @@ src/host-proof/action-result.js
 src/host-proof/input-journal.js
 src/host-proof/movement-policy-result.js
 src/host-proof/camera-rail-snapshot.js
+src/host-proof/grass-placement-snapshot.js
 src/host-proof/grass-instance-snapshot.js
 src/host-proof/hero-cloud-descriptor-snapshot.js
 src/host-proof/hero-cloud-cache-snapshot.js
@@ -119,7 +123,7 @@ scripts/my-cozy-island-browser-consumer-fixture.mjs
 ## Fixture rows to require
 
 ```txt
-01_route_version_result_reads_hero_cloud_4
+01_route_token_readback_reads_hero_cloud_4
 02_source_profile_lists_all_local_descriptor_kits
 03_source_fingerprint_is_stable_for_same_inputs
 04_scene_source_snapshot_counts_landform_floor_foliage_grass_clearing_fire_smoke_clouds
@@ -130,13 +134,14 @@ scripts/my-cozy-island-browser-consumer-fixture.mjs
 09_movement_policy_rejects_outside_clearing
 10_movement_policy_rejects_inside_campfire_keepout
 11_camera_rail_snapshot_matches_progress_samples
-12_grass_instance_snapshot_matches_patch_count_and_instance_count
-13_hero_cloud_descriptor_snapshot_matches_cloud_contract
-14_hero_cloud_cache_snapshot_matches_saved_point_clouds
-15_cloud_drift_result_records_x_z_y_delta_without_webgl
-16_render_host_snapshot_reports_scene_renderer_camera_consumers
-17_cozy_island_host_get_state_exposes_all_projection_sections
-18_legacy_global_cozy_island_remains_compatible
+12_grass_placement_snapshot_reports_patch_and_batch_counts
+13_grass_instance_snapshot_matches_patch_count_and_instance_count
+14_hero_cloud_descriptor_snapshot_matches_cloud_contract
+15_hero_cloud_cache_snapshot_matches_saved_point_clouds
+16_cloud_drift_result_records_x_z_y_delta_without_webgl
+17_render_host_snapshot_reports_scene_renderer_camera_consumers
+18_cozy_island_host_get_state_exposes_all_projection_sections
+19_legacy_global_cozy_island_remains_compatible
 ```
 
 ## Stop conditions
@@ -159,4 +164,5 @@ do not remove the current static route
 do not make new branches
 do not work on TheCavalryOfRome
 do not expand shared kits before repo-local proof exists
+do not optimize grass/cloud rendering before consumer proof rows exist
 ```

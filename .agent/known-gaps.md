@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T21-58-34-04-00`
+**Updated:** `2026-07-09T00-20-08-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible fallback by current central alignment.
+MyCozyIsland was selected as the oldest eligible sampled fallback.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -69,16 +69,17 @@ render-readback cannot be validated without opening the browser.
 grass placement returns requestedCount, patchCount, and patches.
 grassMesh creates an InstancedMesh from placement.patches.
 There is no GrassInstanceSnapshot that proves placement.patchCount equals the WebGL instance count.
-There is no fixture row for exclusion zones, path clearance, or deterministic seed replay.
+There is no fixture row for exclusion zones, path clearance, deterministic seed replay, or future static-batch promotion.
 ```
 
 ## Cloud system gaps
 
 ```txt
-mattatz-clouds-domain currently delegates to cozy-hero-cloud-form-kit.
+mattatz-clouds-domain delegates to cozy-hero-cloud-form-kit.
 heroCloudGeometry caches geometry by cloud id in a module-level Map.
 cloud point-count, savedPointClouds, geometry cache hits, and drift delta are not projected as proof records.
 CloudDriftResult does not exist yet.
+HeroCloudCacheSnapshot does not exist yet.
 ```
 
 ## Host proof gaps
@@ -97,4 +98,12 @@ package.json has only npm run start.
 There is no npm test or fixture script yet.
 No runtime source changed in this documentation pass.
 No browser or GitHub Pages live validation ran in this documentation pass.
+```
+
+## Architectural risk
+
+```txt
+The current source is good enough to preserve, but fragile to keep expanding inline.
+A visual rewrite before host proof would make later diagnostics harder.
+Shared-kit promotion before repo-local fixture proof would export unstable seams.
 ```

@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 22,
+  "schemaVersion": 23,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T05-30-27-04-00",
-  "status": "host-proof-consumer-freeze-cloud-grass-fixture-readback-gate-planned",
+  "lastUpdated": "2026-07-09T05-38-20-04-00",
+  "status": "host-state-readback-consumer-freeze-cloud-grass-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T05-30-27-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T05-30-27-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Proof Consumer Freeze + Cloud/Grass Fixture Readback Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T05-38-20-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T05-38-20-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T05-30-27-04-00-host-proof-consumer-freeze-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T05-30-27-04-00-cloud-grass-render-host-readback.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T05-30-27-04-00-input-movement-rail-result-contract.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T05-30-27-04-00-hero-cloud-cache-drift-fixture-contract.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T05-30-27-04-00-grass-placement-instance-fixture-contract.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T05-30-27-04-00-cozy-island-host-state-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T05-30-27-04-00-browser-consumer-fixture-wire-map.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T05-38-20-04-00-host-state-readback-ledger-sync-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T05-38-20-04-00-cloud-grass-render-host-state-readback.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T05-38-20-04-00-input-movement-rail-fixture-contract.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T05-38-20-04-00-hero-cloud-cache-drift-readback-gate.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T05-38-20-04-00-grass-placement-instance-readback-gate.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T05-38-20-04-00-cozy-island-host-state-readback-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T05-38-20-04-00-browser-consumer-fixture-check-map.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible central fallback and the browser-consumer host projection fixture remains unresolved.",
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible central fallback and the host-state/cloud/grass readback fixture gate remains unresolved.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -60,8 +60,9 @@
     "camera-rail-domain",
     "render-frame-domain",
     "legacy-host-diagnostics-domain",
-    "planned-host-proof-domain",
-    "planned-browser-consumer-fixture-domain"
+    "planned-host-state-readback-domain",
+    "planned-browser-consumer-fixture-domain",
+    "central-ledger-sync-domain"
   ],
   "implementedExplicitKits": [
     "ocean-island-landform-domain",
@@ -122,7 +123,8 @@
     "cloud-drift-result-kit",
     "render-host-snapshot-kit",
     "cozy-island-host-snapshot-kit",
-    "browser-consumer-fixture-kit"
+    "browser-consumer-fixture-kit",
+    "central-ledger-readback-kit"
   ],
   "preserve": [
     "index.html",

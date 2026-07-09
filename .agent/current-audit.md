@@ -2,13 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T08-11-12-04-00`
+**Audit timestamp:** `2026-07-09T08-29-38-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is not visual quality; it is proofability and host-state authority.
 
 `src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
+
+This pass refreshes repo-local `.agent` state and closes the central-ledger lag for the same unresolved next ledge: route/source/action/movement/rail/grass/cloud/render/host records must become fixture-readable before visual or renderer rewrites.
 
 ## Repo selection result
 
@@ -35,7 +37,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland had the oldest eligible central ledger pointer among checked fallback repos and still needs browser-consumer proof for route/source/action/movement/rail/grass/cloud/render/host records.
+  MyCozyIsland still had the oldest eligible central ledger pointer among checked fallback repos. Repo-local docs had advanced, but the LuminaryLabs-Dev/LuminaryLabs ledger still pointed at 2026-07-09T05-38-20-04-00, so this pass creates a fresh repo-local tracker and central change-log sync.
 ```
 
 ## Interaction loop
@@ -201,5 +203,5 @@ The next cut should not touch the look of the island. It should only add readbac
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
 ```

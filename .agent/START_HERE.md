@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T08-20-00-04-00`
+**Last aligned:** `2026-07-09T08-11-12-04-00`
 
 ## Purpose
 
@@ -14,11 +14,11 @@ Read this folder before changing implementation code.
 
 The accessible `LuminaryLabs-Publish` organization repo list was compared against the tracked/documented repo ledger in `LuminaryLabs-Dev/LuminaryLabs` and sampled root `.agent/START_HERE.md` state.
 
-No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root `.agent/START_HERE.md` state.
+No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, missing sampled root `.agent/START_HERE.md` state, or otherwise undocumented.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible central fallback for this pass. The unresolved next cut remains fixture-readable host-state proof around route/source/action/movement/rail/grass/cloud/render records.
+`MyCozyIsland` was selected as the oldest eligible central-ledger fallback for this pass. The unresolved next cut is still fixture-readable host-state proof around route/source/action/movement/rail/grass/cloud/render records.
 
 ## Publish repos checked
 
@@ -31,13 +31,13 @@ LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / centra
 LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T06-10-35-04-00
 LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present / central latest 2026-07-09T07-41-29-04-00
 LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T06-28-53-04-00
-LuminaryLabs-Publish/MyCozyIsland         selected / oldest eligible central fallback / previous central latest 2026-07-09T05-38-20-04-00
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T08-02-33-04-00
+LuminaryLabs-Publish/MyCozyIsland         selected / oldest eligible central latest 2026-07-09T05-38-20-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T07-48-29-04-00
 ```
 
 ## Current product read
 
-`MyCozyIsland` is a standalone static Three.js cozy island route. It vendors the source-domain kits it needs under `src/kits/` and runs from `index.html` without depending on a remote experiment repo at runtime.
+`MyCozyIsland` is a standalone static Three.js cozy island route. It vendors the domain kits it needs under `src/kits/` and runs from `index.html` without depending on a remote experiment repo at runtime.
 
 The active route is:
 
@@ -58,7 +58,7 @@ index.html
 static browser route
   -> load src/main-cloudform.js?v=hero-cloud-4
   -> import Three.js CDN and local source-domain kits
-  -> construct island, ocean floor, foliage graph, clearing graph, grass placement, grass wind, campfire, smoke, clouds
+  -> construct island, ocean floor, foliage, clearing, fire, smoke, grass, wind, cloud, and hero-cloud descriptors
   -> create Three.js renderer, scene, camera, lights, fog, water, terrain, floor, foam, path, foliage, fence, campfire, smoke, grass, and point-cloud clouds
   -> install resize, keyboard, wheel, pointerdown, pointerup, and pointermove handlers
   -> wheel mutates scroll progress directly
@@ -99,15 +99,15 @@ RouteTokenReadback
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T08-20-00-04-00-host-state-cloud-grass-ledger-dsk-map.md
-.agent/render-audit/2026-07-09T08-20-00-04-00-render-cloud-grass-readback-contract.md
-.agent/interaction-audit/2026-07-09T08-20-00-04-00-input-action-movement-rail-contract.md
-.agent/cloud-system-audit/2026-07-09T08-20-00-04-00-hero-cloud-cache-drift-fixture.md
-.agent/grass-system-audit/2026-07-09T08-20-00-04-00-grass-placement-instance-fixture.md
-.agent/host-proof-audit/2026-07-09T08-20-00-04-00-cozy-island-host-state-ledger.md
-.agent/deploy-audit/2026-07-09T08-20-00-04-00-browser-fixture-check-gate.md
-.agent/trackers/2026-07-09T08-20-00-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T08-20-00-04-00.md
+.agent/architecture-audit/2026-07-09T08-11-12-04-00-host-state-ledger-refresh-dsk-map.md
+.agent/render-audit/2026-07-09T08-11-12-04-00-render-host-cloud-grass-consumer-readback.md
+.agent/interaction-audit/2026-07-09T08-11-12-04-00-input-movement-rail-readback-contract.md
+.agent/cloud-system-audit/2026-07-09T08-11-12-04-00-hero-cloud-cache-drift-consumer-freeze.md
+.agent/grass-system-audit/2026-07-09T08-11-12-04-00-grass-placement-instance-consumer-freeze.md
+.agent/host-proof-audit/2026-07-09T08-11-12-04-00-route-source-host-state-ledger-freeze.md
+.agent/deploy-audit/2026-07-09T08-11-12-04-00-browser-consumer-fixture-check-wire.md
+.agent/trackers/2026-07-09T08-11-12-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T08-11-12-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -118,13 +118,48 @@ index.html
 package.json
 src/main-cloudform.js
 src/kits/ocean-island-landform-domain/index.js
-src/kits/island-foliage-domain/index.js
 src/kits/ocean-floor-domain/index.js
+src/kits/island-foliage-domain/index.js
 src/kits/grass-object-domain/index.js
 src/kits/grass-wind-domain/index.js
+src/kits/fenced-clearing-domain/index.js
 src/kits/campfire-object-domain/index.js
 src/kits/smoke-particle-domain/index.js
-src/kits/fenced-clearing-domain/index.js
 src/kits/mattatz-clouds-domain/index.js
 src/kits/cozy-hero-cloud-form-kit/index.js
+```
+
+## Source files to add next
+
+```txt
+src/host-proof/route-token-readback.js
+src/host-proof/source-profile.js
+src/host-proof/source-fingerprint.js
+src/host-proof/scene-source-snapshot.js
+src/host-proof/browser-input-action-frame.js
+src/host-proof/action-result.js
+src/host-proof/input-journal.js
+src/host-proof/movement-policy-result.js
+src/host-proof/camera-rail-snapshot.js
+src/host-proof/grass-placement-snapshot.js
+src/host-proof/grass-instance-snapshot.js
+src/host-proof/hero-cloud-descriptor-snapshot.js
+src/host-proof/hero-cloud-cache-snapshot.js
+src/host-proof/cloud-drift-result.js
+src/host-proof/render-host-snapshot.js
+src/host-proof/cozy-island-host-snapshot.js
+src/host-proof/browser-consumer-fixture.js
+scripts/my-cozy-island-browser-consumer-fixture.mjs
+```
+
+## Main rule
+
+Preserve `index.html`, `./src/main-cloudform.js?v=hero-cloud-4`, the current visible scene, the legacy `globalThis.CozyIsland` surface, the input thresholds, the clearing/campfire movement constraints, and the current cloud look.
+
+Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.getState()` before any visual rewrite, renderer extraction, or shared-kit promotion.
+
+## Current next safe ledge
+
+```txt
+MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
 ```

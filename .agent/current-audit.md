@@ -2,17 +2,17 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T11-11-08-04-00`
+**Audit timestamp:** `2026-07-09T11-21-06-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The gap is not visual quality. The gap is proofability and host-state authority.
+The gap is not visual quality. The gap is proofability, source/host authority, and central ledger freshness.
 
 `src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
 
-This pass refreshes repo-local `.agent` state and records the same unresolved next ledge with a clearer host-proof acceptance boundary.
+This pass refreshes repo-local `.agent` state and central tracking around the same unresolved host-proof ledge.
 
 ## Repo selection result
 
@@ -39,7 +39,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland remains an eligible fallback with a high-value source-authority gap. The live route is visually composed from local kits, but host-state readback and DOM-free fixture proof are still missing.
+  MyCozyIsland remains an eligible fallback with a high-value source-authority gap. The live route is visually composed from local kits, but host-state readback and DOM-free fixture proof are still missing. Repo-local .agent state was also ahead of the central ledger before this pass.
 ```
 
 ## Interaction loop
@@ -157,6 +157,7 @@ planned hero-cloud descriptor/cache/drift rows
 planned render host snapshot
 planned additive CozyIslandHost.getState()
 planned DOM-free browser consumer fixture
+central ledger readback refresh
 ```
 
 ## Kits identified
@@ -229,10 +230,10 @@ next-cut proof kits:
 
 The next cut should not touch the look of the island.
 
-It should only add readback and fixture authority around what already exists: route token, source descriptor summaries, input action frames, movement policy decisions, rail camera state, grass placement/instance summaries, cloud descriptor/cache/drift summaries, and render host state.
+It should only add readback and fixture authority around what already exists: route token, source descriptor summaries, input action frames, movement policy decisions, rail camera state, grass placement/instance summaries, cloud descriptor/cache/drift summaries, render host state, and central ledger parity.
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Ledger Parity + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Ledger Refresh + Browser Consumer Fixture Gate
 ```

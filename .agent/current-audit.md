@@ -2,244 +2,75 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T14-28-45-04-00`
+**Audit timestamp:** `2026-07-09T14-39-07-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The gap is still proofability, not more visuals. `src/main-cloudform.js` owns descriptor construction, browser consumption, input mutation, movement policy, rail camera sampling, grass instancing, cloud geometry caching, cloud drift, frame rendering, and legacy diagnostics inline.
+The current issue is proofability, not visuals. `src/main-cloudform.js` owns descriptor construction, browser consumption, input mutation, movement policy, rail camera sampling, grass instancing, cloud geometry caching, cloud drift, frame rendering, and legacy diagnostics inline.
 
-This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback pointer repair and browser consumer fixture gate.
+This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback parity and browser consumer fixture gate.
 
 ## Repo selection result
 
 ```txt
-Checked accessible Publish list:
-  IntoTheMeadow
-  HorrorCorridor
-  AetherVale
-  ZombieOrchard
-  TheUnmappedHouse
-  MyCozyIsland
-  TheOpenAbove
-  PhantomCommand
-  TheCavalryOfRome
-  PrehistoricRush
+No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-Excluded:
-  TheCavalryOfRome
+MyCozyIsland was selected because repo-local .agent state was ahead of central tracking.
 
-Central/root-agent comparison:
-  No checked non-Cavalry repo was fully new, absent from central tracking, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md.
-
-Selected:
-  LuminaryLabs-Publish/MyCozyIsland
-
-Reason:
-  MyCozyIsland remained the oldest eligible host-readback/pointer-repair fallback and still lacks source-owned host proof, DOM-free consumer fixtures, additive CozyIslandHost readback, and npm check wiring.
+TheCavalryOfRome remains excluded.
 ```
 
-## Interaction loop
+## Current interaction loop
 
 ```txt
 index.html
-  -> canvas#game + cloud loader + error panel
-  -> ./src/main-cloudform.js?v=hero-cloud-4
-  -> Three.js CDN import
-  -> local source-domain kit imports
-  -> source descriptors: island, ocean floor, foliage graph, clearing graph, grass placement, grass wind, campfire, smoke, clouds
-  -> renderer/scene/camera/light/fog setup
-  -> mesh adapters: terrain, floor, water, foam, path, foliage, fence, campfire, smoke, grass, point clouds
-  -> resize/keyboard/wheel/pointer events mutate inline state
-  -> rail camera runs while progress < 0.985
-  -> first-person movement unlocks when progress >= 0.985
-  -> valid(next) enforces clearing radius and campfire keepout only
-  -> frame updates sea, camera, smoke, flame, cloud drift, and renderer
-  -> globalThis.CozyIsland exposes cloudContract, cloudPointCache, and getScrollProgress
+  -> src/main-cloudform.js?v=hero-cloud-4
+  -> local source-domain kits and Three.js CDN
+  -> source descriptor construction
+  -> inline Three.js render consumers
+  -> browser input handlers
+  -> camera rail or first-person movement
+  -> smoke/flame/cloud frame update
+  -> renderer.render(scene, camera)
+  -> globalThis.CozyIsland legacy diagnostics
 ```
 
 ## Domains in use
 
 ```txt
-static-browser-route-domain
+static-route-domain
 route-token-domain
-loading-status-domain
+loader-status-domain
 error-panel-domain
-three-render-host-domain
-scene-composition-domain
+source-descriptor-domain
 island-landform-domain
 ocean-floor-domain
-shoreline-foam-domain
-path-network-domain
 foliage-object-graph-domain
 fenced-clearing-domain
 campfire-object-domain
 smoke-particle-domain
 grass-placement-domain
 grass-wind-domain
-hero-cloud-source-domain
-hero-cloud-geometry-cache-domain
-cloud-drift-domain
-input-state-domain
-scroll-progress-domain
+mattatz-cloud-domain
+hero-cloud-point-cache-domain
+three-render-host-domain
+scene-composition-domain
+resize-consumer-domain
+keyboard-input-domain
+wheel-progress-domain
 pointer-look-domain
+camera-rail-domain
 first-person-movement-domain
 movement-validity-domain
-camera-rail-domain
 render-frame-domain
 legacy-host-diagnostics-domain
-planned-route-token-readback-domain
-planned-source-profile-domain
-planned-source-fingerprint-domain
-planned-scene-source-snapshot-domain
-planned-browser-input-action-frame-domain
-planned-action-result-domain
-planned-input-journal-domain
-planned-movement-policy-result-domain
-planned-camera-rail-snapshot-domain
-planned-grass-placement-readback-domain
-planned-grass-instance-readback-domain
-planned-hero-cloud-descriptor-readback-domain
-planned-hero-cloud-cache-readback-domain
-planned-cloud-drift-result-domain
-planned-render-host-snapshot-domain
-planned-cozy-island-host-state-domain
-planned-browser-consumer-fixture-domain
+host-readback-proof-domain
+browser-consumer-fixture-domain
 central-ledger-sync-domain
-```
-
-## Services in use
-
-```txt
-route HTML shell
-route token/version selection
-cloud loader progress projection
-error display projection
-Three.js module import
-island heightfield and mask sampling
-ocean floor heightfield construction
-shoreline contract creation
-path network mesh projection
-foliage object graph projection
-fenced clearing object/collision zone construction
-campfire graph projection
-smoke particle descriptor creation and animation
-grass wind descriptor creation
-grass patch placement creation
-grass instanced mesh projection
-hero cloud descriptor creation
-hero cloud point geometry caching
-cloud shader material creation
-cloud drift frame update
-resize handling
-keyboard capture
-wheel-to-scroll-progress mutation
-pointer yaw/pitch mutation
-rail camera sampling
-first-person movement integration
-movement validity check
-sea bob update
-flame scale update
-frame render submission
-legacy host diagnostic exposure
-planned route token readback
-planned source profile/fingerprint
-planned scene source snapshot
-planned browser input action frame
-planned action result rows
-planned movement policy rows
-planned camera rail snapshot rows
-planned grass placement/instance rows
-planned hero-cloud descriptor/cache/drift rows
-planned render host snapshot
-planned additive CozyIslandHost.getState()
-planned DOM-free browser consumer fixture
-central ledger readback refresh
-```
-
-## Kits identified
-
-```txt
-implemented explicit kits:
-  ocean-island-landform-domain
-  island-foliage-domain
-  ocean-floor-domain
-  grass-object-domain
-  grass-wind-domain
-  campfire-object-domain
-  smoke-particle-domain
-  fenced-clearing-domain
-  mattatz-clouds-domain
-  cozy-hero-cloud-form-kit
-
-runtime-implied kits:
-  cozy-static-shell-kit
-  cozy-cloud-loader-kit
-  cozy-error-panel-kit
-  cozy-cloudform-entry-kit
-  cozy-route-script-token-kit
-  cozy-three-render-host-kit
-  cozy-scene-composition-kit
-  cozy-terrain-render-kit
-  cozy-ocean-floor-render-kit
-  cozy-water-plane-kit
-  cozy-shoreline-foam-kit
-  cozy-path-render-kit
-  cozy-foliage-render-kit
-  cozy-fence-render-kit
-  cozy-campfire-render-kit
-  cozy-smoke-render-kit
-  cozy-grass-instanced-render-kit
-  cozy-hero-cloud-point-cache-kit
-  cozy-cloud-drift-frame-kit
-  cozy-resize-consumer-kit
-  cozy-keyboard-input-kit
-  cozy-wheel-progress-kit
-  cozy-pointer-look-kit
-  cozy-camera-rail-kit
-  cozy-first-person-movement-kit
-  cozy-movement-validity-kit
-  cozy-render-frame-loop-kit
-  cozy-legacy-host-diagnostics-kit
-
-next-cut proof kits:
-  route-token-readback-kit
-  source-profile-kit
-  source-fingerprint-kit
-  scene-source-snapshot-kit
-  browser-input-action-frame-kit
-  action-result-kit
-  input-journal-kit
-  movement-policy-result-kit
-  camera-rail-snapshot-kit
-  grass-placement-snapshot-kit
-  grass-instance-snapshot-kit
-  hero-cloud-descriptor-snapshot-kit
-  hero-cloud-cache-snapshot-kit
-  cloud-drift-result-kit
-  render-host-snapshot-kit
-  cozy-island-host-snapshot-kit
-  browser-consumer-fixture-kit
-  central-ledger-readback-kit
-```
-
-## Current blocker
-
-```txt
-scripts/my-cozy-island-browser-consumer-fixture.mjs does not exist.
-package.json has no npm run check.
-globalThis.CozyIslandHost.getState() does not exist.
-source descriptor readback is not split from src/main-cloudform.js.
-render/grass/cloud consumption cannot be fixture-read without running the browser.
 ```
 
 ## Main finding
 
-Do not rewrite the visuals next. The immediate implementation need is a fixture-readable host proof layer that exposes route token, source fingerprint, scene source snapshot, input/action/movement results, camera rail snapshots, grass instance summaries, cloud descriptor/cache/drift summaries, render host state, and additive `CozyIslandHost.getState()` while preserving the existing `CozyIsland` surface.
-
-## Next safe ledge
-
-```txt
-MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
-```
+The next cut should add a host-state proof layer and DOM-free fixture rows before any visual rewrite. The useful seam is `CozyIslandHost.getState()`, source fingerprints, scene/source snapshots, grass/cloud readback, movement action results, camera rail snapshots, render-host snapshots, and legacy parity.

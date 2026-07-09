@@ -2,23 +2,24 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T21-58-34-04-00`
+**Updated:** `2026-07-09T00-20-08-04-00`
 
 ## Validation performed in this pass
 
 ```txt
 repo selection:
-  listed accessible LuminaryLabs-Publish repos through the GitHub App installation
+  listed accessible LuminaryLabs-Publish repos through GitHub search
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the oldest eligible fallback in the current central readback
+  selected MyCozyIsland as the oldest eligible sampled fallback
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
   read package.json and confirmed start script is python3 -m http.server 8080
   read src/main-cloudform.js imports, descriptor construction, render adapters, grass instancing, cloud cache, input handlers, rail, movement policy, frame loop, and legacy global projection
-  read landform, foliage, grass, fenced-clearing, and mattatz-cloud kit source seams
+  read grass-object-domain placement contract and static-batch descriptor seam
+  read mattatz-clouds-domain and cozy-hero-cloud-form-kit cloud descriptor seams
   read prior repo-local .agent docs and central ledger status
 
 documentation updates:
@@ -80,12 +81,17 @@ globalThis.CozyIsland?.cloudPointCache
 globalThis.CozyIslandHost?.getState?.()
 globalThis.CozyIslandHost?.getState?.().route
 globalThis.CozyIslandHost?.getState?.().source
+globalThis.CozyIslandHost?.getState?.().action
 globalThis.CozyIslandHost?.getState?.().movement
+globalThis.CozyIslandHost?.getState?.().rail
 globalThis.CozyIslandHost?.getState?.().grass
 globalThis.CozyIslandHost?.getState?.().cloud
 globalThis.CozyIslandHost?.getState?.().render
+globalThis.CozyIslandHost?.getState?.().validation
 ```
 
 ## Validation conclusion
 
-This was a documentation and operating-memory pass only. It made no runtime changes and did not prove the route in browser. The next implementation pass should add the DOM-free fixture before changing `src/main-cloudform.js`.
+This was a documentation and operating-memory pass only. It made no runtime changes and did not prove the route in browser.
+
+The next implementation pass should add the DOM-free fixture and host-proof modules before changing `src/main-cloudform.js`.

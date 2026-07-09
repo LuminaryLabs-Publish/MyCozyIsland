@@ -2,19 +2,19 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T17-48-20-04-00`
+**Audit timestamp:** `2026-07-09T19-09-44-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a standalone static Three.js scene whose source-domain descriptors are more modular than its browser consumer.
+`MyCozyIsland` is a standalone static Three.js scene with modular source-domain descriptors and a monolithic browser consumer.
 
-The active route already separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The main architectural gap is that `src/main-cloudform.js` directly owns all renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, and host diagnostics without normalized result or parity records.
+The active route separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The current gap is that `src/main-cloudform.js` directly owns renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, render submission, and host diagnostics without normalized result or parity records.
 
 ## Selection result
 
 ```txt
 No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented.
-MyCozyIsland had the oldest eligible central ledger timestamp and repo-local audit state newer than central tracking.
+MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency.
 TheCavalryOfRome remains excluded.
 ```
 
@@ -23,7 +23,7 @@ TheCavalryOfRome remains excluded.
 ```txt
 index.html
   -> src/main-cloudform.js?v=hero-cloud-4
-  -> import Nine source-domain kits plus Three.js CDN
+  -> import nine source-domain kits plus Three.js CDN
   -> create source states, object graphs, and render contracts
   -> adapt contracts into terrain, floor, water, shoreline, path, foliage, fence, campfire, smoke, grass, and cloud Three.js objects
   -> install resize, keyboard, wheel, pointer-down/up/move handlers
@@ -136,49 +136,17 @@ central-ledger-sync
 ## Kit services
 
 ```txt
-ocean-island-landform-domain:
-  create normalized island state
-  sample deterministic height
-  sample water/beach/grass/rock/cliff/foam masks
-  create heightfield and shoreline render contract
-
-island-foliage-domain:
-  create deterministic path network
-  create dense procedural object graph
-  create render contract for objects and paths
-
-ocean-floor-domain:
-  create ocean-floor state
-  sample deterministic floor height
-  create heightfield
-  create reef/coral/rock/boulder placements
-  create render contract and water material descriptor
-
-grass-object-domain:
-  create path/exclusion-aware patch placements
-  create static batch descriptors
-
-grass-wind-domain:
-  normalize wind direction and emit sway/gust descriptor
-
-fenced-clearing-domain:
-  create fence posts, player anchor, collision boundary, clearance zones, and object-exclusion zones
-
-campfire-object-domain:
-  create campfire graph, child objects, collision, flame/smoke/light descriptors, and root object projection
-
-smoke-particle-domain:
-  create normalized smoke emitter descriptor with wind response
-
-cozy-hero-cloud-form-kit:
-  create hero cloud form, layer, and render contracts
-
-mattatz-clouds-domain:
-  create cloud state and wrap the hero cloud contract as the active cloud render contract
-
-main-cloudform runtime:
-  adapt source descriptors into Three.js objects
-  own browser input, camera, movement, animation, render submission, and legacy diagnostics
+ocean-island-landform-domain: island state, height sampling, masks, heightfield and shoreline render contracts
+island-foliage-domain: path network, dense object graph, render contract
+ocean-floor-domain: floor state, height sampling, heightfield, reef/coral/rock/boulder placements, render contract, water material
+grass-object-domain: path/exclusion-aware patch placements and static batch descriptors
+grass-wind-domain: normalized wind/sway/gust descriptor
+fenced-clearing-domain: fence posts, player anchor, collision boundary, clearance zones, object exclusions
+campfire-object-domain: campfire graph, collision, flame, smoke anchor, light descriptors
+smoke-particle-domain: normalized smoke emitter descriptor with wind response
+cozy-hero-cloud-form-kit: cloud form, layer, and render contracts
+mattatz-clouds-domain: cloud state and active hero-cloud render contract
+main-cloudform runtime: descriptor adaptation, browser input, camera, movement, animation, render submission, legacy diagnostics
 ```
 
 ## Kit inventory
@@ -258,3 +226,9 @@ central-ledger-readback-kit
 ## Main finding
 
 The next cut should be an additive proof layer, not a visual rewrite. Source fingerprints, input/movement result rows, deterministic camera samples, grass/cloud parity snapshots, render-consumption records, and a serializable `globalThis.CozyIslandHost.getState()` surface should be fixture-proven while preserving `globalThis.CozyIsland` compatibility.
+
+## Next safe ledge
+
+```txt
+MyCozyIsland Source/Consumer Fixture Refresh + Browser Input Result Gate
+```

@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T17-48-20-04-00",
-  "status": "source-consumer-central-catchup-browser-input-fixture-gate-planned",
+  "lastUpdated": "2026-07-09T19-09-44-04-00",
+  "status": "source-consumer-fixture-refresh-browser-input-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T17-48-20-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T17-48-20-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Source/Consumer Parity Ledger + Browser Input Result Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T19-09-44-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T19-09-44-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Source/Consumer Fixture Refresh + Browser Input Result Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T17-48-20-04-00-source-consumer-central-catchup-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T17-48-20-04-00-render-consumption-readback-map.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T17-48-20-04-00-input-movement-result-contract.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T17-48-20-04-00-cloud-descriptor-cache-drift-parity.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T17-48-20-04-00-grass-placement-instance-parity.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T17-48-20-04-00-additive-host-readback-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T17-48-20-04-00-consumer-fixture-script-gate.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T19-09-44-04-00-source-consumer-fixture-refresh-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T19-09-44-04-00-render-consumption-ledger-readback.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T19-09-44-04-00-input-movement-result-fixture-map.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T19-09-44-04-00-cloud-cache-drift-readback.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T19-09-44-04-00-grass-placement-instance-readback.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T19-09-44-04-00-cozy-island-host-fixture-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T19-09-44-04-00-browser-input-fixture-gate.md"
   },
   "selection": {
-    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected because its central ledger timestamp was 2026-07-09T14-39-07-04-00, the oldest eligible central entry, while repo-local audit state had advanced to 2026-07-09T17-38-53-04-00.",
+    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -46,52 +46,6 @@
     "mattatz-clouds-domain",
     "cozy-hero-cloud-form-kit"
   ],
-  "explicitKitServices": {
-    "ocean-island-landform-domain": [
-      "createOceanIslandLandformState",
-      "sampleIslandHeight",
-      "sampleIslandMasks",
-      "createOceanIslandLandformRenderContract"
-    ],
-    "island-foliage-domain": [
-      "createIslandPathNetwork",
-      "createDenseCozyIslandObjectGraph",
-      "createDenseCozyIslandRenderContract"
-    ],
-    "ocean-floor-domain": [
-      "createOceanFloorState",
-      "sampleOceanFloorHeight",
-      "createOceanFloorHeightfield",
-      "createOceanFloorObjectPlacements",
-      "createOceanFloorRenderContract"
-    ],
-    "grass-object-domain": [
-      "createGrassPatchPlacementContract",
-      "createGrassPatchBatchDescriptors"
-    ],
-    "grass-wind-domain": [
-      "createGrassWindDescriptor"
-    ],
-    "campfire-object-domain": [
-      "createCampfireObjectGraph",
-      "createCampfireObject"
-    ],
-    "smoke-particle-domain": [
-      "createSmokeParticleDescriptor"
-    ],
-    "fenced-clearing-domain": [
-      "createFencedClearingGraph"
-    ],
-    "mattatz-clouds-domain": [
-      "createMattatzCloudsState",
-      "createMattatzCloudRenderContract"
-    ],
-    "cozy-hero-cloud-form-kit": [
-      "createCozyHeroCloudFormDescriptor",
-      "createCozyHeroCloudLayerDescriptor",
-      "createCozyHeroCloudRenderContract"
-    ]
-  },
   "runtimeImpliedKits": [
     "cozy-static-shell-kit",
     "cozy-cloud-loader-kit",

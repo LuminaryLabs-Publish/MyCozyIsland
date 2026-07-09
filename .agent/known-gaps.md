@@ -2,18 +2,16 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T14-26-56-04-00`
+**Updated:** `2026-07-09T14-28-45-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible documented fallback and central-ledger catch-up target.
+MyCozyIsland was selected as the oldest eligible documented fallback and host-readback pointer repair target.
 
-The central ledger still pointed at 2026-07-09T11-39-50-04-00, while repo-local docs had already advanced to 2026-07-09T14-20-00-04-00.
-
-This pass normalizes root docs, timestamped audits, tracker, turn ledger, kit registry, central ledger, and central internal change log to 2026-07-09T14-26-56-04-00.
+Same-hour catch-up work had partially advanced repo-local docs. This pass records a complete 2026-07-09T14-28-45-04-00 audit set and central ledger sync.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -81,17 +79,28 @@ there is no HeroCloudDescriptorSnapshot, HeroCloudCacheSnapshot, or CloudDriftRe
 ## Render gaps
 
 ```txt
-renderer, scene, camera, lights, terrain, ocean, foliage, grass, smoke, and cloud consumers are all created inline.
-render host state is not summarized into a fixture-readable RenderHostSnapshot.
-there is no DOM-free render/consumer fixture.
+renderer setup is inline.
+render pass emits no RenderHostSnapshot.
+scene object counts, camera mode, pixel ratio, tone mapping, route token, and visible descriptor counts are not fixture-readable.
+render readback cannot prove grass/cloud descriptors were consumed.
 ```
 
-## Validation gaps
+## Deploy / validation gaps
 
 ```txt
 package.json only exposes npm start.
-no npm run check exists.
-no source/host fixture exists.
-no browser smoke was run in this docs pass.
-no runtime source changed in this docs pass.
+No npm check script exists.
+No browser-consumer fixture script exists.
+No DOM-free fixture is wired.
+No GitHub Pages smoke was run in this pass.
 ```
+
+## Main blocked implementation
+
+```txt
+MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
+```
+
+## Risk
+
+If the next implementation changes the scene before adding host proof, the repo will keep accumulating visual systems that cannot be fixture-read, compared, or safely consumed by downstream automation.

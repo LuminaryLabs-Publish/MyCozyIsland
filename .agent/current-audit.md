@@ -2,28 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-08T21-58-34-04-00`
+**Audit timestamp:** `2026-07-09T00-20-08-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
+`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The active gap is not a new visual pass; it is proofability of the browser consumer path.
 
-The current blocker is still proofability, not visual quality. `src/main-cloudform.js` owns source construction, render consumption, input mutation, movement policy, camera rail sampling, grass instancing, cloud cache generation, cloud drift, and legacy globals inline. The next implementation should make those facts fixture-readable before any visual rewrite or shared-kit extraction.
+`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and legacy globals inline. The next implementation should add fixture-readable host-proof records before changing visuals or promoting shared kits.
 
 ## Repo selection result
 
 ```txt
 Checked accessible Publish list:
-  IntoTheMeadow
   HorrorCorridor
   AetherVale
-  ZombieOrchard
-  TheUnmappedHouse
-  MyCozyIsland
   TheOpenAbove
-  PhantomCommand
   TheCavalryOfRome
+  PhantomCommand
   PrehistoricRush
+  ZombieOrchard
+  IntoTheMeadow
+  MyCozyIsland
+  TheUnmappedHouse
 
 Excluded:
   TheCavalryOfRome
@@ -35,7 +35,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland was the oldest eligible fallback by current central alignment and still needs browser-consumer proof for route/source/action/movement/rail/grass/cloud/render/host records.
+  MyCozyIsland was the oldest eligible sampled fallback. It still needs browser-consumer readback for route/source/action/movement/rail/grass/cloud/render/host records.
 ```
 
 ## Current route
@@ -237,10 +237,13 @@ next-cut proof kits:
   cozy-render-host-snapshot-kit
   cozy-island-host-state-kit
   cozy-browser-consumer-fixture-kit
+  cozy-dom-free-fixture-runner-kit
+  cozy-replay-parity-smoke-kit
+  cozy-central-ledger-sync-kit
 ```
 
 ## Main finding
 
-The source has enough domain kits to describe the island, but the browser runtime consumes those descriptors immediately and loses audit-grade proof of what was accepted, rejected, rendered, cached, drifted, or projected.
+The route has enough source-domain kits to describe the island. The problem is that browser runtime consumption is not recorded as audit-grade proof: accepted/rejected input effects, movement rejection reasons, rail samples, grass instance readback, hero-cloud cache readback, drift deltas, render consumers, and host state projections are not stable records.
 
 The next pass should add pure `src/host-proof/` modules first, then splice them into `src/main-cloudform.js` additively. Preserve `globalThis.CozyIsland`, and expose a new `globalThis.CozyIslandHost.getState()` projection only after fixture rows prove the source records without WebGL.

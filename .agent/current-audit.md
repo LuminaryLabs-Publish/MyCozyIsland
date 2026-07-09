@@ -2,17 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T11-39-50-04-00`
+**Audit timestamp:** `2026-07-09T14-20-00-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
 
-The gap is not visual quality. The gap is proofability, source/host authority, fixture-readable render consumption, and central ledger parity.
+The gap is still proofability, not more visuals. `src/main-cloudform.js` owns descriptor construction, browser consumption, input mutation, movement policy, rail camera sampling, grass instancing, cloud geometry caching, drift, frame rendering, and legacy diagnostics inline.
 
-`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
-
-This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback parity ledge.
+This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback fixture freeze.
 
 ## Repo selection result
 
@@ -39,7 +37,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland remains an eligible fallback with a high-value source-authority gap. The live route is visually composed from local kits, but host-state readback and DOM-free fixture proof are still missing. Central and repo-local pointers also needed parity refresh.
+  MyCozyIsland was the oldest eligible documented fallback and still lacks source-owned host proof, DOM-free consumer fixtures, and additive CozyIslandHost readback.
 ```
 
 ## Interaction loop
@@ -232,10 +230,16 @@ next-cut proof kits:
 scripts/my-cozy-island-browser-consumer-fixture.mjs does not exist.
 package.json has no npm run check.
 globalThis.CozyIslandHost.getState() does not exist.
+source descriptor readback is not split from src/main-cloudform.js.
+render/grass/cloud consumption cannot be fixture-read without running the browser.
 ```
+
+## Main finding
+
+Do not rewrite the visuals next. The immediate implementation need is a fixture-readable host proof layer that exposes route token, source fingerprint, scene source snapshot, input/action/movement results, camera rail snapshots, grass instance summaries, cloud descriptor/cache/drift summaries, render host state, and additive `CozyIslandHost.getState()` while preserving the existing `CozyIsland` surface.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Readback Parity Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Host Readback Fixture Freeze + Browser Consumer Gate
 ```

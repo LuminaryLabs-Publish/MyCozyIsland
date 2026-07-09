@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T19-50-20-04-00`
+**Updated:** `2026-07-08T21-58-34-04-00`
 
 ## Validation performed in this pass
 
@@ -12,12 +12,13 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland because repo-local .agent state was ahead of central ledger and host proof fixture scope remains unresolved
+  selected MyCozyIsland as the oldest eligible fallback in the current central readback
 
 source inspection:
   read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
   read package.json and confirmed start script is python3 -m http.server 8080
   read src/main-cloudform.js imports, descriptor construction, render adapters, grass instancing, cloud cache, input handlers, rail, movement policy, frame loop, and legacy global projection
+  read landform, foliage, grass, fenced-clearing, and mattatz-cloud kit source seams
   read prior repo-local .agent docs and central ledger status
 
 documentation updates:
@@ -80,61 +81,11 @@ globalThis.CozyIslandHost?.getState?.()
 globalThis.CozyIslandHost?.getState?.().route
 globalThis.CozyIslandHost?.getState?.().source
 globalThis.CozyIslandHost?.getState?.().movement
-globalThis.CozyIslandHost?.getState?.().rail
 globalThis.CozyIslandHost?.getState?.().grass
-globalThis.CozyIslandHost?.getState?.().clouds
+globalThis.CozyIslandHost?.getState?.().cloud
 globalThis.CozyIslandHost?.getState?.().render
 ```
 
-Expected route facts:
+## Validation conclusion
 
-```txt
-index.html loads ./src/main-cloudform.js?v=hero-cloud-4
-src/main-cloudform.js imports Three.js from CDN
-src/main-cloudform.js imports local source-domain kits
-src/main-cloudform.js creates descriptors before render adapters consume them
-src/main-cloudform.js exposes legacy globalThis.CozyIsland
-future host proof adds additive globalThis.CozyIslandHost without removing legacy surface
-central repo ledger is updated in the same pass as repo-local .agent state
-```
-
-## Future smoke tests needed
-
-```txt
-route-version-result-smoke
-source-profile-smoke
-source-fingerprint-smoke
-scene-source-snapshot-smoke
-action-frame-smoke
-action-result-smoke
-input-journal-smoke
-movement-policy-result-smoke
-camera-rail-snapshot-smoke
-grass-instance-snapshot-smoke
-hero-cloud-cache-snapshot-smoke
-cloud-drift-result-smoke
-render-host-snapshot-smoke
-cozy-island-host-snapshot-smoke
-browser-consumer-fixture-smoke
-legacy-global-compatibility-smoke
-central-ledger-sync-smoke
-```
-
-## Pass result
-
-```txt
-runtime source changed: no
-root .agent updated: yes
-new timestamped tracker: yes
-new timestamped turn ledger: yes
-new architecture audit: yes
-new render audit: yes
-new interaction audit: yes
-new cloud-system audit: yes
-new grass-system audit: yes
-new host-proof audit: yes
-new deploy audit: yes
-central ledger updated: yes
-central internal change-log added: yes
-pushed to main: yes
-```
+This was a documentation and operating-memory pass only. It made no runtime changes and did not prove the route in browser. The next implementation pass should add the DOM-free fixture before changing `src/main-cloudform.js`.

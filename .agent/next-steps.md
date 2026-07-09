@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-29-38-04-00`
+**Updated:** `2026-07-09T11-11-08-04-00`
 
 ## Next safe ledge
 
-Build an additive host-state readback layer around the existing route and sync the central ledger pointer.
+Build an additive host-state readback layer around the existing route, then wire a DOM-free browser consumer fixture.
 
 ```txt
-MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Ledger Parity + Browser Consumer Fixture Gate
 ```
 
 ## Preserve first
@@ -22,6 +22,8 @@ preserve current visible cloud/island/grass/campfire look
 preserve current rail threshold progress >= 0.985
 preserve current clearing radius and campfire keepout movement rule
 preserve legacy globalThis.CozyIsland shape
+push only to main
+create no branches
 ```
 
 ## Implement in this order
@@ -46,13 +48,13 @@ preserve legacy globalThis.CozyIsland shape
 4. Add grass readback modules.
    - src/host-proof/grass-placement-snapshot.js
    - src/host-proof/grass-instance-snapshot.js
-   - expose seed, patch count, instance count, accepted patch summary, exclusion rule summary
+   - expose seed, requested patch count, accepted patch count, instance count, and exclusion rule summary
 
 5. Add cloud readback modules.
    - src/host-proof/hero-cloud-descriptor-snapshot.js
    - src/host-proof/hero-cloud-cache-snapshot.js
    - src/host-proof/cloud-drift-result.js
-   - expose cloud count, point count, cache key count, drift step summary
+   - expose cloud count, point count, cache key count, and drift step summary
 
 6. Add render/host proof modules.
    - src/host-proof/render-host-snapshot.js

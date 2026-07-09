@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T11-11-08-04-00`
+**Updated:** `2026-07-09T11-21-06-04-00`
 
 ## Next safe ledge
 
 Build an additive host-state readback layer around the existing route, then wire a DOM-free browser consumer fixture.
 
 ```txt
-MyCozyIsland Host Proof Ledger Parity + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Ledger Refresh + Browser Consumer Fixture Gate
 ```
 
 ## Preserve first
@@ -54,7 +54,7 @@ create no branches
    - src/host-proof/hero-cloud-descriptor-snapshot.js
    - src/host-proof/hero-cloud-cache-snapshot.js
    - src/host-proof/cloud-drift-result.js
-   - expose cloud count, point count, cache key count, and drift step summary
+   - expose cloud count, point count, cache key count, drift step summary, and cache reuse result
 
 6. Add render/host proof modules.
    - src/host-proof/render-host-snapshot.js

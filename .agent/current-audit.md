@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T14-26-56-04-00`
+**Audit timestamp:** `2026-07-09T14-28-45-04-00`
 
 ## Summary
 
@@ -10,7 +10,7 @@
 
 The gap is still proofability, not more visuals. `src/main-cloudform.js` owns descriptor construction, browser consumption, input mutation, movement policy, rail camera sampling, grass instancing, cloud geometry caching, cloud drift, frame rendering, and legacy diagnostics inline.
 
-This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback fixture gate.
+This pass refreshes repo-local `.agent` state and central tracking around the unresolved host readback pointer repair and browser consumer fixture gate.
 
 ## Repo selection result
 
@@ -37,7 +37,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland was the oldest eligible documented fallback and central-ledger catch-up target. The central ledger was still at 2026-07-09T11-39-50-04-00 even though repo-local docs had advanced to 2026-07-09T14-20-00-04-00. This run normalizes the latest repo-local and central docs to 2026-07-09T14-26-56-04-00.
+  MyCozyIsland remained the oldest eligible host-readback/pointer-repair fallback and still lacks source-owned host proof, DOM-free consumer fixtures, additive CozyIslandHost readback, and npm check wiring.
 ```
 
 ## Interaction loop
@@ -241,5 +241,5 @@ Do not rewrite the visuals next. The immediate implementation need is a fixture-
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Readback Central Sync + Browser Consumer Fixture Gate
+MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate
 ```

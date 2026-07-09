@@ -1,24 +1,26 @@
 {
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T14-28-45-04-00",
-  "status": "host-readback-pointer-repair-browser-consumer-fixture-gate-planned",
+  "lastUpdated": "2026-07-09T14-39-07-04-00",
+  "status": "host-readback-central-parity-browser-consumer-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T14-28-45-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T14-28-45-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Readback Pointer Repair + Browser Consumer Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T14-39-07-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T14-39-07-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Host Readback Central Parity + Browser Consumer Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T14-28-45-04-00-host-readback-pointer-repair-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T14-28-45-04-00-render-cloud-grass-host-readback.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T14-28-45-04-00-input-rail-movement-result-map.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T14-28-45-04-00-cloud-cache-drift-readback-contract.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T14-28-45-04-00-grass-placement-instance-readback-contract.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T14-28-45-04-00-cozy-island-host-state-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T14-28-45-04-00-browser-consumer-fixture-check-map.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T14-39-07-04-00-host-readback-central-parity-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T14-39-07-04-00-render-grass-cloud-host-consumer-readback.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T14-39-07-04-00-input-rail-movement-result-ledger.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T14-39-07-04-00-cloud-descriptor-cache-drift-readback.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T14-39-07-04-00-grass-placement-instance-fixture.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T14-39-07-04-00-host-state-central-parity-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T14-39-07-04-00-browser-consumer-fixture-check-map.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible documented fallback and host-readback pointer repair target.",
-    "excludedRepos": ["LuminaryLabs-Publish/TheCavalryOfRome"],
+    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected because repo-local .agent state had advanced to 2026-07-09T14-28-45-04-00 while central tracking still pointed at 2026-07-09T11-39-50-04-00.",
+    "excludedRepos": [
+      "LuminaryLabs-Publish/TheCavalryOfRome"
+    ],
     "selectionRule": "Compare the full LuminaryLabs-Publish repo list against LuminaryLabs-Dev/LuminaryLabs tracking and prioritize new, ledger-absent, undocumented, missing-.agent, or recently added but undocumented repos before fallback selection."
   },
   "activeRoute": {

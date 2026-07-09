@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-11-12-04-00`
+**Updated:** `2026-07-09T08-29-38-04-00`
 
 ## Selection / ledger gaps
 
 ```txt
 No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state.
 
-MyCozyIsland was selected as the oldest eligible central fallback.
+MyCozyIsland was selected because its central ledger pointer still lagged behind current repo-local .agent state and remained the oldest eligible fallback pointer.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -96,5 +96,5 @@ No GitHub Pages smoke was run in this pass.
 ## Main blocked implementation
 
 ```txt
-MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
 ```

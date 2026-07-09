@@ -1,27 +1,27 @@
 {
-  "schemaVersion": 32,
+  "schemaVersion": 33,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T14-39-07-04-00",
-  "status": "host-readback-central-parity-browser-consumer-fixture-gate-planned",
+  "lastUpdated": "2026-07-09T17-38-53-04-00",
+  "status": "source-consumer-parity-ledger-input-result-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T14-39-07-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T14-39-07-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Readback Central Parity + Browser Consumer Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T17-38-53-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T17-38-53-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Source/Consumer Parity Ledger + Input Result Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T14-39-07-04-00-host-readback-central-parity-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T14-39-07-04-00-render-grass-cloud-host-consumer-readback.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T14-39-07-04-00-input-rail-movement-result-ledger.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T14-39-07-04-00-cloud-descriptor-cache-drift-readback.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T14-39-07-04-00-grass-placement-instance-fixture.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T14-39-07-04-00-host-state-central-parity-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T14-39-07-04-00-browser-consumer-fixture-check-map.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T17-38-53-04-00-source-consumer-parity-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T17-38-53-04-00-render-consumption-parity-ledger.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T17-38-53-04-00-input-result-camera-movement-contract.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T17-38-53-04-00-cloud-descriptor-cache-drift-parity.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T17-38-53-04-00-grass-source-instance-parity.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T17-38-53-04-00-additive-host-snapshot-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T17-38-53-04-00-browser-fixture-check-gate.md"
   },
   "selection": {
-    "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected because repo-local .agent state had advanced to 2026-07-09T14-28-45-04-00 while central tracking still pointed at 2026-07-09T11-39-50-04-00.",
+    "reason": "No eligible non-Cavalry Publish repo was new, central-ledger absent, recorded without root .agent state, or otherwise undocumented. MyCozyIsland was selected under the oldest documented-selection fallback because its central ledger timestamp was 2026-07-09T14-39-07-04-00.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
-    "selectionRule": "Compare the full LuminaryLabs-Publish repo list against LuminaryLabs-Dev/LuminaryLabs tracking and prioritize new, ledger-absent, undocumented, missing-.agent, or recently added but undocumented repos before fallback selection."
+    "selectionRule": "Prioritize new, ledger-absent, undocumented, missing-.agent, or recently added undocumented repositories before choosing the oldest current documented repository."
   },
   "activeRoute": {
     "html": "index.html",
@@ -30,7 +30,8 @@
     "errorPanel": "#error",
     "script": "./src/main-cloudform.js?v=hero-cloud-4",
     "routeToken": "hero-cloud-4",
-    "source": "src/main-cloudform.js"
+    "source": "src/main-cloudform.js",
+    "threeVersion": "0.160.0"
   },
   "implementedKits": [
     "ocean-island-landform-domain",
@@ -80,8 +81,8 @@
     "source-fingerprint-kit",
     "scene-source-snapshot-kit",
     "browser-input-action-frame-kit",
-    "action-result-kit",
-    "input-journal-kit",
+    "input-result-kit",
+    "input-result-journal-kit",
     "movement-policy-result-kit",
     "camera-rail-snapshot-kit",
     "grass-placement-snapshot-kit",
@@ -89,6 +90,7 @@
     "hero-cloud-descriptor-snapshot-kit",
     "hero-cloud-cache-snapshot-kit",
     "cloud-drift-result-kit",
+    "render-consumption-ledger-kit",
     "render-host-snapshot-kit",
     "cozy-island-host-snapshot-kit",
     "browser-consumer-fixture-kit",
@@ -105,9 +107,9 @@
     "shoreline contract creation",
     "path network mesh projection",
     "foliage object graph projection",
-    "fenced clearing object/collision zone construction",
+    "fenced clearing object/collision construction",
     "campfire graph projection",
-    "smoke particle descriptor creation and animation",
+    "smoke source creation and frame animation",
     "grass wind descriptor creation",
     "grass patch placement creation",
     "grass instanced mesh projection",
@@ -117,16 +119,16 @@
     "cloud drift frame update",
     "resize handling",
     "keyboard capture",
-    "wheel-to-scroll-progress mutation",
+    "wheel progress mutation",
     "pointer yaw/pitch mutation",
     "rail camera sampling",
     "first-person movement integration",
     "movement validity check",
     "frame render submission",
-    "legacy host diagnostic exposure",
-    "planned source/host proof readback",
+    "legacy host diagnostics",
+    "planned source and consumer parity readback",
     "planned DOM-free fixture validation",
-    "central ledger readback refresh"
+    "central ledger synchronization"
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,

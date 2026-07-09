@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T11-11-08-04-00`
+**Updated:** `2026-07-09T11-21-06-04-00`
 
 ## Validation performed in this pass
 
@@ -12,10 +12,11 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the eligible host-proof fallback
+  selected MyCozyIsland as the eligible host-proof ledger refresh fallback
 
 source inspection:
   read index.html route state
+  read package.json script surface
   read src/main-cloudform.js imports, descriptor creation, input handling, camera rail, movement, frame loop, grass instancing, cloud cache, cloud drift, and legacy host surface
   read existing repo-local .agent state
   read central LuminaryLabs repo ledger pointer for MyCozyIsland

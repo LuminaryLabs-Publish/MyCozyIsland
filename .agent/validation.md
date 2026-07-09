@@ -30,18 +30,14 @@ source inspection:
   read cozy-hero-cloud-form-kit exports
 
 agent documentation:
-  refreshed START_HERE.md
-  refreshed current-audit.md
-  refreshed next-steps.md
-  refreshed known-gaps.md
-  refreshed validation.md
-  refreshed kit-registry.json
+  refreshed required root .agent files
   added timestamped tracker and turn ledger
   added architecture, render, interaction, grass, cloud, host-proof, and deploy audits
+  refreshed kit registry
 
 central documentation:
-  update LuminaryLabs-Dev/LuminaryLabs repo ledger after repo-local push
-  add a timestamped internal change-log entry after repo-local push
+  updated LuminaryLabs-Dev/LuminaryLabs repo ledger
+  added timestamped internal change-log entry
 ```
 
 ## Source-backed checks
@@ -79,7 +75,7 @@ runtime source changed: no
 branch created: no
 pull request created: no
 repo-local docs pushed to main: yes
-central docs pushed to main: pending until central ledger step completes
+central docs pushed to main: yes
 ```
 
 ## Validation conclusion

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T00-20-08-04-00`
+**Updated:** `2026-07-09T02-31-41-04-00`
 
 ## Selection / ledger gaps
 
@@ -18,8 +18,8 @@ TheCavalryOfRome remains excluded.
 
 ```txt
 index.html loads ./src/main-cloudform.js?v=hero-cloud-4.
-The route token is visible in HTML but not projected as a typed RouteVersionResult.
-There is no accepted/rejected route version row.
+The route token is visible in HTML but not projected as a typed RouteTokenReadback.
+There is no accepted/rejected route token row.
 There is no source fingerprint that ties the route token to descriptor outputs.
 ```
 
@@ -31,6 +31,7 @@ Descriptor source facts are not summarized as SourceProfile.
 Scene source facts are not summarized as SceneSourceSnapshot.
 No stable source fingerprint exists for same-input replay.
 Local kit outputs are consumed immediately by render adapters, not first journaled as proof data.
+createGrassPatchBatchDescriptors exists but is not used by the live route or host proof surface.
 ```
 
 ## Interaction and movement gaps
@@ -52,13 +53,13 @@ accepted movement is not recorded as a MovementPolicyResult.
 rail() constructs CatmullRom curves every call.
 rail control points are not exported as a CameraRailSource.
 rail output is not recorded as CameraRailSnapshot.
-no fixture proves progress 0, middle, threshold, and eye-position samples.
+no fixture proves progress 0, middle, threshold, handoff, and first-person eye samples.
 ```
 
 ## Render host gaps
 
 ```txt
-renderer, scene, camera, mesh counts, and frame counters are not projected to a render host snapshot.
+renderer, scene, camera, mesh counts, point-cloud counts, and frame counters are not projected to a render host snapshot.
 terrain, floor, foam, path, foliage, fence, fire, smoke, grass, and cloud render consumption is not summarized.
 render-readback cannot be validated without opening the browser.
 ```
@@ -68,8 +69,10 @@ render-readback cannot be validated without opening the browser.
 ```txt
 grass placement returns requestedCount, patchCount, and patches.
 grassMesh creates an InstancedMesh from placement.patches.
+createGrassPatchBatchDescriptors can summarize batchKey instance counts but is not currently tied into a proof row.
+There is no GrassPlacementSnapshot.
 There is no GrassInstanceSnapshot that proves placement.patchCount equals the WebGL instance count.
-There is no fixture row for exclusion zones, path clearance, deterministic seed replay, or future static-batch promotion.
+There is no fixture row for exclusion zones, path clearance, deterministic seed replay, static-batch descriptor parity, or future static-batch promotion.
 ```
 
 ## Cloud system gaps
@@ -79,6 +82,7 @@ mattatz-clouds-domain delegates to cozy-hero-cloud-form-kit.
 heroCloudGeometry caches geometry by cloud id in a module-level Map.
 cloud point-count, savedPointClouds, geometry cache hits, and drift delta are not projected as proof records.
 CloudDriftResult does not exist yet.
+HeroCloudDescriptorSnapshot does not exist yet.
 HeroCloudCacheSnapshot does not exist yet.
 ```
 
@@ -106,4 +110,5 @@ No browser or GitHub Pages live validation ran in this documentation pass.
 The current source is good enough to preserve, but fragile to keep expanding inline.
 A visual rewrite before host proof would make later diagnostics harder.
 Shared-kit promotion before repo-local fixture proof would export unstable seams.
+Cloud/grass optimization before proof rows would hide current consumer behavior instead of stabilizing it.
 ```

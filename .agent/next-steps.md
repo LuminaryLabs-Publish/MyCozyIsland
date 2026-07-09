@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T05-38-20-04-00`
+**Updated:** `2026-07-09T08-20-00-04-00`
 
 ## Next safe ledge
 
 Build an additive host-state readback layer around the existing route.
 
 ```txt
-MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
+MyCozyIsland Host State Cloud/Grass Readback Ledger Refresh + Browser Fixture Gate
 ```
 
 ## Preserve first

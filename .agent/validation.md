@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-11-12-04-00`
+**Updated:** `2026-07-09T08-29-38-04-00`
 
 ## Validation performed in this pass
 
@@ -12,15 +12,13 @@ repo selection:
   compared checked repos against central LuminaryLabs-Dev/LuminaryLabs tracking and sampled root .agent alignment
   excluded LuminaryLabs-Publish/TheCavalryOfRome by standing rule
   confirmed no checked non-Cavalry repo was fully new, ledger-absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md
-  selected MyCozyIsland as the oldest eligible central fallback
+  selected MyCozyIsland because the central ledger pointer still lagged and was the oldest eligible fallback pointer
 
 source inspection:
-  read index.html and confirmed ./src/main-cloudform.js?v=hero-cloud-4
-  read package.json and confirmed only npm start exists
-  read src/main-cloudform.js imports, source descriptor construction, input handling, rail, movement, frame loop, and legacy host surface
-  read grass-object-domain source/readback needs through existing .agent and source route
-  read cloud source/cache/drift path through src/main-cloudform.js
+  read index.html route state through existing .agent state
+  read src/main-cloudform.js imports, descriptor creation, input handling, camera rail, movement, frame loop, grass instancing, cloud cache, cloud drift, and legacy host surface
   read existing repo-local .agent state
+  read central LuminaryLabs repo ledger pointer for MyCozyIsland
 
 repo-local docs:
   updated START_HERE.md

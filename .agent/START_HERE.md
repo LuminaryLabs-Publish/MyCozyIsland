@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T17-48-20-04-00`
+**Last aligned:** `2026-07-09T19-09-44-04-00`
 
 ## Purpose
 
@@ -12,25 +12,24 @@ Read it before changing runtime source.
 
 ## Selection result
 
-The full accessible `LuminaryLabs-Publish` repository list was compared with `LuminaryLabs-Dev/LuminaryLabs` central ledger state and repo-local root `.agent` state.
+The current public `LuminaryLabs-Publish` repository list was compared with `LuminaryLabs-Dev/LuminaryLabs` central ledger state and sampled root `.agent` state.
 
-No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented. `MyCozyIsland` was selected because its central ledger timestamp was still `2026-07-09T14-39-07-04-00`, the oldest eligible central entry, while repo-local audit state had advanced to `2026-07-09T17-38-53-04-00`.
+No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented. `MyCozyIsland` was selected as the oldest eligible documented fallback by central-ledger recency.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
 ## Publish repositories checked
 
 ```txt
-HorrorCorridor       central latest 2026-07-09T16-00-13-04-00
-AetherVale           central latest 2026-07-09T17-33-18-04-00
-TheOpenAbove         central latest 2026-07-09T15-09-09-04-00
+MyCozyIsland         selected
+TheUnmappedHouse     tracked / root .agent present
+ZombieOrchard        tracked / root .agent present
+PhantomCommand       tracked / root .agent present
+HorrorCorridor       tracked / root .agent present
+PrehistoricRush      tracked / root .agent present
+IntoTheMeadow        tracked / root .agent present
 TheCavalryOfRome     excluded
-PhantomCommand       central latest 2026-07-09T16-29-23-04-00
-PrehistoricRush      central latest 2026-07-09T15-31-40-04-00
-ZombieOrchard        central latest 2026-07-09T16-38-14-04-00
-IntoTheMeadow        central latest 2026-07-09T15-39-08-04-00
-MyCozyIsland         selected; prior central latest 2026-07-09T14-39-07-04-00
-TheUnmappedHouse     central latest 2026-07-09T16-58-52-04-00
+TheOpenAbove         tracked / root .agent present
 ```
 
 ## Current route
@@ -74,21 +73,21 @@ The next implementation should prove source-to-consumer parity before changing v
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/trackers/2026-07-09T17-48-20-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T17-48-20-04-00.md
-.agent/architecture-audit/2026-07-09T17-48-20-04-00-source-consumer-central-catchup-dsk-map.md
-.agent/render-audit/2026-07-09T17-48-20-04-00-render-consumption-readback-map.md
-.agent/interaction-audit/2026-07-09T17-48-20-04-00-input-movement-result-contract.md
-.agent/grass-system-audit/2026-07-09T17-48-20-04-00-grass-placement-instance-parity.md
-.agent/cloud-system-audit/2026-07-09T17-48-20-04-00-cloud-descriptor-cache-drift-parity.md
-.agent/host-proof-audit/2026-07-09T17-48-20-04-00-additive-host-readback-contract.md
-.agent/deploy-audit/2026-07-09T17-48-20-04-00-consumer-fixture-script-gate.md
+.agent/trackers/2026-07-09T19-09-44-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T19-09-44-04-00.md
+.agent/architecture-audit/2026-07-09T19-09-44-04-00-source-consumer-fixture-refresh-dsk-map.md
+.agent/render-audit/2026-07-09T19-09-44-04-00-render-consumption-ledger-readback.md
+.agent/interaction-audit/2026-07-09T19-09-44-04-00-input-movement-result-fixture-map.md
+.agent/grass-system-audit/2026-07-09T19-09-44-04-00-grass-placement-instance-readback.md
+.agent/cloud-system-audit/2026-07-09T19-09-44-04-00-cloud-cache-drift-readback.md
+.agent/host-proof-audit/2026-07-09T19-09-44-04-00-cozy-island-host-fixture-contract.md
+.agent/deploy-audit/2026-07-09T19-09-44-04-00-browser-input-fixture-gate.md
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source/Consumer Parity Ledger + Browser Input Result Fixture Gate
+MyCozyIsland Source/Consumer Fixture Refresh + Browser Input Result Gate
 ```
 
 ## Operating rules

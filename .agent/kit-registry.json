@@ -1,20 +1,20 @@
 {
-  "schemaVersion": 20,
+  "schemaVersion": 21,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T00-20-08-04-00",
-  "status": "host-projection-fixture-catchup-browser-consumer-readback-gate-planned",
+  "lastUpdated": "2026-07-09T02-31-41-04-00",
+  "status": "browser-consumer-proof-split-cloud-grass-readback-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T00-20-08-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T00-20-08-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Host Projection Fixture Catch-up + Browser Consumer Readback Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T02-31-41-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T02-31-41-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Browser Consumer Proof Split + Cloud/Grass Readback Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T00-20-08-04-00-host-projection-fixture-catchup-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T00-20-08-04-00-render-consumer-readback-map.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T00-20-08-04-00-input-action-movement-result-map.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T00-20-08-04-00-hero-cloud-cache-drift-contract.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T00-20-08-04-00-grass-instance-fixture-contract.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T00-20-08-04-00-cozy-island-host-state-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T00-20-08-04-00-fixture-validation-command-map.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T02-31-41-04-00-browser-consumer-proof-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T02-31-41-04-00-cloud-grass-render-readback-map.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T02-31-41-04-00-input-rail-movement-fixture-map.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T02-31-41-04-00-cloud-cache-drift-readback-contract.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T02-31-41-04-00-grass-static-batch-readback-contract.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T02-31-41-04-00-host-state-projection-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T02-31-41-04-00-fixture-command-gate.md"
   },
   "selection": {
     "reason": "No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocumented, recently added but undocumented, or missing sampled root .agent/START_HERE.md state. MyCozyIsland was selected as the oldest eligible sampled fallback and the browser-consumer host projection fixture remains unresolved.",
@@ -62,6 +62,7 @@
     "cozy-campfire-render-kit",
     "cozy-smoke-runtime-kit",
     "cozy-grass-instancing-kit",
+    "cozy-grass-static-batch-readiness-kit",
     "cozy-hero-cloud-point-render-kit",
     "cozy-hero-cloud-cache-kit",
     "cozy-hero-cloud-drift-kit",
@@ -73,7 +74,7 @@
     "cozy-legacy-global-host-kit"
   ],
   "nextProofKits": [
-    "cozy-route-version-result-kit",
+    "cozy-route-token-readback-kit",
     "cozy-source-profile-kit",
     "cozy-source-fingerprint-kit",
     "cozy-scene-source-snapshot-kit",
@@ -82,6 +83,7 @@
     "cozy-input-journal-kit",
     "cozy-movement-policy-result-kit",
     "cozy-camera-rail-snapshot-kit",
+    "cozy-grass-placement-snapshot-kit",
     "cozy-grass-instance-snapshot-kit",
     "cozy-hero-cloud-descriptor-snapshot-kit",
     "cozy-hero-cloud-cache-snapshot-kit",
@@ -94,7 +96,7 @@
     "cozy-central-ledger-sync-kit"
   ],
   "hostProofRecords": [
-    "RouteVersionResult",
+    "RouteTokenReadback",
     "SourceProfile",
     "SourceFingerprint",
     "SceneSourceSnapshot",
@@ -103,6 +105,7 @@
     "InputJournalEntry",
     "MovementPolicyResult",
     "CameraRailSnapshot",
+    "GrassPlacementSnapshot",
     "GrassInstanceSnapshot",
     "HeroCloudDescriptorSnapshot",
     "HeroCloudCacheSnapshot",
@@ -111,7 +114,7 @@
     "CozyIslandHostSnapshot"
   ],
   "sourceFilesToAddNext": [
-    "src/host-proof/route-version-result.js",
+    "src/host-proof/route-token-readback.js",
     "src/host-proof/source-profile.js",
     "src/host-proof/source-fingerprint.js",
     "src/host-proof/scene-source-snapshot.js",
@@ -120,6 +123,7 @@
     "src/host-proof/input-journal.js",
     "src/host-proof/movement-policy-result.js",
     "src/host-proof/camera-rail-snapshot.js",
+    "src/host-proof/grass-placement-snapshot.js",
     "src/host-proof/grass-instance-snapshot.js",
     "src/host-proof/hero-cloud-descriptor-snapshot.js",
     "src/host-proof/hero-cloud-cache-snapshot.js",
@@ -130,7 +134,7 @@
     "scripts/my-cozy-island-browser-consumer-fixture.mjs"
   ],
   "fixtureRows": [
-    "01_route_version_result_reads_hero_cloud_4",
+    "01_route_token_readback_reads_hero_cloud_4",
     "02_source_profile_lists_all_local_descriptor_kits",
     "03_source_fingerprint_is_stable_for_same_inputs",
     "04_scene_source_snapshot_counts_landform_floor_foliage_grass_clearing_fire_smoke_clouds",
@@ -141,14 +145,15 @@
     "09_movement_policy_rejects_outside_clearing",
     "10_movement_policy_rejects_inside_campfire_keepout",
     "11_camera_rail_snapshot_matches_progress_samples",
-    "12_grass_instance_snapshot_matches_patch_count_and_instance_count",
-    "13_hero_cloud_descriptor_snapshot_matches_cloud_contract",
-    "14_hero_cloud_cache_snapshot_matches_saved_point_clouds",
-    "15_cloud_drift_result_records_x_z_y_delta_without_webgl",
-    "16_render_host_snapshot_reports_scene_renderer_camera_consumers",
-    "17_cozy_island_host_get_state_exposes_all_projection_sections",
-    "18_legacy_global_cozy_island_remains_compatible"
+    "12_grass_placement_snapshot_reports_patch_and_batch_counts",
+    "13_grass_instance_snapshot_matches_patch_count_and_instance_count",
+    "14_hero_cloud_descriptor_snapshot_matches_cloud_contract",
+    "15_hero_cloud_cache_snapshot_matches_saved_point_clouds",
+    "16_cloud_drift_result_records_x_z_y_delta_without_webgl",
+    "17_render_host_snapshot_reports_scene_renderer_camera_consumers",
+    "18_cozy_island_host_get_state_exposes_all_projection_sections",
+    "19_legacy_global_cozy_island_remains_compatible"
   ],
-  "nextSafeLedge": "MyCozyIsland Host Projection Fixture Catch-up + Browser Consumer Readback Gate",
+  "nextSafeLedge": "MyCozyIsland Browser Consumer Proof Split + Cloud/Grass Readback Fixture Gate",
   "promotionRule": "Keep behavior repo-local until DOM-free fixture proof shows stable reusable APIs. Promote to shared kits only after proof."
 }

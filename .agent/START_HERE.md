@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T14-20-00-04-00`
+**Last aligned:** `2026-07-09T14-26-56-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocu
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the oldest eligible documented fallback after same-day catch-up passes. Its central pointer still trailed the other active Publish repos, and the unresolved implementation ledge is still source/host readback plus DOM-free browser consumer fixture proof.
+`MyCozyIsland` was selected as the oldest eligible documented fallback and central-ledger catch-up target. The central ledger still pointed at `2026-07-09T11-39-50-04-00`, while repo-local state had already advanced to `2026-07-09T14-20-00-04-00`. This pass normalizes repo-local and central pointers to the current host-readback fixture ledge.
 
 ## Publish repos checked
 
@@ -95,6 +95,101 @@ RouteTokenReadback
   -> central ledger sync
 ```
 
+## Domains in use
+
+```txt
+static-browser-route-domain
+route-token-domain
+loading-status-domain
+error-panel-domain
+three-render-host-domain
+scene-composition-domain
+island-landform-domain
+ocean-floor-domain
+shoreline-foam-domain
+path-network-domain
+foliage-object-graph-domain
+fenced-clearing-domain
+campfire-object-domain
+smoke-particle-domain
+grass-placement-domain
+grass-wind-domain
+hero-cloud-source-domain
+hero-cloud-geometry-cache-domain
+cloud-drift-domain
+input-state-domain
+scroll-progress-domain
+pointer-look-domain
+first-person-movement-domain
+movement-validity-domain
+camera-rail-domain
+render-frame-domain
+legacy-host-diagnostics-domain
+planned-source-host-readback-domain
+central-ledger-sync-domain
+```
+
+## Kits and services
+
+```txt
+implemented explicit kits:
+  - ocean-island-landform-domain: source heightfield, masks, shoreline, terrain contract
+  - island-foliage-domain: dense object graph and path network
+  - ocean-floor-domain: ocean floor heightfield and water material contract
+  - grass-object-domain: grass placement contract
+  - grass-wind-domain: wind descriptor
+  - campfire-object-domain: campfire object graph
+  - smoke-particle-domain: smoke particle descriptor
+  - fenced-clearing-domain: clearing, fence, collision, player anchor, exclusion zones
+  - mattatz-clouds-domain: cloud state and render contract
+  - cozy-hero-cloud-form-kit: hero cloud form descriptors
+
+runtime-implied kits:
+  - cozy-static-shell-kit
+  - cozy-cloud-loader-kit
+  - cozy-error-panel-kit
+  - cozy-route-script-token-kit
+  - cozy-three-render-host-kit
+  - cozy-scene-composition-kit
+  - cozy-terrain-render-kit
+  - cozy-ocean-floor-render-kit
+  - cozy-water-plane-kit
+  - cozy-shoreline-foam-kit
+  - cozy-path-render-kit
+  - cozy-foliage-render-kit
+  - cozy-fence-render-kit
+  - cozy-campfire-render-kit
+  - cozy-smoke-render-kit
+  - cozy-grass-instanced-render-kit
+  - cozy-hero-cloud-point-cache-kit
+  - cozy-cloud-drift-frame-kit
+  - cozy-camera-rail-kit
+  - cozy-first-person-movement-kit
+  - cozy-movement-validity-kit
+  - cozy-render-frame-loop-kit
+  - cozy-legacy-host-diagnostics-kit
+
+next-cut proof kits:
+  - route-token-readback-kit
+  - source-profile-kit
+  - source-fingerprint-kit
+  - scene-source-snapshot-kit
+  - browser-input-action-frame-kit
+  - action-result-kit
+  - input-journal-kit
+  - movement-policy-result-kit
+  - camera-rail-snapshot-kit
+  - grass-placement-snapshot-kit
+  - grass-instance-snapshot-kit
+  - hero-cloud-descriptor-snapshot-kit
+  - hero-cloud-cache-snapshot-kit
+  - cloud-drift-result-kit
+  - render-host-snapshot-kit
+  - cozy-island-host-snapshot-kit
+  - browser-consumer-fixture-kit
+  - central-ledger-readback-kit
+```
+
 ## First files to read
 
 ```txt
@@ -102,15 +197,15 @@ RouteTokenReadback
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T14-20-00-04-00-host-readback-fixture-freeze-dsk-map.md
-.agent/render-audit/2026-07-09T14-20-00-04-00-render-cloud-grass-consumer-fixture.md
-.agent/interaction-audit/2026-07-09T14-20-00-04-00-input-rail-action-result-readback.md
-.agent/cloud-system-audit/2026-07-09T14-20-00-04-00-cloud-cache-drift-readback-fixture.md
-.agent/grass-system-audit/2026-07-09T14-20-00-04-00-grass-instance-readback-fixture.md
-.agent/host-proof-audit/2026-07-09T14-20-00-04-00-host-state-source-snapshot-contract.md
-.agent/deploy-audit/2026-07-09T14-20-00-04-00-dom-free-fixture-check-map.md
-.agent/trackers/2026-07-09T14-20-00-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T14-20-00-04-00.md
+.agent/architecture-audit/2026-07-09T14-26-56-04-00-host-readback-central-sync-dsk-map.md
+.agent/render-audit/2026-07-09T14-26-56-04-00-render-grass-cloud-host-readback.md
+.agent/interaction-audit/2026-07-09T14-26-56-04-00-input-rail-action-result-map.md
+.agent/cloud-system-audit/2026-07-09T14-26-56-04-00-cloud-cache-drift-fixture-map.md
+.agent/grass-system-audit/2026-07-09T14-26-56-04-00-grass-instance-readback-map.md
+.agent/host-proof-audit/2026-07-09T14-26-56-04-00-host-state-source-readback-contract.md
+.agent/deploy-audit/2026-07-09T14-26-56-04-00-dom-free-fixture-check-gate.md
+.agent/trackers/2026-07-09T14-26-56-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T14-26-56-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -164,7 +259,7 @@ Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.ge
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Readback Fixture Freeze + Browser Consumer Gate
+MyCozyIsland Host Readback Central Sync + Browser Consumer Fixture Gate
 ```
 
 ## Operating rules

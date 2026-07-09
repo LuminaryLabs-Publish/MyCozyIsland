@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 33,
+  "schemaVersion": 34,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-09T17-38-53-04-00",
-  "status": "source-consumer-parity-ledger-input-result-fixture-gate-planned",
+  "lastUpdated": "2026-07-09T17-48-20-04-00",
+  "status": "source-consumer-central-catchup-browser-input-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-09T17-38-53-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T17-38-53-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Source/Consumer Parity Ledger + Input Result Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-09T17-48-20-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T17-48-20-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Source/Consumer Parity Ledger + Browser Input Result Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-09T17-38-53-04-00-source-consumer-parity-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-09T17-38-53-04-00-render-consumption-parity-ledger.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-09T17-38-53-04-00-input-result-camera-movement-contract.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T17-38-53-04-00-cloud-descriptor-cache-drift-parity.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T17-38-53-04-00-grass-source-instance-parity.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T17-38-53-04-00-additive-host-snapshot-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-09T17-38-53-04-00-browser-fixture-check-gate.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-09T17-48-20-04-00-source-consumer-central-catchup-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-09T17-48-20-04-00-render-consumption-readback-map.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-09T17-48-20-04-00-input-movement-result-contract.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-09T17-48-20-04-00-cloud-descriptor-cache-drift-parity.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-09T17-48-20-04-00-grass-placement-instance-parity.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-09T17-48-20-04-00-additive-host-readback-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-09T17-48-20-04-00-consumer-fixture-script-gate.md"
   },
   "selection": {
-    "reason": "No eligible non-Cavalry Publish repo was new, central-ledger absent, recorded without root .agent state, or otherwise undocumented. MyCozyIsland was selected under the oldest documented-selection fallback because its central ledger timestamp was 2026-07-09T14-39-07-04-00.",
+    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected because its central ledger timestamp was 2026-07-09T14-39-07-04-00, the oldest eligible central entry, while repo-local audit state had advanced to 2026-07-09T17-38-53-04-00.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
@@ -31,7 +31,8 @@
     "script": "./src/main-cloudform.js?v=hero-cloud-4",
     "routeToken": "hero-cloud-4",
     "source": "src/main-cloudform.js",
-    "threeVersion": "0.160.0"
+    "threeVersion": "0.160.0",
+    "legacyHost": "globalThis.CozyIsland"
   },
   "implementedKits": [
     "ocean-island-landform-domain",
@@ -45,6 +46,52 @@
     "mattatz-clouds-domain",
     "cozy-hero-cloud-form-kit"
   ],
+  "explicitKitServices": {
+    "ocean-island-landform-domain": [
+      "createOceanIslandLandformState",
+      "sampleIslandHeight",
+      "sampleIslandMasks",
+      "createOceanIslandLandformRenderContract"
+    ],
+    "island-foliage-domain": [
+      "createIslandPathNetwork",
+      "createDenseCozyIslandObjectGraph",
+      "createDenseCozyIslandRenderContract"
+    ],
+    "ocean-floor-domain": [
+      "createOceanFloorState",
+      "sampleOceanFloorHeight",
+      "createOceanFloorHeightfield",
+      "createOceanFloorObjectPlacements",
+      "createOceanFloorRenderContract"
+    ],
+    "grass-object-domain": [
+      "createGrassPatchPlacementContract",
+      "createGrassPatchBatchDescriptors"
+    ],
+    "grass-wind-domain": [
+      "createGrassWindDescriptor"
+    ],
+    "campfire-object-domain": [
+      "createCampfireObjectGraph",
+      "createCampfireObject"
+    ],
+    "smoke-particle-domain": [
+      "createSmokeParticleDescriptor"
+    ],
+    "fenced-clearing-domain": [
+      "createFencedClearingGraph"
+    ],
+    "mattatz-clouds-domain": [
+      "createMattatzCloudsState",
+      "createMattatzCloudRenderContract"
+    ],
+    "cozy-hero-cloud-form-kit": [
+      "createCozyHeroCloudFormDescriptor",
+      "createCozyHeroCloudLayerDescriptor",
+      "createCozyHeroCloudRenderContract"
+    ]
+  },
   "runtimeImpliedKits": [
     "cozy-static-shell-kit",
     "cozy-cloud-loader-kit",
@@ -98,29 +145,29 @@
   ],
   "services": [
     "route HTML shell",
-    "route token/version selection",
+    "route token and version selection",
     "cloud loader progress projection",
     "error display projection",
     "Three.js module import",
-    "island heightfield and mask sampling",
-    "ocean floor heightfield construction",
-    "shoreline contract creation",
-    "path network mesh projection",
-    "foliage object graph projection",
-    "fenced clearing object/collision construction",
-    "campfire graph projection",
-    "smoke source creation and frame animation",
+    "island state, height, mask, heightfield, and shoreline creation",
+    "ocean floor state, height, heightfield, placement, and water material creation",
+    "path network creation",
+    "foliage object graph creation",
+    "fenced clearing object, anchor, collision, clearance, and exclusion construction",
+    "campfire graph and collision creation",
+    "smoke emitter descriptor creation and frame animation",
     "grass wind descriptor creation",
-    "grass patch placement creation",
+    "grass path and exclusion aware placement creation",
+    "grass static batch descriptor creation",
     "grass instanced mesh projection",
-    "hero cloud descriptor creation",
+    "hero cloud form, layer, and render contract creation",
     "hero cloud point geometry caching",
     "cloud shader material creation",
     "cloud drift frame update",
     "resize handling",
     "keyboard capture",
     "wheel progress mutation",
-    "pointer yaw/pitch mutation",
+    "pointer yaw and pitch mutation",
     "rail camera sampling",
     "first-person movement integration",
     "movement validity check",

@@ -2,15 +2,15 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T17-48-20-04-00`
+**Updated:** `2026-07-09T19-09-44-04-00`
 
 ## Selection and ledger
 
 ```txt
 No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented.
-MyCozyIsland was selected because it had the oldest eligible central ledger timestamp while repo-local audit state was newer.
+MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency.
 TheCavalryOfRome remains excluded.
-The central repo ledger must be advanced to this run after repo-local documentation is pushed.
+The central repo ledger must point at this run after repo-local documentation is pushed.
 ```
 
 ## Source proof gaps
@@ -78,3 +78,17 @@ No source snapshot fixture exists.
 No browser smoke was run in this documentation-only pass.
 No CI or Pages gate proves consumer parity before deployment.
 ```
+
+## Do not start next
+
+```txt
+visual rewrite
+cloud visual rewrite
+grass visual rewrite
+camera rail retune
+renderer extraction
+new route content
+source-kit promotion
+```
+
+Start with source/consumer proof records and a browser input fixture gate.

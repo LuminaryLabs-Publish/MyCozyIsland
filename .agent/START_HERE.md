@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T11-21-06-04-00`
+**Last aligned:** `2026-07-09T11-39-50-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocu
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected as the current eligible fallback because the repo-local `.agent` state had advanced ahead of the central ledger and the route still lacks additive source/host readback plus DOM-free fixture proof.
+`MyCozyIsland` was selected as the current eligible fallback because central tracking and repo-local pointers were not in full parity and the route still lacks additive source/host readback plus DOM-free browser consumer fixture proof.
 
 ## Publish repos checked
 
@@ -28,7 +28,7 @@ LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present
 LuminaryLabs-Publish/AetherVale           tracked / root .agent present
 LuminaryLabs-Publish/ZombieOrchard        tracked / root .agent present
 LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present
-LuminaryLabs-Publish/MyCozyIsland         selected / root .agent present / host-proof ledger refresh
+LuminaryLabs-Publish/MyCozyIsland         selected / root .agent present / host readback parity refresh
 LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present
 LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
@@ -60,12 +60,12 @@ index.html
 static browser route
   -> load src/main-cloudform.js?v=hero-cloud-4
   -> import Three.js CDN and local source-domain kits
-  -> construct island, ocean floor, foliage, clearing, fire, smoke, grass, wind, cloud, and hero-cloud descriptors
+  -> construct island, ocean floor, foliage, clearing, campfire, smoke, grass, wind, cloud, and hero-cloud descriptors
   -> create Three.js renderer, scene, camera, lights, fog, water, terrain, floor, foam, path, foliage, fence, campfire, smoke, grass, and point-cloud clouds
   -> install resize, keyboard, wheel, pointerdown, pointerup, and pointermove handlers
   -> wheel mutates scroll progress directly
-  -> rail() samples the sky-to-eye camera curve while progress < 0.985
   -> pointer mutates yaw before first-person and yaw/pitch after first-person
+  -> rail() samples the sky-to-eye camera curve while progress < 0.985
   -> keyboard movement unlocks at progress >= 0.985
   -> valid(next) accepts or rejects movement by clearing radius and campfire keepout only
   -> frame updates sea bob, first-person movement or rail camera, smoke, flame, cloud drift, flame scale, and renderer
@@ -101,15 +101,15 @@ RouteTokenReadback
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T11-21-06-04-00-host-proof-ledger-refresh-dsk-map.md
-.agent/render-audit/2026-07-09T11-21-06-04-00-render-host-grass-cloud-readback-contract.md
-.agent/interaction-audit/2026-07-09T11-21-06-04-00-input-rail-movement-result-contract.md
-.agent/cloud-system-audit/2026-07-09T11-21-06-04-00-cloud-cache-drift-readback-contract.md
-.agent/grass-system-audit/2026-07-09T11-21-06-04-00-grass-placement-instance-readback-contract.md
-.agent/host-proof-audit/2026-07-09T11-21-06-04-00-host-state-browser-fixture-contract.md
-.agent/deploy-audit/2026-07-09T11-21-06-04-00-check-script-browser-fixture-map.md
-.agent/trackers/2026-07-09T11-21-06-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T11-21-06-04-00.md
+.agent/architecture-audit/2026-07-09T11-39-50-04-00-host-readback-parity-dsk-map.md
+.agent/render-audit/2026-07-09T11-39-50-04-00-render-grass-cloud-host-consumer-readback.md
+.agent/interaction-audit/2026-07-09T11-39-50-04-00-input-rail-movement-action-result.md
+.agent/cloud-system-audit/2026-07-09T11-39-50-04-00-cloud-descriptor-cache-drift-fixture.md
+.agent/grass-system-audit/2026-07-09T11-39-50-04-00-grass-placement-instance-fixture.md
+.agent/host-proof-audit/2026-07-09T11-39-50-04-00-host-state-consumer-parity-contract.md
+.agent/deploy-audit/2026-07-09T11-39-50-04-00-check-fixture-main-push-map.md
+.agent/trackers/2026-07-09T11-39-50-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T11-39-50-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -163,5 +163,5 @@ Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.ge
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Host Readback Parity Refresh + Browser Consumer Fixture Gate
 ```

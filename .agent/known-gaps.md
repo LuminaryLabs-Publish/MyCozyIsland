@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T11-21-06-04-00`
+**Updated:** `2026-07-09T11-39-50-04-00`
 
 ## Selection / ledger gaps
 
@@ -11,7 +11,7 @@ No checked non-Cavalry Publish repo was fully new, central-ledger absent, undocu
 
 MyCozyIsland was selected as the current fallback because the route still lacks host-state proof despite having mature local descriptor kits.
 
-Repo-local .agent state had advanced beyond central tracking before this pass; central tracking needed a fresh MyCozyIsland ledger/change-log update.
+Central and repo-local pointers needed another parity refresh for the newest host-readback tracker and turn-ledger entry.
 
 TheCavalryOfRome remains excluded.
 ```
@@ -98,7 +98,7 @@ No GitHub Pages smoke was run in this pass.
 ## Main blocked implementation
 
 ```txt
-MyCozyIsland Host Proof Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Host Readback Parity Refresh + Browser Consumer Fixture Gate
 ```
 
 ## Risk

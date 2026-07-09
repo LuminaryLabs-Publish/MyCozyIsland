@@ -2,28 +2,28 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T05-38-20-04-00`
+**Audit timestamp:** `2026-07-09T08-20-00-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is not visual quality; it is proofability and host-state authority.
+`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is proofability and host-state authority, not another visual pass.
 
-`src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
+`src/main-cloudform.js` still owns source descriptor construction, renderer adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
 
 ## Repo selection result
 
 ```txt
 Checked accessible Publish list:
-  IntoTheMeadow
   HorrorCorridor
   AetherVale
-  ZombieOrchard
-  TheUnmappedHouse
-  MyCozyIsland
   TheOpenAbove
-  PhantomCommand
   TheCavalryOfRome
+  PhantomCommand
   PrehistoricRush
+  ZombieOrchard
+  IntoTheMeadow
+  MyCozyIsland
+  TheUnmappedHouse
 
 Excluded:
   TheCavalryOfRome
@@ -194,12 +194,14 @@ next-cut proof kits:
   central-ledger-readback-kit
 ```
 
-## Main finding
-
-The next cut should not touch the look of the island. It should only add readback and fixture authority around what already exists: route token, source descriptor summaries, input action frames, movement policy decisions, rail camera state, grass placement/instance summaries, cloud descriptor/cache/drift summaries, and render host state.
-
-## Current next safe ledge
+## Primary blocker
 
 ```txt
-MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
+The live route has useful descriptors and a stable visual surface, but no source-owned readback ledger proves what was accepted, rejected, rendered, cached, drifted, or exposed through the host.
+```
+
+## Next safe implementation ledge
+
+```txt
+MyCozyIsland Host State Cloud/Grass Readback Ledger Refresh + Browser Fixture Gate
 ```

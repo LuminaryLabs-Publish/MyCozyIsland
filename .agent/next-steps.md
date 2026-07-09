@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-11-12-04-00`
+**Updated:** `2026-07-09T08-29-38-04-00`
 
 ## Next safe ledge
 
-Build an additive host-state readback layer around the existing route.
+Build an additive host-state readback layer around the existing route and sync the central ledger pointer.
 
 ```txt
-MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
 ```
 
 ## Preserve first
@@ -63,6 +63,10 @@ preserve legacy globalThis.CozyIsland shape
 7. Add fixture script and package check.
    - scripts/my-cozy-island-browser-consumer-fixture.mjs
    - npm run check should execute the DOM-free fixture
+
+8. Keep central tracking synced.
+   - update LuminaryLabs-Dev/LuminaryLabs repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
+   - add an internal-change-log entry for every future pass
 ```
 
 ## Acceptance checklist
@@ -81,6 +85,7 @@ render host snapshot reports renderer/camera/scene summary
 CozyIslandHost.getState() is additive and does not break globalThis.CozyIsland
 browser consumer fixture can run without launching a browser
 package.json exposes npm run check
+central LuminaryLabs ledger points to the newest tracker and turn-ledger paths
 ```
 
 ## Do not do next

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-08T19-50-20-04-00`
+**Last aligned:** `2026-07-08T21-58-34-04-00`
 
 ## Purpose
 
@@ -18,21 +18,21 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`MyCozyIsland` was selected again because its repo-local root-agent state had advanced to `2026-07-08T19-40-00-04-00` while the central ledger still needed catch-up and the browser-consumer host proof fixture scope remains unresolved.
+`MyCozyIsland` was selected as the oldest eligible fallback in the current central readback. The central ledger alignment was older than the other checked non-excluded repo follow-up set and the host-proof browser consumer splice remains unresolved.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / sampled alignment 2026-07-08T18-19-43-04-00
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / sampled alignment 2026-07-08T18-58-10-04-00
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / sampled alignment 2026-07-08T17-31-22-04-00
+LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / central alignment 2026-07-08T20-21-59-04-00
+LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / central alignment 2026-07-08T20-38-28-04-00
+LuminaryLabs-Publish/AetherVale          tracked / root .agent present / central alignment 2026-07-08T21-08-41-04-00
+LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present / central alignment 2026-07-08T21-18-39-04-00
+LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / central alignment 2026-07-08T21-00-12-04-00
+LuminaryLabs-Publish/MyCozyIsland        selected / oldest eligible central alignment 2026-07-08T19-50-20-04-00
+LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / central alignment 2026-07-08T20-10-32-04-00
+LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / central alignment 2026-07-08T20-52-00-04-00
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / sampled alignment 2026-07-08T18-41-41-04-00
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / sampled alignment 2026-07-08T19-30-31-04-00
-LuminaryLabs-Publish/ZombieOrchard       tracked / root .agent present / sampled alignment 2026-07-08T19-21-15-04-00
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / sampled alignment 2026-07-08T18-09-21-04-00
-LuminaryLabs-Publish/MyCozyIsland        selected / central catch-up plus unresolved host-proof fixture gate
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / sampled alignment 2026-07-08T18-51-55-04-00
+LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / central alignment 2026-07-08T21-40-45-04-00
 ```
 
 ## Current product read
@@ -49,7 +49,7 @@ index.html
   -> ./src/main-cloudform.js?v=hero-cloud-4
   -> Three.js CDN
   -> local descriptor kits
-  -> inline render/interaction/cloud/movement loop
+  -> inline render, interaction, cloud, movement, and camera loop
   -> globalThis.CozyIsland compatibility diagnostics
 ```
 
@@ -59,12 +59,12 @@ index.html
 static browser route
   -> load src/main-cloudform.js?v=hero-cloud-4
   -> import Three.js CDN and local source-domain kits
-  -> construct island/floor/foliage/grass/wind/clearing/campfire/smoke/cloud descriptors
+  -> construct island, floor, foliage, grass, wind, clearing, campfire, smoke, and cloud descriptors
   -> create Three.js renderer, scene, camera, meshes, points, lights, fog, water, foam, path, grass, cloud cache
   -> install resize, keyboard, wheel, pointer, and drag handlers
-  -> wheel changes scroll progress
-  -> rail() samples sky-to-eye camera curve
-  -> pointer changes yaw/look
+  -> wheel mutates scroll progress directly
+  -> rail() samples sky-to-eye camera curve when progress < 0.985
+  -> pointer mutates yaw before first-person and yaw/pitch after first-person
   -> keyboard movement unlocks at progress >= 0.985
   -> valid(next) accepts or rejects movement by clearing radius and campfire keepout
   -> frame updates sea, movement, rail/camera, smoke, flame, cloud drift, render
@@ -74,14 +74,16 @@ static browser route
 ## Target proof loop
 
 ```txt
-RouteToken
+RouteVersionResult
   -> SourceProfile
+  -> SourceFingerprint
   -> SceneSourceSnapshot
-  -> ActionFrame
+  -> BrowserInputActionFrame
   -> ActionResult
   -> MovementPolicyResult
   -> CameraRailSnapshot
   -> GrassInstanceSnapshot
+  -> HeroCloudDescriptorSnapshot
   -> HeroCloudCacheSnapshot
   -> CloudDriftResult
   -> RenderHostSnapshot
@@ -97,15 +99,15 @@ RouteToken
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T19-50-20-04-00-host-proof-central-catchup-dsk-map.md
-.agent/render-audit/2026-07-08T19-50-20-04-00-render-host-readback-fixture-gap.md
-.agent/interaction-audit/2026-07-08T19-50-20-04-00-route-action-movement-result-gap.md
-.agent/cloud-system-audit/2026-07-08T19-50-20-04-00-cloud-cache-drift-readback-gap.md
-.agent/grass-system-audit/2026-07-08T19-50-20-04-00-grass-instance-parity-gap.md
-.agent/host-proof-audit/2026-07-08T19-50-20-04-00-central-ledger-catchup-fixture-scope.md
-.agent/deploy-audit/2026-07-08T19-50-20-04-00-static-route-proof-validation.md
-.agent/trackers/2026-07-08T19-50-20-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T19-50-20-04-00.md
+.agent/architecture-audit/2026-07-08T21-58-34-04-00-browser-consumer-source-wire-dsk-breakdown.md
+.agent/render-audit/2026-07-08T21-58-34-04-00-render-host-consumer-projection-map.md
+.agent/interaction-audit/2026-07-08T21-58-34-04-00-input-action-result-consumer-map.md
+.agent/cloud-system-audit/2026-07-08T21-58-34-04-00-cloud-drift-cache-result-map.md
+.agent/grass-system-audit/2026-07-08T21-58-34-04-00-grass-instance-host-projection-map.md
+.agent/host-proof-audit/2026-07-08T21-58-34-04-00-cozy-island-host-state-splice-contract.md
+.agent/deploy-audit/2026-07-08T21-58-34-04-00-fixture-static-route-validation-map.md
+.agent/trackers/2026-07-08T21-58-34-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T21-58-34-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -115,13 +117,17 @@ RouteToken
 index.html
 package.json
 src/main-cloudform.js
-src/kits/**/index.js
+src/kits/ocean-island-landform-domain/index.js
+src/kits/island-foliage-domain/index.js
+src/kits/grass-object-domain/index.js
+src/kits/fenced-clearing-domain/index.js
+src/kits/mattatz-clouds-domain/index.js
 ```
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Central Ledger Catch-up + Host Proof Browser Consumer Fixture Scope
+MyCozyIsland Browser Consumer Source Wire + Host Projection Fixture Gate
 ```
 
 Preserve the current visible route and legacy `globalThis.CozyIsland` surface. Add fixture-readable proof records and an additive `globalThis.CozyIslandHost.getState()` before any visual rewrite or shared-kit promotion.

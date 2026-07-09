@@ -2,14 +2,14 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T08-20-00-04-00`
+**Updated:** `2026-07-09T08-11-12-04-00`
 
 ## Next safe ledge
 
 Build an additive host-state readback layer around the existing route.
 
 ```txt
-MyCozyIsland Host State Cloud/Grass Readback Ledger Refresh + Browser Fixture Gate
+MyCozyIsland Host State Ledger Refresh + Browser Consumer Fixture Gate
 ```
 
 ## Preserve first
@@ -41,8 +41,7 @@ preserve legacy globalThis.CozyIsland shape
 
 3. Add rail proof module.
    - src/host-proof/camera-rail-snapshot.js
-   - capture mode: rail or first-person
-   - capture progress, eased progress, camera position, look target, and player anchor
+   - capture mode, progress, eased progress, camera position, look target, and player anchor
 
 4. Add grass readback modules.
    - src/host-proof/grass-placement-snapshot.js

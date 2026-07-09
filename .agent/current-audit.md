@@ -2,30 +2,32 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T08-29-38-04-00`
+**Audit timestamp:** `2026-07-09T11-11-08-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene. The current gap is not visual quality; it is proofability and host-state authority.
+`MyCozyIsland` is a stable static Three.js publish route that composes local source-domain kits into a cozy island scene.
+
+The gap is not visual quality. The gap is proofability and host-state authority.
 
 `src/main-cloudform.js` still owns source descriptor construction, render adapter consumption, input mutation, movement policy, camera rail sampling, grass instancing, hero-cloud geometry caching, cloud drift, frame rendering, and the legacy `globalThis.CozyIsland` diagnostic surface inline.
 
-This pass refreshes repo-local `.agent` state and closes the central-ledger lag for the same unresolved next ledge: route/source/action/movement/rail/grass/cloud/render/host records must become fixture-readable before visual or renderer rewrites.
+This pass refreshes repo-local `.agent` state and records the same unresolved next ledge with a clearer host-proof acceptance boundary.
 
 ## Repo selection result
 
 ```txt
 Checked accessible Publish list:
+  IntoTheMeadow
   HorrorCorridor
   AetherVale
-  TheOpenAbove
-  TheCavalryOfRome
-  PhantomCommand
-  PrehistoricRush
   ZombieOrchard
-  IntoTheMeadow
-  MyCozyIsland
   TheUnmappedHouse
+  MyCozyIsland
+  TheOpenAbove
+  PhantomCommand
+  TheCavalryOfRome
+  PrehistoricRush
 
 Excluded:
   TheCavalryOfRome
@@ -37,7 +39,7 @@ Selected:
   LuminaryLabs-Publish/MyCozyIsland
 
 Reason:
-  MyCozyIsland still had the oldest eligible central ledger pointer among checked fallback repos. Repo-local docs had advanced, but the LuminaryLabs-Dev/LuminaryLabs ledger still pointed at 2026-07-09T05-38-20-04-00, so this pass creates a fresh repo-local tracker and central change-log sync.
+  MyCozyIsland remains an eligible fallback with a high-value source-authority gap. The live route is visually composed from local kits, but host-state readback and DOM-free fixture proof are still missing.
 ```
 
 ## Interaction loop
@@ -89,7 +91,22 @@ movement-validity-domain
 camera-rail-domain
 render-frame-domain
 legacy-host-diagnostics-domain
-planned-host-state-readback-domain
+planned-route-token-readback-domain
+planned-source-profile-domain
+planned-source-fingerprint-domain
+planned-scene-source-snapshot-domain
+planned-browser-input-action-frame-domain
+planned-action-result-domain
+planned-input-journal-domain
+planned-movement-policy-result-domain
+planned-camera-rail-snapshot-domain
+planned-grass-placement-readback-domain
+planned-grass-instance-readback-domain
+planned-hero-cloud-descriptor-readback-domain
+planned-hero-cloud-cache-readback-domain
+planned-cloud-drift-result-domain
+planned-render-host-snapshot-domain
+planned-cozy-island-host-state-domain
 planned-browser-consumer-fixture-domain
 central-ledger-sync-domain
 ```
@@ -128,6 +145,18 @@ sea bob update
 flame scale update
 frame render submission
 legacy host diagnostic exposure
+planned route token readback
+planned source profile/fingerprint
+planned scene source snapshot
+planned browser input action frame
+planned action result rows
+planned movement policy rows
+planned camera rail snapshot rows
+planned grass placement/instance rows
+planned hero-cloud descriptor/cache/drift rows
+planned render host snapshot
+planned additive CozyIslandHost.getState()
+planned DOM-free browser consumer fixture
 ```
 
 ## Kits identified
@@ -198,10 +227,12 @@ next-cut proof kits:
 
 ## Main finding
 
-The next cut should not touch the look of the island. It should only add readback and fixture authority around what already exists: route token, source descriptor summaries, input action frames, movement policy decisions, rail camera state, grass placement/instance summaries, cloud descriptor/cache/drift summaries, and render host state.
+The next cut should not touch the look of the island.
+
+It should only add readback and fixture authority around what already exists: route token, source descriptor summaries, input action frames, movement policy decisions, rail camera state, grass placement/instance summaries, cloud descriptor/cache/drift summaries, and render host state.
 
 ## Current next safe ledge
 
 ```txt
-MyCozyIsland Central Ledger Host Proof Refresh + Browser Consumer Fixture Gate
+MyCozyIsland Host Proof Ledger Parity + Browser Consumer Fixture Gate
 ```

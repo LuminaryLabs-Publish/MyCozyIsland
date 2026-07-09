@@ -2,47 +2,81 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-08T21-58-34-04-00`
+**Updated:** `2026-07-09T00-20-08-04-00`
 
 ## Next safe ledge
 
-Build a browser-consumer source wire and host projection fixture gate around the existing route.
+Build a host projection fixture catch-up and browser consumer readback gate around the existing route.
 
 ```txt
-MyCozyIsland Browser Consumer Source Wire + Host Projection Fixture Gate
+MyCozyIsland Host Projection Fixture Catch-up + Browser Consumer Readback Gate
 ```
 
-Preserve the current game first:
+## Preserve first
 
 ```txt
 preserve index.html
 preserve ./src/main-cloudform.js?v=hero-cloud-4
 preserve current Three.js CDN import
-preserve current visible route, color, camera rail, and hero cloud look
+preserve current visible island, water, path, campfire, smoke, grass, cloud, and camera rail look
 preserve current globalThis.CozyIsland compatibility fields
 preserve current wheel, pointer, keyboard, and first-person threshold behavior
 preserve current clearing and campfire movement constraints
 preserve current grass, smoke, water, flame, and cloud drift visuals
 ```
 
-Then add fixture-readable facts around the current behavior:
+## Add fixture-readable records around current behavior
 
 ```txt
-create RouteVersionResult from the route script token
-create SourceProfile from local descriptor-kit outputs
-create SourceFingerprint from source profile facts
-create SceneSourceSnapshot from island, clearing, grass, clouds, campfire, smoke, and floor descriptors
-create BrowserInputActionFrame for wheel, pointer, and keyboard inputs
-create ActionResult for accepted/rejected camera, progress, and movement effects
-create MovementPolicyResult from valid(next)
-create CameraRailSnapshot from rail()
-create GrassInstanceSnapshot from grass placement and InstancedMesh count
-create HeroCloudDescriptorSnapshot from the mattatz/cloudform contract
-create HeroCloudCacheSnapshot from cloudCache and savedPointClouds
-create CloudDriftResult from per-frame cloud delta
-create RenderHostSnapshot from renderer/camera/scene/render consumption facts
-create CozyIslandHostSnapshot for globalThis.CozyIslandHost.getState()
-run DOM-free fixture rows before touching visible behavior
+RouteVersionResult:
+  read index route token hero-cloud-4
+  prove active script path and token are stable
+
+SourceProfile:
+  list all local source-domain kit outputs used by main-cloudform.js
+  include landform, floor, foliage, clearing, fire, smoke, grass, wind, cloud, and hero-cloud records
+
+SourceFingerprint:
+  hash route token plus normalized source profile facts
+  remain stable for the same source inputs
+
+SceneSourceSnapshot:
+  capture descriptor counts and identity keys before Three.js consumption
+
+BrowserInputActionFrame:
+  normalize wheel, pointer, keyboard, and first-person threshold decisions
+
+ActionResult:
+  record accepted/rejected progress, yaw, pitch, and movement effects
+
+MovementPolicyResult:
+  replace valid(next) boolean-only proof with accepted/rejected reason rows
+  distinguish clearing-boundary rejection from campfire-keepout rejection
+
+CameraRailSnapshot:
+  capture rail control points and sampled camera/look vectors at progress 0, middle, threshold, and first-person handoff
+
+GrassInstanceSnapshot:
+  prove grass placement patch count equals WebGL InstancedMesh count
+  preserve source patch metadata for batch promotion later
+
+HeroCloudDescriptorSnapshot:
+  prove cloud descriptor values from mattatz/cloudform contract
+
+HeroCloudCacheSnapshot:
+  prove cloudCache key, point counts, and savedPointClouds records
+
+CloudDriftResult:
+  record x/z drift and y bob deltas without WebGL
+
+RenderHostSnapshot:
+  record renderer, scene, camera, mesh consumer, and frame counter facts
+
+CozyIslandHostSnapshot:
+  expose additive globalThis.CozyIslandHost.getState() without changing globalThis.CozyIsland
+
+BrowserConsumerFixture:
+  prove all rows with plain objects before importing them into the visible route
 ```
 
 ## Recommended implementation order
@@ -114,4 +148,15 @@ stop before renderer extraction
 stop before changing route token
 stop before removing legacy globals
 stop when fixture rows pass and host projection is additive
+```
+
+## Do not do next
+
+```txt
+do not rewrite the visible island
+do not replace the cloud style
+do not remove the current static route
+do not make new branches
+do not work on TheCavalryOfRome
+do not expand shared kits before repo-local proof exists
 ```

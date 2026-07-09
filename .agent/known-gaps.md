@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T05-38-20-04-00`
+**Updated:** `2026-07-09T08-20-00-04-00`
 
 ## Selection / ledger gaps
 
@@ -96,5 +96,5 @@ No GitHub Pages smoke was run in this pass.
 ## Main blocked implementation
 
 ```txt
-MyCozyIsland Host State Readback Consumer Freeze + Cloud/Grass Fixture Gate
+MyCozyIsland Host State Cloud/Grass Readback Ledger Refresh + Browser Fixture Gate
 ```

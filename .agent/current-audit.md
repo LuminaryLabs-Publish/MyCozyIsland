@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-10T01-11-51-04-00`
+**Audit timestamp:** `2026-07-10T02-31-58-04-00`
 
 ## Summary
 
@@ -38,7 +38,7 @@ canvas-route-host
 cloud-loader-projection
 error-projection
 route-script-token
-three-module-import
+three-cdn-import
 three-render-host
 scene-composition
 source-descriptor-composition
@@ -58,6 +58,7 @@ fenced-clearing-object-graph
 clearing-collision-boundary
 campfire-object-graph
 smoke-particle-descriptor
+smoke-frame-simulation
 grass-wind-descriptor
 grass-placement-contract
 grass-batch-descriptor
@@ -73,7 +74,6 @@ foliage-mesh-adapter
 fence-mesh-adapter
 campfire-mesh-adapter
 smoke-particle-adapter
-smoke-frame-simulation
 grass-instanced-mesh-adapter
 hero-cloud-point-generation
 hero-cloud-geometry-cache
@@ -120,7 +120,7 @@ grass-wind-domain: normalized wind/sway/gust descriptor
 fenced-clearing-domain: fence posts, player anchor, collision boundary, clearance zones, object exclusions
 campfire-object-domain: campfire graph, collision, flame, smoke anchor, light descriptors
 smoke-particle-domain: normalized smoke emitter descriptor with wind response
-cozy-hero-cloud-form-kit: cloud form, layer, and render contracts
+cozy-hero-cloud-form-kit: cloud form, layer, point-cloud, placement, lighting, drift, and render boundary contracts
 mattatz-clouds-domain: cloud state and active hero-cloud render contract
 main-cloudform runtime: descriptor adaptation, browser input, camera, movement, animation, render submission, legacy diagnostics
 planned proof services: route token readback, source fingerprint, input results, movement results, grass/cloud parity, render ledger, CozyIslandHost snapshot, DOM-free fixture

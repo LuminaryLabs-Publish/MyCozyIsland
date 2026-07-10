@@ -1,4 +1,4 @@
-export { createStylizedWorldRenderer } from "./renderer-world.js";
+export { createStylizedWorldRenderer } from "./renderer-world-layered-grass.js";
 export {
   createAtmosphereVolumeTextures,
   createVolumetricCloudRenderer,

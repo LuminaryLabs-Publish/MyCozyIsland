@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T23-41-15-04-00`
+**Audit timestamp:** `2026-07-10T01-04-36-04-00`
 
 ## Summary
 
@@ -15,7 +15,7 @@ The active route separates island landform, ocean floor, foliage, grass, clearin
 ```txt
 index.html
   -> src/main-cloudform.js?v=hero-cloud-4
-  -> import nine source-domain kits plus Three.js CDN
+  -> import nine source-domain kits plus nested cozy-hero-cloud-form-kit and Three.js CDN
   -> create source states, object graphs, and render contracts
   -> adapt contracts into terrain, floor, water, shoreline, path, foliage, fence, campfire, smoke, grass, and cloud Three.js objects
   -> install resize, keyboard, wheel, pointer-down/up/move handlers
@@ -32,8 +32,6 @@ index.html
 
 ## Domains in use
 
-### Route and host domains
-
 ```txt
 static-route-shell
 canvas-route-host
@@ -46,11 +44,6 @@ scene-composition
 resize-consumer
 render-frame-loop
 legacy-host-diagnostics
-```
-
-### Source domains
-
-```txt
 source-descriptor-composition
 island-landform-state
 island-height-sampling
@@ -75,11 +68,6 @@ mattatz-cloud-state
 hero-cloud-form-descriptor
 hero-cloud-layer-descriptor
 hero-cloud-render-contract
-```
-
-### Runtime consumer domains
-
-```txt
 terrain-mesh-adapter
 ocean-floor-mesh-adapter
 water-plane-adapter
@@ -102,11 +90,6 @@ player-pose
 camera-rail
 first-person-movement
 movement-validity
-```
-
-### Proof domains
-
-```txt
 route-token-readback
 source-profile
 source-fingerprint
@@ -142,11 +125,12 @@ smoke-particle-domain: normalized smoke emitter descriptor with wind response
 cozy-hero-cloud-form-kit: cloud form, layer, and render contracts
 mattatz-clouds-domain: cloud state and active hero-cloud render contract
 main-cloudform runtime: descriptor adaptation, browser input, camera, movement, animation, render submission, legacy diagnostics
+planned proof services: route token readback, source fingerprint, input results, movement results, grass/cloud parity, render ledger, CozyIslandHost snapshot, DOM-free fixture
 ```
 
 ## Kit inventory
 
-### Explicit source kits
+Current explicit kits:
 
 ```txt
 ocean-island-landform-domain
@@ -161,7 +145,7 @@ mattatz-clouds-domain
 cozy-hero-cloud-form-kit
 ```
 
-### Runtime-implied kits
+Runtime-implied kits:
 
 ```txt
 cozy-static-shell-kit
@@ -194,7 +178,7 @@ cozy-render-frame-loop-kit
 cozy-legacy-host-diagnostics-kit
 ```
 
-### Next-cut proof kits
+Next-cut proof kits:
 
 ```txt
 route-token-readback-kit

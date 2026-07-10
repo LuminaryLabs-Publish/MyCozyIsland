@@ -1,81 +1,45 @@
-# Known Gaps: My Cozy Island
+# Known Gaps: MyCozyIsland
 
-**Repository:** `LuminaryLabs-Publish/MyCozyIsland`
+Last updated: 2026-07-10T07-29-12-04-00
 
-**Updated:** `2026-07-10T05-49-25-04-00`
+## Highest-priority gap
 
-## Source/readback gaps
+The current WebGPU route has deterministic source kits and `npm test` static/domain smoke coverage, but it lacks a JSON-safe host-proof ledger.
 
-```txt
-No normalized WebGPU route source profile exists.
-No stable source fingerprint exists for the current webgpu-volumetric-2 route.
-No serializable source snapshot reconciles kit catalog, domain source rows, render snapshot, and runtime consumers.
-The route token is not included in stable host readback.
-The current .agent memory had stale hero-cloud-4 / Three 0.160.0 assumptions before this pass.
-```
+## Specific gaps
 
-## Interaction/scenario gaps
+- No normalized WebGPU route source profile.
+- No stable source fingerprint for `webgpu-volumetric-2`.
+- No host-readable kit catalog status block.
+- No serializable source snapshot reconciling kit catalog, domain source rows, render snapshot, runtime consumers, and route token.
+- Wheel, pointer, keyboard, blur, and resize mutate directly without accepted/rejected/no-change result rows.
+- No stable input reason vocabulary.
+- No scenario tick result row.
+- No camera frame readback row.
+- No render-consumption ledger mapping source families to WebGPU consumers.
+- No render snapshot normalizer for fixture assertions.
+- No atmosphere/cloud/fog volume texture result rows.
+- No performance degrade/recover reason rows.
+- `globalThis.CozyIsland` exposes live Three/WebGPU objects and aggregate state.
+- No additive JSON-safe `globalThis.CozyIslandHost` surface.
+- No DOM-free WebGPU consumer fixture.
 
-```txt
-Wheel, pointer, keyboard, blur, and resize handlers mutate camera sequence or runtime state directly.
-No accepted/rejected/no-change input result exists.
-No scenario tick result row exists.
-No camera frame readback row records copied scenario camera state.
-No debug toggle result row exists.
-No input journal exists for Node or browser fixtures.
-```
+## Deferred work
 
-## Render/WebGPU gaps
+Do not prioritize these until host proof exists:
 
-```txt
-No render-consumption ledger maps source families to WebGPU consumers.
-No WebGPU renderer config snapshot is normalized for fixtures.
-No atmosphere volume texture creation result row exists.
-No cloud/fog texture source/size row exists.
-No post-pipeline render result row exists.
-No performance degrade/recover reason rows exist.
-No browser-safe render host snapshot exists.
-```
+- visual rewrite
+- cloud rewrite
+- ocean rewrite
+- fog rewrite
+- camera retune
+- renderer replacement
+- route-token churn
+- new route content
+- WebGPU capture or screenshot automation
 
-## Vegetation/world gaps
-
-```txt
-Vegetation and rock determinism are checked in tests, but not connected to renderer consumption rows.
-No ground-contact parity readback exists.
-No vegetation LOD consumer readback exists.
-No source-family coverage ledger exists for worldRenderer.
-```
-
-## Host and compatibility gaps
+## Safe next ledge
 
 ```txt
-globalThis.CozyIsland exposes live Three.js/WebGPU objects.
-No additive globalThis.CozyIslandHost surface exists.
-No JSON-serializable host snapshot captures source, input, scenario, performance, and render ledgers together.
-No legacy parity check ensures CozyIsland remains compatible after adding host proof.
+MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate
 ```
-
-## Validation and deploy gaps
-
-```txt
-npm test exists and covers static/domain smoke.
-No npm run check alias exists.
-No DOM-free WebGPU consumer fixture exists.
-No browser smoke was run in this documentation-only pass.
-No CI or Pages gate proves WebGPU source/consumer parity before deployment.
-```
-
-## Do not start next
-
-```txt
-visual rewrite
-cloud rewrite
-fog rewrite
-ocean rewrite
-camera retune
-renderer replacement
-route-token churn
-new route content
-```
-
-Start with WebGPU source/consumer readback and a Node fixture gate.

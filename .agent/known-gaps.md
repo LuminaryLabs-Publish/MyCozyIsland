@@ -1,10 +1,10 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: 2026-07-10T08-48-58-04-00
+Last updated: 2026-07-10T10-19-39-04-00
 
 ## Highest-priority gap
 
-The current WebGPU route has deterministic source kits and `npm test` static/domain smoke coverage, but it lacks a JSON-safe host readback ledger.
+The current WebGPU route has deterministic source kits and `npm test` static/domain smoke coverage, but it lacks a JSON-safe host fixture readback ledger.
 
 ## Specific gaps
 
@@ -22,7 +22,7 @@ The current WebGPU route has deterministic source kits and `npm test` static/dom
 - No performance degrade/recover reason rows.
 - `globalThis.CozyIsland` exposes live Three/WebGPU objects and aggregate state.
 - No additive JSON-safe `globalThis.CozyIslandHost` surface.
-- No DOM-free WebGPU consumer fixture.
+- No DOM-free / Node WebGPU consumer fixture.
 
 ## Deferred work
 
@@ -41,5 +41,5 @@ Do not prioritize these until host proof exists:
 ## Safe next ledge
 
 ```txt
-MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Fixture Readback Refresh + Node Consumer Fixture Gate
 ```

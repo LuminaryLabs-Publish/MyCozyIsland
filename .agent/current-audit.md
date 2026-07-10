@@ -1,6 +1,6 @@
-# Current Audit: MyCozyIsland WebGPU Host Journal Readback
+# Current Audit: MyCozyIsland WebGPU Host Readback Ledger
 
-Last updated: 2026-07-10T11-38-03-04-00
+Last updated: 2026-07-10T13-08-51-04-00
 
 ## Current runtime identity
 
@@ -95,7 +95,7 @@ resize-consumer
 legacy-CozyIsland-diagnostics
 node-static-check
 node-domain-smoke
-webgpu-host-journal-readback-next
+webgpu-host-readback-ledger-next
 node-webgpu-consumer-fixture-next
 ```
 
@@ -112,7 +112,7 @@ node-webgpu-consumer-fixture-next
 - `kits/render-descriptors`: provides material, archetype, quality, fallback, and render snapshot rows.
 - `kits/sequences`: provides camera rail and scenario rows.
 - `kits/renderers`: adapts rows into WebGPU world, ocean, foam, atmosphere, cloud, fog, post, and performance consumers.
-- Next proof services: route/source fingerprint, kit catalog readback, input/scenario/camera journals, volume texture journal, performance journal, render-consumption ledger, JSON-safe CozyIslandHost, and Node WebGPU fixture.
+- Next proof services: route/source fingerprint, kit catalog readback, input/scenario/camera readback, volume texture readback, performance readback, render-consumption ledger, JSON-safe CozyIslandHost, and Node WebGPU fixture.
 
 ## Implemented source kits
 
@@ -154,7 +154,7 @@ kit-catalog-readback-kit
 render-snapshot-normalizer-kit
 input-action-frame-kit
 input-result-kit
-input-result-journal-kit
+input-readback-ledger-kit
 scenario-tick-result-kit
 camera-frame-readback-kit
 volume-texture-result-kit
@@ -166,4 +166,4 @@ node-webgpu-consumer-fixture-kit
 
 ## Current conclusion
 
-The route should not start next with visual expansion, cloud/ocean/fog rewrite, camera retune, route-token churn, or renderer replacement. The blocker is WebGPU host journal readback proof. Add fixture-readable proof rows first.
+The route should not start next with visual expansion, cloud/ocean/fog rewrite, camera retune, route-token churn, or renderer replacement. The blocker is WebGPU host readback proof. Add fixture-readable proof rows first.

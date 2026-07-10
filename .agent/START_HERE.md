@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-10T01-11-51-04-00`
+**Last aligned:** `2026-07-10T02-31-58-04-00`
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The current public `LuminaryLabs-Publish` repository list was compared with `Lum
 
 No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented.
 
-`MyCozyIsland` was selected as the oldest eligible documented fallback by central-ledger recency and as the repo-local to central catch-up target.
+`MyCozyIsland` was selected as the oldest eligible documented fallback after `TheUnmappedHouse` advanced to `2026-07-10T02-19-14-04-00`.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
@@ -52,15 +52,15 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T01-11-51-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T01-11-51-04-00.md
-.agent/architecture-audit/2026-07-10T01-11-51-04-00-source-consumer-host-readback-dsk-map.md
-.agent/render-audit/2026-07-10T01-11-51-04-00-render-consumption-host-readback.md
-.agent/interaction-audit/2026-07-10T01-11-51-04-00-input-movement-result-ledger.md
-.agent/grass-system-audit/2026-07-10T01-11-51-04-00-grass-placement-instance-readback.md
-.agent/cloud-system-audit/2026-07-10T01-11-51-04-00-cloud-cache-drift-readback.md
-.agent/host-proof-audit/2026-07-10T01-11-51-04-00-cozy-island-host-readback-contract.md
-.agent/deploy-audit/2026-07-10T01-11-51-04-00-source-consumer-fixture-check-gate.md
+.agent/trackers/2026-07-10T02-31-58-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T02-31-58-04-00.md
+.agent/architecture-audit/2026-07-10T02-31-58-04-00-source-consumer-host-fixture-dsk-map.md
+.agent/render-audit/2026-07-10T02-31-58-04-00-render-consumption-proof-ledger.md
+.agent/interaction-audit/2026-07-10T02-31-58-04-00-input-movement-result-readback.md
+.agent/grass-system-audit/2026-07-10T02-31-58-04-00-grass-placement-batch-consumption.md
+.agent/cloud-system-audit/2026-07-10T02-31-58-04-00-cloud-descriptor-cache-drift-proof.md
+.agent/host-proof-audit/2026-07-10T02-31-58-04-00-cozy-island-host-fixture-contract.md
+.agent/deploy-audit/2026-07-10T02-31-58-04-00-consumer-fixture-check-gate.md
 ```
 
 ## Main finding
@@ -74,7 +74,7 @@ The next implementation should add source fingerprints, input/movement results, 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source Consumer Host Readback Catch-up + Input Fixture Gate
+MyCozyIsland Source Consumer Host Readback Refresh + Input Fixture Gate
 ```
 
 ## Operating rules

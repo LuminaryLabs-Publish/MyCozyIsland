@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T19-09-44-04-00`
+**Updated:** `2026-07-09T23-41-15-04-00`
 
 ## Validation performed
 
@@ -34,8 +34,7 @@ central documentation:
 ```txt
 active script token: ./src/main-cloudform.js?v=hero-cloud-4
 Three.js version: 0.160.0
-explicit source kits imported by active route: 9
-nested hero-cloud source kit: cozy-hero-cloud-form-kit
+explicit source kits imported by active route: 9 plus nested cozy-hero-cloud-form-kit
 configured grass request count: 140
 configured smoke particle count: 96
 configured cloud point count: 420
@@ -64,7 +63,7 @@ runtime source changed: no
 branch created: no
 pull request created: no
 repo-local docs pushed to main: yes
-central docs pushed to main: yes
+central docs pushed to main: pending at file update time
 ```
 
 ## Validation conclusion

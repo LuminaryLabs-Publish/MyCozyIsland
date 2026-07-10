@@ -2,13 +2,13 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-10T02-31-58-04-00`
+**Audit timestamp:** `2026-07-10T04-29-10-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a standalone static Three.js scene with modular source-domain descriptors and a monolithic browser consumer.
 
-The active route separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The current gap is that `src/main-cloudform.js` directly owns renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, render submission, and host diagnostics without normalized result or parity records.
+The active route separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The current gap is that `src/main-cloudform.js` directly owns renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, render submission, cloud cache, grass instance consumption, and host diagnostics without normalized result or parity records.
 
 ## Current interaction loop
 
@@ -202,4 +202,4 @@ central-ledger-readback-kit
 
 ## Current finding
 
-The next useful step is host/source proof, not a scene rewrite. Add fixture-readable records around the existing descriptors and consumers before changing visuals, cloud generation, grass rendering, or camera tuning.
+The next useful step is source-to-consumer proof, not a scene rewrite. Add fixture-readable records around the existing descriptors and consumers before changing visuals, cloud generation, grass rendering, camera tuning, or renderer architecture.

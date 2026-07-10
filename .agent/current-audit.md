@@ -2,204 +2,128 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-10T04-29-10-04-00`
+**Audit timestamp:** `2026-07-10T05-49-25-04-00`
 
 ## Summary
 
-`MyCozyIsland` is a standalone static Three.js scene with modular source-domain descriptors and a monolithic browser consumer.
+`MyCozyIsland` is currently a WebGPU-first volumetric cozy island route, not the older `hero-cloud-4` route described by the previous audit.
 
-The active route separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The current gap is that `src/main-cloudform.js` directly owns renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, render submission, cloud cache, grass instance consumption, and host diagnostics without normalized result or parity records.
+The active shell imports Three.js/WebGPU `0.185.0`, loads `./src/main-cloudform.js?v=webgpu-volumetric-2`, validates a 50-kit `DomainServiceKit` catalog, composes deterministic source snapshots, creates WebGPU volumetric cloud/fog/ocean/post renderers, drives a scenario/camera loop, and exposes aggregate live diagnostics through `globalThis.CozyIsland`.
 
 ## Current interaction loop
 
 ```txt
 index.html
-  -> src/main-cloudform.js?v=hero-cloud-4
-  -> import nine source-domain kits plus nested cozy-hero-cloud-form-kit and Three.js CDN
-  -> create source states, object graphs, and render contracts
-  -> adapt contracts into terrain, floor, water, shoreline, path, foliage, fence, campfire, smoke, grass, and cloud Three.js objects
-  -> install resize, keyboard, wheel, pointer-down/up/move handlers
-  -> wheel changes progress
-  -> pointer changes yaw while progress < 0.85
-  -> pointer has no explicit result in the transition band before first person
-  -> pointer changes yaw/pitch when progress >= 0.985
-  -> camera rail runs below progress 0.985
-  -> WASD first-person movement runs at or above progress 0.985
-  -> clearing radius and campfire keepout silently accept/reject movement
-  -> frame updates sea, smoke, flame, cloud drift, camera, and renderer
-  -> globalThis.CozyIsland exposes limited legacy diagnostics
+  -> Three.js/WebGPU importmap at 0.185.0
+  -> ./src/main-cloudform.js?v=webgpu-volumetric-2
+  -> validateKitCatalog(kitCatalog)
+  -> create WebGPURenderer and choose quality by backend
+  -> create deterministic domain snapshot
+  -> create render snapshot and camera rail sequence
+  -> create cozy island scenario
+  -> create scene, fog, sky, lights, and camera
+  -> create stylized world, WebGPU ocean, WebGPU foam, atmosphere volume textures, volumetric clouds, rolling fog, and WebGPU post pipeline
+  -> create debug overlay and performance budget
+  -> wheel / pointer / keyboard / blur / resize consumers update input or camera state
+  -> animation loop ticks scenario, copies scenario camera to Three camera, updates world/foam, samples performance, renders post pipeline, and updates debug overlay every 12 frames
+  -> globalThis.CozyIsland exposes live renderer objects and aggregate getState()
 ```
 
 ## Domains in use
 
 ```txt
 static-route-shell
+webgpu-importmap
 canvas-route-host
-cloud-loader-projection
+loader-projection
 error-projection
+debug-overlay-dom
 route-script-token
-three-cdn-import
-three-render-host
-scene-composition
-source-descriptor-composition
-island-landform-state
-island-height-sampling
-island-mask-sampling
-island-heightfield-contract
-shoreline-contract
-ocean-floor-state
-ocean-floor-height-sampling
-ocean-floor-heightfield
-ocean-floor-object-placement
-ocean-water-material
-island-path-network
-foliage-object-graph
-fenced-clearing-object-graph
-clearing-collision-boundary
-campfire-object-graph
-smoke-particle-descriptor
-smoke-frame-simulation
-grass-wind-descriptor
-grass-placement-contract
-grass-batch-descriptor
-mattatz-cloud-state
-hero-cloud-form-descriptor
-hero-cloud-render-contract
-terrain-mesh-adapter
-ocean-floor-mesh-adapter
-water-plane-adapter
-shoreline-foam-adapter
-path-mesh-adapter
-foliage-mesh-adapter
-fence-mesh-adapter
-campfire-mesh-adapter
-smoke-particle-adapter
-grass-instanced-mesh-adapter
-hero-cloud-point-generation
-hero-cloud-geometry-cache
-cloud-shader-material
-cloud-drift-frame
-keyboard-input
-wheel-progress-input
+three-webgpu-render-host
+kit-catalog-validation
+DomainServiceKit-manifest-catalog
+deterministic-seed-service
+environment-clock
+wind-field
+weather-state
+illumination-state
+terrain-surface
+terrain-biome-field
+shoreline-field
+terrain-lod-policy
+ocean-floor-profile
+ocean-wave-state
+ocean-optics
+underwater-atmosphere
+ocean-caustics
+sun-glitter
+shoreline-foam
+vegetation-archetype-catalog
+ground-contact-service
+vegetation-placement-graph
+vegetation-wind
+vegetation-lod
+rock-graph
+prop-graph
+campfire-atmosphere
+cloud-weather-state
+cloud-density-recipe
+cloud-lighting-profile
+cloud-lod-policy
+cloud-shadow
+cloud-horizon-band
+fog-density-recipe
+fog-advection
+fog-volume-placement
+aerial-perspective
+stylized-material-catalog
+render-archetype-catalog
+webgl2-fallback-policy
+render-snapshot
+camera-rail-sequence
+cozy-island-scenario
+stylized-world-renderer
+webgpu-ocean-renderer
+webgpu-foam-renderer
+atmosphere-volume-textures
+volumetric-cloud-renderer
+rolling-fog-renderer
+webgpu-post-pipeline
+performance-budget
+wheel-input
 pointer-drag-input
-player-pose
-camera-rail
-first-person-movement
-movement-validity
+keyboard-input
+resize-consumer
 render-frame-loop
-legacy-host-diagnostics
-route-token-readback
-source-profile
-source-fingerprint
-scene-source-snapshot
-browser-input-action-frame
-input-result
-input-result-journal
-movement-policy-result
-camera-rail-snapshot
-grass-placement-snapshot
-grass-instance-snapshot
-cloud-descriptor-snapshot
-cloud-cache-snapshot
-cloud-drift-result
-render-consumption-ledger
-render-host-snapshot
-cozy-island-host-snapshot
-browser-consumer-fixture
-central-ledger-sync
+legacy-CozyIsland-diagnostics
+static-check-test
+domain-smoke-test
+webgpu-source-profile-next
+input-result-journal-next
+scenario-tick-result-next
+camera-state-readback-next
+volume-texture-readback-next
+performance-degrade-recover-readback-next
+render-consumption-ledger-next
+serializable-CozyIslandHost-next
 ```
 
 ## Kit services
 
 ```txt
-ocean-island-landform-domain: island state, height sampling, masks, heightfield and shoreline render contracts
-island-foliage-domain: path network, dense object graph, render contract
-ocean-floor-domain: floor state, height sampling, heightfield, reef/coral/rock/boulder placements, render contract, water material
-grass-object-domain: path/exclusion-aware patch placements and static batch descriptors
-grass-wind-domain: normalized wind/sway/gust descriptor
-fenced-clearing-domain: fence posts, player anchor, collision boundary, clearance zones, object exclusions
-campfire-object-domain: campfire graph, collision, flame, smoke anchor, light descriptors
-smoke-particle-domain: normalized smoke emitter descriptor with wind response
-cozy-hero-cloud-form-kit: cloud form, layer, point-cloud, placement, lighting, drift, and render boundary contracts
-mattatz-clouds-domain: cloud state and active hero-cloud render contract
-main-cloudform runtime: descriptor adaptation, browser input, camera, movement, animation, render submission, legacy diagnostics
-planned proof services: route token readback, source fingerprint, input results, movement results, grass/cloud parity, render ledger, CozyIslandHost snapshot, DOM-free fixture
-```
-
-## Kit inventory
-
-Current explicit kits:
-
-```txt
-ocean-island-landform-domain
-island-foliage-domain
-ocean-floor-domain
-grass-object-domain
-grass-wind-domain
-campfire-object-domain
-smoke-particle-domain
-fenced-clearing-domain
-mattatz-clouds-domain
-cozy-hero-cloud-form-kit
-```
-
-Runtime-implied kits:
-
-```txt
-cozy-static-shell-kit
-cozy-cloud-loader-kit
-cozy-error-panel-kit
-cozy-cloudform-entry-kit
-cozy-route-script-token-kit
-cozy-three-render-host-kit
-cozy-scene-composition-kit
-cozy-terrain-render-kit
-cozy-ocean-floor-render-kit
-cozy-water-plane-kit
-cozy-shoreline-foam-kit
-cozy-path-render-kit
-cozy-foliage-render-kit
-cozy-fence-render-kit
-cozy-campfire-render-kit
-cozy-smoke-render-kit
-cozy-grass-instanced-render-kit
-cozy-hero-cloud-point-cache-kit
-cozy-cloud-drift-frame-kit
-cozy-resize-consumer-kit
-cozy-keyboard-input-kit
-cozy-wheel-progress-kit
-cozy-pointer-look-kit
-cozy-camera-rail-kit
-cozy-first-person-movement-kit
-cozy-movement-validity-kit
-cozy-render-frame-loop-kit
-cozy-legacy-host-diagnostics-kit
-```
-
-Next-cut proof kits:
-
-```txt
-route-token-readback-kit
-source-profile-kit
-source-fingerprint-kit
-scene-source-snapshot-kit
-browser-input-action-frame-kit
-input-result-kit
-input-result-journal-kit
-movement-policy-result-kit
-camera-rail-snapshot-kit
-grass-placement-snapshot-kit
-grass-instance-snapshot-kit
-hero-cloud-descriptor-snapshot-kit
-hero-cloud-cache-snapshot-kit
-cloud-drift-result-kit
-render-consumption-ledger-kit
-render-host-snapshot-kit
-cozy-island-host-snapshot-kit
-browser-consumer-fixture-kit
-central-ledger-readback-kit
+core/domain-kit: DomainServiceKit definition and catalog validation
+kits/catalog: 50 focused kit manifests
+kits/determinism: seed/hash/noise/RNG helpers
+kits/environment: clock, wind, weather, illumination, aerial perspective, vegetation wind
+kits/terrain: terrain surface, biome, shoreline, LOD, ground contact, path network
+kits/ocean: ocean floor, wave, optics, underwater, caustics, sun glitter, foam
+kits/vegetation: vegetation, rock, prop, campfire source graphs
+kits/atmosphere: cloud and fog source descriptors
+kits/render-descriptors: quality, materials, render archetypes, snapshot, fallback, performance, debug
+kits/sequences: camera rail and scenario runtime
+kits/renderers: stylized world, atmosphere textures, volumetric clouds, rolling fog, WebGPU ocean/foam/post
 ```
 
 ## Current finding
 
-The next useful step is source-to-consumer proof, not a scene rewrite. Add fixture-readable records around the existing descriptors and consumers before changing visuals, cloud generation, grass rendering, camera tuning, or renderer architecture.
+The next useful step is WebGPU source/consumer proof, not a visual rewrite. Add fixture-readable records around the existing source descriptors and consumers before changing cloud/fog/ocean visuals, camera tuning, renderer architecture, or route token.

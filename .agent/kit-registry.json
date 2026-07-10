@@ -1,50 +1,60 @@
 {
-  "schemaVersion": 41,
-  "lastUpdated": "2026-07-10T07-29-12-04-00",
+  "schemaVersion": 42,
+  "lastUpdated": "2026-07-10T08-48-58-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
-  "selectedNextSlice": "MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate",
+  "selectedNextSlice": "MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate",
   "implementedSourceKits": [
-    {
-      "id": "domain-kit-catalog-validation",
-      "services": ["DomainServiceKit metadata validation", "capability row validation", "catalog count checks"]
-    },
-    {
-      "id": "determinism-kit",
-      "services": ["seeded random stream", "stable descriptor generation"]
-    },
-    {
-      "id": "environment-kit",
-      "services": ["clock descriptors", "wind descriptors", "weather descriptors", "illumination descriptors"]
-    },
-    {
-      "id": "terrain-kit",
-      "services": ["terrain surface descriptors", "biome field descriptors", "shoreline descriptors", "terrain LOD policy", "ocean-floor profile"]
-    },
-    {
-      "id": "ocean-kit",
-      "services": ["wave state", "ocean optics", "underwater atmosphere", "caustics", "sun glitter", "shoreline foam"]
-    },
-    {
-      "id": "vegetation-kit",
-      "services": ["archetype catalog", "ground contact", "placement graph", "vegetation wind", "vegetation LOD", "rock graph", "prop graph", "campfire atmosphere"]
-    },
-    {
-      "id": "atmosphere-kit",
-      "services": ["cloud weather", "cloud density", "cloud lighting", "cloud LOD", "cloud shadow", "horizon band", "fog density", "fog advection", "fog volume placement", "aerial perspective"]
-    },
-    {
-      "id": "render-descriptor-kit",
-      "services": ["material catalog", "render archetype catalog", "WebGL2 fallback policy", "render snapshot"]
-    },
-    {
-      "id": "sequence-kit",
-      "services": ["camera rail sequence", "cozy island scenario"]
-    },
-    {
-      "id": "webgpu-renderer-kit",
-      "services": ["stylized world renderer", "WebGPU ocean renderer", "WebGPU foam renderer", "atmosphere volume textures", "volumetric cloud renderer", "rolling fog renderer", "WebGPU post pipeline"]
-    }
+    "debug-overlay-host-kit",
+    "webgl2-fallback-renderer-kit",
+    "webgpu-compute-atmosphere-renderer-kit",
+    "webgpu-foam-renderer-kit",
+    "webgpu-ocean-renderer-kit",
+    "webgpu-performance-budget-kit",
+    "webgpu-post-processing-renderer-kit",
+    "webgpu-rolling-fog-renderer-kit",
+    "webgpu-stylized-material-renderer-kit",
+    "webgpu-volumetric-cloud-renderer-kit",
+    "camera-rail-sequence-kit",
+    "cozy-island-scenario-kit",
+    "terrain-surface-domain-kit",
+    "vegetation-placement-domain-kit",
+    "aerial-perspective-domain-kit",
+    "campfire-atmosphere-domain-kit",
+    "cloud-density-field-domain-kit",
+    "cloud-horizon-band-domain-kit",
+    "cloud-lighting-domain-kit",
+    "cloud-lod-domain-kit",
+    "cloud-shadow-domain-kit",
+    "cloud-weather-domain-kit",
+    "fog-advection-domain-kit",
+    "fog-field-domain-kit",
+    "fog-volume-placement-domain-kit",
+    "ground-contact-domain-kit",
+    "illumination-domain-kit",
+    "ocean-caustics-domain-kit",
+    "ocean-floor-profile-domain-kit",
+    "ocean-optics-domain-kit",
+    "ocean-wave-domain-kit",
+    "prop-archetype-domain-kit",
+    "render-archetype-domain-kit",
+    "render-quality-domain-kit",
+    "render-snapshot-domain-kit",
+    "rock-archetype-domain-kit",
+    "shoreline-field-domain-kit",
+    "shoreline-foam-domain-kit",
+    "stylized-material-descriptor-domain-kit",
+    "sun-glitter-domain-kit",
+    "terrain-biome-field-domain-kit",
+    "terrain-lod-domain-kit",
+    "underwater-atmosphere-domain-kit",
+    "vegetation-archetype-domain-kit",
+    "vegetation-lod-domain-kit",
+    "vegetation-wind-domain-kit",
+    "weather-state-domain-kit",
+    "wind-field-domain-kit",
+    "deterministic-seed-domain-kit",
+    "environment-clock-domain-kit"
   ],
   "runtimeImpliedKits": [
     "webgpu-static-shell-kit",
@@ -83,20 +93,20 @@
     "volume-texture-result-kit",
     "performance-level-result-kit",
     "render-consumption-ledger-kit",
-    "cozy-island-host-proof-kit",
+    "cozy-island-host-readback-kit",
     "node-webgpu-consumer-fixture-kit"
   ],
   "latestDocs": {
-    "tracker": ".agent/trackers/2026-07-10T07-29-12-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-10T07-29-12-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-10T07-29-12-04-00-webgpu-host-proof-ledger-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-10T07-29-12-04-00-webgpu-render-consumption-host-proof-gap.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-10T07-29-12-04-00-input-scenario-result-journal.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T07-29-12-04-00-scenario-camera-host-proof-loop.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T07-29-12-04-00-vegetation-ground-contact-consumer-ledger.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T07-29-12-04-00-volume-texture-cloud-fog-proof.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T07-29-12-04-00-cozy-island-host-proof-ledger-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-10T07-29-12-04-00-node-webgpu-consumer-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-10T08-48-58-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-10T08-48-58-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-10T08-48-58-04-00-webgpu-host-readback-ledger-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-10T08-48-58-04-00-webgpu-render-consumption-readback-gap.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-10T08-48-58-04-00-input-result-host-readback-map.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T08-48-58-04-00-scenario-camera-readback-loop.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T08-48-58-04-00-vegetation-ground-contact-readback-ledger.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T08-48-58-04-00-volume-texture-cloud-fog-readback.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T08-48-58-04-00-cozy-island-host-readback-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-10T08-48-58-04-00-node-webgpu-readback-fixture-gate.md"
   },
   "validation": {
     "runtimeSourceChanged": false,

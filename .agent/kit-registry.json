@@ -1,53 +1,50 @@
 {
-  "schemaVersion": 40,
-  "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-10T05-49-25-04-00",
-  "status": "webgpu-source-consumer-readback-node-fixture-gate-planned",
-  "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-10T05-49-25-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T05-49-25-04-00.md",
-  "selectedNextSlice": "MyCozyIsland WebGPU Source Consumer Readback Refresh + Node Fixture Gate",
-  "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-10T05-49-25-04-00-webgpu-source-consumer-readback-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-10T05-49-25-04-00-webgpu-render-consumption-readback-gap.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-10T05-49-25-04-00-webgpu-input-scenario-result-map.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T05-49-25-04-00-scenario-camera-runtime-loop.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T05-49-25-04-00-vegetation-ground-contact-readback.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T05-49-25-04-00-volumetric-cloud-fog-texture-readback.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T05-49-25-04-00-cozy-island-webgpu-host-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-10T05-49-25-04-00-node-test-webgpu-fixture-gate.md"
-  },
-  "selection": {
-    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected as the oldest eligible documented fallback after TheUnmappedHouse advanced to 2026-07-10T05-40-17-04-00.",
-    "excludedRepos": [
-      "LuminaryLabs-Publish/TheCavalryOfRome"
-    ],
-    "selectionRule": "Prioritize new, ledger-absent, undocumented, missing-.agent, or recently added undocumented repositories before choosing the oldest current documented repository."
-  },
-  "activeRoute": {
-    "html": "index.html",
-    "canvas": "#game",
-    "loader": "#loader",
-    "debugPanel": "#debug",
-    "errorPanel": "#error",
-    "script": "./src/main-cloudform.js?v=webgpu-volumetric-2",
-    "routeToken": "webgpu-volumetric-2",
-    "source": "src/main-cloudform.js",
-    "threeVersion": "0.185.0",
-    "renderer": "THREE.WebGPURenderer",
-    "legacyHost": "globalThis.CozyIsland"
-  },
-  "implementedKits": [
-    "domain-kit-catalog-validation",
-    "determinism-kit",
-    "environment-kit",
-    "terrain-kit",
-    "ocean-kit",
-    "vegetation-kit",
-    "atmosphere-kit",
-    "render-descriptor-kit",
-    "sequence-kit",
-    "webgpu-renderer-kit"
+  "schemaVersion": 41,
+  "lastUpdated": "2026-07-10T07-29-12-04-00",
+  "repo": "LuminaryLabs-Publish/MyCozyIsland",
+  "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
+  "selectedNextSlice": "MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate",
+  "implementedSourceKits": [
+    {
+      "id": "domain-kit-catalog-validation",
+      "services": ["DomainServiceKit metadata validation", "capability row validation", "catalog count checks"]
+    },
+    {
+      "id": "determinism-kit",
+      "services": ["seeded random stream", "stable descriptor generation"]
+    },
+    {
+      "id": "environment-kit",
+      "services": ["clock descriptors", "wind descriptors", "weather descriptors", "illumination descriptors"]
+    },
+    {
+      "id": "terrain-kit",
+      "services": ["terrain surface descriptors", "biome field descriptors", "shoreline descriptors", "terrain LOD policy", "ocean-floor profile"]
+    },
+    {
+      "id": "ocean-kit",
+      "services": ["wave state", "ocean optics", "underwater atmosphere", "caustics", "sun glitter", "shoreline foam"]
+    },
+    {
+      "id": "vegetation-kit",
+      "services": ["archetype catalog", "ground contact", "placement graph", "vegetation wind", "vegetation LOD", "rock graph", "prop graph", "campfire atmosphere"]
+    },
+    {
+      "id": "atmosphere-kit",
+      "services": ["cloud weather", "cloud density", "cloud lighting", "cloud LOD", "cloud shadow", "horizon band", "fog density", "fog advection", "fog volume placement", "aerial perspective"]
+    },
+    {
+      "id": "render-descriptor-kit",
+      "services": ["material catalog", "render archetype catalog", "WebGL2 fallback policy", "render snapshot"]
+    },
+    {
+      "id": "sequence-kit",
+      "services": ["camera rail sequence", "cozy island scenario"]
+    },
+    {
+      "id": "webgpu-renderer-kit",
+      "services": ["stylized world renderer", "WebGPU ocean renderer", "WebGPU foam renderer", "atmosphere volume textures", "volumetric cloud renderer", "rolling fog renderer", "WebGPU post pipeline"]
+    }
   ],
   "runtimeImpliedKits": [
     "webgpu-static-shell-kit",
@@ -74,29 +71,40 @@
     "node-domain-smoke-kit"
   ],
   "targetNextKits": [
-    "webgpu-route-token-readback-kit",
-    "webgpu-source-profile-kit",
+    "webgpu-route-profile-kit",
+    "webgpu-source-fingerprint-kit",
     "kit-catalog-readback-kit",
-    "source-fingerprint-kit",
     "render-snapshot-normalizer-kit",
     "input-action-frame-kit",
     "input-result-kit",
     "input-result-journal-kit",
     "scenario-tick-result-kit",
-    "camera-state-readback-kit",
+    "camera-frame-readback-kit",
     "volume-texture-result-kit",
     "performance-level-result-kit",
     "render-consumption-ledger-kit",
-    "serializable-CozyIslandHost-kit",
-    "webgpu-consumer-fixture-kit",
-    "central-ledger-readback-kit"
+    "cozy-island-host-proof-kit",
+    "node-webgpu-consumer-fixture-kit"
   ],
+  "latestDocs": {
+    "tracker": ".agent/trackers/2026-07-10T07-29-12-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-10T07-29-12-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-10T07-29-12-04-00-webgpu-host-proof-ledger-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-10T07-29-12-04-00-webgpu-render-consumption-host-proof-gap.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-10T07-29-12-04-00-input-scenario-result-journal.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T07-29-12-04-00-scenario-camera-host-proof-loop.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T07-29-12-04-00-vegetation-ground-contact-consumer-ledger.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T07-29-12-04-00-volume-texture-cloud-fog-proof.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T07-29-12-04-00-cozy-island-host-proof-ledger-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-10T07-29-12-04-00-node-webgpu-consumer-fixture-gate.md"
+  },
   "validation": {
-    "runtimeSourceChangedThisPass": false,
+    "runtimeSourceChanged": false,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmTestRun": false,
     "browserSmokeRun": false,
-    "documentationOnly": true
+    "webgpuValidationRun": false,
+    "fixtureRun": false
   }
 }

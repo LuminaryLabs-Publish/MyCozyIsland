@@ -2,50 +2,46 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-10T04-29-10-04-00`
+**Updated:** `2026-07-10T05-49-25-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source Consumer Parity Host Refresh + Input Fixture Gate
+MyCozyIsland WebGPU Source Consumer Readback Refresh + Node Fixture Gate
 ```
 
-Build an additive proof layer around the current route. Do not rewrite the visible scene, change the active route token, or replace the existing source kits.
+Build an additive proof layer around the current WebGPU route. Do not rewrite the visible scene, change `webgpu-volumetric-2`, or replace the existing kit catalog.
 
 ## Preserve
 
 ```txt
 index.html shell
-./src/main-cloudform.js?v=hero-cloud-4 route token
-Three.js 0.160.0 CDN import
-all explicit source-domain kits
-deterministic source seeds and counts
+./src/main-cloudform.js?v=webgpu-volumetric-2 route token
+Three.js/WebGPU 0.185.0 importmap
+50-kit DomainServiceKit catalog
+npm test static/domain smoke checks
 globalThis.CozyIsland legacy surface
-progress thresholds 0.85 and 0.985
-clearing radius and 2.35 campfire keepout
-current grass and cloud visible behavior
+current WebGPU renderer, volume texture, cloud/fog/ocean/foam/post pipeline behavior
+current scenario/camera behavior
 ```
 
 ## Add
 
 ```txt
-src/host-proof/source-profile.js
+src/host-proof/webgpu-route-profile.js
 src/host-proof/source-fingerprint.js
-src/host-proof/scene-source-snapshot.js
+src/host-proof/kit-catalog-readback.js
+src/host-proof/render-snapshot-normalizer.js
 src/host-proof/input-action-frame.js
 src/host-proof/input-result.js
 src/host-proof/input-result-journal.js
-src/host-proof/movement-policy-result.js
-src/host-proof/camera-rail-snapshot.js
-src/host-proof/grass-placement-snapshot.js
-src/host-proof/grass-instance-snapshot.js
-src/host-proof/cloud-descriptor-snapshot.js
-src/host-proof/cloud-cache-snapshot.js
-src/host-proof/cloud-drift-result.js
+src/host-proof/scenario-tick-result.js
+src/host-proof/camera-frame-readback.js
+src/host-proof/volume-texture-result.js
+src/host-proof/performance-level-result.js
 src/host-proof/render-consumption-ledger.js
-src/host-proof/render-host-snapshot.js
 src/host-proof/cozy-island-host-snapshot.js
-scripts/cozy-island-browser-consumer-fixture.mjs
+scripts/cozy-island-webgpu-consumer-fixture.mjs
 ```
 
 ## Required result vocabulary
@@ -53,39 +49,45 @@ scripts/cozy-island-browser-consumer-fixture.mjs
 ```txt
 status: accepted | rejected | no-change
 reason:
-  progress-updated
-  progress-clamped-min
-  progress-clamped-max
-  pointer-look-first-person
-  pointer-yaw-rail
-  pointer-inactive-transition-band
+  route-token-read
+  kit-catalog-valid
+  kit-catalog-invalid
+  wheel-progress-updated
+  wheel-progress-clamped
+  pointer-drag-started
+  pointer-drag-updated
   pointer-not-dragging
-  movement-accepted
-  movement-rejected-clearing-boundary
-  movement-rejected-campfire-keepout
-  movement-no-input
+  pointer-drag-ended
+  key-state-updated
+  key-debug-toggle
+  input-cleared-on-blur
+  scenario-ticked
+  scenario-dt-clamped
+  camera-frame-copied
+  volume-texture-created
+  volume-texture-fallback-created
+  performance-level-stable
+  performance-level-degraded
+  performance-level-recovered
+  render-submitted
 ```
 
 ## Fixture rows
 
 ```txt
 route token and source fingerprint
-stable scene-source snapshot
-island heightfield resolution and sample count
-shoreline segment count
-foliage/path source counts
-wheel accepted and clamp rows
-pointer accepted, clamped, inactive-range, and not-dragging rows
-movement accepted and rejected rows with stable reasons
-camera rail samples at fixed progress values
-first-person threshold transition at 0.985
-grass requested/placed/instanced parity
-grass batch descriptor parity
-cloud descriptor/cache hit/miss/stale parity
-cloud fixed-dt drift result
-render-consumption ledger for every source family
-renderer/scene/camera snapshot
-legacy CozyIsland compatibility parity
+kit catalog valid row with 50 kits
+static source/importmap row for Three.js 0.185.0
+stable domain source snapshot
+scenario tick at fixed dt
+camera readback after tick
+wheel/pointer/key/blur result rows
+volume texture source/size rows
+cloud/fog step-scale rows
+performance degrade/recover rows
+render-consumption ledger for source families
+legacy CozyIsland compatibility row
+CozyIslandHost JSON serialization row
 ```
 
 ## Host surface
@@ -96,25 +98,29 @@ Add an additive surface without removing the current legacy object:
 globalThis.CozyIslandHost = {
   getState(),
   getSourceProfile(),
+  getKitCatalogStatus(),
   getInputJournal(),
+  getScenarioJournal(),
+  getPerformanceJournal(),
   getRenderConsumptionLedger(),
   restartProofState()
 }
 ```
 
-All outputs must be JSON-serializable and must not expose live Three.js objects.
+All outputs must be JSON-serializable and must not expose live Three.js/WebGPU objects.
 
 ## Validation gate
 
 Add:
 
 ```txt
-npm run fixture:consumer
+npm run fixture:webgpu-consumer
 npm run check
+npm test
 ```
 
-`npm run check` should execute the consumer fixture and any existing static validation without requiring a browser or GPU.
+`npm run check` should run the existing `npm test` plus the new fixture without requiring a browser or GPU.
 
 ## Stop condition
 
-Stop the ledge when the fixture passes, `CozyIslandHost.getState()` is serializable and additive, source-to-render rows reconcile, accepted/rejected input reasons are stable, legacy diagnostics remain compatible, and no visible scene behavior has changed.
+Stop the ledge when the Node fixture passes, `CozyIslandHost.getState()` is JSON-safe and additive, source-to-render rows reconcile, input/scenario/performance reasons are stable, legacy diagnostics remain compatible, and no visible WebGPU behavior has changed.

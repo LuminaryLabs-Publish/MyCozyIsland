@@ -1,8 +1,8 @@
 # START HERE: MyCozyIsland
 
-Last aligned: 2026-07-10T11-38-03-04-00
+Last aligned: 2026-07-10T13-08-51-04-00
 Repo: LuminaryLabs-Publish/MyCozyIsland
-Current focus: WebGPU host journal readback and Node consumer fixture proof.
+Current focus: WebGPU host readback ledger and Node consumer fixture proof.
 
 ## Read this first
 
@@ -29,21 +29,21 @@ index.html
 
 ## Current finding
 
-The source-domain layer is useful and tested by `npm test`, but the browser host proof layer is still missing. `globalThis.CozyIsland` exposes live WebGPU/Three objects and aggregate diagnostics, not stable JSON-safe fixture journals.
+The source-domain layer is useful and covered by `npm test`, but the browser host proof layer is still missing. `globalThis.CozyIsland` exposes live WebGPU/Three objects and aggregate diagnostics, not stable JSON-safe host readback rows.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T11-38-03-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T11-38-03-04-00.md
-.agent/architecture-audit/2026-07-10T11-38-03-04-00-webgpu-host-journal-readback-dsk-map.md
-.agent/render-audit/2026-07-10T11-38-03-04-00-webgpu-render-consumption-journal-gap.md
-.agent/interaction-audit/2026-07-10T11-38-03-04-00-input-host-result-journal-map.md
-.agent/gameplay-audit/2026-07-10T11-38-03-04-00-scenario-camera-host-journal-loop.md
-.agent/grass-system-audit/2026-07-10T11-38-03-04-00-vegetation-ground-contact-journal.md
-.agent/cloud-system-audit/2026-07-10T11-38-03-04-00-volume-texture-cloud-fog-journal.md
-.agent/host-proof-audit/2026-07-10T11-38-03-04-00-cozy-island-host-journal-contract.md
-.agent/deploy-audit/2026-07-10T11-38-03-04-00-node-webgpu-journal-fixture-gate.md
+.agent/trackers/2026-07-10T13-08-51-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T13-08-51-04-00.md
+.agent/architecture-audit/2026-07-10T13-08-51-04-00-webgpu-host-readback-ledger-dsk-map.md
+.agent/render-audit/2026-07-10T13-08-51-04-00-render-consumption-host-readback-gap.md
+.agent/interaction-audit/2026-07-10T13-08-51-04-00-input-result-readback-map.md
+.agent/gameplay-audit/2026-07-10T13-08-51-04-00-scenario-camera-readback-loop.md
+.agent/grass-system-audit/2026-07-10T13-08-51-04-00-vegetation-ground-contact-readback-ledger.md
+.agent/cloud-system-audit/2026-07-10T13-08-51-04-00-volume-texture-cloud-fog-readback.md
+.agent/host-proof-audit/2026-07-10T13-08-51-04-00-cozy-island-host-readback-contract.md
+.agent/deploy-audit/2026-07-10T13-08-51-04-00-node-webgpu-readback-fixture-gate.md
 ```
 
 ## Do not start next with
@@ -60,7 +60,7 @@ The source-domain layer is useful and tested by `npm test`, but the browser host
 ## Start next with
 
 ```txt
-MyCozyIsland WebGPU Host Journal Readback Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
 ```
 
 ## Required next implementation shape

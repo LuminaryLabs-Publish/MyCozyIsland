@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T19-09-44-04-00`
+**Last aligned:** `2026-07-09T23-41-15-04-00`
 
 ## Purpose
 
@@ -17,20 +17,6 @@ The current public `LuminaryLabs-Publish` repository list was compared with `Lum
 No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented. `MyCozyIsland` was selected as the oldest eligible documented fallback by central-ledger recency.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
-
-## Publish repositories checked
-
-```txt
-MyCozyIsland         selected
-TheUnmappedHouse     tracked / root .agent present
-ZombieOrchard        tracked / root .agent present
-PhantomCommand       tracked / root .agent present
-HorrorCorridor       tracked / root .agent present
-PrehistoricRush      tracked / root .agent present
-IntoTheMeadow        tracked / root .agent present
-TheCavalryOfRome     excluded
-TheOpenAbove         tracked / root .agent present
-```
 
 ## Current route
 
@@ -51,43 +37,38 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
   -> project descriptors into Three.js objects
   -> install resize, keyboard, wheel, and pointer handlers
   -> wheel mutates progress
-  -> pointer mutates yaw/pitch only in permitted progress ranges
+  -> pointer mutates yaw while progress < 0.85
+  -> pointer is an implicit no-op in the 0.85 to 0.985 transition band
+  -> pointer mutates yaw/pitch while progress >= 0.985
   -> rail camera while progress < 0.985
   -> first-person WASD movement while progress >= 0.985
-  -> movement silently accepted or rejected by clearing and campfire radii
+  -> movement silently accepted or rejected by clearing radius and campfire keepout
   -> frame updates sea, smoke, flame, clouds, camera, and renderer
   -> expose cloud contract, cached geometries, and scroll progress through legacy diagnostics
 ```
 
-## Source boundary
-
-The explicit domain kits produce deterministic descriptors and object graphs. `src/main-cloudform.js` remains the monolithic consumer for mesh creation, scene composition, browser input, camera policy, movement policy, frame simulation, render submission, and host diagnostics.
-
-The next implementation should prove source-to-consumer parity before changing visuals.
-
-## Latest files
+## Read this pass first
 
 ```txt
-.agent/current-audit.md
-.agent/known-gaps.md
-.agent/next-steps.md
-.agent/validation.md
-.agent/kit-registry.json
-.agent/trackers/2026-07-09T19-09-44-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T19-09-44-04-00.md
-.agent/architecture-audit/2026-07-09T19-09-44-04-00-source-consumer-fixture-refresh-dsk-map.md
-.agent/render-audit/2026-07-09T19-09-44-04-00-render-consumption-ledger-readback.md
-.agent/interaction-audit/2026-07-09T19-09-44-04-00-input-movement-result-fixture-map.md
-.agent/grass-system-audit/2026-07-09T19-09-44-04-00-grass-placement-instance-readback.md
-.agent/cloud-system-audit/2026-07-09T19-09-44-04-00-cloud-cache-drift-readback.md
-.agent/host-proof-audit/2026-07-09T19-09-44-04-00-cozy-island-host-fixture-contract.md
-.agent/deploy-audit/2026-07-09T19-09-44-04-00-browser-input-fixture-gate.md
+.agent/trackers/2026-07-09T23-41-15-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T23-41-15-04-00.md
+.agent/architecture-audit/2026-07-09T23-41-15-04-00-host-proof-fixture-catchup-dsk-map.md
+.agent/render-audit/2026-07-09T23-41-15-04-00-render-consumer-proof-ledger.md
+.agent/interaction-audit/2026-07-09T23-41-15-04-00-input-movement-result-readback.md
+.agent/grass-system-audit/2026-07-09T23-41-15-04-00-grass-placement-instance-parity.md
+.agent/cloud-system-audit/2026-07-09T23-41-15-04-00-cloud-cache-drift-parity.md
+.agent/host-proof-audit/2026-07-09T23-41-15-04-00-cozy-island-host-proof-contract.md
+.agent/deploy-audit/2026-07-09T23-41-15-04-00-source-consumer-fixture-gate.md
 ```
+
+## Main finding
+
+`MyCozyIsland` should not get a visual rewrite next. The source descriptor layer is useful, but the browser consumer lacks proof rows. The next implementation should add source fingerprints, input/movement results, grass/cloud parity snapshots, render consumption rows, and a serializable additive host readback surface.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source/Consumer Fixture Refresh + Browser Input Result Gate
+MyCozyIsland Host Proof Catch-up + Source/Consumer Fixture Gate
 ```
 
 ## Operating rules

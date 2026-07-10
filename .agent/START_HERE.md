@@ -1,24 +1,12 @@
-# My Cozy Island Agent Start
+# START HERE: MyCozyIsland
 
-**Repository:** `LuminaryLabs-Publish/MyCozyIsland`
+Last aligned: 2026-07-10T07-29-12-04-00
+Repo: LuminaryLabs-Publish/MyCozyIsland
+Current focus: WebGPU host-proof ledger and source-consumer readback.
 
-**Last aligned:** `2026-07-10T05-49-25-04-00`
+## Read this first
 
-## Purpose
-
-This `.agent/` folder is the repo-local operating memory for scheduled and manual work on `MyCozyIsland`.
-
-Read it before changing runtime source.
-
-## Selection result
-
-The current public `LuminaryLabs-Publish` repository list was compared with `LuminaryLabs-Dev/LuminaryLabs` central ledger state and sampled root `.agent` state.
-
-No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented.
-
-`MyCozyIsland` was selected as the oldest eligible documented fallback after `TheUnmappedHouse` advanced to `2026-07-10T05-40-17-04-00`.
-
-`LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
+This repo is currently a WebGPU volumetric Cozy Island route. Do not use the older Three `0.160.0` / `hero-cloud-4` assumptions as the live route source of truth.
 
 ## Current route
 
@@ -30,44 +18,70 @@ index.html
   -> validate 50 DomainServiceKit manifests
   -> compose deterministic environment / terrain / ocean / vegetation / atmosphere / render snapshots
   -> create WebGPURenderer, volumetric cloud/fog renderers, WebGPU ocean/foam, and post pipeline
-  -> wheel / pointer / keyboard / resize consumers mutate camera-sequence and scenario state
+  -> wheel / pointer / keyboard / blur / resize consumers mutate camera-sequence and scenario state
   -> animation loop ticks scenario, copies camera, updates renderers, samples performance, renders post pipeline
   -> globalThis.CozyIsland legacy diagnostics expose live runtime objects plus aggregate getState()
 ```
 
-## Read this pass first
+## Current finding
+
+The source-domain layer is useful and tested by `npm test`, but the browser host proof layer is still missing. `globalThis.CozyIsland` exposes live objects and aggregate diagnostics, not a stable JSON-safe ledger.
+
+## Do not start next with
+
+- visual rewrite
+- cloud rewrite
+- ocean rewrite
+- fog rewrite
+- camera retune
+- renderer replacement
+- route-token churn
+- new route content
+
+## Start next with
 
 ```txt
-.agent/trackers/2026-07-10T05-49-25-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T05-49-25-04-00.md
-.agent/architecture-audit/2026-07-10T05-49-25-04-00-webgpu-source-consumer-readback-dsk-map.md
-.agent/render-audit/2026-07-10T05-49-25-04-00-webgpu-render-consumption-readback-gap.md
-.agent/interaction-audit/2026-07-10T05-49-25-04-00-webgpu-input-scenario-result-map.md
-.agent/gameplay-audit/2026-07-10T05-49-25-04-00-scenario-camera-runtime-loop.md
-.agent/grass-system-audit/2026-07-10T05-49-25-04-00-vegetation-ground-contact-readback.md
-.agent/cloud-system-audit/2026-07-10T05-49-25-04-00-volumetric-cloud-fog-texture-readback.md
-.agent/host-proof-audit/2026-07-10T05-49-25-04-00-cozy-island-webgpu-host-contract.md
-.agent/deploy-audit/2026-07-10T05-49-25-04-00-node-test-webgpu-fixture-gate.md
+MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate
 ```
 
-## Main finding
+## Required next implementation shape
 
-`MyCozyIsland` should not get a visual rewrite next.
+- Add stable route/source fingerprints.
+- Add kit catalog readback rows.
+- Normalize render snapshot rows.
+- Add input accepted/rejected/no-change results.
+- Add scenario tick and camera frame readback rows.
+- Add cloud/fog/atmosphere volume texture result rows.
+- Add performance degrade/recover reason rows.
+- Add render-consumption ledger rows.
+- Add additive JSON-safe `globalThis.CozyIslandHost` beside legacy `globalThis.CozyIsland`.
+- Add a Node fixture that proves these rows without requiring browser WebGPU capture.
 
-The source-domain layer and WebGPU route are useful, and `npm test` already provides static/domain smoke coverage. The missing layer is WebGPU source/consumer readback: route token, kit catalog status, source fingerprints, input/scenario result rows, camera rows, volume texture rows, performance degrade/recover rows, render consumption rows, and a JSON-serializable additive `CozyIslandHost`.
-
-## Next safe ledge
+## Most recent tracker
 
 ```txt
-MyCozyIsland WebGPU Source Consumer Readback Refresh + Node Fixture Gate
+.agent/trackers/2026-07-10T07-29-12-04-00/project-breakdown.md
 ```
 
-## Operating rules
+## Current audit files
 
 ```txt
-Only push to main.
-Do not create branches.
-Do not work on TheCavalryOfRome.
-Keep scheduled breakdown work moving.
-Preserve visible WebGPU behavior until source/consumer readback is fixture-proven.
+.agent/current-audit.md
+.agent/known-gaps.md
+.agent/next-steps.md
+.agent/validation.md
+.agent/kit-registry.json
+.agent/turn-ledger/2026-07-10T07-29-12-04-00.md
+.agent/architecture-audit/2026-07-10T07-29-12-04-00-webgpu-host-proof-ledger-dsk-map.md
+.agent/render-audit/2026-07-10T07-29-12-04-00-webgpu-render-consumption-host-proof-gap.md
+.agent/interaction-audit/2026-07-10T07-29-12-04-00-input-scenario-result-journal.md
+.agent/gameplay-audit/2026-07-10T07-29-12-04-00-scenario-camera-host-proof-loop.md
+.agent/grass-system-audit/2026-07-10T07-29-12-04-00-vegetation-ground-contact-consumer-ledger.md
+.agent/cloud-system-audit/2026-07-10T07-29-12-04-00-volume-texture-cloud-fog-proof.md
+.agent/host-proof-audit/2026-07-10T07-29-12-04-00-cozy-island-host-proof-ledger-contract.md
+.agent/deploy-audit/2026-07-10T07-29-12-04-00-node-webgpu-consumer-fixture-gate.md
 ```
+
+## Validation state
+
+Docs-only refresh. Runtime source changed: no. Branch created: no. Pull request created: no. `npm test`: not run in this pass.

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-10T02-31-58-04-00`
+**Last aligned:** `2026-07-10T04-29-10-04-00`
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The current public `LuminaryLabs-Publish` repository list was compared with `Lum
 
 No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented.
 
-`MyCozyIsland` was selected as the oldest eligible documented fallback after `TheUnmappedHouse` advanced to `2026-07-10T02-19-14-04-00`.
+`MyCozyIsland` was selected as the oldest eligible documented fallback after the previous eligible repo advanced to `2026-07-10T04-22-00-04-00`.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
@@ -52,15 +52,15 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T02-31-58-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T02-31-58-04-00.md
-.agent/architecture-audit/2026-07-10T02-31-58-04-00-source-consumer-host-fixture-dsk-map.md
-.agent/render-audit/2026-07-10T02-31-58-04-00-render-consumption-proof-ledger.md
-.agent/interaction-audit/2026-07-10T02-31-58-04-00-input-movement-result-readback.md
-.agent/grass-system-audit/2026-07-10T02-31-58-04-00-grass-placement-batch-consumption.md
-.agent/cloud-system-audit/2026-07-10T02-31-58-04-00-cloud-descriptor-cache-drift-proof.md
-.agent/host-proof-audit/2026-07-10T02-31-58-04-00-cozy-island-host-fixture-contract.md
-.agent/deploy-audit/2026-07-10T02-31-58-04-00-consumer-fixture-check-gate.md
+.agent/trackers/2026-07-10T04-29-10-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T04-29-10-04-00.md
+.agent/architecture-audit/2026-07-10T04-29-10-04-00-source-consumer-parity-host-dsk-map.md
+.agent/render-audit/2026-07-10T04-29-10-04-00-render-consumption-host-readback-gap.md
+.agent/interaction-audit/2026-07-10T04-29-10-04-00-input-movement-result-proof.md
+.agent/grass-system-audit/2026-07-10T04-29-10-04-00-grass-placement-instance-parity-ledger.md
+.agent/cloud-system-audit/2026-07-10T04-29-10-04-00-cloud-cache-drift-readback-proof.md
+.agent/host-proof-audit/2026-07-10T04-29-10-04-00-cozy-island-host-fixture-contract.md
+.agent/deploy-audit/2026-07-10T04-29-10-04-00-source-consumer-fixture-gate.md
 ```
 
 ## Main finding
@@ -69,12 +69,12 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
 
 The source descriptor layer is useful, but `src/main-cloudform.js` still owns browser consumer behavior without proof rows.
 
-The next implementation should add source fingerprints, input/movement results, grass/cloud parity snapshots, render consumption rows, and a serializable additive host readback surface.
+The next implementation should add source fingerprints, input/movement results, camera snapshots, grass/cloud parity, render consumption rows, and a serializable additive host readback surface.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source Consumer Host Readback Refresh + Input Fixture Gate
+MyCozyIsland Source Consumer Parity Host Refresh + Input Fixture Gate
 ```
 
 ## Operating rules

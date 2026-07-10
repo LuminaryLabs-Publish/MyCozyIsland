@@ -1,9 +1,9 @@
 {
-  "name": "my-cozy-island",
-  "version": "0.1.0",
+  "name": "my-cozy-island-webgpu",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "python3 -m http.server 8080"
+    "test": "node tests/static-check.mjs && node tests/domain-smoke.mjs"
   }
 }

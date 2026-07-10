@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 47,
-  "lastUpdated": "2026-07-10T16-08-56-04-00",
+  "schemaVersion": 48,
+  "lastUpdated": "2026-07-10T17-38-35-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
-  "selectedNextSlice": "MyCozyIsland Adaptive Quality Transition Authority + Frame-Cost Fixture Gate",
+  "selectedNextSlice": "MyCozyIsland Layered Grass Renderer Authority + Lifecycle Fixture Gate",
   "implementedSourceKits": [
     "debug-overlay-host-kit",
     "webgl2-fallback-renderer-kit",
@@ -66,6 +66,9 @@
     "sky-gradient-kit",
     "lighting-composition-kit",
     "world-render-consumer-kit",
+    "layered-alpha-grass-render-consumer-kit",
+    "grass-alpha-atlas-generator-kit",
+    "grass-render-substitution-adapter-kit",
     "ocean-render-consumer-kit",
     "foam-render-consumer-kit",
     "atmosphere-texture-compute-kit",
@@ -81,6 +84,17 @@
     "node-domain-smoke-kit"
   ],
   "targetNextKits": [
+    "layered-grass-render-policy-kit",
+    "layered-grass-source-consumption-result-kit",
+    "layered-grass-atlas-descriptor-kit",
+    "layered-grass-geometry-descriptor-kit",
+    "layered-grass-resource-owner-kit",
+    "layered-grass-readback-kit",
+    "layered-grass-catalog-contract-kit",
+    "node-layered-grass-fixture-kit",
+    "browser-layered-grass-lifecycle-smoke-kit"
+  ],
+  "deferredAfterCurrent": [
     "frame-cost-sampler-kit",
     "adaptive-quality-policy-kit",
     "quality-state-descriptor-kit",
@@ -88,31 +102,28 @@
     "quality-transition-result-kit",
     "performance-transition-journal-kit",
     "gpu-timestamp-readback-kit",
-    "frame-correlation-record-kit",
-    "render-submit-record-kit",
     "cozy-island-performance-host-kit",
     "node-adaptive-quality-fixture-kit"
   ],
   "latestDocs": {
-    "tracker": ".agent/trackers/2026-07-10T16-08-56-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-10T16-08-56-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-10T16-08-56-04-00-adaptive-quality-transition-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-10T16-08-56-04-00-frame-cost-submit-recovery-gap.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-10T16-08-56-04-00-input-frame-load-attribution-map.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T16-08-56-04-00-scenario-camera-performance-loop.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T16-08-56-04-00-vegetation-quality-consumption-gap.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T16-08-56-04-00-volumetric-step-recovery-contract.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T16-08-56-04-00-performance-transition-journal-contract.md",
-    "performanceAudit": ".agent/performance-audit/2026-07-10T16-08-56-04-00-dpr-recovery-gpu-timing-gap.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-10T16-08-56-04-00-node-performance-transition-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-10T17-38-35-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-10T17-38-35-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-10T17-38-35-04-00-layered-grass-renderer-authority-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-10T17-38-35-04-00-layered-grass-substitution-lifecycle-gap.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T17-38-35-04-00-alpha-cutout-grass-consumption-contract.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-10T17-38-35-04-00-camera-grass-consumption-map.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T17-38-35-04-00-scenario-presentation-separation-loop.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-10T17-38-35-04-00-layered-grass-contract-fixture-gate.md"
   },
   "validation": {
-    "runtimeSourceChanged": false,
+    "runtimeSourceChangedByThisPass": false,
+    "recentRuntimeSourceChangeDetected": true,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmTestRun": false,
     "browserSmokeRun": false,
     "webgpuValidationRun": false,
-    "fixtureRun": false
+    "contractFixtureRun": false,
+    "lifecycleFixtureRun": false
   }
 }

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-10T01-04-36-04-00`
+**Audit timestamp:** `2026-07-10T01-11-51-04-00`
 
 ## Summary
 
@@ -41,9 +41,6 @@ route-script-token
 three-module-import
 three-render-host
 scene-composition
-resize-consumer
-render-frame-loop
-legacy-host-diagnostics
 source-descriptor-composition
 island-landform-state
 island-height-sampling
@@ -66,7 +63,6 @@ grass-placement-contract
 grass-batch-descriptor
 mattatz-cloud-state
 hero-cloud-form-descriptor
-hero-cloud-layer-descriptor
 hero-cloud-render-contract
 terrain-mesh-adapter
 ocean-floor-mesh-adapter
@@ -90,6 +86,8 @@ player-pose
 camera-rail
 first-person-movement
 movement-validity
+render-frame-loop
+legacy-host-diagnostics
 route-token-readback
 source-profile
 source-fingerprint

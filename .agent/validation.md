@@ -1,6 +1,6 @@
 # Validation: MyCozyIsland
 
-Last updated: 2026-07-10T13-08-51-04-00
+Last updated: 2026-07-10T14-42-01-04-00
 
 ## This pass
 
@@ -11,12 +11,12 @@ pull request created: no
 npm test: not run
 browser smoke: not run
 WebGPU/GPU validation: not run
-DOM-free WebGPU consumer fixture: not run because proof files do not exist yet
-repo-local docs pushed to main: yes
-central ledger updated: yes
+Node frame-correlation fixture: not run because it does not exist yet
+repo-local documentation pushed to main: yes
+central ledger update required: yes
 ```
 
-## Current available package gate
+## Current available gate
 
 ```txt
 npm test
@@ -24,28 +24,28 @@ npm test
   -> node tests/domain-smoke.mjs
 ```
 
-## What current tests prove
+## Current tests prove
 
-- Static route expectations, including WebGPU token checks.
-- Kit catalog shape and count.
-- Domain smoke composition.
-- Deterministic source behavior for selected rows.
+- static route and WebGPU token expectations
+- kit catalog shape/count
+- deterministic domain composition for selected descriptors
 
-## What current tests do not prove
+## Current tests do not prove
 
-- Browser WebGPU render consumption.
-- Input accepted/rejected/no-change rows.
-- Scenario tick result rows.
-- Camera frame readback rows.
-- Volume texture result rows.
-- Performance degrade/recover reason rows.
-- JSON-safe `CozyIslandHost` readback.
+- ordered input command/result records
+- frame and correlation identity
+- scenario-step to camera-projection linkage
+- atmosphere build source attribution
+- performance transition ordering
+- render submission attribution
+- bounded journal retention/reset behavior
+- JSON-safe `CozyIslandHost` serialization
 
-## Next validation target
+## Next required gate
 
 ```txt
-node scripts/cozy-island-webgpu-readback-fixture.mjs
+node scripts/cozy-island-frame-correlation-fixture.mjs
 npm test
 ```
 
-The fixture should run without requiring a real GPU, browser screenshot, or WebGPU capture.
+The fixture must run without a DOM, real GPU, screenshot, or WebGPU capture and must assert strict sequence ordering, correlation completeness, deterministic eviction, reset behavior, and JSON serialization.

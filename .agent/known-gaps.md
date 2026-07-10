@@ -1,63 +1,68 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: 2026-07-10T17-38-35-04-00
+Last updated: `2026-07-10T19-11-19-04-00`
 
 ## Highest-priority gap
 
-The active layered alpha-cutout grass renderer is implemented as an implicit facade substitution rather than an explicit kit/capability with source-consumption, lifecycle, and readback contracts.
+The active layered alpha-cutout grass path has no authoritative source-consumption ledger or GPU-resource owner. It creates browser resources successfully, but it cannot prove who owns each source row, who owns each allocated resource, or whether those resources were released.
 
 ## Specific gaps
 
-- `src/kits/renderers.js` redirects `createStylizedWorldRenderer()` to the wrapper without identifying the new adapter at the call site.
-- The exact 50-kit catalog does not declare `render:layered-alpha-grass` or a dedicated layered-grass provider.
-- `createSnapshotWithoutLegacyGrass()` suppresses the base renderer's grass rows, but no result proves that the wrapper consumed those rows exactly once.
-- No validation checks the required `position`, `rotation`, `scale`, `phase`, or optional `tint` fields before instance creation.
-- The procedural atlas is built with a DOM canvas inside resource construction, so policy and atlas intent cannot be tested headlessly.
-- Layer angles, dimensions, colors, alpha clip, depth policy, shadow policy, fog policy, and tone-mapping policy are hard-coded inside the adapter rather than represented by an immutable descriptor.
-- Atlas texture, geometry, material, mesh, and group ownership are implicit.
-- The renderer exposes no `dispose()` method.
-- Repeated route creation would allocate new GPU resources without a defined release path.
-- The wrapper exposes only `group` and `update()`; there is no JSON-safe policy/resource snapshot.
-- `mesh.userData.grassRenderPolicy` is local mutable-object metadata and is not surfaced through `globalThis.CozyIsland`.
-- `grassRenderer.update()` is empty, so the contract does not state whether wind is intentionally unsupported or accidentally unwired.
-- Grass placement phase is used only for static height variation.
-- Vegetation LOD and adaptive-quality state do not alter the layered grass consumer after startup.
-- The static check sees the file but does not prove the facade targets it, that legacy grass is suppressed, or that resources can be disposed.
-- The domain smoke never imports browser renderer modules and therefore cannot validate layered grass behavior.
-- No browser integration smoke checks instance count, geometry layers, atlas creation, alpha policy, or cleanup.
+- `src/kits/renderers.js` redirects the public world-renderer facade to `renderer-world-layered-grass.js` without naming the adapter capability.
+- The declared 50-kit catalog does not identify a layered-grass provider or `render:layered-alpha-grass` capability.
+- `createSnapshotWithoutLegacyGrass()` suppresses legacy grass but emits no proof that the same rows were consumed exactly once by the new renderer.
+- No source validator checks required placement fields before creating instance matrices.
+- No source fingerprint distinguishes identical, changed, duplicated, or stale grass inputs.
+- The procedural atlas is created through a DOM canvas inside the material factory.
+- `createUnlitGrassMaterial()` loses the atlas as a first-class named ownership handle.
+- Geometry, material, mesh, texture, and group ownership are implicit local conventions.
+- The zero-row path has a different object shape from the non-empty path.
+- The inner grass renderer may return `mesh`, but the outer world renderer discards the grass renderer object after attaching its group.
+- The outer world renderer exposes only `group` and `update()`.
+- The base world renderer also exposes only `group` and `update()`.
+- Neither layer exposes `dispose()`.
+- Repeated scene construction can allocate new grass resources without a release contract.
+- `mesh.userData.grassRenderPolicy` is not a validated immutable public contract.
+- No JSON-safe readback exposes policy identity, source counts, resource counts, or disposed state.
+- Grass `update()` is empty, so static behavior is implied rather than declared.
+- Placement phase affects startup height variation only.
+- Vegetation-wind and vegetation-LOD descriptors are not consumed by the layered grass path.
+- Adaptive-quality transitions do not report whether grass remains startup-only.
+- Current Node tests do not import or execute the browser renderer.
+- No browser integration smoke checks creation, composition, exact instance count, or disposal.
 
 ## System-specific gaps
 
 ### Grass source authority
 
-`vegetation-placement-domain-kit` owns grass descriptor production. The wrapper currently assumes every `grass-patch` row is valid and treats all rows as renderable. There is no acceptance/rejection ledger or source fingerprint.
-
-### Render composition
-
-The wrapper shallow-copies the snapshot to prevent base grass rendering, then adds its own group to the base group. The composition is practical but opaque: host diagnostics cannot prove base grass suppression, wrapper ownership, or exact draw contribution.
+`vegetation-placement-domain-kit` owns source production, while the wrapper owns suppression and rendering. There is no formal handoff result between these boundaries.
 
 ### Resource lifecycle
 
-The generated `CanvasTexture`, `BufferGeometry`, `MeshBasicNodeMaterial`, and `InstancedMesh` have no named owner and no disposal protocol. This is currently masked by one-shot static-page startup.
+The atlas texture is reachable only through `material.map`; geometry and material are reachable through the mesh; the mesh is reachable through the grass group; the grass group is attached to the base world group. No object is designated as the lifecycle authority for the complete chain.
 
-### Wind and animation
+### Wrapper composition
 
-The world snapshot contains vegetation-wind descriptors and instances contain phase data, but the layered grass consumer has a no-op update. The lack of motion may be intentional for performance, but that decision is not encoded.
+The outer wrapper calls both `baseRenderer.update()` and `grassRenderer.update()`, but it does not retain or expose the grass renderer for diagnostics or cleanup.
 
-### LOD and performance
+### Empty source behavior
 
-The renderer uses every startup grass row in one instanced mesh. It has frustum culling but no distance-band instance reduction, quality transition, or host-visible count policy. These should remain explicitly startup-only until a measured need exists.
+When no grass rows exist, the inner renderer returns `{ group, update }`; when rows exist, it returns `{ group, mesh, update }`. A stable readback and lifecycle surface should not depend on source count.
+
+### Wind and LOD
+
+The current static result may be appropriate for performance. The missing part is not animation itself; it is an explicit policy stating `static-startup-only`, plus proof that wind and LOD are intentionally unsupported or delegated.
 
 ### Host proof
 
-`globalThis.CozyIsland.getState()` reports aggregate backend, quality, camera, clock, performance, volumetric steps, and kit count. It does not report grass source count, rendered count, layer count, alpha policy, resource state, or disposal state.
+`globalThis.CozyIsland.getState()` exposes backend, quality, camera, clock, performance, volumetric steps, and kit count. It exposes no grass source ledger, policy, resource owner, or disposal result.
 
 ## Deferred work
 
-Do not prioritize more grass visual tuning, wind animation, density expansion, cloud/fog/ocean/terrain/camera changes, renderer replacement, new content, route-token changes, or screenshot work until the layered grass adapter has an explicit contract and fixture gate.
+Do not prioritize visual grass tuning, wind animation, density expansion, cloud/fog/ocean/terrain/camera changes, renderer replacement, new content, route-token changes, or screenshots until source ownership and resource lifecycle are explicit.
 
 ## Safe next ledge
 
 ```txt
-MyCozyIsland Layered Grass Renderer Authority + Lifecycle Fixture Gate
+MyCozyIsland Layered Grass Consumer Ledger + Resource Ownership Fixture Gate
 ```

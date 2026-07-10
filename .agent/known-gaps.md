@@ -2,16 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T19-09-44-04-00`
-
-## Selection and ledger
-
-```txt
-No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented.
-MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency.
-TheCavalryOfRome remains excluded.
-The central repo ledger must point at this run after repo-local documentation is pushed.
-```
+**Updated:** `2026-07-09T23-41-15-04-00`
 
 ## Source proof gaps
 
@@ -41,7 +32,7 @@ No deterministic rail or first-person camera snapshot exists.
 ```txt
 No source-to-render consumption ledger exists.
 No terrain/floor/shoreline/path/object count parity exists.
-The ocean-floor render contract creates object placements that the active scene does not consume.
+The ocean-floor render contract creates object placements that the active scene does not consume as distinct adapters.
 Several foliage source types are projected through the generic rock fallback instead of type-specific adapters.
 No grass requested/placed/instanced parity exists.
 No grass batch descriptor readback exists.

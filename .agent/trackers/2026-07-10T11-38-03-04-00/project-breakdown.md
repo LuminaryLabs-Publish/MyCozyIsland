@@ -142,7 +142,7 @@ node-webgpu-consumer-fixture-next
 - `kits/atmosphere`: provides cloud weather, cloud density, lighting, LOD, shadow, horizon band, fog density, advection, and volume placement descriptors.
 - `kits/render-descriptors`: provides material catalog, render archetypes, quality, fallback, render snapshot, performance budget, and debug overlay.
 - `kits/sequences`: provides camera rail sequence and cozy island scenario.
-- `kits/renderers`: adapts source rows into WebGPU world, ocean, foam, atmosphere texture, cloud, fog, and post consumers.
+- `kits/renderers`: adapts source rows into WebGPU world, ocean, foam, atmosphere texture, cloud, fog, post, and performance consumers.
 - Planned proof services: route profile, source fingerprint, kit catalog readback, input result journal, scenario tick journal, camera frame readback, volume texture journal, performance journal, render-consumption ledger, JSON-safe CozyIslandHost, and Node fixture.
 
 ## Implemented source kits
@@ -269,5 +269,5 @@ browser smoke: not run
 WebGPU/GPU validation: not run
 DOM-free WebGPU consumer fixture: not run because proof files do not exist yet
 pushed to main: yes
-central ledger updated: pending in this run
+central ledger updated: yes
 ```

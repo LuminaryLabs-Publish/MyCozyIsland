@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-10T01-11-51-04-00`
+**Updated:** `2026-07-10T02-31-58-04-00`
 
 ## Validation performed
 
@@ -11,12 +11,14 @@ repository selection:
   checked the current public LuminaryLabs-Publish repository page
   compared eligible repositories against central repo-ledger recency and sampled root .agent state
   excluded TheCavalryOfRome
-  selected MyCozyIsland as the oldest eligible documented fallback and central catch-up target
+  selected MyCozyIsland as the oldest eligible documented fallback
 
 source inspection:
   read package.json
   read index.html
   read src/main-cloudform.js imports, descriptor composition, renderer adapters, input handlers, rail camera, movement policy, grass instancing, cloud cache, drift, frame loop, and legacy diagnostics
+  read grass-object-domain placement/batch source
+  read mattatz-clouds-domain and cozy-hero-cloud-form-kit source
 
 agent documentation:
   refreshed required root .agent files
@@ -25,8 +27,8 @@ agent documentation:
   refreshed kit registry
 
 central documentation:
-  updated LuminaryLabs-Dev/LuminaryLabs repo ledger
-  added timestamped internal change-log entry
+  central repo ledger update planned in this pass
+  central internal change-log entry planned in this pass
 ```
 
 ## Source-backed checks
@@ -63,7 +65,7 @@ runtime source changed: no
 branch created: no
 pull request created: no
 repo-local docs pushed to main: yes
-central docs pushed to main: yes
+central docs pushed to main: pending this pass
 ```
 
 ## Validation conclusion

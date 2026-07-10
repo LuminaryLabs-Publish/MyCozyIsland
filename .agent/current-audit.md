@@ -2,21 +2,13 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Audit timestamp:** `2026-07-09T19-09-44-04-00`
+**Audit timestamp:** `2026-07-09T23-41-15-04-00`
 
 ## Summary
 
 `MyCozyIsland` is a standalone static Three.js scene with modular source-domain descriptors and a monolithic browser consumer.
 
 The active route separates island landform, ocean floor, foliage, grass, clearing, campfire, smoke, and cloud source contracts. The current gap is that `src/main-cloudform.js` directly owns renderer adapters, browser input mutation, camera policy, movement acceptance, frame animation, render submission, and host diagnostics without normalized result or parity records.
-
-## Selection result
-
-```txt
-No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented.
-MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency.
-TheCavalryOfRome remains excluded.
-```
 
 ## Current interaction loop
 
@@ -28,7 +20,9 @@ index.html
   -> adapt contracts into terrain, floor, water, shoreline, path, foliage, fence, campfire, smoke, grass, and cloud Three.js objects
   -> install resize, keyboard, wheel, pointer-down/up/move handlers
   -> wheel changes progress
-  -> pointer changes yaw/pitch according to progress thresholds
+  -> pointer changes yaw while progress < 0.85
+  -> pointer has no explicit result in the transition band before first person
+  -> pointer changes yaw/pitch when progress >= 0.985
   -> camera rail runs below progress 0.985
   -> WASD first-person movement runs at or above progress 0.985
   -> clearing radius and campfire keepout silently accept/reject movement
@@ -42,18 +36,19 @@ index.html
 
 ```txt
 static-route-shell
-route-script-token
-loader-progress-projection
+canvas-route-host
+cloud-loader-projection
 error-projection
+route-script-token
 three-module-import
 three-render-host
 scene-composition
 resize-consumer
-render-frame
+render-frame-loop
 legacy-host-diagnostics
 ```
 
-### World source domains
+### Source domains
 
 ```txt
 source-descriptor-composition
@@ -109,7 +104,7 @@ first-person-movement
 movement-validity
 ```
 
-### Proof and ledger domains
+### Proof domains
 
 ```txt
 route-token-readback
@@ -223,12 +218,6 @@ browser-consumer-fixture-kit
 central-ledger-readback-kit
 ```
 
-## Main finding
+## Current finding
 
-The next cut should be an additive proof layer, not a visual rewrite. Source fingerprints, input/movement result rows, deterministic camera samples, grass/cloud parity snapshots, render-consumption records, and a serializable `globalThis.CozyIslandHost.getState()` surface should be fixture-proven while preserving `globalThis.CozyIsland` compatibility.
-
-## Next safe ledge
-
-```txt
-MyCozyIsland Source/Consumer Fixture Refresh + Browser Input Result Gate
-```
+The next useful step is host/source proof, not a scene rewrite. Add fixture-readable records around the existing descriptors and consumers before changing visuals, cloud generation, grass rendering, or camera tuning.

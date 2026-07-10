@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T23-41-15-04-00`
+**Updated:** `2026-07-10T01-04-36-04-00`
 
 ## Source proof gaps
 
@@ -38,6 +38,15 @@ No grass requested/placed/instanced parity exists.
 No grass batch descriptor readback exists.
 No normalized renderer/scene/camera snapshot exists.
 No proof records whether source exclusions survive renderer adaptation.
+```
+
+## Grass proof gaps
+
+```txt
+Grass source records bladeCount, patchRadius, batchKey, and geometryTemplateKey.
+The active renderer creates one ConeGeometry instance per patch.
+Static batch descriptors are not consumed by the renderer.
+No skip reason or exclusion parity rows are exposed.
 ```
 
 ## Cloud proof gaps

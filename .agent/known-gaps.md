@@ -1,48 +1,57 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: 2026-07-10T14-42-01-04-00
+Last updated: 2026-07-10T16-08-56-04-00
 
 ## Highest-priority gap
 
-The WebGPU route has deterministic source descriptors and aggregate runtime diagnostics, but it has no shared frame identity or causal proof journal.
+Adaptive quality is not represented as one authoritative, reversible transaction. Policy state lives in `createPerformanceBudget()`, while renderer mutation lives inline in `src/main-cloudform.js`.
 
 ## Specific gaps
 
-- No normalized route profile or stable source/catalog fingerprint.
-- No monotonic host sequence shared by input, scenario, camera, performance, and render records.
-- No `frameId` for one animation-loop iteration.
-- No `correlationId` linking an input command to its result and downstream frame effects.
-- Input handlers mutate camera/input state directly without accepted, rejected, clamped, or no-change records.
-- Scenario ticks and camera projections are not retained as source-backed records.
-- Atmosphere volume texture creation reports a live object/source value but no JSON-safe build record.
-- Performance callbacks change cloud/fog/pixel-ratio state without a transition record.
-- Render submission has no record of the source snapshot, camera, quality level, or consumer outcomes it used.
-- `globalThis.CozyIsland.getState()` returns current aggregates rather than ordered history.
-- Live Three/WebGPU objects are not suitable for deterministic Node assertions.
-- No bounded retention policy, reset behavior, or journal-overflow proof.
-- No additive JSON-safe `globalThis.CozyIslandHost`.
-- No DOM-free Node frame-correlation fixture.
+- The policy samples callback-to-callback `frameMs`, not an explicitly named render or GPU cost.
+- Sampling occurs before `postPipeline.render()`, so the current sample cannot represent the submission that follows it.
+- `trackTimestamp: true` is enabled, but timestamp results are not consumed.
+- No source field distinguishes RAF interval, CPU submit duration, GPU timestamp duration, or fallback timing.
+- No immutable descriptor defines the complete target settings for quality levels `0`, `1`, and `2`.
+- Quality mutation is incremental and split across cloud, fog, post, and renderer objects.
+- Recovery to level `0` does not call `renderer.setPixelRatio()`, so reduced DPR can persist after reported recovery.
+- No transition result records previous level, next level, reason, metric, thresholds, or applied settings.
+- No apply result proves that every consumer accepted the requested state.
+- `performanceBudget.getState()` omits over-budget and under-budget counters.
+- No bounded performance transition history exists.
+- The debug overlay labels aggregate FPS but does not identify metric source or quality transition history.
+- No frame identity links a performance decision to scenario state, camera projection, input, or render submission.
+- `globalThis.CozyIsland` exposes mutable live objects and aggregate state rather than JSON-safe transition proof.
+- No DOM-free adaptive-quality fixture exists.
 
 ## System-specific gaps
 
-### Vegetation and grass
-
-Placement and ground-contact rows exist at source composition time, but there is no source-revision/frame attribution proving which vegetation graph the world consumer rendered.
-
 ### Clouds and fog
 
-Cloud/fog recipes and consumers exist, but texture build, fallback source, step-scale changes, and render submission are not tied to one source revision and frame chain.
+Cloud step scale, fog step scale, and fog render resolution are adapted, but there is no absolute applied-state readback. The fixed cloud/fog volume texture dimensions and source are not included in transition results.
+
+### Vegetation and grass
+
+Vegetation density and geometry are selected during initial snapshot composition from `quality.vegetationScale`. Runtime degrade/recover levels do not alter vegetation, so the current performance level is only a partial quality state and cannot be interpreted as a complete scene LOD level.
+
+### Ocean and world rendering
+
+Ocean segment count, terrain resolution, shadow-map size, and world geometry remain startup decisions. They should be explicitly marked unchanged in runtime quality states rather than silently omitted.
 
 ### Camera and interaction
 
-Wheel, drag, keyboard, blur, and resize can affect subsequent frames, but there is no command/result-to-camera correlation.
+Wheel, drag, movement, resize, and debug toggles can affect frame load, but no correlation record identifies whether a load spike followed an input or viewport change.
+
+### Host proof
+
+No additive host surface reports metric source, transition order, absolute settings, apply results, or exact recovery.
 
 ## Deferred work
 
-Do not prioritize visual, cloud, ocean, fog, grass, camera, renderer, route-token, new-content, or screenshot work until the causal proof journal exists.
+Do not prioritize visual, cloud, fog, ocean, vegetation, grass, camera, renderer, route-token, new-content, or screenshot work until adaptive quality is deterministic, reversible, and fixture-backed.
 
 ## Safe next ledge
 
 ```txt
-MyCozyIsland WebGPU Frame Correlation Journal + Node Fixture Gate
+MyCozyIsland Adaptive Quality Transition Authority + Frame-Cost Fixture Gate
 ```

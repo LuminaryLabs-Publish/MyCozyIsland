@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-09T23-41-15-04-00`
+**Updated:** `2026-07-10T01-11-51-04-00`
 
 ## Validation performed
 
@@ -11,7 +11,7 @@ repository selection:
   checked the current public LuminaryLabs-Publish repository page
   compared eligible repositories against central repo-ledger recency and sampled root .agent state
   excluded TheCavalryOfRome
-  selected MyCozyIsland as the oldest eligible documented fallback
+  selected MyCozyIsland as the oldest eligible documented fallback and central catch-up target
 
 source inspection:
   read package.json
@@ -63,7 +63,7 @@ runtime source changed: no
 branch created: no
 pull request created: no
 repo-local docs pushed to main: yes
-central docs pushed to main: pending at file update time
+central docs pushed to main: yes
 ```
 
 ## Validation conclusion

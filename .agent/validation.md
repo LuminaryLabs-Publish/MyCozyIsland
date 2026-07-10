@@ -1,6 +1,6 @@
 # Validation: MyCozyIsland
 
-Last updated: 2026-07-10T11-38-03-04-00
+Last updated: 2026-07-10T13-08-51-04-00
 
 ## This pass
 
@@ -44,7 +44,7 @@ npm test
 ## Next validation target
 
 ```txt
-node scripts/cozy-island-webgpu-journal-fixture.mjs
+node scripts/cozy-island-webgpu-readback-fixture.mjs
 npm test
 ```
 

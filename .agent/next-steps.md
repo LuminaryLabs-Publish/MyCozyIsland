@@ -1,16 +1,16 @@
 # Next Steps: MyCozyIsland
 
-Last updated: 2026-07-10T08-48-58-04-00
+Last updated: 2026-07-10T10-19-39-04-00
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Fixture Readback Refresh + Node Consumer Fixture Gate
 ```
 
 ## Goal
 
-Add a stable, additive host readback layer around the existing WebGPU route without changing visuals or replacing renderers.
+Add a stable, additive host fixture readback layer around the existing WebGPU route without changing visuals, retuning camera, or replacing renderers.
 
 ## Implementation order
 
@@ -18,7 +18,7 @@ Add a stable, additive host readback layer around the existing WebGPU route with
 2. Add stable source fingerprints.
 3. Add kit catalog readback rows.
 4. Add a render snapshot normalizer.
-5. Wrap wheel, pointer, keyboard, blur, and resize inputs with result rows.
+5. Wrap wheel, pointer, keyboard, blur, debug, and resize inputs with result rows.
 6. Add scenario tick result rows.
 7. Add camera frame readback rows.
 8. Add volume texture result rows for atmosphere, cloud, and fog surfaces.

@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-10T04-29-10-04-00`
+**Last aligned:** `2026-07-10T05-49-25-04-00`
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The current public `LuminaryLabs-Publish` repository list was compared with `Lum
 
 No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented.
 
-`MyCozyIsland` was selected as the oldest eligible documented fallback after the previous eligible repo advanced to `2026-07-10T04-22-00-04-00`.
+`MyCozyIsland` was selected as the oldest eligible documented fallback after `TheUnmappedHouse` advanced to `2026-07-10T05-40-17-04-00`.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
@@ -24,57 +24,42 @@ No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent`
 
 ```txt
 index.html
-  -> canvas#game + cloud loader + error panel
-  -> ./src/main-cloudform.js?v=hero-cloud-4
-  -> Three.js 0.160.0 CDN
-  -> local source-domain kits
-  -> inline render/input/camera/movement/animation consumers
-  -> globalThis.CozyIsland legacy diagnostics
-```
-
-## Current interaction loop
-
-```txt
-build deterministic island, floor, foliage, clearing, campfire, smoke, grass, and cloud descriptors
-  -> project descriptors into Three.js objects
-  -> install resize, keyboard, wheel, and pointer handlers
-  -> wheel mutates progress
-  -> pointer mutates yaw while progress < 0.85
-  -> pointer is an implicit no-op in the 0.85 to 0.985 transition band
-  -> pointer mutates yaw/pitch while progress >= 0.985
-  -> rail camera while progress < 0.985
-  -> first-person WASD movement while progress >= 0.985
-  -> movement silently accepted or rejected by clearing radius and campfire keepout
-  -> frame updates sea, smoke, flame, clouds, camera, and renderer
-  -> expose cloud contract, cached geometries, and scroll progress through legacy diagnostics
+  -> canvas#game + loader + debug + error panel
+  -> importmap: three / three-webgpu / three-tsl at 0.185.0
+  -> ./src/main-cloudform.js?v=webgpu-volumetric-2
+  -> validate 50 DomainServiceKit manifests
+  -> compose deterministic environment / terrain / ocean / vegetation / atmosphere / render snapshots
+  -> create WebGPURenderer, volumetric cloud/fog renderers, WebGPU ocean/foam, and post pipeline
+  -> wheel / pointer / keyboard / resize consumers mutate camera-sequence and scenario state
+  -> animation loop ticks scenario, copies camera, updates renderers, samples performance, renders post pipeline
+  -> globalThis.CozyIsland legacy diagnostics expose live runtime objects plus aggregate getState()
 ```
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T04-29-10-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T04-29-10-04-00.md
-.agent/architecture-audit/2026-07-10T04-29-10-04-00-source-consumer-parity-host-dsk-map.md
-.agent/render-audit/2026-07-10T04-29-10-04-00-render-consumption-host-readback-gap.md
-.agent/interaction-audit/2026-07-10T04-29-10-04-00-input-movement-result-proof.md
-.agent/grass-system-audit/2026-07-10T04-29-10-04-00-grass-placement-instance-parity-ledger.md
-.agent/cloud-system-audit/2026-07-10T04-29-10-04-00-cloud-cache-drift-readback-proof.md
-.agent/host-proof-audit/2026-07-10T04-29-10-04-00-cozy-island-host-fixture-contract.md
-.agent/deploy-audit/2026-07-10T04-29-10-04-00-source-consumer-fixture-gate.md
+.agent/trackers/2026-07-10T05-49-25-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T05-49-25-04-00.md
+.agent/architecture-audit/2026-07-10T05-49-25-04-00-webgpu-source-consumer-readback-dsk-map.md
+.agent/render-audit/2026-07-10T05-49-25-04-00-webgpu-render-consumption-readback-gap.md
+.agent/interaction-audit/2026-07-10T05-49-25-04-00-webgpu-input-scenario-result-map.md
+.agent/gameplay-audit/2026-07-10T05-49-25-04-00-scenario-camera-runtime-loop.md
+.agent/grass-system-audit/2026-07-10T05-49-25-04-00-vegetation-ground-contact-readback.md
+.agent/cloud-system-audit/2026-07-10T05-49-25-04-00-volumetric-cloud-fog-texture-readback.md
+.agent/host-proof-audit/2026-07-10T05-49-25-04-00-cozy-island-webgpu-host-contract.md
+.agent/deploy-audit/2026-07-10T05-49-25-04-00-node-test-webgpu-fixture-gate.md
 ```
 
 ## Main finding
 
 `MyCozyIsland` should not get a visual rewrite next.
 
-The source descriptor layer is useful, but `src/main-cloudform.js` still owns browser consumer behavior without proof rows.
-
-The next implementation should add source fingerprints, input/movement results, camera snapshots, grass/cloud parity, render consumption rows, and a serializable additive host readback surface.
+The source-domain layer and WebGPU route are useful, and `npm test` already provides static/domain smoke coverage. The missing layer is WebGPU source/consumer readback: route token, kit catalog status, source fingerprints, input/scenario result rows, camera rows, volume texture rows, performance degrade/recover rows, render consumption rows, and a JSON-serializable additive `CozyIslandHost`.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source Consumer Parity Host Refresh + Input Fixture Gate
+MyCozyIsland WebGPU Source Consumer Readback Refresh + Node Fixture Gate
 ```
 
 ## Operating rules
@@ -84,5 +69,5 @@ Only push to main.
 Do not create branches.
 Do not work on TheCavalryOfRome.
 Keep scheduled breakdown work moving.
-Preserve the current visible route until source/consumer parity is fixture-proven.
+Preserve visible WebGPU behavior until source/consumer readback is fixture-proven.
 ```

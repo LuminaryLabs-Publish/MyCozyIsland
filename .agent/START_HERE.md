@@ -1,8 +1,8 @@
 # START HERE: MyCozyIsland
 
-Last aligned: 2026-07-10T08-48-58-04-00
+Last aligned: 2026-07-10T10-19-39-04-00
 Repo: LuminaryLabs-Publish/MyCozyIsland
-Current focus: WebGPU host readback ledger and source-consumer fixture proof.
+Current focus: WebGPU host fixture readback and Node consumer fixture proof.
 
 ## Read this first
 
@@ -15,31 +15,35 @@ index.html
   -> canvas#game + loader + debug + hint + error panel
   -> importmap: three / three-webgpu / three-tsl at 0.185.0
   -> ./src/main-cloudform.js?v=webgpu-volumetric-2
-  -> validate 50 DomainServiceKit manifests
-  -> compose deterministic environment / terrain / ocean / vegetation / atmosphere / render snapshots
-  -> create WebGPURenderer, volumetric cloud/fog renderers, WebGPU ocean/foam, and post pipeline
-  -> wheel / pointer / keyboard / blur / resize consumers mutate camera-sequence and scenario state
-  -> animation loop ticks scenario, copies camera, updates renderers, samples performance, renders post pipeline
-  -> globalThis.CozyIsland legacy diagnostics expose live runtime objects plus aggregate getState()
+  -> validateKitCatalog(kitCatalog)
+  -> create WebGPURenderer and choose quality by backend
+  -> create deterministic domain snapshot
+  -> create render snapshot and camera rail sequence
+  -> create cozy island scenario
+  -> create scene, fog, sky, lights, and camera
+  -> create stylized world, WebGPU ocean, WebGPU foam, atmosphere volume textures, volumetric clouds, rolling fog, and WebGPU post pipeline
+  -> wheel / pointer / keyboard / blur / resize consumers update input or camera state
+  -> animation loop ticks scenario, copies scenario camera, updates renderers, samples performance, renders post pipeline, debug every 12 frames
+  -> globalThis.CozyIsland exposes live renderer objects and aggregate getState()
 ```
 
 ## Current finding
 
-The source-domain layer is useful and tested by `npm test`, but the browser host proof layer is still missing. `globalThis.CozyIsland` exposes live WebGPU/Three objects and aggregate diagnostics, not a stable JSON-safe ledger.
+The source-domain layer is useful and tested by `npm test`, but the browser host proof layer is still missing. `globalThis.CozyIsland` exposes live WebGPU/Three objects and aggregate diagnostics, not a stable JSON-safe fixture ledger.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T08-48-58-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T08-48-58-04-00.md
-.agent/architecture-audit/2026-07-10T08-48-58-04-00-webgpu-host-readback-ledger-dsk-map.md
-.agent/render-audit/2026-07-10T08-48-58-04-00-webgpu-render-consumption-readback-gap.md
-.agent/interaction-audit/2026-07-10T08-48-58-04-00-input-result-host-readback-map.md
-.agent/gameplay-audit/2026-07-10T08-48-58-04-00-scenario-camera-readback-loop.md
-.agent/grass-system-audit/2026-07-10T08-48-58-04-00-vegetation-ground-contact-readback-ledger.md
-.agent/cloud-system-audit/2026-07-10T08-48-58-04-00-volume-texture-cloud-fog-readback.md
-.agent/host-proof-audit/2026-07-10T08-48-58-04-00-cozy-island-host-readback-contract.md
-.agent/deploy-audit/2026-07-10T08-48-58-04-00-node-webgpu-readback-fixture-gate.md
+.agent/trackers/2026-07-10T10-19-39-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T10-19-39-04-00.md
+.agent/architecture-audit/2026-07-10T10-19-39-04-00-webgpu-host-fixture-readback-dsk-map.md
+.agent/render-audit/2026-07-10T10-19-39-04-00-webgpu-render-consumption-fixture-gap.md
+.agent/interaction-audit/2026-07-10T10-19-39-04-00-input-scenario-host-result-map.md
+.agent/gameplay-audit/2026-07-10T10-19-39-04-00-scenario-camera-host-readback-loop.md
+.agent/grass-system-audit/2026-07-10T10-19-39-04-00-vegetation-ground-contact-fixture-ledger.md
+.agent/cloud-system-audit/2026-07-10T10-19-39-04-00-volume-texture-cloud-fog-fixture.md
+.agent/host-proof-audit/2026-07-10T10-19-39-04-00-cozy-island-host-fixture-contract.md
+.agent/deploy-audit/2026-07-10T10-19-39-04-00-node-webgpu-fixture-gate.md
 ```
 
 ## Do not start next with
@@ -56,7 +60,7 @@ The source-domain layer is useful and tested by `npm test`, but the browser host
 ## Start next with
 
 ```txt
-MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Fixture Readback Refresh + Node Consumer Fixture Gate
 ```
 
 ## Required next implementation shape

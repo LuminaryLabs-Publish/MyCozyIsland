@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 48,
-  "lastUpdated": "2026-07-10T17-38-35-04-00",
+  "schemaVersion": 49,
+  "lastUpdated": "2026-07-10T19-11-19-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
-  "selectedNextSlice": "MyCozyIsland Layered Grass Renderer Authority + Lifecycle Fixture Gate",
+  "selectedNextSlice": "MyCozyIsland Layered Grass Consumer Ledger + Resource Ownership Fixture Gate",
   "implementedSourceKits": [
     "debug-overlay-host-kit",
     "webgl2-fallback-renderer-kit",
@@ -85,13 +85,15 @@
   ],
   "targetNextKits": [
     "layered-grass-render-policy-kit",
-    "layered-grass-source-consumption-result-kit",
+    "layered-grass-source-validator-kit",
+    "layered-grass-source-consumption-ledger-kit",
     "layered-grass-atlas-descriptor-kit",
     "layered-grass-geometry-descriptor-kit",
     "layered-grass-resource-owner-kit",
+    "layered-grass-disposal-result-kit",
     "layered-grass-readback-kit",
     "layered-grass-catalog-contract-kit",
-    "node-layered-grass-fixture-kit",
+    "node-layered-grass-consumer-fixture-kit",
     "browser-layered-grass-lifecycle-smoke-kit"
   ],
   "deferredAfterCurrent": [
@@ -106,24 +108,24 @@
     "node-adaptive-quality-fixture-kit"
   ],
   "latestDocs": {
-    "tracker": ".agent/trackers/2026-07-10T17-38-35-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-10T17-38-35-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-10T17-38-35-04-00-layered-grass-renderer-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-10T17-38-35-04-00-layered-grass-substitution-lifecycle-gap.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T17-38-35-04-00-alpha-cutout-grass-consumption-contract.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-10T17-38-35-04-00-camera-grass-consumption-map.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T17-38-35-04-00-scenario-presentation-separation-loop.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-10T17-38-35-04-00-layered-grass-contract-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-10T19-11-19-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-10T19-11-19-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-10T19-11-19-04-00-grass-consumer-resource-ownership-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-10T19-11-19-04-00-layered-grass-resource-handle-gap.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T19-11-19-04-00-grass-source-consumption-ledger.md",
+    "resourceLifecycleAudit": ".agent/resource-lifecycle-audit/2026-07-10T19-11-19-04-00-grass-resource-owner-disposal-contract.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-10T19-11-19-04-00-scenario-grass-state-observation-map.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-10T19-11-19-04-00-exploration-render-consumer-loop.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-10T19-11-19-04-00-grass-owner-fixture-gate.md"
   },
   "validation": {
     "runtimeSourceChangedByThisPass": false,
-    "recentRuntimeSourceChangeDetected": true,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmTestRun": false,
     "browserSmokeRun": false,
     "webgpuValidationRun": false,
-    "contractFixtureRun": false,
+    "consumerFixtureRun": false,
     "lifecycleFixtureRun": false
   }
 }

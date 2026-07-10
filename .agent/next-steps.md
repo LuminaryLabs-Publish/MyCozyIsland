@@ -1,102 +1,89 @@
 # Next Steps: MyCozyIsland
 
-Last updated: 2026-07-10T13-08-51-04-00
+Last updated: 2026-07-10T14-42-01-04-00
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Frame Correlation Journal + Node Fixture Gate
 ```
 
 ## Goal
 
-Add a stable, additive host readback ledger around the existing WebGPU route without changing visuals, retuning camera, or replacing renderers.
+Add an additive, bounded, JSON-safe proof journal that correlates source identity, input, scenario, camera, atmosphere setup, performance transitions, and render submission without changing the visual route.
 
-## Implementation order
+## Plan ledger
 
-1. Add a route/source profile helper.
-2. Add stable source fingerprints.
-3. Add kit catalog readback rows.
-4. Add a render snapshot normalizer.
-5. Wrap wheel, pointer, keyboard, blur, debug, and resize inputs with result rows.
-6. Add scenario tick result rows.
-7. Add camera frame readback rows.
-8. Add volume texture result rows for atmosphere, cloud, and fog surfaces.
-9. Add performance degrade/recover rows.
-10. Add render-consumption ledger rows.
-11. Add additive JSON-safe `globalThis.CozyIslandHost` while preserving legacy `globalThis.CozyIsland`.
-12. Add a Node fixture and wire it into `npm test`.
+- [ ] Add `webgpu-route-profile` and stable source/catalog fingerprints.
+- [ ] Add a monotonic host sequence and deterministic frame identity.
+- [ ] Define a common record header: `sequence`, `frameId`, `correlationId`, `kind`, `sourceRevision`, `time`, `status`, `reason`.
+- [ ] Wrap wheel, pointer, keyboard, blur, debug toggle, and resize with command/result records.
+- [ ] Record one scenario-step result per animation frame.
+- [ ] Record the camera projection consumed by that frame.
+- [ ] Record atmosphere volume texture build results against the source revision that created them.
+- [ ] Record performance degrade/recover transitions, including previous and next levels.
+- [ ] Record render submission with source snapshot hash, camera frame, quality level, and consumer statuses.
+- [ ] Store records in a bounded journal with deterministic retention behavior.
+- [ ] Expose additive `globalThis.CozyIslandHost`; preserve `globalThis.CozyIsland`.
+- [ ] Add a Node fixture proving order, correlation, serialization, reset, and retention.
+- [ ] Wire the fixture into `npm test` only after it is deterministic.
 
 ## Candidate files
 
 ```txt
 src/host-proof/webgpu-route-profile.js
 src/host-proof/source-fingerprint.js
+src/host-proof/host-frame-sequence.js
+src/host-proof/frame-correlation-record.js
+src/host-proof/bounded-proof-journal.js
 src/host-proof/kit-catalog-readback.js
 src/host-proof/render-snapshot-normalizer.js
-src/host-proof/input-action-frame.js
+src/host-proof/input-command-record.js
 src/host-proof/input-result.js
-src/host-proof/input-readback-ledger.js
-src/host-proof/scenario-tick-result.js
-src/host-proof/camera-frame-readback.js
-src/host-proof/volume-texture-result.js
-src/host-proof/performance-level-result.js
-src/host-proof/render-consumption-ledger.js
-src/host-proof/cozy-island-host-snapshot.js
-scripts/cozy-island-webgpu-readback-fixture.mjs
+src/host-proof/scenario-step-record.js
+src/host-proof/camera-projection-record.js
+src/host-proof/volume-build-record.js
+src/host-proof/performance-transition-record.js
+src/host-proof/render-submit-record.js
+src/host-proof/cozy-island-host.js
+scripts/cozy-island-frame-correlation-fixture.mjs
 ```
 
-## Required result vocabulary
+## Required invariants
+
+```txt
+sequence strictly increases
+frameId identifies one animation-loop iteration
+correlationId links command/result/consumers
+sourceRevision is stable for the proof run
+all records are JSON-safe
+journal capacity and eviction are deterministic
+legacy CozyIsland surface remains available
+fixture requires no DOM, browser GPU, screenshot, or WebGPU capture
+```
+
+## Suggested status vocabulary
 
 ```txt
 accepted
-rejected_no_active_renderer
 rejected_invalid_payload
+rejected_no_active_host
 no_change_duplicate_input
 no_change_disabled
 clamped_scroll
 clamped_pitch
-accepted_quality_degraded
-accepted_quality_recovered
-accepted_resize
-accepted_debug_toggle
-accepted_blur_clear
+setup_complete
+setup_fallback
+quality_degraded
+quality_recovered
+render_submitted
+render_skipped
 ```
-
-## Desired host surface
-
-```txt
-globalThis.CozyIslandHost = {
-  getState(),
-  getSourceProfile(),
-  getSourceFingerprint(),
-  getKitCatalogStatus(),
-  getInputReadback(),
-  getScenarioReadback(),
-  getCameraReadback(),
-  getVolumeTextureReadback(),
-  getPerformanceReadback(),
-  getRenderConsumptionLedger(),
-  restartProofState()
-}
-```
-
-## Fixture requirements
-
-- Does not require a browser GPU.
-- Does not require screenshot or capture.
-- Asserts route token and source fingerprint.
-- Asserts kit catalog status.
-- Asserts representative accepted, rejected, clamped, and no-change input rows.
-- Asserts scenario/camera rows.
-- Asserts render-consumption rows.
-- Asserts texture/performance rows or deterministic stubs.
-- Asserts `CozyIslandHost.getState()` is JSON-safe.
 
 ## Not next
 
-- Visual polish.
-- Cloud/ocean/fog rewrite.
-- Renderer extraction.
-- Camera retune.
-- Route expansion.
+- visual polish or new island content
+- cloud, ocean, fog, grass, or camera retuning
+- renderer replacement or extraction
+- screenshot automation
+- route-token changes

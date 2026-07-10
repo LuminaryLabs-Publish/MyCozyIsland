@@ -1,6 +1,6 @@
-# Current Audit: MyCozyIsland WebGPU Host Fixture Readback
+# Current Audit: MyCozyIsland WebGPU Host Journal Readback
 
-Last updated: 2026-07-10T10-19-39-04-00
+Last updated: 2026-07-10T11-38-03-04-00
 
 ## Current runtime identity
 
@@ -95,7 +95,7 @@ resize-consumer
 legacy-CozyIsland-diagnostics
 node-static-check
 node-domain-smoke
-webgpu-host-readback-next
+webgpu-host-journal-readback-next
 node-webgpu-consumer-fixture-next
 ```
 
@@ -112,62 +112,11 @@ node-webgpu-consumer-fixture-next
 - `kits/render-descriptors`: provides material, archetype, quality, fallback, and render snapshot rows.
 - `kits/sequences`: provides camera rail and scenario rows.
 - `kits/renderers`: adapts rows into WebGPU world, ocean, foam, atmosphere, cloud, fog, post, and performance consumers.
-- next proof services: route/source fingerprint, kit catalog readback, input/scenario/camera journals, volume texture journal, performance journal, render-consumption ledger, JSON-safe CozyIslandHost, and Node WebGPU fixture.
+- Next proof services: route/source fingerprint, kit catalog readback, input/scenario/camera journals, volume texture journal, performance journal, render-consumption ledger, JSON-safe CozyIslandHost, and Node WebGPU fixture.
 
 ## Implemented source kits
 
-```txt
-debug-overlay-host-kit
-webgl2-fallback-renderer-kit
-webgpu-compute-atmosphere-renderer-kit
-webgpu-foam-renderer-kit
-webgpu-ocean-renderer-kit
-webgpu-performance-budget-kit
-webgpu-post-processing-renderer-kit
-webgpu-rolling-fog-renderer-kit
-webgpu-stylized-material-renderer-kit
-webgpu-volumetric-cloud-renderer-kit
-camera-rail-sequence-kit
-cozy-island-scenario-kit
-terrain-surface-domain-kit
-vegetation-placement-domain-kit
-aerial-perspective-domain-kit
-campfire-atmosphere-domain-kit
-cloud-density-field-domain-kit
-cloud-horizon-band-domain-kit
-cloud-lighting-domain-kit
-cloud-lod-domain-kit
-cloud-shadow-domain-kit
-cloud-weather-domain-kit
-fog-advection-domain-kit
-fog-field-domain-kit
-fog-volume-placement-domain-kit
-ground-contact-domain-kit
-illumination-domain-kit
-ocean-caustics-domain-kit
-ocean-floor-profile-domain-kit
-ocean-optics-domain-kit
-ocean-wave-domain-kit
-prop-archetype-domain-kit
-render-archetype-domain-kit
-render-quality-domain-kit
-render-snapshot-domain-kit
-rock-archetype-domain-kit
-shoreline-field-domain-kit
-shoreline-foam-domain-kit
-stylized-material-descriptor-domain-kit
-sun-glitter-domain-kit
-terrain-biome-field-domain-kit
-terrain-lod-domain-kit
-underwater-atmosphere-domain-kit
-vegetation-archetype-domain-kit
-vegetation-lod-domain-kit
-vegetation-wind-domain-kit
-weather-state-domain-kit
-wind-field-domain-kit
-deterministic-seed-domain-kit
-environment-clock-domain-kit
-```
+See `.agent/kit-registry.json` for the full 50-kit source catalog.
 
 ## Runtime implied kits
 
@@ -217,4 +166,4 @@ node-webgpu-consumer-fixture-kit
 
 ## Current conclusion
 
-The route should not start next with visual expansion, cloud/ocean/fog rewrite, camera retune, route-token churn, or renderer replacement. The blocker is WebGPU host fixture readback proof. Add fixture-readable proof rows first.
+The route should not start next with visual expansion, cloud/ocean/fog rewrite, camera retune, route-token churn, or renderer replacement. The blocker is WebGPU host journal readback proof. Add fixture-readable proof rows first.

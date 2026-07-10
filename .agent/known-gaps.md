@@ -1,16 +1,16 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: 2026-07-10T07-29-12-04-00
+Last updated: 2026-07-10T08-48-58-04-00
 
 ## Highest-priority gap
 
-The current WebGPU route has deterministic source kits and `npm test` static/domain smoke coverage, but it lacks a JSON-safe host-proof ledger.
+The current WebGPU route has deterministic source kits and `npm test` static/domain smoke coverage, but it lacks a JSON-safe host readback ledger.
 
 ## Specific gaps
 
 - No normalized WebGPU route source profile.
 - No stable source fingerprint for `webgpu-volumetric-2`.
-- No host-readable kit catalog status block.
+- No host-readable kit catalog status block beyond the live `kitCatalogStatus` object.
 - No serializable source snapshot reconciling kit catalog, domain source rows, render snapshot, runtime consumers, and route token.
 - Wheel, pointer, keyboard, blur, and resize mutate directly without accepted/rejected/no-change result rows.
 - No stable input reason vocabulary.
@@ -41,5 +41,5 @@ Do not prioritize these until host proof exists:
 ## Safe next ledge
 
 ```txt
-MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
 ```

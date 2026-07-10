@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-10T01-04-36-04-00`
+**Last aligned:** `2026-07-10T01-11-51-04-00`
 
 ## Purpose
 
@@ -14,7 +14,9 @@ Read it before changing runtime source.
 
 The current public `LuminaryLabs-Publish` repository list was compared with `LuminaryLabs-Dev/LuminaryLabs` central ledger state and sampled root `.agent` state.
 
-No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented. `MyCozyIsland` was selected as the oldest eligible documented fallback by central-ledger recency.
+No eligible non-Cavalry repository was new, ledger-absent, missing root `.agent` state, recently added but undocumented, or otherwise undocumented.
+
+`MyCozyIsland` was selected as the oldest eligible documented fallback by central-ledger recency and as the repo-local to central catch-up target.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
@@ -50,20 +52,22 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T01-04-36-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T01-04-36-04-00.md
-.agent/architecture-audit/2026-07-10T01-04-36-04-00-source-consumer-host-readback-dsk-map.md
-.agent/render-audit/2026-07-10T01-04-36-04-00-render-consumption-host-proof-ledger.md
-.agent/interaction-audit/2026-07-10T01-04-36-04-00-input-movement-fixture-readback.md
-.agent/grass-system-audit/2026-07-10T01-04-36-04-00-grass-placement-instance-fixture-parity.md
-.agent/cloud-system-audit/2026-07-10T01-04-36-04-00-cloud-cache-drift-fixture-parity.md
-.agent/host-proof-audit/2026-07-10T01-04-36-04-00-cozy-island-host-readback-contract.md
-.agent/deploy-audit/2026-07-10T01-04-36-04-00-source-consumer-fixture-check-gate.md
+.agent/trackers/2026-07-10T01-11-51-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T01-11-51-04-00.md
+.agent/architecture-audit/2026-07-10T01-11-51-04-00-source-consumer-host-readback-dsk-map.md
+.agent/render-audit/2026-07-10T01-11-51-04-00-render-consumption-host-readback.md
+.agent/interaction-audit/2026-07-10T01-11-51-04-00-input-movement-result-ledger.md
+.agent/grass-system-audit/2026-07-10T01-11-51-04-00-grass-placement-instance-readback.md
+.agent/cloud-system-audit/2026-07-10T01-11-51-04-00-cloud-cache-drift-readback.md
+.agent/host-proof-audit/2026-07-10T01-11-51-04-00-cozy-island-host-readback-contract.md
+.agent/deploy-audit/2026-07-10T01-11-51-04-00-source-consumer-fixture-check-gate.md
 ```
 
 ## Main finding
 
-`MyCozyIsland` should not get a visual rewrite next. The source descriptor layer is useful, but `src/main-cloudform.js` still owns the browser consumer boundary without proof rows.
+`MyCozyIsland` should not get a visual rewrite next.
+
+The source descriptor layer is useful, but `src/main-cloudform.js` still owns browser consumer behavior without proof rows.
 
 The next implementation should add source fingerprints, input/movement results, grass/cloud parity snapshots, render consumption rows, and a serializable additive host readback surface.
 

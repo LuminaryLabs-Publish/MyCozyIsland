@@ -1,57 +1,63 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: 2026-07-10T16-08-56-04-00
+Last updated: 2026-07-10T17-38-35-04-00
 
 ## Highest-priority gap
 
-Adaptive quality is not represented as one authoritative, reversible transaction. Policy state lives in `createPerformanceBudget()`, while renderer mutation lives inline in `src/main-cloudform.js`.
+The active layered alpha-cutout grass renderer is implemented as an implicit facade substitution rather than an explicit kit/capability with source-consumption, lifecycle, and readback contracts.
 
 ## Specific gaps
 
-- The policy samples callback-to-callback `frameMs`, not an explicitly named render or GPU cost.
-- Sampling occurs before `postPipeline.render()`, so the current sample cannot represent the submission that follows it.
-- `trackTimestamp: true` is enabled, but timestamp results are not consumed.
-- No source field distinguishes RAF interval, CPU submit duration, GPU timestamp duration, or fallback timing.
-- No immutable descriptor defines the complete target settings for quality levels `0`, `1`, and `2`.
-- Quality mutation is incremental and split across cloud, fog, post, and renderer objects.
-- Recovery to level `0` does not call `renderer.setPixelRatio()`, so reduced DPR can persist after reported recovery.
-- No transition result records previous level, next level, reason, metric, thresholds, or applied settings.
-- No apply result proves that every consumer accepted the requested state.
-- `performanceBudget.getState()` omits over-budget and under-budget counters.
-- No bounded performance transition history exists.
-- The debug overlay labels aggregate FPS but does not identify metric source or quality transition history.
-- No frame identity links a performance decision to scenario state, camera projection, input, or render submission.
-- `globalThis.CozyIsland` exposes mutable live objects and aggregate state rather than JSON-safe transition proof.
-- No DOM-free adaptive-quality fixture exists.
+- `src/kits/renderers.js` redirects `createStylizedWorldRenderer()` to the wrapper without identifying the new adapter at the call site.
+- The exact 50-kit catalog does not declare `render:layered-alpha-grass` or a dedicated layered-grass provider.
+- `createSnapshotWithoutLegacyGrass()` suppresses the base renderer's grass rows, but no result proves that the wrapper consumed those rows exactly once.
+- No validation checks the required `position`, `rotation`, `scale`, `phase`, or optional `tint` fields before instance creation.
+- The procedural atlas is built with a DOM canvas inside resource construction, so policy and atlas intent cannot be tested headlessly.
+- Layer angles, dimensions, colors, alpha clip, depth policy, shadow policy, fog policy, and tone-mapping policy are hard-coded inside the adapter rather than represented by an immutable descriptor.
+- Atlas texture, geometry, material, mesh, and group ownership are implicit.
+- The renderer exposes no `dispose()` method.
+- Repeated route creation would allocate new GPU resources without a defined release path.
+- The wrapper exposes only `group` and `update()`; there is no JSON-safe policy/resource snapshot.
+- `mesh.userData.grassRenderPolicy` is local mutable-object metadata and is not surfaced through `globalThis.CozyIsland`.
+- `grassRenderer.update()` is empty, so the contract does not state whether wind is intentionally unsupported or accidentally unwired.
+- Grass placement phase is used only for static height variation.
+- Vegetation LOD and adaptive-quality state do not alter the layered grass consumer after startup.
+- The static check sees the file but does not prove the facade targets it, that legacy grass is suppressed, or that resources can be disposed.
+- The domain smoke never imports browser renderer modules and therefore cannot validate layered grass behavior.
+- No browser integration smoke checks instance count, geometry layers, atlas creation, alpha policy, or cleanup.
 
 ## System-specific gaps
 
-### Clouds and fog
+### Grass source authority
 
-Cloud step scale, fog step scale, and fog render resolution are adapted, but there is no absolute applied-state readback. The fixed cloud/fog volume texture dimensions and source are not included in transition results.
+`vegetation-placement-domain-kit` owns grass descriptor production. The wrapper currently assumes every `grass-patch` row is valid and treats all rows as renderable. There is no acceptance/rejection ledger or source fingerprint.
 
-### Vegetation and grass
+### Render composition
 
-Vegetation density and geometry are selected during initial snapshot composition from `quality.vegetationScale`. Runtime degrade/recover levels do not alter vegetation, so the current performance level is only a partial quality state and cannot be interpreted as a complete scene LOD level.
+The wrapper shallow-copies the snapshot to prevent base grass rendering, then adds its own group to the base group. The composition is practical but opaque: host diagnostics cannot prove base grass suppression, wrapper ownership, or exact draw contribution.
 
-### Ocean and world rendering
+### Resource lifecycle
 
-Ocean segment count, terrain resolution, shadow-map size, and world geometry remain startup decisions. They should be explicitly marked unchanged in runtime quality states rather than silently omitted.
+The generated `CanvasTexture`, `BufferGeometry`, `MeshBasicNodeMaterial`, and `InstancedMesh` have no named owner and no disposal protocol. This is currently masked by one-shot static-page startup.
 
-### Camera and interaction
+### Wind and animation
 
-Wheel, drag, movement, resize, and debug toggles can affect frame load, but no correlation record identifies whether a load spike followed an input or viewport change.
+The world snapshot contains vegetation-wind descriptors and instances contain phase data, but the layered grass consumer has a no-op update. The lack of motion may be intentional for performance, but that decision is not encoded.
+
+### LOD and performance
+
+The renderer uses every startup grass row in one instanced mesh. It has frustum culling but no distance-band instance reduction, quality transition, or host-visible count policy. These should remain explicitly startup-only until a measured need exists.
 
 ### Host proof
 
-No additive host surface reports metric source, transition order, absolute settings, apply results, or exact recovery.
+`globalThis.CozyIsland.getState()` reports aggregate backend, quality, camera, clock, performance, volumetric steps, and kit count. It does not report grass source count, rendered count, layer count, alpha policy, resource state, or disposal state.
 
 ## Deferred work
 
-Do not prioritize visual, cloud, fog, ocean, vegetation, grass, camera, renderer, route-token, new-content, or screenshot work until adaptive quality is deterministic, reversible, and fixture-backed.
+Do not prioritize more grass visual tuning, wind animation, density expansion, cloud/fog/ocean/terrain/camera changes, renderer replacement, new content, route-token changes, or screenshot work until the layered grass adapter has an explicit contract and fixture gate.
 
 ## Safe next ledge
 
 ```txt
-MyCozyIsland Adaptive Quality Transition Authority + Frame-Cost Fixture Gate
+MyCozyIsland Layered Grass Renderer Authority + Lifecycle Fixture Gate
 ```

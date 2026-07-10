@@ -13,7 +13,7 @@ browser smoke: not run
 WebGPU/GPU validation: not run
 DOM-free WebGPU consumer fixture: not run because proof files do not exist yet
 repo-local docs pushed to main: yes
-central ledger updated: pending in central repo
+central ledger updated: yes
 ```
 
 ## Current available package gate

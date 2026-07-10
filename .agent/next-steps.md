@@ -2,12 +2,12 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-10T01-11-51-04-00`
+**Updated:** `2026-07-10T02-31-58-04-00`
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Source Consumer Host Readback Catch-up + Input Fixture Gate
+MyCozyIsland Source Consumer Host Readback Refresh + Input Fixture Gate
 ```
 
 Build an additive proof layer around the current route. Do not rewrite the visible scene, change the active route token, or replace the existing source kits.

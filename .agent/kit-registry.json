@@ -1,23 +1,23 @@
 {
-  "schemaVersion": 37,
+  "schemaVersion": 38,
   "repository": "LuminaryLabs-Publish/MyCozyIsland",
-  "lastUpdated": "2026-07-10T01-11-51-04-00",
+  "lastUpdated": "2026-07-10T02-31-58-04-00",
   "status": "source-consumer-host-readback-input-fixture-gate-planned",
   "branchTarget": "main",
-  "latestTracker": ".agent/trackers/2026-07-10T01-11-51-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T01-11-51-04-00.md",
-  "selectedNextSlice": "MyCozyIsland Source Consumer Host Readback Catch-up + Input Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T02-31-58-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T02-31-58-04-00.md",
+  "selectedNextSlice": "MyCozyIsland Source Consumer Host Readback Refresh + Input Fixture Gate",
   "latestAuditArtifacts": {
-    "architectureAudit": ".agent/architecture-audit/2026-07-10T01-11-51-04-00-source-consumer-host-readback-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-10T01-11-51-04-00-render-consumption-host-readback.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-10T01-11-51-04-00-input-movement-result-ledger.md",
-    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T01-11-51-04-00-grass-placement-instance-readback.md",
-    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T01-11-51-04-00-cloud-cache-drift-readback.md",
-    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T01-11-51-04-00-cozy-island-host-readback-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-10T01-11-51-04-00-source-consumer-fixture-check-gate.md"
+    "architectureAudit": ".agent/architecture-audit/2026-07-10T02-31-58-04-00-source-consumer-host-fixture-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-10T02-31-58-04-00-render-consumption-proof-ledger.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-10T02-31-58-04-00-input-movement-result-readback.md",
+    "grassSystemAudit": ".agent/grass-system-audit/2026-07-10T02-31-58-04-00-grass-placement-batch-consumption.md",
+    "cloudSystemAudit": ".agent/cloud-system-audit/2026-07-10T02-31-58-04-00-cloud-descriptor-cache-drift-proof.md",
+    "hostProofAudit": ".agent/host-proof-audit/2026-07-10T02-31-58-04-00-cozy-island-host-fixture-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-10T02-31-58-04-00-consumer-fixture-check-gate.md"
   },
   "selection": {
-    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected as the oldest eligible documented fallback by central ledger recency and as the central catch-up target.",
+    "reason": "No eligible non-Cavalry Publish repo was new, ledger-absent, missing root .agent state, recently added but undocumented, or otherwise undocumented. MyCozyIsland was selected as the oldest eligible documented fallback after TheUnmappedHouse advanced to 2026-07-10T02-19-14-04-00.",
     "excludedRepos": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],

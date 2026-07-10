@@ -1,16 +1,16 @@
 # Next Steps: MyCozyIsland
 
-Last updated: 2026-07-10T11-38-03-04-00
+Last updated: 2026-07-10T13-08-51-04-00
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland WebGPU Host Journal Readback Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
 ```
 
 ## Goal
 
-Add a stable, additive host journal readback layer around the existing WebGPU route without changing visuals, retuning camera, or replacing renderers.
+Add a stable, additive host readback ledger around the existing WebGPU route without changing visuals, retuning camera, or replacing renderers.
 
 ## Implementation order
 
@@ -36,14 +36,14 @@ src/host-proof/kit-catalog-readback.js
 src/host-proof/render-snapshot-normalizer.js
 src/host-proof/input-action-frame.js
 src/host-proof/input-result.js
-src/host-proof/input-result-journal.js
+src/host-proof/input-readback-ledger.js
 src/host-proof/scenario-tick-result.js
 src/host-proof/camera-frame-readback.js
 src/host-proof/volume-texture-result.js
 src/host-proof/performance-level-result.js
 src/host-proof/render-consumption-ledger.js
 src/host-proof/cozy-island-host-snapshot.js
-scripts/cozy-island-webgpu-journal-fixture.mjs
+scripts/cozy-island-webgpu-readback-fixture.mjs
 ```
 
 ## Required result vocabulary
@@ -71,11 +71,11 @@ globalThis.CozyIslandHost = {
   getSourceProfile(),
   getSourceFingerprint(),
   getKitCatalogStatus(),
-  getInputJournal(),
-  getScenarioJournal(),
-  getCameraJournal(),
-  getVolumeTextureJournal(),
-  getPerformanceJournal(),
+  getInputReadback(),
+  getScenarioReadback(),
+  getCameraReadback(),
+  getVolumeTextureReadback(),
+  getPerformanceReadback(),
   getRenderConsumptionLedger(),
   restartProofState()
 }

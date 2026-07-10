@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-10T04-29-10-04-00`
+**Updated:** `2026-07-10T05-49-25-04-00`
 
 ## Validation performed
 
@@ -16,12 +16,16 @@ repository selection:
 source inspection:
   read package.json
   read index.html
-  read src/main-cloudform.js imports, descriptor composition, renderer adapters, input handlers, rail camera, movement policy, grass instancing, cloud cache, drift, frame loop, and legacy diagnostics
+  read src/main-cloudform.js
+  read src/core/domain-kit.js
+  read src/kits/index.js
+  read tests/static-check.mjs
+  read tests/domain-smoke.mjs
 
 agent documentation:
-  refreshed required root .agent files
   added timestamped tracker and turn ledger
-  added architecture, render, interaction, grass, cloud, host-proof, and deploy audits
+  added architecture, render, interaction, gameplay, grass/vegetation, cloud/fog, host-proof, and deploy audits
+  refreshed required root .agent files
   refreshed kit registry
 
 central documentation:
@@ -29,31 +33,29 @@ central documentation:
   central internal change-log entry added in this pass
 ```
 
-## Source-backed checks
+## Source-backed checks by inspection
 
 ```txt
-active script token: ./src/main-cloudform.js?v=hero-cloud-4
-Three.js version: 0.160.0
-explicit source kits imported by active route: 9 plus nested cozy-hero-cloud-form-kit
-configured grass request count: 140
-configured smoke particle count: 96
-configured cloud point count: 420
-rail/first-person threshold: 0.985
-pointer rail-yaw upper threshold: 0.85
-movement maximum radius source: central clearing collision boundary
-movement campfire keepout: 2.35
+active script token: ./src/main-cloudform.js?v=webgpu-volumetric-2
+Three.js importmap version: 0.185.0
+renderer: THREE.WebGPURenderer
+kit catalog validation: validateKitCatalog(kitCatalog)
+static test expected kit count: 50
+package gate: npm test
+npm test command: node tests/static-check.mjs && node tests/domain-smoke.mjs
 legacy host object: globalThis.CozyIsland
+legacy getState returns: backend, quality, camera descriptor, clock, performance, volumetric steps, activeScale, kitCount
 ```
 
 ## Commands not run
 
 ```txt
 npm install: not run
-npm start: not run
+npm test: not run
 npm run check: unavailable
 browser smoke: not run
-DOM-free fixture: not run because proof modules do not exist yet
-GPU/render capture: not run
+WebGPU/GPU render capture: not run
+DOM-free WebGPU consumer fixture: not run because proof modules do not exist yet
 ```
 
 ## Git rules
@@ -68,4 +70,4 @@ central docs pushed to main: yes
 
 ## Validation conclusion
 
-This is a documentation-only architecture pass. It verifies the current source and consumer boundaries by inspection, but it does not claim runtime, browser, visual, or fixture proof. The next implementation must create the missing proof modules and make `npm run check` executable before claiming source/consumer parity.
+This is a documentation-only architecture pass. It verifies the current WebGPU source and consumer boundaries by inspection, but it does not claim runtime, browser, GPU, visual, or fixture proof. The next implementation must create the missing WebGPU consumer fixture and add `npm run check` before claiming source/consumer parity.

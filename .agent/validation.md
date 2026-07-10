@@ -1,6 +1,6 @@
 # Validation: MyCozyIsland
 
-Last updated: 2026-07-10T10-19-39-04-00
+Last updated: 2026-07-10T11-38-03-04-00
 
 ## This pass
 
@@ -13,7 +13,7 @@ browser smoke: not run
 WebGPU/GPU validation: not run
 DOM-free WebGPU consumer fixture: not run because proof files do not exist yet
 repo-local docs pushed to main: yes
-central ledger updated: yes
+central ledger updated: pending in this run
 ```
 
 ## Current available package gate
@@ -44,7 +44,7 @@ npm test
 ## Next validation target
 
 ```txt
-node scripts/cozy-island-webgpu-readback-fixture.mjs
+node scripts/cozy-island-webgpu-journal-fixture.mjs
 npm test
 ```
 

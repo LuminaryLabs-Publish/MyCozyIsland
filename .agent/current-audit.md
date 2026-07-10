@@ -1,6 +1,6 @@
-# Current Audit: MyCozyIsland WebGPU Host Readback Ledger
+# Current Audit: MyCozyIsland WebGPU Host Fixture Readback
 
-Last updated: 2026-07-10T08-48-58-04-00
+Last updated: 2026-07-10T10-19-39-04-00
 
 ## Current runtime identity
 
@@ -12,7 +12,8 @@ The live route validates a 50-kit DomainServiceKit catalog, composes determinist
 
 ```txt
 index.html
-  -> Three.js/WebGPU importmap at 0.185.0
+  -> canvas#game + loader + debug + hint + error panel
+  -> importmap: three / three-webgpu / three-tsl at 0.185.0
   -> ./src/main-cloudform.js?v=webgpu-volumetric-2
   -> validateKitCatalog(kitCatalog)
   -> create WebGPURenderer and choose quality by backend
@@ -22,46 +23,98 @@ index.html
   -> create scene, fog, sky, lights, and camera
   -> create stylized world, WebGPU ocean, WebGPU foam, atmosphere volume textures, volumetric clouds, rolling fog, and WebGPU post pipeline
   -> wheel / pointer / keyboard / blur / resize consumers update input or camera state
-  -> animation loop ticks scenario, copies scenario camera, updates world/foam, samples performance, renders post pipeline, debug every 12 frames
+  -> animation loop ticks scenario, copies scenario camera, updates renderers, samples performance, renders post pipeline, debug every 12 frames
   -> globalThis.CozyIsland exposes live renderer objects and aggregate getState()
 ```
 
 ## Domains in use
 
-- Static route shell, WebGPU importmap, canvas route host, loader projection, error projection, debug overlay DOM, and route script token.
-- Three/WebGPU render host and quality selection.
-- DomainServiceKit manifest catalog and kit capability validation.
-- Deterministic seed service.
-- Environment clock, wind field, weather state, and illumination state.
-- Terrain surface, biome field, shoreline field, terrain LOD policy, and ocean-floor profile.
-- Ocean wave state, ocean optics, underwater atmosphere, ocean caustics, sun glitter, and shoreline foam.
-- Vegetation archetype catalog, ground contact service, vegetation placement graph, vegetation wind, vegetation LOD, rock graph, prop graph, and campfire atmosphere.
-- Cloud weather state, cloud density recipe, cloud lighting profile, cloud LOD policy, cloud shadow, and cloud horizon band.
-- Fog density recipe, fog advection, fog volume placement, and aerial perspective.
-- Stylized material catalog, render archetype catalog, WebGL2 fallback policy, and render snapshot.
-- Camera rail sequence and cozy island scenario.
-- Stylized world renderer, WebGPU ocean renderer, WebGPU foam renderer, atmosphere volume textures, volumetric cloud renderer, rolling fog renderer, WebGPU post pipeline, and performance budget.
-- Wheel input, pointer-drag input, keyboard input, blur consumer, resize consumer, render frame loop, and legacy CozyIsland diagnostics.
-- Static check and domain smoke test domains.
-- Planned host readback, render-consumption ledger, input journal, scenario journal, volume texture journal, performance journal, and Node fixture domains.
+```txt
+static-route-shell
+webgpu-importmap
+canvas-route-host
+loader-projection
+error-projection
+debug-overlay-dom
+route-token
+DomainServiceKit-catalog
+kit-capability-validation
+deterministic-seed-service
+environment-clock
+wind-field
+weather-state
+illumination-state
+terrain-surface
+terrain-biome-field
+shoreline-field
+terrain-lod-policy
+ocean-floor-profile
+ocean-wave-state
+ocean-optics
+underwater-atmosphere
+ocean-caustics
+sun-glitter
+shoreline-foam
+vegetation-archetype-catalog
+ground-contact-service
+vegetation-placement-graph
+vegetation-wind
+vegetation-lod
+rock-graph
+prop-graph
+campfire-atmosphere
+cloud-weather-state
+cloud-density-recipe
+cloud-lighting-profile
+cloud-lod-policy
+cloud-shadow
+cloud-horizon-band
+fog-density-recipe
+fog-advection
+fog-volume-placement
+aerial-perspective
+stylized-material-catalog
+render-archetype-catalog
+webgl2-fallback-policy
+render-snapshot
+camera-rail-sequence
+cozy-island-scenario
+webgpu-render-host
+stylized-world-render-consumer
+webgpu-ocean-render-consumer
+webgpu-foam-render-consumer
+atmosphere-volume-texture-consumer
+volumetric-cloud-render-consumer
+rolling-fog-render-consumer
+webgpu-post-pipeline-consumer
+performance-budget-consumer
+wheel-input-consumer
+pointer-input-consumer
+keyboard-input-consumer
+resize-consumer
+legacy-CozyIsland-diagnostics
+node-static-check
+node-domain-smoke
+webgpu-host-readback-next
+node-webgpu-consumer-fixture-next
+```
 
 ## Kit services
 
-- `core/domain-kit`: validates DomainServiceKit metadata and capability rows.
-- `kits/catalog`: provides the 50-kit manifest catalog.
-- `kits/determinism`: provides stable seeded descriptor generation.
-- `kits/environment`: provides time, wind, weather, illumination, aerial perspective, and vegetation wind source rows.
-- `kits/terrain`: provides terrain, shoreline, biome, LOD, and ground-contact rows.
-- `kits/ocean`: provides ocean wave, foam, optics, caustic, glitter, and floor rows.
-- `kits/vegetation`: provides vegetation archetype, placement, ground contact, wind, LOD, rock, prop, and campfire rows.
+- `core/domain-kit`: validates DomainServiceKit metadata and capabilities.
+- `kits/catalog`: provides 50 focused kit manifests.
+- `kits/determinism`: provides seeded descriptor generation.
+- `kits/environment`: provides time, wind, weather, illumination, aerial perspective, and vegetation wind rows.
+- `kits/terrain`: provides surface, field sampler, biome, shoreline, LOD, and ground-contact rows.
+- `kits/ocean`: provides ocean floor, waves, optics, foam, underwater, caustics, and glitter rows.
+- `kits/vegetation`: provides archetypes, placement, ground contact, wind, LOD, rocks, props, and campfire rows.
 - `kits/atmosphere`: provides cloud, fog, shadow, horizon, and aerial perspective rows.
 - `kits/render-descriptors`: provides material, archetype, quality, fallback, and render snapshot rows.
 - `kits/sequences`: provides camera rail and scenario rows.
 - `kits/renderers`: adapts rows into WebGPU world, ocean, foam, atmosphere, cloud, fog, post, and performance consumers.
+- next proof services: route/source fingerprint, kit catalog readback, input/scenario/camera journals, volume texture journal, performance journal, render-consumption ledger, JSON-safe CozyIslandHost, and Node WebGPU fixture.
 
-## Kits
-
-### Implemented source/adapter kits
+## Implemented source kits
 
 ```txt
 debug-overlay-host-kit
@@ -116,7 +169,34 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-### Needed next kits
+## Runtime implied kits
+
+```txt
+webgpu-static-shell-kit
+webgpu-importmap-kit
+webgpu-route-token-kit
+webgpu-render-host-kit
+webgpu-quality-selection-kit
+webgpu-scene-composition-kit
+sky-gradient-kit
+lighting-composition-kit
+world-render-consumer-kit
+ocean-render-consumer-kit
+foam-render-consumer-kit
+atmosphere-texture-compute-kit
+volumetric-cloud-consumer-kit
+rolling-fog-consumer-kit
+post-pipeline-consumer-kit
+performance-budget-consumer-kit
+input-consumer-kit
+resize-consumer-kit
+animation-loop-kit
+legacy-CozyIsland-diagnostics-kit
+node-static-check-kit
+node-domain-smoke-kit
+```
+
+## Needed next kits
 
 ```txt
 webgpu-route-profile-kit
@@ -137,4 +217,4 @@ node-webgpu-consumer-fixture-kit
 
 ## Current conclusion
 
-The route should not start next with visual expansion or renderer replacement. The blocker is WebGPU source-consumer and host readback proof. Add fixture-readable proof rows first.
+The route should not start next with visual expansion, cloud/ocean/fog rewrite, camera retune, route-token churn, or renderer replacement. The blocker is WebGPU host fixture readback proof. Add fixture-readable proof rows first.

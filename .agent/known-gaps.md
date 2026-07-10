@@ -2,93 +2,80 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Updated:** `2026-07-10T04-29-10-04-00`
+**Updated:** `2026-07-10T05-49-25-04-00`
 
-## Source proof gaps
+## Source/readback gaps
 
 ```txt
-No normalized source profile exists.
-No stable source fingerprint exists.
-No serializable scene-source snapshot exists.
-The route token is not included in runtime readback.
-Source seed, configured counts, generated counts, and consumer counts are not reconciled in one record.
+No normalized WebGPU route source profile exists.
+No stable source fingerprint exists for the current webgpu-volumetric-2 route.
+No serializable source snapshot reconciles kit catalog, domain source rows, render snapshot, and runtime consumers.
+The route token is not included in stable host readback.
+The current .agent memory had stale hero-cloud-4 / Three 0.160.0 assumptions before this pass.
 ```
 
-## Interaction proof gaps
+## Interaction/scenario gaps
 
 ```txt
-Browser input mutates progress, yaw, pitch, key state, and player position directly.
-Wheel clamp outcomes are not recorded.
-The pointer inactive range from 0.85 to below 0.985 has no explicit result reason.
-Pointer-not-dragging is an implicit no-op.
-Movement rejection is silent.
+Wheel, pointer, keyboard, blur, and resize handlers mutate camera sequence or runtime state directly.
 No accepted/rejected/no-change input result exists.
-No input result journal exists.
-No deterministic rail or first-person camera snapshot exists.
+No scenario tick result row exists.
+No camera frame readback row records copied scenario camera state.
+No debug toggle result row exists.
+No input journal exists for Node or browser fixtures.
 ```
 
-## Render proof gaps
+## Render/WebGPU gaps
 
 ```txt
-No source-to-render consumption ledger exists.
-No terrain/floor/shoreline/path/object count parity exists.
-The ocean-floor render contract creates object placements that the active scene does not consume as distinct adapters.
-Several foliage source types are projected through the generic rock fallback instead of type-specific adapters.
-No grass requested/placed/instanced parity exists.
-No grass batch descriptor readback exists.
-No normalized renderer/scene/camera snapshot exists.
-No proof records whether source exclusions survive renderer adaptation.
+No render-consumption ledger maps source families to WebGPU consumers.
+No WebGPU renderer config snapshot is normalized for fixtures.
+No atmosphere volume texture creation result row exists.
+No cloud/fog texture source/size row exists.
+No post-pipeline render result row exists.
+No performance degrade/recover reason rows exist.
+No browser-safe render host snapshot exists.
 ```
 
-## Grass proof gaps
+## Vegetation/world gaps
 
 ```txt
-Grass source records bladeCount, patchRadius, batchKey, and geometryTemplateKey.
-The active renderer creates one ConeGeometry instance per patch.
-Static batch descriptors are not consumed by the renderer.
-No skip reason or exclusion parity rows are exposed.
-```
-
-## Cloud proof gaps
-
-```txt
-Cloud geometry cache keys by id without descriptor fingerprint verification.
-No cache hit, miss, or stale-entry result exists.
-No descriptor-to-point-count parity row exists.
-No fixed-dt cloud drift result exists.
-Live cached BufferGeometry objects are exposed through legacy diagnostics and are not serializable.
+Vegetation and rock determinism are checked in tests, but not connected to renderer consumption rows.
+No ground-contact parity readback exists.
+No vegetation LOD consumer readback exists.
+No source-family coverage ledger exists for worldRenderer.
 ```
 
 ## Host and compatibility gaps
 
 ```txt
-No globalThis.CozyIslandHost surface exists.
-Legacy globalThis.CozyIsland only exposes cloudContract, cloudPointCache, and getScrollProgress.
-No automated legacy parity check exists.
-No restart/reset path exists for proof state.
+globalThis.CozyIsland exposes live Three.js/WebGPU objects.
+No additive globalThis.CozyIslandHost surface exists.
+No JSON-serializable host snapshot captures source, input, scenario, performance, and render ledgers together.
+No legacy parity check ensures CozyIsland remains compatible after adding host proof.
 ```
 
 ## Validation and deploy gaps
 
 ```txt
-package.json only provides npm start.
-No npm run check exists.
-No DOM-free consumer fixture exists.
-No source snapshot fixture exists.
+npm test exists and covers static/domain smoke.
+No npm run check alias exists.
+No DOM-free WebGPU consumer fixture exists.
 No browser smoke was run in this documentation-only pass.
-No CI or Pages gate proves consumer parity before deployment.
+No CI or Pages gate proves WebGPU source/consumer parity before deployment.
 ```
 
 ## Do not start next
 
 ```txt
 visual rewrite
-cloud visual rewrite
-grass visual rewrite
-camera rail retune
-renderer extraction
+cloud rewrite
+fog rewrite
+ocean rewrite
+camera retune
+renderer replacement
+route-token churn
 new route content
-source-kit promotion
 ```
 
-Start with source/consumer proof records and a browser input fixture gate.
+Start with WebGPU source/consumer readback and a Node fixture gate.

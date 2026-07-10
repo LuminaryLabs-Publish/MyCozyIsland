@@ -1,16 +1,16 @@
 # Next Steps: MyCozyIsland
 
-Last updated: 2026-07-10T07-29-12-04-00
+Last updated: 2026-07-10T08-48-58-04-00
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate
+MyCozyIsland WebGPU Host Readback Ledger Refresh + Node Consumer Fixture Gate
 ```
 
 ## Goal
 
-Add a stable, additive host-proof layer around the existing WebGPU route without changing visuals or replacing renderers.
+Add a stable, additive host readback layer around the existing WebGPU route without changing visuals or replacing renderers.
 
 ## Implementation order
 
@@ -43,7 +43,7 @@ src/host-proof/volume-texture-result.js
 src/host-proof/performance-level-result.js
 src/host-proof/render-consumption-ledger.js
 src/host-proof/cozy-island-host-snapshot.js
-scripts/cozy-island-webgpu-consumer-fixture.mjs
+scripts/cozy-island-webgpu-readback-fixture.mjs
 ```
 
 ## Required result vocabulary
@@ -59,6 +59,8 @@ clamped_pitch
 accepted_quality_degraded
 accepted_quality_recovered
 accepted_resize
+accepted_debug_toggle
+accepted_blur_clear
 ```
 
 ## Desired host surface
@@ -67,6 +69,7 @@ accepted_resize
 globalThis.CozyIslandHost = {
   getState(),
   getSourceProfile(),
+  getSourceFingerprint(),
   getKitCatalogStatus(),
   getInputJournal(),
   getScenarioJournal(),

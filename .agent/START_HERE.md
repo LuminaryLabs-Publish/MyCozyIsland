@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`
 
-**Last aligned:** `2026-07-09T23-41-15-04-00`
+**Last aligned:** `2026-07-10T01-04-36-04-00`
 
 ## Purpose
 
@@ -50,25 +50,27 @@ build deterministic island, floor, foliage, clearing, campfire, smoke, grass, an
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-09T23-41-15-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T23-41-15-04-00.md
-.agent/architecture-audit/2026-07-09T23-41-15-04-00-host-proof-fixture-catchup-dsk-map.md
-.agent/render-audit/2026-07-09T23-41-15-04-00-render-consumer-proof-ledger.md
-.agent/interaction-audit/2026-07-09T23-41-15-04-00-input-movement-result-readback.md
-.agent/grass-system-audit/2026-07-09T23-41-15-04-00-grass-placement-instance-parity.md
-.agent/cloud-system-audit/2026-07-09T23-41-15-04-00-cloud-cache-drift-parity.md
-.agent/host-proof-audit/2026-07-09T23-41-15-04-00-cozy-island-host-proof-contract.md
-.agent/deploy-audit/2026-07-09T23-41-15-04-00-source-consumer-fixture-gate.md
+.agent/trackers/2026-07-10T01-04-36-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T01-04-36-04-00.md
+.agent/architecture-audit/2026-07-10T01-04-36-04-00-source-consumer-host-readback-dsk-map.md
+.agent/render-audit/2026-07-10T01-04-36-04-00-render-consumption-host-proof-ledger.md
+.agent/interaction-audit/2026-07-10T01-04-36-04-00-input-movement-fixture-readback.md
+.agent/grass-system-audit/2026-07-10T01-04-36-04-00-grass-placement-instance-fixture-parity.md
+.agent/cloud-system-audit/2026-07-10T01-04-36-04-00-cloud-cache-drift-fixture-parity.md
+.agent/host-proof-audit/2026-07-10T01-04-36-04-00-cozy-island-host-readback-contract.md
+.agent/deploy-audit/2026-07-10T01-04-36-04-00-source-consumer-fixture-check-gate.md
 ```
 
 ## Main finding
 
-`MyCozyIsland` should not get a visual rewrite next. The source descriptor layer is useful, but the browser consumer lacks proof rows. The next implementation should add source fingerprints, input/movement results, grass/cloud parity snapshots, render consumption rows, and a serializable additive host readback surface.
+`MyCozyIsland` should not get a visual rewrite next. The source descriptor layer is useful, but `src/main-cloudform.js` still owns the browser consumer boundary without proof rows.
+
+The next implementation should add source fingerprints, input/movement results, grass/cloud parity snapshots, render consumption rows, and a serializable additive host readback surface.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Host Proof Catch-up + Source/Consumer Fixture Gate
+MyCozyIsland Source Consumer Host Readback Catch-up + Input Fixture Gate
 ```
 
 ## Operating rules

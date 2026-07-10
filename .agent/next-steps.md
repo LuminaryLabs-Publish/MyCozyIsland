@@ -1,31 +1,33 @@
-# My Cozy Island Next Steps
+# Next Steps: MyCozyIsland
 
-**Repository:** `LuminaryLabs-Publish/MyCozyIsland`
-
-**Updated:** `2026-07-10T05-49-25-04-00`
+Last updated: 2026-07-10T07-29-12-04-00
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland WebGPU Source Consumer Readback Refresh + Node Fixture Gate
+MyCozyIsland WebGPU Host Proof Ledger Refresh + Node Consumer Fixture Gate
 ```
 
-Build an additive proof layer around the current WebGPU route. Do not rewrite the visible scene, change `webgpu-volumetric-2`, or replace the existing kit catalog.
+## Goal
 
-## Preserve
+Add a stable, additive host-proof layer around the existing WebGPU route without changing visuals or replacing renderers.
 
-```txt
-index.html shell
-./src/main-cloudform.js?v=webgpu-volumetric-2 route token
-Three.js/WebGPU 0.185.0 importmap
-50-kit DomainServiceKit catalog
-npm test static/domain smoke checks
-globalThis.CozyIsland legacy surface
-current WebGPU renderer, volume texture, cloud/fog/ocean/foam/post pipeline behavior
-current scenario/camera behavior
-```
+## Implementation order
 
-## Add
+1. Add a route/source profile helper.
+2. Add stable source fingerprints.
+3. Add kit catalog readback rows.
+4. Add a render snapshot normalizer.
+5. Wrap wheel, pointer, keyboard, blur, and resize inputs with result rows.
+6. Add scenario tick result rows.
+7. Add camera frame readback rows.
+8. Add volume texture result rows for atmosphere, cloud, and fog surfaces.
+9. Add performance degrade/recover rows.
+10. Add render-consumption ledger rows.
+11. Add additive JSON-safe `globalThis.CozyIslandHost` while preserving legacy `globalThis.CozyIsland`.
+12. Add a Node fixture and wire it into `npm test`.
+
+## Candidate files
 
 ```txt
 src/host-proof/webgpu-route-profile.js
@@ -47,52 +49,19 @@ scripts/cozy-island-webgpu-consumer-fixture.mjs
 ## Required result vocabulary
 
 ```txt
-status: accepted | rejected | no-change
-reason:
-  route-token-read
-  kit-catalog-valid
-  kit-catalog-invalid
-  wheel-progress-updated
-  wheel-progress-clamped
-  pointer-drag-started
-  pointer-drag-updated
-  pointer-not-dragging
-  pointer-drag-ended
-  key-state-updated
-  key-debug-toggle
-  input-cleared-on-blur
-  scenario-ticked
-  scenario-dt-clamped
-  camera-frame-copied
-  volume-texture-created
-  volume-texture-fallback-created
-  performance-level-stable
-  performance-level-degraded
-  performance-level-recovered
-  render-submitted
+accepted
+rejected_no_active_renderer
+rejected_invalid_payload
+no_change_duplicate_input
+no_change_disabled
+clamped_scroll
+clamped_pitch
+accepted_quality_degraded
+accepted_quality_recovered
+accepted_resize
 ```
 
-## Fixture rows
-
-```txt
-route token and source fingerprint
-kit catalog valid row with 50 kits
-static source/importmap row for Three.js 0.185.0
-stable domain source snapshot
-scenario tick at fixed dt
-camera readback after tick
-wheel/pointer/key/blur result rows
-volume texture source/size rows
-cloud/fog step-scale rows
-performance degrade/recover rows
-render-consumption ledger for source families
-legacy CozyIsland compatibility row
-CozyIslandHost JSON serialization row
-```
-
-## Host surface
-
-Add an additive surface without removing the current legacy object:
+## Desired host surface
 
 ```txt
 globalThis.CozyIslandHost = {
@@ -101,26 +70,30 @@ globalThis.CozyIslandHost = {
   getKitCatalogStatus(),
   getInputJournal(),
   getScenarioJournal(),
+  getCameraJournal(),
+  getVolumeTextureJournal(),
   getPerformanceJournal(),
   getRenderConsumptionLedger(),
   restartProofState()
 }
 ```
 
-All outputs must be JSON-serializable and must not expose live Three.js/WebGPU objects.
+## Fixture requirements
 
-## Validation gate
+- Does not require a browser GPU.
+- Does not require screenshot or capture.
+- Asserts route token and source fingerprint.
+- Asserts kit catalog status.
+- Asserts representative accepted, rejected, clamped, and no-change input rows.
+- Asserts scenario/camera rows.
+- Asserts render-consumption rows.
+- Asserts texture/performance rows or deterministic stubs.
+- Asserts `CozyIslandHost.getState()` is JSON-safe.
 
-Add:
+## Not next
 
-```txt
-npm run fixture:webgpu-consumer
-npm run check
-npm test
-```
-
-`npm run check` should run the existing `npm test` plus the new fixture without requiring a browser or GPU.
-
-## Stop condition
-
-Stop the ledge when the Node fixture passes, `CozyIslandHost.getState()` is JSON-safe and additive, source-to-render rows reconcile, input/scenario/performance reasons are stable, legacy diagnostics remain compatible, and no visible WebGPU behavior has changed.
+- Visual polish.
+- Cloud/ocean/fog rewrite.
+- Renderer extraction.
+- Camera retune.
+- Route expansion.

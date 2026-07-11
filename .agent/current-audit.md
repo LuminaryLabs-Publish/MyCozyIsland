@@ -1,40 +1,44 @@
-# Current Audit: MyCozyIsland Core World Provider and Render Authority
+# Current Audit: MyCozyIsland Pinned Core World Contract Parity
 
-Last updated: `2026-07-11T05-10-36-04-00`
+Last updated: `2026-07-11T06-50-30-04-00`
 
 ## Runtime identity
 
 `MyCozyIsland` is a static WebGPU-first scenic exploration route driven by `index.html` and `src/main-cloudform.js?v=core-world-1`.
 
-Pinned runtime inputs:
-
 ```txt
-Three.js:    0.185.0
-NexusEngine: 38229f59c22cb40024ffd13a9f48040de759f5d7
-world mode:  core by default
-rollback:    ?world=legacy
+Three.js:          0.185.0
+NexusEngine:       38229f59c22cb40024ffd13a9f48040de759f5d7
+world mode:        core by default
+rollback mode:     ?world=legacy
+world id:          world:cozy-island-webgpu-v3
+world seed:        cozy-island-webgpu-v2
+partition:         48 m uniform grid, radius 3
+initial cells:     49
+local kit count:   50
+Core providers:    7
 ```
-
-The repository retains 50 local Nexus-style kit descriptors and now coordinates its world through the imported NexusEngine Core World domain.
 
 ## Interaction loop
 
 ```txt
 route load
   -> validate 50 local kit descriptors
-  -> initialize WebGPU/WebGL2 backend and quality
-  -> create legacy deterministic composition
-  -> create Core World engine, world, grid, surface, and providers
-  -> prepare the island-centered active cells
-  -> bridge active provider rows into one legacy render snapshot
-  -> construct sky, lights, world, ocean, foam, cloud, fog, and post resources
-  -> install wheel, pointer, keyboard, blur, resize, loader timers, and animation loop
+  -> initialize WebGPU/WebGL2 backend and startup quality
+  -> create legacy deterministic semantic composition
+  -> import pinned NexusEngine engine and Core World modules
+  -> register one world, grid, flat surface and seven ordered providers
+  -> prepare 49 island-centered active cells
+  -> create one legacy compatibility render snapshot
+  -> construct sky, lights, world, ocean, foam, cloud, fog and post resources
+  -> register wheel, pointer, keyboard, blur, resize, timers and animation loop
   -> scenario tick and camera projection
-  -> update Core World focus from camera position in first-person mode
-  -> Core World provider prepare/update/release and portable snapshot
-  -> update existing world/foam animation by elapsed time
-  -> sample adaptive performance and render post pipeline
-  -> publish Core World and host diagnostics
+  -> update Core World focus from camera position
+  -> Core World releases, updates, retains and prepares cells
+  -> wrapper reports only changed=true/false
+  -> existing world and foam renderers advance by elapsed time
+  -> sample performance and render post pipeline
+  -> publish live Core World and host objects through globalThis.CozyIsland
 ```
 
 Player interaction remains scroll-to-descend, pointer-drag orbit/look, WASD movement inside the central clearing, H diagnostics, blur key clearing, and viewport resize.
@@ -43,21 +47,24 @@ Player interaction remains scroll-to-descend, pointer-drag orbit/look, WASD move
 
 ### Platform and route host
 
-- static shell, loader, error projection, import map, route startup
+- static HTML shell, loader, error projection, import map and route startup
 - local kit-catalog validation
 - WebGPU/WebGL2 backend and startup-quality admission
-- browser input, pointer capture, resize, timeouts, animation loop, pagehide, and global host
-- missing route-session transaction, rollback, stop, exact disposal, restart, and stale-epoch admission
+- wheel, pointer, keyboard, blur and resize input
+- loader timers, animation loop, performance sampling and global host projection
+- missing route-session transaction, rollback, stop, exact disposal, restart and stale-epoch admission
 
 ### Imported NexusEngine Core World
 
 - world registration and identity
-- 48 m uniform-grid partition with radius three
-- flat world surface used for coordination
-- focus and active-cell lifecycle
+- uniform-grid partitioning and active-cell selection
+- flat world surface coordination
+- focus state and cell lifecycle
 - ordered provider phases
-- portable world snapshots
-- diagnostics and reset/dispose entry points
+- capability dependencies and critical-provider admission
+- portable effects, snapshots and diagnostics
+- rollback of providers prepared earlier in one failed cell
+- best-effort release and domain reset
 
 Imported services:
 
@@ -69,6 +76,17 @@ createFlatWorldSurface
 createTerrainProviderAdapter
 defineWorldEffectProvider
 ```
+
+### MyCozyIsland world wrapper
+
+- creates legacy semantic composition
+- resolves the pinned runtime
+- registers Core World and providers
+- owns wrapper-local prepared, worldSnapshot, focus accumulator, last focus and last cell key
+- commits initial and later focus
+- exposes world query, provider stores, presentation descriptors, diagnostics, reset and dispose
+- reduces each later focus operation to a Boolean result
+- does not expose production provider status, failed cells, selection deltas or a typed focus receipt
 
 ### MyCozyIsland provider domains
 
@@ -89,13 +107,13 @@ PRESENTATION
   cell-presentation-provider
 ```
 
-Provider services include cell array generation, classification, deterministic instance partitioning, portable descriptors, runtime stores, prepare/update/release participation, and provider diagnostics.
+Provider services include deterministic per-cell terrain arrays, classification arrays, population partitioning, prop and campfire rows, portable presentation descriptors, runtime stores, prepare/update/release participation and snapshots.
 
 ### World query and compatibility
 
-- `createCozyWorldQuery()` standardizes height, normal, slope, fields, biome, shoreline, material, surface, water-depth, ground-contact, and cell queries
-- `legacy-render-snapshot-bridge` flattens active provider records into the existing render snapshot contract
-- global composition fallback preserves current output when active cell rows do not equal the complete population graph
+- `createCozyWorldQuery()` provides height, normal, slope, fields, biome, shoreline, material, surface, water-depth, ground-contact and cell queries
+- `legacy-render-snapshot-bridge` flattens active provider records into the old render snapshot contract
+- global composition fallback preserves current output when provider rows do not equal the complete population graph
 
 ### Authored sequence and gameplay
 
@@ -103,35 +121,35 @@ Provider services include cell array generation, classification, deterministic i
 - first-person central-clearing exploration
 - deterministic environment clock
 - camera and scenario snapshots
-- world focus follows first-person camera at a cell boundary or configured 10 Hz/minimum-movement threshold
+- focus follows first-person camera at cell boundaries or the configured 10 Hz/minimum-movement threshold
 
-### Terrain, world, ocean, and atmosphere
+### Terrain, world, ocean and atmosphere
 
 - deterministic seed and noise
-- island surface, clearing plateau, terrain fields, biome and shoreline
-- terrain LOD, ground contact, path network
-- vegetation, rocks, fence, driftwood, props, campfire, and layered grass
-- ocean floor, waves, optics, underwater, caustics, glitter, and foam
-- wind, weather, illumination, aerial perspective
+- island terrain, clearing plateau, terrain fields, biome and shoreline
+- terrain LOD, ground contact and path network
+- vegetation, rocks, fence, driftwood, props, campfire and layered grass
+- ocean floor, waves, optics, underwater, caustics, glitter and foam
+- wind, weather, illumination and aerial perspective
 - cloud and fog semantic descriptors
 
 ### Rendering
 
-- Three/WebGPU renderer, scene, camera, sky, lights, shadows
+- Three/WebGPU renderer, scene, camera, sky, lighting and shadows
 - whole-island stylized world renderer
 - WebGPU ocean and foam
-- compute/CPU atmosphere volume textures
-- volumetric clouds, rolling fog, post pipeline
+- compute or CPU atmosphere volumes
+- volumetric clouds, rolling fog and post pipeline
 - performance budget and debug overlay
-- renderer-cell cache, disposal helper, and world-cell controller utilities
+- isolated renderer-cell cache, disposal helper and world-cell controller utilities
 
 ### Validation and deployment
 
-- static source/catalog checks
+- source and catalog checks
 - deterministic domain smoke
-- world baseline and Core World runtime fixtures
-- provider order, query parity, population parity, snapshot portability, and cell lifecycle fixtures
-- renderer cell-cache and resource-disposal utility fixtures
+- legacy/Core World baseline and query/population parity fixtures
+- provider order, snapshot portability and cell lifecycle fixtures
+- isolated renderer cache/disposal fixtures
 - static GitHub Pages deployment
 
 ## Services offered by the 50 local kits
@@ -141,7 +159,7 @@ determinism and time:
   stable seed, scoped RNG, hash/noise, deterministic clock
 
 terrain and world:
-  surface/field sampling, biome, shoreline, LOD, ground contact, path, vegetation, rocks, props, campfire
+  terrain sampling, fields, biome, shoreline, LOD, ground contact, path, vegetation, rocks, props, campfire
 
 ocean and atmosphere:
   floor, waves, optics, underwater, caustics, glitter, foam, wind, weather, illumination, clouds, fog, aerial perspective
@@ -150,10 +168,10 @@ render descriptors:
   quality, materials, archetypes, immutable compatibility snapshots, fallback policy
 
 render adapters:
-  world, ocean, foam, atmosphere volume generation, cloud, fog, post, performance, debug
+  world, ocean, foam, atmosphere volumes, cloud, fog, post, performance and debug
 
 scenario:
-  camera rail, first-person movement, input state, scenario tick/reset/snapshot
+  camera rail, first-person movement, input state, tick, reset and snapshot
 ```
 
 ## Complete local kit inventory
@@ -211,7 +229,7 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Runtime-implied provider and adapter kits
+## Runtime-implied providers, adapters and hosts
 
 ```txt
 core-world-runtime-adapter
@@ -234,69 +252,150 @@ animation-loop-host
 global-diagnostic-host
 ```
 
-## Main authority gap
+## Production runtime versus test-double contract
 
-Core World advances semantic cell state, but the visible renderer is a one-time compatibility consumer.
+The browser and the Node tests do not currently execute the same Core World semantics.
+
+### Pinned production Core World
 
 ```txt
-prepare()
-  -> worldSnapshot revision 0
-  -> createLegacyRenderSnapshot()
-  -> createStylizedWorldRenderer(snapshot)
+partition.selectCells returns:
+  required
+  retained
+  released
+  updated
 
-later updateWorldFocus()
-  -> worldSnapshot/provider stores may advance
-  -> no new compatibility snapshot
-  -> no presentation descriptor commit
-  -> no cell resource prepare/update/release
-  -> no render revision acknowledgement
+prepare path:
+  validate cell
+  evaluate provider.matches
+  check required capabilities
+  execute ordered phases
+  normalize portable effect references
+  record provider status and diagnostics
+  roll back earlier providers inside a failed cell
+  commit cell state as active or failed
+
+world update order:
+  release removed cells
+  update changed cells
+  prepare required cells
+  retry non-active retained cells
+  commit the resulting world state
 ```
 
-The presentation provider is not the production renderer input. The cell-renderer utilities are not wired to `src/main-cloudform.js`. Current diagnostics expose active-cell counts and provider counts, but not world revision, presentation revision, render revision, fallback kinds, consumed cell IDs, resource deltas, or the last commit result.
+### Local fake runtime
 
-## Compatibility risk
+```txt
+partition.selectCells returns:
+  one bare cell array
 
-The bridge uses provider rows only when flattened instance counts equal the complete global graph. Otherwise, it falls back to the global vegetation, rock, or prop graph. This preserves output but can report Core World mode without proving that cell authority reached rendering.
+update path:
+  derive active/released cells inside the fake
+  release every provider for removed cells
+  update every retained cell
+  prepare every new cell
+  record every row as active
+
+missing:
+  provider.matches
+  requires/provides capability admission
+  critical-provider semantics
+  portable descriptor validation
+  provider statuses
+  diagnostics
+  failed-cell records
+  provider-chain rollback
+  production selection shape
+  snapshot-load reconciliation
+```
+
+The existing tests therefore prove the wrapper and providers against a simplified local model, not against the exact runtime shipped through the browser import map.
+
+## Focus transition authority gap
+
+`commitFocus()` performs two separate mutations:
+
+```txt
+setFocus()
+  -> commits the new focus
+
+updateWorld()
+  -> releases old cells first
+  -> updates/prepares the next set
+  -> may commit failed cell records
+```
+
+The wrapper then stores the returned snapshot and `updateWorldFocus()` returns only `true`. It does not distinguish:
+
+```txt
+accepted-complete
+accepted-degraded
+unchanged
+rejected-stale
+failed-before-commit
+failed-after-partial-provider-effects
+```
+
+There is no wrapper-level active-cell-set transaction, provider-store checkpoint, rollback receipt, focus revision, failure policy or bounded result journal.
+
+## Initial preparation retry defect
+
+`prepare()` sets `prepared = true` before calling `commitFocus()`.
+
+```txt
+first prepare
+  -> prepared = true
+  -> commitFocus throws
+  -> worldSnapshot can remain null
+
+second prepare
+  -> sees prepared = true
+  -> returns null
+  -> does not retry
+```
+
+The test double never injects this failure, so the existing suite cannot detect the poisoned startup state.
+
+## Render consequence
+
+The whole-island renderer still consumes only the startup compatibility snapshot. That masks incomplete later provider transitions because the global visual graph remains present.
+
+A future cell-aware renderer would instead need to decide whether a world revision containing failed or missing cells is admissible. Without a typed focus/world result, it could consume an incomplete revision, release prior visible cells, or create holes while diagnostics still report Core World mode.
 
 ## Existing lifecycle gap
 
-`pagehide` calls `domains.dispose()`, which resets the Core World domain. It does not clear the renderer animation loop, remove listeners, cancel loader timers, dispose scene/GPU resources, dispose the renderer/backend, or retire `globalThis.CozyIsland`.
+`pagehide` calls `domains.dispose()`, which resets Core World state. It does not cancel the animation loop, remove listeners, cancel loader timers, dispose the Three/WebGPU graph or backend, or retire the global host.
 
-## Candidate authority kits
+## Candidate contract-parity and focus-transaction kits
 
 ```txt
-route-session-state-kit
-runtime-session-epoch-kit
-resource-registration-kit
-startup-rollback-kit
-listener-timeout-animation-lease-kit
-three-webgpu-disposal-kit
-world-revision-kit
+core-world-runtime-identity-kit
+core-world-contract-adapter-kit
+focus-command-envelope-kit
+focus-admission-kit
+focus-transition-stage-kit
+active-cell-set-transaction-kit
+provider-failure-policy-kit
 provider-result-journal-kit
-presentation-descriptor-snapshot-kit
-world-render-command-kit
-world-revision-admission-kit
-cell-render-resource-owner-kit
-cell-render-prepare-kit
-cell-render-update-kit
-cell-render-release-kit
-shared-render-resource-registry-kit
-render-commit-result-kit
-compatibility-render-policy-kit
-world-render-correlation-kit
-world-render-observation-kit
-provider-render-fixture-kit
-browser-cell-lifecycle-smoke-kit
+provider-store-checkpoint-kit
+focus-rollback-kit
+focus-result-kit
+world-correlation-kit
+pinned-runtime-test-harness-kit
+fake-runtime-contract-fixture-kit
+production-runtime-failure-fixture-kit
+browser-focus-failure-smoke-kit
 ```
 
 ## Safe implementation boundaries
 
 ```txt
 1. Runtime Session Lifecycle Authority
-2. Core World Render Commit Authority
-3. Camera Rail Baseline Authority
-4. Dynamic Environment Frame Authority
-5. Adaptive Quality Transaction Authority
+2. Pinned Core World Contract Parity and Focus Transaction Authority
+3. Core World Render Commit Authority
+4. Camera Rail Baseline Authority
+5. Dynamic Environment Frame Authority
+6. Adaptive Quality Transaction Authority
 ```
 
-Do not make the cell renderer visibly authoritative until lifecycle ownership, shadow parity, exact resource deltas, and browser WebGPU/WebGL2 proof exist.
+Do not make provider cells visibly authoritative until the production runtime contract, failure policy, focus result, lifecycle epoch, resource ownership and browser failure behavior are proven.

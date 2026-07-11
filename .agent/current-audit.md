@@ -1,125 +1,162 @@
-# Current Audit: MyCozyIsland Runtime Session Resource Authority
+# Current Audit: MyCozyIsland Core World Provider and Render Authority
 
-Last updated: `2026-07-11T04-09-54-04-00`
+Last updated: `2026-07-11T05-10-36-04-00`
 
 ## Runtime identity
 
-`MyCozyIsland` is a static WebGPU-first scenic exploration route driven by `index.html` and `src/main-cloudform.js?v=webgpu-volumetric-2` with Three/WebGPU `0.185.0`.
+`MyCozyIsland` is a static WebGPU-first scenic exploration route driven by `index.html` and `src/main-cloudform.js?v=core-world-1`.
+
+Pinned runtime inputs:
+
+```txt
+Three.js:    0.185.0
+NexusEngine: 38229f59c22cb40024ffd13a9f48040de759f5d7
+world mode:  core by default
+rollback:    ?world=legacy
+```
+
+The repository retains 50 local Nexus-style kit descriptors and now coordinates its world through the imported NexusEngine Core World domain.
 
 ## Interaction loop
 
 ```txt
-load route and validate 50 kits
-  -> initialize WebGPU/WebGL2 backend and startup quality
-  -> compose deterministic seed, environment, terrain, biome, placement, ocean, atmosphere and render snapshot
-  -> construct sky, lights, terrain/world, ocean, foam, cloud, fog and post resources
-  -> install wheel, pointer, keyboard, blur and resize listeners
-  -> schedule loader-hide timeouts
-  -> renderer animation loop
-  -> scenario.tick(dt)
-  -> camera rail or first-person clearing movement
-  -> world and foam elapsed-time updates
-  -> performance-budget sample
-  -> post render
-  -> debug and global host projection
+route load
+  -> validate 50 local kit descriptors
+  -> initialize WebGPU/WebGL2 backend and quality
+  -> create legacy deterministic composition
+  -> create Core World engine, world, grid, surface, and providers
+  -> prepare the island-centered active cells
+  -> bridge active provider rows into one legacy render snapshot
+  -> construct sky, lights, world, ocean, foam, cloud, fog, and post resources
+  -> install wheel, pointer, keyboard, blur, resize, loader timers, and animation loop
+  -> scenario tick and camera projection
+  -> update Core World focus from camera position in first-person mode
+  -> Core World provider prepare/update/release and portable snapshot
+  -> update existing world/foam animation by elapsed time
+  -> sample adaptive performance and render post pipeline
+  -> publish Core World and host diagnostics
 ```
 
-Player interaction is scroll-to-descend, pointer-drag orbit/look, WASD clearing movement after landing, Shift speed, H diagnostics, blur key clearing, and viewport resize.
+Player interaction remains scroll-to-descend, pointer-drag orbit/look, WASD movement inside the central clearing, H diagnostics, blur key clearing, and viewport resize.
 
 ## Domain map
 
-### Runtime and platform
+### Platform and route host
 
-- application shell, loader, error and route startup
-- kit-catalog validation
+- static shell, loader, error projection, import map, route startup
+- local kit-catalog validation
 - WebGPU/WebGL2 backend and startup-quality admission
-- browser input, pointer capture, viewport resize and frame scheduling
-- loader timeouts and global-host publication
-- missing runtime-session lifecycle, epoch, startup transaction, rollback, stop, disposal and restart authority
+- browser input, pointer capture, resize, timeouts, animation loop, pagehide, and global host
+- missing route-session transaction, rollback, stop, exact disposal, restart, and stale-epoch admission
 
-### Render resources
+### Imported NexusEngine Core World
 
-- WebGPURenderer and backend
-- scene, camera, sky, lights and shadow resources
-- world, ocean, foam, cloud, fog and post consumers
-- 2D canvas texture, 3D/storage textures and compute nodes
-- geometry, materials, instancing, passes, pipeline nodes and uniforms
-- adaptive performance and debug overlay
-- missing resource registry, common dispose contract and resource-count observation
+- world registration and identity
+- 48 m uniform-grid partition with radius three
+- flat world surface used for coordination
+- focus and active-cell lifecycle
+- ordered provider phases
+- portable world snapshots
+- diagnostics and reset/dispose entry points
+
+Imported services:
+
+```txt
+createEngine
+createCoreWorldDomain
+createUniformGridPartition
+createFlatWorldSurface
+createTerrainProviderAdapter
+defineWorldEffectProvider
+```
+
+### MyCozyIsland provider domains
+
+```txt
+FOUNDATION
+  cozy-island-terrain-provider
+
+CLASSIFICATION
+  biome-classification-provider
+  shoreline-classification-provider
+
+POPULATION
+  vegetation-provider
+  rock-provider
+  prop-provider
+
+PRESENTATION
+  cell-presentation-provider
+```
+
+Provider services include cell array generation, classification, deterministic instance partitioning, portable descriptors, runtime stores, prepare/update/release participation, and provider diagnostics.
+
+### World query and compatibility
+
+- `createCozyWorldQuery()` standardizes height, normal, slope, fields, biome, shoreline, material, surface, water-depth, ground-contact, and cell queries
+- `legacy-render-snapshot-bridge` flattens active provider records into the existing render snapshot contract
+- global composition fallback preserves current output when active cell rows do not equal the complete population graph
 
 ### Authored sequence and gameplay
 
 - camera rail reveal
-- first-person clearing exploration
-- wheel, pointer, keyboard, blur and resize input
-- scenario clock, camera projection and reset
+- first-person central-clearing exploration
+- deterministic environment clock
+- camera and scenario snapshots
+- world focus follows first-person camera at a cell boundary or configured 10 Hz/minimum-movement threshold
 
-### Terrain and world layers
+### Terrain, world, ocean, and atmosphere
 
-- deterministic seed and coherent procedural noise
-- natural island surface and coastal shelf
-- terrain-relative clearing plateau
-- height, normal, slope, curvature, moisture, exposure, rock exposure, shore distance, water and clearing fields
-- biome mixing for wet sand, dry sand, grass, soil, forest floor, moss and rock
-- terrain LOD and grid-mesh consumption
-- shoreline field and foam contours
-- path network and ground contact
-- vegetation, rocks, fence, driftwood, campfire and layered grass
+- deterministic seed and noise
+- island surface, clearing plateau, terrain fields, biome and shoreline
+- terrain LOD, ground contact, path network
+- vegetation, rocks, fence, driftwood, props, campfire, and layered grass
+- ocean floor, waves, optics, underwater, caustics, glitter, and foam
+- wind, weather, illumination, aerial perspective
+- cloud and fog semantic descriptors
 
-### Environment and atmosphere
+### Rendering
 
-- clock, wind, weather, illumination and aerial perspective
-- ocean floor, waves, optics, underwater atmosphere, caustics, glitter and foam
-- cloud weather, density, lighting, LOD, shadow and horizon
-- fog density, advection and placement
-- render materials, archetypes, quality, fallback and render snapshot
+- Three/WebGPU renderer, scene, camera, sky, lights, shadows
+- whole-island stylized world renderer
+- WebGPU ocean and foam
+- compute/CPU atmosphere volume textures
+- volumetric clouds, rolling fog, post pipeline
+- performance budget and debug overlay
+- renderer-cell cache, disposal helper, and world-cell controller utilities
 
-### Ordered missing authority domains
+### Validation and deployment
 
-1. route runtime-session lifecycle and resource ownership
-2. immutable camera-rail baseline and atomic reset
-3. terrain-clearing descriptor identity, revision and consumer proof
-4. dynamic environment-frame identity and projection
-5. adaptive-quality target/application/rollback/observation
+- static source/catalog checks
+- deterministic domain smoke
+- world baseline and Core World runtime fixtures
+- provider order, query parity, population parity, snapshot portability, and cell lifecycle fixtures
+- renderer cell-cache and resource-disposal utility fixtures
+- static GitHub Pages deployment
 
-## Services offered by current kits
+## Services offered by the 50 local kits
 
 ```txt
 determinism and time:
-  stable seed, scoped RNG, hash/noise, clock tick/state/reset
+  stable seed, scoped RNG, hash/noise, deterministic clock
 
-terrain:
-  natural-height sampling, clearing plateau flattening, height/normal/field sampling, LOD
+terrain and world:
+  surface/field sampling, biome, shoreline, LOD, ground contact, path, vegetation, rocks, props, campfire
 
-biome and shoreline:
-  normalized material weights, shoreline signed distance, breaker/wetness, contours
+ocean and atmosphere:
+  floor, waves, optics, underwater, caustics, glitter, foam, wind, weather, illumination, clouds, fog, aerial perspective
 
-ground contact and placement:
-  slope-aware seating, path clearance, spatial spacing, deterministic vegetation/rock/prop graphs
+render descriptors:
+  quality, materials, archetypes, immutable compatibility snapshots, fallback policy
 
-ocean:
-  floor, waves, optics, underwater, caustics, glitter, foam contours
-
-vegetation and world:
-  archetypes, placement, wind descriptor, LOD, rocks, fence, driftwood, campfire, layered grass
-
-atmosphere:
-  weather, illumination, clouds, fog, aerial perspective, compute/CPU volume textures
-
-render and host:
-  immutable source snapshot, world/ocean/foam/cloud/fog/post consumers,
-  adaptive performance, debug overlay and live global host projection
+render adapters:
+  world, ocean, foam, atmosphere volume generation, cloud, fog, post, performance, debug
 
 scenario:
-  camera-rail sampling, first-person movement, input state, scenario tick/reset/snapshot
-
-validation and deploy:
-  static catalog/source checks, deterministic domain smoke and Pages artifact
+  camera rail, first-person movement, input state, scenario tick/reset/snapshot
 ```
 
-## Implemented kit inventory
-
-The repository declares exactly 50 source-backed kits:
+## Complete local kit inventory
 
 ```txt
 debug-overlay-host-kit
@@ -174,92 +211,92 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Runtime ownership matrix
+## Runtime-implied provider and adapter kits
 
 ```txt
-resource or side effect                 acquired by                         current release
-WebGPURenderer                          main()                              none
-animation loop                          renderer.setAnimationLoop           none
-scene/camera                            main()                              none
-sky texture/material/geometry           createSky                           none
-lights/shadow resources                 main()                              none
-world resources                         createStylizedWorldRenderer          none
-layered grass atlas/geometry/material   inner grass renderer                handle discarded, no dispose
-ocean resources                         createWebGPUOceanRenderer            none
-foam resources                          createWebGPUFoamRenderer             none
-cloud resources                         createVolumetricCloudRenderer        none
-fog resources                           createRollingFogRenderer             none
-3D/storage textures and compute nodes   createAtmosphereVolumeTextures      none
-post passes/pipeline                    createWebGPUPostPipeline             none
-performance callbacks                   createPerformanceBudget              none
-debug overlay state                     createDebugOverlay                   none
-canvas/window listeners                 anonymous route callbacks            none
-loader timeouts                         anonymous nested timeouts             none
-global host                             globalThis.CozyIsland assignment      no unpublish/tombstone
+core-world-runtime-adapter
+cozy-world-configuration
+island-terrain-provider
+biome-classification-provider
+shoreline-classification-provider
+vegetation-provider
+rock-provider
+prop-provider
+cell-presentation-provider
+cozy-world-query
+legacy-render-snapshot-bridge
+renderer-cell-cache
+renderer-resource-disposal
+cell-aware-world-renderer-controller
+browser-input-adapter
+loader-and-error-projection
+animation-loop-host
+global-diagnostic-host
 ```
 
-## Main gap
+## Main authority gap
 
-The route has deterministic source composition but no deterministic runtime-session lifecycle.
-
-`main()` acquires every runtime resource as local state and returns no owner handle. `fail()` reports an error but cannot roll back resources already acquired. The route has no `stop()`, `dispose()`, `restart()`, session epoch, resource journal, listener/timer lease registry, animation-loop release, stale-callback admission, global-host retirement, or bounded lifecycle readback.
-
-Renderer factories expose partial operational handles but no common `dispose()` contract. A repeated startup in one page context can create a second scene and resource graph without proving that the first loop, listeners, timeouts, textures, materials, geometry, passes, pipeline resources and renderer backend were retired.
-
-## Required lifecycle contract
+Core World advances semantic cell state, but the visible renderer is a one-time compatibility consumer.
 
 ```txt
-idle -> starting -> running -> stopping/stopped -> disposing/disposed
-                    \-> rolling-back -> failed
+prepare()
+  -> worldSnapshot revision 0
+  -> createLegacyRenderSnapshot()
+  -> createStylizedWorldRenderer(snapshot)
 
-disposed/failed/stopped -> restart -> new sessionEpoch -> starting
+later updateWorldFocus()
+  -> worldSnapshot/provider stores may advance
+  -> no new compatibility snapshot
+  -> no presentation descriptor commit
+  -> no cell resource prepare/update/release
+  -> no render revision acknowledgement
 ```
 
-A future owner must:
+The presentation provider is not the production renderer input. The cell-renderer utilities are not wired to `src/main-cloudform.js`. Current diagnostics expose active-cell counts and provider counts, but not world revision, presentation revision, render revision, fallback kinds, consumed cell IDs, resource deltas, or the last commit result.
 
-- allocate a monotonic session epoch
-- register every acquisition with a reverse-order release closure
-- commit startup only after the complete required graph is ready
-- invoke the same release stack on partial startup failure
-- freeze input and frame admission before teardown
-- clear animation loop, listeners and timeouts
-- retire global host publication
-- dispose post, atmosphere, scene and renderer resources exactly once
-- expose bounded JSON-safe state and recent results
-- reject stale callbacks and commands from previous epochs
-- prove deterministic semantic restart and fresh runtime resource identity
+## Compatibility risk
+
+The bridge uses provider rows only when flattened instance counts equal the complete global graph. Otherwise, it falls back to the global vegetation, rock, or prop graph. This preserves output but can report Core World mode without proving that cell authority reached rendering.
+
+## Existing lifecycle gap
+
+`pagehide` calls `domains.dispose()`, which resets the Core World domain. It does not clear the renderer animation loop, remove listeners, cancel loader timers, dispose scene/GPU resources, dispose the renderer/backend, or retire `globalThis.CozyIsland`.
 
 ## Candidate authority kits
 
 ```txt
 route-session-state-kit
 runtime-session-epoch-kit
-runtime-command-admission-kit
-startup-transaction-kit
 resource-registration-kit
 startup-rollback-kit
-listener-lease-kit
-timeout-lease-kit
-animation-loop-lease-kit
-renderer-resource-owner-kit
-three-resource-disposal-kit
-atmosphere-volume-disposal-kit
-post-pipeline-disposal-kit
-global-host-publication-kit
-runtime-session-result-kit
-runtime-lifecycle-observation-kit
-runtime-lifecycle-fixture-kit
-browser-webgpu-restart-smoke-kit
+listener-timeout-animation-lease-kit
+three-webgpu-disposal-kit
+world-revision-kit
+provider-result-journal-kit
+presentation-descriptor-snapshot-kit
+world-render-command-kit
+world-revision-admission-kit
+cell-render-resource-owner-kit
+cell-render-prepare-kit
+cell-render-update-kit
+cell-render-release-kit
+shared-render-resource-registry-kit
+render-commit-result-kit
+compatibility-render-policy-kit
+world-render-correlation-kit
+world-render-observation-kit
+provider-render-fixture-kit
+browser-cell-lifecycle-smoke-kit
 ```
 
 ## Safe implementation boundaries
 
 ```txt
 1. Runtime Session Lifecycle Authority
-2. Camera Rail Baseline Authority
-3. Terrain Clearing Surface Authority
+2. Core World Render Commit Authority
+3. Camera Rail Baseline Authority
 4. Dynamic Environment Frame Authority
 5. Adaptive Quality Transaction Authority
 ```
 
-Do not add further persistent render resources before the first boundary has an executable disposal and restart gate.
+Do not make the cell renderer visibly authoritative until lifecycle ownership, shadow parity, exact resource deltas, and browser WebGPU/WebGL2 proof exist.

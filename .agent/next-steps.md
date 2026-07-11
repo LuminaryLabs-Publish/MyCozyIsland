@@ -1,193 +1,185 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T09-08-59-04-00`
+Last updated: `2026-07-11T11-10-29-04-00`
 
 ## Summary
 
-The live route now advances lazy cell materialization. The next step is to stop treating aggregate scheduler counters as authority and introduce revisioned provider readiness plus an atomic renderer-cell commit.
+Fix the world reset contract before adding browser restart or cell-aware rendering. A reusable reset must retain or recreate the world definition, clear provider/materializer state exactly once, advance a world generation, and prove fresh preparation.
 
 ## Plan ledger
 
-**Goal:** preserve the working compatibility render while making every materialization step attributable, bounded, failure-safe, stale-resistant, and eligible for visible consumption only after a complete provider-version commit.
+**Goal:** separate reusable reset from terminal disposal and make every recovery step observable, rollback-capable, generation-fenced, and fixture-backed.
 
-- [ ] Complete Runtime Session Lifecycle Authority and expose `sessionId` and `sessionEpoch`.
-- [ ] Complete Pinned Core World Focus Transaction Authority and expose accepted `worldRevision` and `focusRevision`.
-- [ ] Replace the raw helper call with `MaterializationFrameCommand` and `MaterializationFrameResult`.
-- [ ] Attach `cellGeneration` and provider descriptor versions to every staged job.
-- [ ] Reject work from released, reset, replaced, or stale cells.
-- [ ] Add elapsed-time budgeting in addition to row and candidate limits.
-- [ ] Catch provider exceptions and return typed retriable or terminal failures.
-- [ ] Add bounded retry, backoff, and quarantine policy.
-- [ ] Define the canonical required provider set for a render cell.
-- [ ] Commit a monotonic `cellReadinessRevision` only after source-version parity passes.
-- [ ] Include source versions and fingerprint in the presentation descriptor.
-- [ ] Connect ready descriptors to the existing renderer cell cache.
-- [ ] Add atomic prepare, update, release, rollback, and disposal results.
-- [ ] Correlate a committed renderer-cell revision with its first visible frame.
-- [ ] Keep the startup compatibility island until the cell-aware commit is acknowledged.
-- [ ] Add DOM-free and browser fixtures for progress, failure, release, reset, and render consumption.
+- [ ] Add route-level `sessionId` and `sessionEpoch` ownership.
+- [ ] Introduce `WorldResetCommand` with `soft-reset`, `recreate`, and `terminal-dispose` policies.
+- [ ] Reject reset while startup, focus commit, materialization, or render-cell commit is in an unsafe phase.
+- [ ] Capture the admitted world definition and provider order before release.
+- [ ] Advance a monotonic `worldGeneration` before old work can complete.
+- [ ] Freeze focus, materialization, and renderer-cell admission for the old generation.
+- [ ] Collect typed provider release/reset results instead of relying on swallowed failures.
+- [ ] Clear all seven provider stores and materializer jobs exactly once.
+- [ ] For reusable reset, retain or re-register the world definition before prepare.
+- [ ] Prepare the origin and verify 49 active cells and seven provider layers.
+- [ ] Publish `WorldRecoveryResult` with before/after fingerprints and diagnostics.
+- [ ] Roll back or remain blocked when re-registration or prepare fails.
+- [ ] Make terminal disposal idempotent and reject all later commands explicitly.
+- [ ] Correlate renderer state and visible frames with `worldGeneration`.
+- [ ] Add DOM-free reset/re-prepare and browser restart fixtures.
 
 ## Ordered implementation queue
 
 ```txt
 1. Runtime Session Lifecycle Authority
-2. Pinned Core World Focus Transaction Authority
-3. Live Materialization Readiness Commit Authority
-4. Core World Render Commit Authority
-5. Camera Rail Baseline Authority
-6. Dynamic Environment Frame Authority
-7. Adaptive Quality Transaction Authority
+2. Core World Reset / Re-prepare Authority
+3. Pinned Core World Focus Transaction Authority
+4. Live Materialization Readiness Commit Authority
+5. Core World Render Commit Authority
+6. Camera Rail Baseline Authority
+7. Dynamic Environment Frame Authority
+8. Adaptive Quality Transaction Authority
 ```
 
 ## Candidate kits
 
 ```txt
-materialization-frame-command-kit
-materialization-admission-kit
-materialization-epoch-kit
-cell-generation-kit
-materialization-priority-kit
-provider-stage-plan-kit
-row-work-budget-kit
-frame-time-budget-kit
-provider-stage-result-kit
-provider-failure-classification-kit
-materialization-retry-kit
-stale-cell-work-rejection-kit
-provider-readiness-policy-kit
-provider-readiness-set-kit
-cell-readiness-revision-kit
-presentation-readiness-commit-kit
-renderer-cell-plan-kit
-renderer-cell-commit-result-kit
-renderer-cell-rollback-kit
-visible-frame-acknowledgement-kit
-materialization-observation-kit
-materialization-journal-kit
-live-materialization-fixture-kit
-browser-ready-cell-render-smoke-kit
+world-reset-command-kit
+world-reset-admission-kit
+world-reset-policy-kit
+world-generation-kit
+world-definition-checkpoint-kit
+provider-release-plan-kit
+provider-release-result-kit
+provider-store-reset-kit
+materializer-cancellation-kit
+world-reregistration-kit
+world-reprepare-kit
+world-recovery-result-kit
+world-recovery-fingerprint-kit
+world-recovery-journal-kit
+world-recovery-rollback-kit
+world-terminal-disposal-kit
+reset-reprepare-fixture-kit
+browser-world-restart-smoke-kit
 ```
 
-## Materialization command
+## Reset command
 
 ```txt
-MaterializationFrameCommand {
+WorldResetCommand {
   commandId
   sessionId
   sessionEpoch
-  expectedWorldRevision
-  expectedFocusRevision
-  frameSequence
-  cameraMode
-  focus
-  maxCells
-  maxRows
-  maxMilliseconds
+  expectedWorldId
+  expectedWorldGeneration
+  policy
+  reason
+  preserveDefinition
+  restoreFocus
 }
 ```
 
-Reject when:
+Policies:
 
 ```txt
-runtime is not running
-session or epoch is stale
-world or focus revision differs
-focus/budget values are non-finite
-materializer is already executing
-reset or dispose is in progress
+soft-reset
+  release active cells and heavy provider state
+  retain registered definition
+  prepare fresh origin generation
+
+recreate
+  release and remove definition
+  re-register the admitted definition
+  prepare fresh origin generation
+
+terminal-dispose
+  release and remove everything
+  reject future prepare/focus/materialization commands
 ```
 
-## Materialization result
+## Recovery result
 
 ```txt
-MaterializationFrameResult {
+WorldRecoveryResult {
   commandId
   sessionId
   sessionEpoch
-  worldRevision
-  focusRevision
-  frameSequence
+  priorWorldGeneration
+  nextWorldGeneration
+  policy
   status
-  elapsedMilliseconds
-  processed[]
-  completedCells[]
   releasedCells[]
-  failedCells[]
-  pendingCells
-  readinessRevisions[]
+  providerResults[]
+  materializerResult
+  definitionResult
+  prepareResult
+  activeCellCount
+  providerCellCounts
   diagnostics[]
-  resultFingerprint
+  beforeFingerprint
+  afterFingerprint
 }
 ```
 
 Statuses:
 
 ```txt
-idle
-advanced
-completed
-budget-exhausted
+reset-complete
+recreated-and-prepared
+disposed
 rejected-stale
 rejected-state
-failed-retriable
-failed-terminal
+release-failed
+registration-failed
+prepare-failed
+rollback-complete
+blocked
 ```
 
-## Readiness commit
+## Required reset transaction
 
 ```txt
-required provider rows accepted
-  -> verify worldRevision and cellGeneration
-  -> verify provider descriptor versions
-  -> verify terrain/biome/shoreline/population availability
-  -> compute providerReadinessSet fingerprint
-  -> refresh presentation descriptor
-  -> assign cellReadinessRevision
-  -> publish clone-safe result
-```
-
-## Renderer transaction
-
-```txt
-CellReadinessRevision
-  -> build detached RendererCellPlan
-  -> prepare or update Three/WebGPU resources
-  -> validate resource counts and bounds
-  -> commit scene membership atomically
-  -> release replaced resources
-  -> acknowledge first visible frame
-  -> retain rollback record until acknowledgement
+admit command
+  -> mark old generation closing
+  -> freeze focus/materialization/render admission
+  -> checkpoint definition and observable state
+  -> release active cells in reverse provider order
+  -> reset provider stores and materializer
+  -> clear or retain definition according to policy
+  -> register definition when required
+  -> prepare origin
+  -> verify 49 active cells and seven provider stores
+  -> publish new generation and result
+  -> resume admission
 ```
 
 ## Required fixtures
 
 ```txt
-production host advances materialization after compatibility frames
-configured candidate and row budgets hold
-elapsed-time budget stops additional work
-priority is deterministic for identical inputs
-focus movement reprioritizes current cells
-released cell cannot publish a late readiness revision
-reset/dispose rejects old commands
-provider exception becomes typed failure
-retry count and backoff are bounded
-presentation readiness cites all required source versions
-same source versions produce same readiness fingerprint
-renderer prepares each accepted revision once
-renderer rollback leaves compatibility world intact
-released cells dispose resources once
-visible frame cites committed renderer-cell revision
-WebGPU and WebGL2 admission results agree
+prepare -> reset -> prepare succeeds on same wrapper
+fresh generation differs from prior generation
+active cell count returns to 49
+all provider cell counts return to 49
+old materializer jobs cannot publish after reset
+reset after partial terrain rows produces clean providers
+reset after a cell crossing releases prior cells once
+provider release failure is reported
+provider reset failure is reported
+registration failure leaves runtime blocked or rolled back
+prepare failure does not resume rendering/materialization
+terminal dispose is idempotent
+prepare after terminal dispose is rejected
+browser restart owns one animation loop and one listener set
+visible frame identifies the new world generation
 ```
 
 ## Acceptance conditions
 
 ```txt
-no untyped provider exception can terminate the animation loop
-all work is fenced to current session/world/focus/cell identity
-ready means a complete provider version set, not a Boolean marker
-renderer consumes only accepted readiness revisions
-compatibility rendering remains stable during partial or failed work
-resource preparation, commit, rollback, and disposal are observable
-browser proof shows a ready cell becoming visibly committed
+reset and dispose are distinct explicit policies
+no definition-clearing reset can be followed by an unregistered prepare
+all seven providers participate in one observable release/reset result
+all old-generation commands and callbacks are rejected
+reusable reset returns a fully prepared 49-cell world
+terminal dispose permanently closes the wrapper
+renderer and debug readback cite the current world generation
 ```

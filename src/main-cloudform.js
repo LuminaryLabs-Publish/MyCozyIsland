@@ -76,7 +76,9 @@ async function main() {
   await renderer.init();
   const backend = renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2";
   const quality = chooseRenderQuality({ backend });
-  const worldMode = new URLSearchParams(location.search).get("world") === "legacy" ? "legacy" : "core";
+  const worldMode = new URLSearchParams(location.search).get("world") === "legacy"
+    ? "legacy"
+    : "core";
 
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap));
   renderer.setSize(innerWidth, innerHeight, false);
@@ -86,8 +88,17 @@ async function main() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  setLoad(14, worldMode === "core" ? "Registering Core World providers" : "Composing legacy world");
-  const domains = await createCozyIslandWorldRuntime({ backend, quality, mode: worldMode });
+  setLoad(
+    14,
+    worldMode === "core"
+      ? "Registering lightweight Core World cells"
+      : "Composing legacy world"
+  );
+  const domains = await createCozyIslandWorldRuntime({
+    backend,
+    quality,
+    mode: worldMode
+  });
   await domains.prepare();
   const snapshot = domains.createLegacyRenderSnapshot();
   renderer.toneMappingExposure = snapshot.illumination.exposure;
@@ -99,13 +110,25 @@ async function main() {
     snapshot.aerialPerspective.nearStart * 2.5,
     snapshot.aerialPerspective.farEnd
   );
-  const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 3200);
+  const camera = new THREE.PerspectiveCamera(
+    55,
+    innerWidth / innerHeight,
+    0.1,
+    3200
+  );
 
   scene.add(createSky(snapshot.illumination));
 
-  const hemisphere = new THREE.HemisphereLight(0xfff1dd, 0x2e6871, snapshot.illumination.ambientIntensity);
+  const hemisphere = new THREE.HemisphereLight(
+    0xfff1dd,
+    0x2e6871,
+    snapshot.illumination.ambientIntensity
+  );
   scene.add(hemisphere);
-  const sun = new THREE.DirectionalLight(snapshot.illumination.sunColor, snapshot.illumination.sunIntensity);
+  const sun = new THREE.DirectionalLight(
+    snapshot.illumination.sunColor,
+    snapshot.illumination.sunIntensity
+  );
   sun.position.set(-380, 560, 310);
   sun.castShadow = true;
   sun.shadow.mapSize.set(quality.shadowMapSize, quality.shadowMapSize);
@@ -123,12 +146,21 @@ async function main() {
   const worldRenderer = createStylizedWorldRenderer(snapshot);
   scene.add(worldRenderer.group);
 
-  const oceanRenderer = createWebGPUOceanRenderer({ waveState: snapshot.oceanWaves, optics: snapshot.oceanOptics, quality });
+  const oceanRenderer = createWebGPUOceanRenderer({
+    waveState: snapshot.oceanWaves,
+    optics: snapshot.oceanOptics,
+    quality
+  });
   scene.add(oceanRenderer.mesh);
   const foamRenderer = createWebGPUFoamRenderer(snapshot.foam);
   scene.add(foamRenderer.group);
 
-  setLoad(48, backend === "webgpu" ? "Computing cloud and fog volumes on GPU" : "Baking fallback cloud and fog volumes");
+  setLoad(
+    48,
+    backend === "webgpu"
+      ? "Computing cloud and fog volumes on GPU"
+      : "Baking fallback cloud and fog volumes"
+  );
   const volumeTextures = await createAtmosphereVolumeTextures({
     renderer,
     cloudRecipe: snapshot.cloudDensity,
@@ -156,7 +188,13 @@ async function main() {
   });
   scene.add(fogRenderer.group);
 
-  const postPipeline = createWebGPUPostPipeline({ renderer, scene, camera, fogRenderer, quality });
+  const postPipeline = createWebGPUPostPipeline({
+    renderer,
+    scene,
+    camera,
+    fogRenderer,
+    quality
+  });
   const debugOverlay = createDebugOverlay(debugRoot);
 
   let activeScale = 1;
@@ -164,9 +202,17 @@ async function main() {
     activeScale = level === 0 ? 1 : level === 1 ? 0.78 : 0.62;
     cloudRenderer.setStepScale(activeScale);
     fogRenderer.setStepScale(activeScale);
-    postPipeline.setFogResolutionScale(quality.fogResolutionScale * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68));
+    postPipeline.setFogResolutionScale(
+      quality.fogResolutionScale
+        * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68)
+    );
     if (level > 0) {
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)));
+      renderer.setPixelRatio(
+        Math.min(
+          devicePixelRatio || 1,
+          quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)
+        )
+      );
     }
   };
 
@@ -211,23 +257,43 @@ async function main() {
   addEventListener("resize", resize);
   resize();
 
-  setLoad(100, `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · ${worldMode} world ready`);
+  setLoad(
+    100,
+    `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · ${worldMode} world ready`
+  );
   setTimeout(() => {
     if (loader) loader.classList.add("is-complete");
-    setTimeout(() => { if (loader) loader.hidden = true; }, 520);
+    setTimeout(() => {
+      if (loader) loader.hidden = true;
+    }, 520);
   }, 260);
 
   let last = performance.now();
   let frames = 0;
+  let materializationState = domains.getMaterializationState();
+
   renderer.setAnimationLoop(now => {
     const frameMs = Math.min(100, Math.max(0, now - last));
     const dt = Math.min(0.05, frameMs / 1000);
     last = now;
+
     domains.scenario.tick(dt);
     const renderState = domains.scenario.getRenderSnapshot();
-    camera.position.set(renderState.camera.position.x, renderState.camera.position.y, renderState.camera.position.z);
-    camera.lookAt(renderState.camera.lookAt.x, renderState.camera.lookAt.y, renderState.camera.lookAt.z);
-    domains.updateWorldFocus(renderState.camera.position, renderState.camera.mode, dt);
+    camera.position.set(
+      renderState.camera.position.x,
+      renderState.camera.position.y,
+      renderState.camera.position.z
+    );
+    camera.lookAt(
+      renderState.camera.lookAt.x,
+      renderState.camera.lookAt.y,
+      renderState.camera.lookAt.z
+    );
+    domains.updateWorldFocus(
+      renderState.camera.position,
+      renderState.camera.mode,
+      dt
+    );
 
     worldRenderer.update(renderState.clock.elapsedSeconds);
     foamRenderer.update(renderState.clock.elapsedSeconds);
@@ -235,11 +301,22 @@ async function main() {
     postPipeline.render();
 
     frames += 1;
+
+    if (frames > 1) {
+      materializationState = domains.processMaterializationFrame({
+        position: renderState.camera.position,
+        cameraMode: renderState.camera.mode
+      });
+    }
+
     if (frames % 12 === 0) {
       const perf = performanceBudget.getState();
+      const baked = `${materializationState.completedCells ?? 0}/${materializationState.activeCells ?? 0}`;
       debugOverlay.draw({
-        backend: backend === "webgpu" ? `WebGPU compute · ${volumeTextures.source}` : `WebGL2 · ${volumeTextures.source}`,
-        quality: `${quality.tier} (${quality.source}) · ${worldMode}`,
+        backend: backend === "webgpu"
+          ? `WebGPU compute · ${volumeTextures.source}`
+          : `WebGL2 · ${volumeTextures.source}`,
+        quality: `${quality.tier} (${quality.source}) · ${worldMode} · cells ${baked}`,
         fps: perf.fps || 60,
         cloudSteps: cloudRenderer.getSteps(),
         fogSteps: fogRenderer.getSteps(),
@@ -278,7 +355,12 @@ async function main() {
         camera: domains.cameraSequence.descriptor(),
         clock: domains.clock.getState(),
         performance: performanceBudget.getState(),
-        volumetrics: { cloudSteps: cloudRenderer.getSteps(), fogSteps: fogRenderer.getSteps(), activeScale },
+        volumetrics: {
+          cloudSteps: cloudRenderer.getSteps(),
+          fogSteps: fogRenderer.getSteps(),
+          activeScale
+        },
+        materialization: domains.getMaterializationState(),
         kitCount: kitCatalog.length
       };
     }

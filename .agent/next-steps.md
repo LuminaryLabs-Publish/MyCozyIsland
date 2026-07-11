@@ -1,95 +1,152 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T02-02-59-04-00`
+Last updated: `2026-07-11T04-09-54-04-00`
 
 ## Plan ledger
 
-**Goal:** preserve the terrain-relative clearing while making terrain generation, biome derivation, object seating, and render consumption agree on one deterministic terrain revision.
+**Goal:** introduce one runtime-session authority that owns startup, rollback, running, stop, disposal, restart, and stale-session rejection before adding more persistent WebGPU or Three resources.
 
-- [ ] Add a route runtime-session owner for startup, running, stop, dispose, restart, and startup rollback.
-- [ ] Register animation-loop, listeners, timeouts, GPU resources, Three resources, and global host publication with that owner.
-- [ ] Preserve the camera rail as immutable authored data and separate pointer orbit state from authored points.
-- [ ] Add an immutable terrain-clearing descriptor with algorithm revision and fingerprint.
-- [ ] Expose the natural source samples, plateau aggregate, blend thresholds, and surface-variation policy.
-- [ ] Attach one terrain revision to biome, ground-contact, vegetation, rock, prop, campfire, path, and render-snapshot outputs.
-- [ ] Add typed consumer results with `applied`, `unchanged`, `skipped`, or `rejected`.
-- [ ] Add deterministic continuity checks across the inner clearing, fence radius, blend edge, and source-sample ring.
-- [ ] Prove fence posts, rails, campfire, player baseline, grass, and paths seat against the same terrain revision.
-- [ ] Prove render terrain positions and placement snapshots share one terrain fingerprint.
-- [ ] Add a DOM-free terrain-layer coherence fixture to `npm test`.
-- [ ] Add a browser smoke that reads terrain revision and consumer rows without exposing live renderer objects.
-- [ ] Add dynamic environment-frame authority only after terrain and camera reset identities are stable.
-- [ ] Implement adaptive-quality transactions only after lifecycle and semantic consumer provenance exist.
+- [ ] Add a route-session state machine with `idle`, `starting`, `running`, `stopping`, `stopped`, `disposing`, `disposed`, `rolling-back`, and `failed` states.
+- [ ] Allocate a monotonic `sessionEpoch` for every startup attempt that reaches resource acquisition.
+- [ ] Wrap startup in a transaction that records every acquired resource and release function in order.
+- [ ] Roll back acquired resources in reverse order when startup fails.
+- [ ] Replace anonymous canvas/window callbacks with removable listener leases.
+- [ ] Track and cancel both loader completion timeouts.
+- [ ] Own exactly one renderer animation-loop lease and clear it before teardown.
+- [ ] Add a resource registry for renderer, scene, geometry, materials, 2D/3D textures, storage textures, compute nodes, passes, pipeline resources, lights, shadow resources, listeners, timers, and globals.
+- [ ] Add explicit `dispose()` contracts to world, grass, ocean, foam, atmosphere-volume, cloud, fog, post, debug, and host adapters.
+- [ ] Deduplicate shared geometry, material, and texture disposal by identity.
+- [ ] Retire or tombstone `globalThis.CozyIsland` without retaining live renderer/service objects.
+- [ ] Add typed start, stop, dispose, restart, rollback, and stale-session results.
+- [ ] Add bounded JSON-safe lifecycle and resource readback.
+- [ ] Add a DOM-free runtime-lifecycle fixture to `npm test`.
+- [ ] Add a browser WebGPU/WebGL2 repeated-restart smoke.
+- [ ] Preserve camera, terrain, environment, and quality authority work behind the lifecycle gate.
 
 ## Immediate implementation slice
 
 ```txt
-MyCozyIsland Terrain Clearing Surface Authority
-+ Edge/Seating/Layer-Coherence Fixture Gate
+MyCozyIsland Runtime Session Lifecycle Authority
++ WebGPU Resource Disposal and Restart Fixture Gate
 ```
-
-Runtime lifecycle remains first and camera reset remains second. This terrain slice is the first world-layer contract after those foundations.
 
 ## Candidate kits
 
 ```txt
-terrain-source-revision-kit
-terrain-clearing-descriptor-kit
-terrain-source-sample-kit
-terrain-plateau-aggregation-kit
-terrain-blend-policy-kit
-terrain-surface-variation-kit
-terrain-field-frame-kit
-terrain-biome-consumer-kit
-ground-contact-consumer-kit
-world-placement-consumer-kit
-terrain-render-consumer-kit
-terrain-consumer-result-kit
-terrain-layer-observation-kit
-terrain-layer-coherence-fixture-kit
+route-session-state-kit
+runtime-session-epoch-kit
+runtime-command-admission-kit
+startup-transaction-kit
+resource-registration-kit
+startup-rollback-kit
+listener-lease-kit
+timeout-lease-kit
+animation-loop-lease-kit
+renderer-resource-owner-kit
+three-resource-disposal-kit
+atmosphere-volume-disposal-kit
+post-pipeline-disposal-kit
+global-host-publication-kit
+runtime-session-result-kit
+runtime-lifecycle-observation-kit
+runtime-lifecycle-fixture-kit
+browser-webgpu-restart-smoke-kit
 ```
 
-## Minimum clearing descriptor
+## Minimum session state
 
 ```txt
-terrainRevision
-algorithmVersion
+sessionId
+sessionEpoch
+startupAttemptId
+status
 seed
-clearingRadius
-sourceSampleRadius
-sourceSamples[]
-plateauHeight
-innerBlendRadius
-outerBlendRadius
-variationSeed
-variationAmplitude
-fingerprint
+optionsFingerprint
+sourceFingerprint
+resourceRegistryFingerprint
+frameIndex
+activeLoop
+listenerLeaseCount
+timeoutLeaseCount
+resourceCountsByKind
+terminalReason
+lastResult
+recentResults
+```
+
+## Required start result
+
+```txt
+commandId
+sessionEpoch
+status: accepted | unchanged | rejected | failed
+reason
+beforeLifecycle
+afterLifecycle
+acquiredCount
+rolledBackCount
+remainingCount
+sourceFingerprint
+resourceRegistryFingerprint
+```
+
+## Required disposal order
+
+```txt
+freeze new input/frame admission
+  -> clear renderer animation loop
+  -> remove listeners and release pointer capture
+  -> cancel timeouts
+  -> stop performance/debug/global publication
+  -> dispose post pipeline and passes
+  -> dispose cloud/fog consumers
+  -> dispose 3D/storage textures and compute resources
+  -> dispose foam/ocean/world/grass/sky scene resources
+  -> dispose lights and shadow resources
+  -> clear scene references
+  -> dispose renderer/backend
+  -> mark epoch disposed
 ```
 
 ## Required fixture assertions
 
 ```txt
-same seed + same options => identical descriptor and fingerprint
-plateau height equals the declared source-sample aggregate
-inner clearing variation remains within the declared budget
-height and normal changes remain bounded across the blend edge
-fence radius is explicitly covered by the edge fixture
-campfire and every fence post cite the same terrain revision
-ground-contact and biome samples cite the same terrain revision
-placement graphs and render snapshot reject stale terrain revisions
-terrain grid vertices match authoritative height samples at probe coordinates
-biome weights remain normalized through center, edge, beach, and slope probes
-algorithm revision changes invalidate dependent cached snapshots
-bounded JSON readback contains no live functions or Three objects
+start from idle succeeds exactly once
+start while running returns rejected or unchanged
+failure after each acquisition step rolls back only acquired rows
+rollback release order is reverse acquisition order
+one release failure does not stop remaining rollback
+stop freezes frame, clock and input revisions
+first dispose releases all owned resources once
+second dispose is unchanged and non-throwing
+restart increments sessionEpoch
+old callbacks and commands are rejected
+same seed/options preserve semantic source fingerprint
+new runtime resource identities are disjoint from retired epoch
+one listener set, one timeout set, one animation loop and one global host remain active
+bounded observation contains no live functions, Three objects, renderer, scene, materials, textures or pipeline objects
+```
+
+## Ordered follow-up slices
+
+```txt
+2. Camera Rail Baseline Authority
+   + Drag/Reset Fidelity Fixture Gate
+
+3. Terrain Clearing Surface Authority
+   + Edge/Seating/Layer-Coherence Fixture Gate
+
+4. Dynamic Environment Frame Authority
+   + Clock/Wind/Illumination Consumer Coherence Fixture Gate
+
+5. Adaptive Quality Transaction Authority
+   + Full-Recovery Fixture Gate
 ```
 
 ## Deferred
 
-- further plateau, clearing-radius, blend, soil, grass, or fence tuning
-- erosion and terrain-system replacement
-- visual lighting, sky, cloud, fog, ocean, wind, and campfire retuning
-- dynamic weather transitions or new presets
+- more terrain, grass, vegetation, rock, fence, ocean, cloud, fog, sky, lighting, post-processing, or quality work
 - renderer replacement
-- new quality tiers
 - new island content
-- public kit promotion before local fixture proof
+- public kit promotion
+- restart implemented as an unguarded second call to `main()`

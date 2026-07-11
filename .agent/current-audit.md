@@ -1,97 +1,97 @@
-# Current Audit: MyCozyIsland Runtime Session Lifecycle Authority
+# Current Audit: MyCozyIsland Browser Startup Admission and Failure Rollback
 
-Last updated: `2026-07-11T17-50-37-04-00`
+Last updated: `2026-07-11T19-20-22-04-00`
 
 ## Summary
 
-`MyCozyIsland` constructs one browser runtime in `main()`, but no parent authority owns it as a session. The route creates a renderer loop, browser listeners, loader timers, Core World state, scenario state, scene resources, volume textures, post processing, quality callbacks and a raw global readback.
+`MyCozyIsland` performs browser startup as one sequential `main()` procedure. It has no startup transaction identity, phase model, acquisition ledger, rollback plan or first-frame commit result. `main().catch(fail)` only reports the exception in the DOM, leaving any renderer, world, scene, volume, post, callback, timer or loop ownership acquired before the failure without an authoritative cleanup path.
 
-The once-only `pagehide` handler calls only `domains.dispose()`. This resets Core World and materialization state, but it does not stop rendering, remove listeners, cancel timers, retire render resources, clear input/scenario state or revoke `globalThis.CozyIsland`. A persisted page can therefore resume with retained render/scenario state and a reset world runtime.
+The Core World wrapper has a second concrete defect: `prepare()` sets `prepared = true` before `commitFocus()` succeeds. A thrown focus/provider update can leave the runtime reporting prepared while `worldSnapshot` is null, and a retry can immediately return that null state without attempting preparation again.
 
 ## Plan ledger
 
-**Goal:** define one runtime session identity and lifecycle transaction across browser events, callbacks, world state, scene/GPU resources, diagnostics and restart evidence.
+**Goal:** define one startup authority that admits configuration, records every acquired capability, commits only after a valid first frame, and restores a retryable baseline on failure.
 
-- [x] Compare the full Publish inventory and exclude Cavalry of Rome.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` through the oldest eligible rule.
-- [x] Read the browser route, world runtime, renderer factories, tests and retained audits.
-- [x] Trace startup, animation, input, resize, timers and page lifecycle behavior.
+- [x] Compare the full Publish inventory and exclude `TheCavalryOfRome`.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` through the oldest eligible central rule.
+- [x] Read the active browser route, world runtime, package scripts and retained audits.
+- [x] Trace startup from catalog validation through global-host publication.
 - [x] Identify all active domains, providers, kits and services.
-- [x] Identify the mixed-session pagehide/pageshow defect.
-- [x] Define session, generation, ownership, retirement and restart contracts.
+- [x] Identify partial resource leakage and poisoned world prepare state.
+- [x] Define startup transaction, acquisition ledger, rollback and retry contracts.
+- [x] Define first-frame and phase-failure fixture gates.
 - [x] Change documentation only.
-- [ ] Implement and execute the lifecycle authority.
+- [ ] Implement and execute startup authority.
 
 ## Runtime identity
 
 ```txt
-route:                src/main-cloudform.js?v=core-world-3
+route:                index.html -> src/main-cloudform.js?v=core-world-3
 package:              0.3.1
 Three.js:             0.185.0
 NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
 world id:             world:cozy-island-webgpu-v3
 local kits:           50
 providers:            7
-animation owner:      WebGPURenderer.setAnimationLoop
-page exit behavior:   domains.dispose() only
+startup owner:        main() procedural control flow
+error owner:          fail(error) DOM projection only
 ```
 
 ## Interaction loop
 
 ```txt
-startup
+module boot
+  -> resolve DOM nodes
   -> validate catalog
-  -> create renderer and quality
-  -> create/prepare world runtime
-  -> create scene, camera, sky and lights
-  -> create world, ocean, foam, cloud, fog and post resources
-  -> install browser listeners and loader timers
-  -> start animation loop
-  -> install pagehide callback
-  -> publish global readback
+  -> construct/init renderer
+  -> select backend, quality and world mode
+  -> create Core World runtime and providers
+  -> prepare initial world
+  -> create snapshot, scene, camera, sky and lights
+  -> create world/ocean/foam renderers
+  -> create atmosphere textures
+  -> create cloud/fog renderers and post pipeline
+  -> create performance budget
+  -> install listeners and timers
+  -> install animation loop and pagehide callback
+  -> publish CozyIsland host
 
-frame
-  -> sample dt
-  -> tick scenario
-  -> update camera and world focus
-  -> update presentation
-  -> sample performance
-  -> render post pipeline
-  -> process materialization
-  -> update diagnostics
-
-pagehide
-  -> domains.dispose()
-  -> world/materializer reset
-  -> loop, listeners, timers, render resources and global references remain
+startup error
+  -> main rejects
+  -> fail(error) logs and displays text
+  -> no rollback or retry result
 ```
 
 ## Domains in use
 
 ```txt
 browser startup and DOM projection
-renderer backend and startup quality
-runtime session and page lifecycle
-animation-loop and frame ownership
-input, resize, pointer capture and loader timing
-Core World registration, providers, focus, reset and diagnostics
-lazy materialization and query
-camera rail, first-person scenario and environment clock
-terrain, biome, shoreline, contact and paths
+catalog, query-mode and pinned-import admission
+renderer backend initialization and quality selection
+Core World construction, provider registration, focus and prepare
+runtime startup/session lifecycle
+lazy materialization and world query
+camera rail, first-person input and scenario
+terrain, biome, shoreline, ground contact and paths
 vegetation, rock, prop, grass and campfire population
 ocean, foam, caustics and underwater state
 clouds, fog, weather, wind, illumination and aerial perspective
 scene graph, GPU resources and post processing
-adaptive performance and quality mutation
-debug readback, validation and Pages deployment
+performance sampling and adaptive quality
+browser listeners, pointer capture, resize and timers
+animation-loop and first-frame ownership
+diagnostics, tests and Pages deployment
 ```
 
 ## Providers
 
 ```txt
 FOUNDATION:      cozy-island-terrain-provider
-CLASSIFICATION:  biome-classification-provider, shoreline-classification-provider
-POPULATION:      vegetation-provider, rock-provider, prop-provider
+CLASSIFICATION:  biome-classification-provider
+                 shoreline-classification-provider
+POPULATION:      vegetation-provider
+                 rock-provider
+                 prop-provider
 PRESENTATION:    cell-presentation-provider
 ```
 
@@ -164,110 +164,106 @@ defineWorldEffectProvider
 ## Main findings
 
 ```txt
-runtime session ID: absent
-session generation: absent
-lifecycle state machine: absent
-animation-loop lease and explicit stop: absent
-listener identity/removal registry: absent
-timeout ownership/cancellation: absent
-persisted pagehide/pageshow policy: absent
-stale callback fence: absent
-scene/post/volume/renderer retirement transaction: absent
-global readback revocation: absent
-restart transaction and first new frame receipt: absent
+startup transaction ID: absent
+startup lifecycle phase: absent
+config/import admission result: absent
+acquisition ledger: absent
+capability identities and dependency graph: absent
+partial-failure rollback: absent
+reverse-order retirement: absent
+rollback receipts: absent
+retry eligibility/result: absent
+first-frame startup commit: absent
+production startup failure injection: absent
 ```
 
-Source-backed mixed-state path:
+### Partial ownership path
 
 ```txt
-running page
-  -> pagehide calls domains.dispose()
-  -> Core World prepared=false and materializer reset
-  -> renderer callback and scenario remain retained
-  -> potential bfcache resume has no pageshow admission
-  -> frame work can continue against reset world state
+renderer/world/resources acquired
+  -> later constructor or first render throws
+  -> fail(error) changes only DOM text
+  -> acquired browser/GPU/semantic ownership remains unretired
 ```
 
-The whole-island compatibility renderer can hide this split because it retains the startup snapshot. A future cell-aware renderer would expose stale or missing content more directly.
+### Poisoned prepare path
+
+```txt
+prepare()
+  -> prepared = true
+  -> commitFocus throws
+  -> worldSnapshot remains null
+  -> later prepare returns null because prepared is already true
+```
 
 ## Required parent domain
 
 ```txt
-cozy-island-runtime-session-lifecycle-authority-domain
+cozy-island-browser-startup-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-runtime-session-id-kit
-runtime-session-generation-kit
-runtime-lifecycle-state-kit
-lifecycle-command-envelope-kit
-lifecycle-command-admission-kit
-animation-loop-lease-kit
-page-lifecycle-adapter-kit
-bfcache-policy-kit
-event-listener-registry-kit
-timeout-registry-kit
-renderer-resource-registry-kit
-scene-resource-inventory-kit
-stale-callback-fence-kit
-runtime-stop-transaction-kit
-runtime-dispose-transaction-kit
-core-world-retirement-adapter-kit
-gpu-resource-retirement-kit
-global-readback-revocation-kit
-runtime-restart-transaction-kit
-lifecycle-result-kit
-lifecycle-journal-kit
-first-restarted-frame-ack-kit
-runtime-lifecycle-fixture-kit
-browser-pagehide-pageshow-smoke-kit
+startup-transaction-id-kit
+startup-phase-kit
+startup-config-admission-kit
+pinned-import-admission-kit
+backend-init-result-kit
+startup-acquisition-ledger-kit
+startup-capability-lease-kit
+world-prepare-transaction-kit
+startup-resource-descriptor-kit
+startup-callback-lease-kit
+first-frame-readiness-kit
+startup-commit-result-kit
+startup-failure-result-kit
+startup-rollback-plan-kit
+reverse-order-retirement-kit
+retry-baseline-kit
+startup-observation-kit
+startup-journal-kit
+startup-failure-injection-fixture-kit
+browser-backend-startup-smoke-kit
 ```
 
-## Required lifecycle transaction
+## Required startup transaction
 
 ```txt
-StopCommand
-  -> admit session/generation/state
-  -> revoke new frame/input/world/quality work
-  -> renderer.setAnimationLoop(null)
-  -> fence old callbacks
-  -> release pointer state and clear input
-  -> cancel timers and remove listeners
-  -> publish stopped result
+StartCommand
+  -> validate catalog, DOM, query mode and pinned imports
+  -> create transaction and enter STARTING
+  -> acquire capabilities one by one into a ledger
+  -> prepare world through atomic candidate/commit semantics
+  -> install callbacks and loop under recorded leases
+  -> render first valid frame
+  -> publish StartupCommitResult and enter RUNNING
 
-DisposeCommand
-  -> stop first when needed
-  -> inventory and retire post/volume/scene/renderer resources
-  -> dispose Core World, providers and materializer
-  -> reset scenario/input ownership
-  -> revoke global readback
-  -> publish retirement receipts and final fingerprint
-
-RestartCommand
-  -> create new sessionId/generation
-  -> run admitted startup construction
-  -> install one listener/timer/loop set
-  -> prepare world and scenario baseline
-  -> render and acknowledge first new-generation frame
+failure
+  -> freeze acquisition
+  -> classify failed phase
+  -> retire acquired capabilities in reverse dependency order
+  -> restore prepared=false and clean public baseline
+  -> publish StartupFailureResult and rollback receipts
+  -> permit retry only after mandatory lease count reaches zero
 ```
 
 ## Required fixtures
 
 ```txt
-one animation-loop lease per running session
-stop during frame work
-late input/resize/timer rejection
-persisted pagehide/pageshow
-non-persisted pagehide disposal
-duplicate stop and dispose
-resource retirement counts and exactly-once disposal
-Core World/materializer retirement
-restart generation monotonicity
-old generation cannot update new observation
-first resumed/restarted frame generation parity
-WebGPU and WebGL2 lifecycle parity
+catalog/backend/import failure
+Core World creation/provider registration failure
+initial focus/world update failure
+materializer sync failure
+world/ocean/foam renderer failure
+volume/cloud/fog/post failure
+callback/timer/loop failure
+first-frame failure
+rollback order and exactly-once retirement
+prepare failure then clean retry
+no global host before commit
+WebGPU/WebGL2 result parity
+first committed frame parity
 ```
 
 ## Ordered queue
@@ -284,4 +280,4 @@ WebGPU and WebGL2 lifecycle parity
 9. Adaptive Quality Transaction Authority
 ```
 
-Runtime session lifecycle remains second because every downstream command, world revision, materialization job, quality transition and frame receipt needs a stable live-session identity and stale-work fence.
+Startup authority remains first because every runtime session, world revision, callback lease, resource identity and committed frame must originate from a successfully admitted startup transaction.

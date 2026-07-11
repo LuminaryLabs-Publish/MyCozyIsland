@@ -1,91 +1,77 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T04-09-54-04-00`
+Last aligned: `2026-07-11T05-10-36-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: establish one route-owned runtime session that can start, stop, roll back, dispose, and restart the WebGPU scene without leaked listeners, timers, animation loops, GPU resources, or stale global state.
+Current focus: reconcile the newly deployed NexusEngine Core World provider lifecycle with the visible Three/WebGPU render graph while preserving the existing lifecycle, rollback, and visual-parity gates.
 
 ## Plan ledger
 
-**Goal:** document the complete 50-kit route and define the first implementation gate around runtime-session identity, resource ownership, ordered disposal, and deterministic restart.
+**Goal:** document the post-`0e30393b` Core World migration, identify the interaction loop, domains, services, and complete kit graph, and define the authority boundary required for provider cells to become auditable render resources.
 
 - [x] Compare the complete accessible `LuminaryLabs-Publish` inventory with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories are tracked and have root `.agent` state.
-- [x] Select only `MyCozyIsland` as the oldest eligible documented repository.
-- [x] Read route startup, renderer factories, browser side effects, package scripts, tests, and prior audits.
-- [x] Reconfirm the interaction loop, domains, services, and all 50 implemented kits.
-- [x] Trace startup, partial failure, running, stop, disposal, restart, and stale-session admission.
-- [x] Add timestamped architecture, render, gameplay, interaction, lifecycle, and deployment audits.
-- [x] Refresh all required root `.agent` files.
-- [x] Change no runtime source, dependency, route behavior, rendering, or deployment configuration.
+- [x] Confirm all nine eligible repositories remain tracked and have root `.agent` state.
+- [x] Select only `MyCozyIsland` because a production runtime migration landed after its previous audit.
+- [x] Read the route host, Core World runtime, provider bridge, catalog, migration guide, package scripts, and renderer-cell fixtures.
+- [x] Identify the interaction loop, all active domains, all local kits, imported NexusEngine services, provider modules, runtime adapters, and validation services.
+- [x] Trace Core World focus, provider prepare/update/release, presentation descriptors, compatibility bridging, and visible renderer consumption.
+- [x] Add timestamped architecture, render, gameplay, interaction, world-provider, and deploy audits.
+- [x] Refresh all required root `.agent` documents and the kit registry.
+- [x] Change no runtime source, package dependency, route behavior, rendering, or deployment configuration.
 - [x] Create no branch or pull request.
 
 ## Selection result
 
-All nine eligible non-Cavalry repositories were already tracked and documented. At selection, the central timestamps were:
+All nine eligible non-Cavalry repositories were already documented. `MyCozyIsland` took priority over the oldest-documented fallback because the source changed after its prior alignment:
 
 ```txt
-MyCozyIsland       2026-07-11T02-02-59-04-00  selected
-AetherVale         2026-07-11T02-10-13-04-00
-IntoTheMeadow      2026-07-11T02-28-12-04-00
-PrehistoricRush    2026-07-11T02-48-17-04-00
-TheOpenAbove       2026-07-11T03-01-38-04-00
-HorrorCorridor     2026-07-11T03-18-44-04-00
-PhantomCommand     2026-07-11T03-41-49-04-00
-ZombieOrchard      2026-07-11T03-48-31-04-00
-TheUnmappedHouse   2026-07-11T04-00-07-04-00
-TheCavalryOfRome   excluded
+previous alignment: 2026-07-11T04-09-54-04-00
+runtime commit:     0e30393bfd433a23bf207c8c87d5defd44aed69a
+change:             migrate Cozy Island to Core World providers
 ```
 
-No new, ledger-missing, root-`.agent`-missing, or recently added undocumented repository took precedence. Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization during this pass.
+Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization during this pass.
 
 ## Current route
 
 ```txt
 index.html
-  -> Three/WebGPU 0.185.0 import map
-  -> src/main-cloudform.js?v=webgpu-volumetric-2
-  -> validate exactly 50 DomainServiceKit descriptors
-  -> initialize WebGPU or WebGL2 renderer and startup quality
-  -> compose deterministic world and environment source graph
-  -> create scenario, camera, scene, sky, lights and all render consumers
-  -> install wheel, pointer, keyboard, blur and resize listeners
-  -> schedule loader completion timeouts
-  -> renderer.setAnimationLoop
-  -> scenario tick, camera projection, world/foam update, performance sample and post render
-  -> globalThis.CozyIsland publishes live runtime objects
+  -> Three/WebGPU 0.185.0
+  -> NexusEngine 38229f59c22cb40024ffd13a9f48040de759f5d7
+  -> src/main-cloudform.js?v=core-world-1
+  -> validate exactly 50 local kit descriptors
+  -> choose WebGPU/WebGL2 backend and startup quality
+  -> createCozyIslandWorldRuntime(core by default, legacy rollback available)
+  -> register Core World, 48 m grid, flat surface, and seven ordered providers
+  -> prepare 49 active cells around the island
+  -> create one compatibility render snapshot
+  -> create the whole-island world/ocean/foam/cloud/fog/post graph
+  -> register wheel, pointer, keyboard, blur, resize, timers, and animation loop
+  -> scenario/camera tick
+  -> update Core World focus and provider stores
+  -> update the original renderer by elapsed time only
+  -> render post pipeline and publish CozyIsland diagnostics
 ```
 
-## Newly documented lifecycle finding
+## Newly documented finding
 
-`main()` is the effective owner of the complete route, but it returns no runtime-session handle. It acquires browser and GPU resources through local variables, installs anonymous side effects, starts the animation loop, publishes live objects globally, and has no common release path.
+Core World now owns semantic world-cell lifecycle, but the production renderer does not consume that lifecycle.
+
+`domains.createLegacyRenderSnapshot()` is called once after initial preparation. `createStylizedWorldRenderer(snapshot)` then builds one whole-island graph. Later `domains.updateWorldFocus()` can advance active cells and provider stores, but it emits no presentation commit to `worldRenderer`.
 
 ```txt
-startup
-  -> no acquisition journal
-  -> no startup transaction
-  -> no partial-failure rollback
-  -> no session epoch
+semantic authority
+  focus -> world revision -> provider prepare/update/release -> presentation descriptors
 
-running
-  -> no stop
-  -> no stale-callback admission
-
-teardown
-  -> no listener removal
-  -> no timeout cancellation
-  -> no animation-loop clear
-  -> no scene/resource disposal
-  -> no renderer disposal
-  -> no global-host tombstone
-
-restart
-  -> no old-session retirement proof
+visible authority
+  startup compatibility snapshot -> one whole-island graph -> elapsed-time update
 ```
 
-Renderer factories expose operational handles but no shared `dispose()` contract. Geometry, materials, 2D/3D textures, storage textures, compute nodes, passes, pipeline resources, shadow resources, listeners, timers, and the renderer backend have no authoritative owner.
+The new renderer-cell cache, disposal, and world-cell controllers are present and have isolated utility fixtures, but `src/main-cloudform.js` does not wire them into the production route. The compatibility bridge can also silently fall back to the original global vegetation, rock, or prop graph when active-cell counts do not equal the full graph.
+
+The seven-by-seven island-centered active set and central-clearing movement currently mask most visible differences. They do not prove provider/render revision parity, exact cell resource prepare/update/release, or browser disposal safety.
 
 ## Ordered safe ledges
 
@@ -93,39 +79,39 @@ Renderer factories expose operational handles but no shared `dispose()` contract
 1. Runtime Session Lifecycle Authority
    + WebGPU Resource Disposal and Restart Fixture Gate
 
-2. Camera Rail Baseline Authority
+2. Core World Render Commit Authority
+   + Provider/Cell Consumer Fidelity Fixture Gate
+
+3. Camera Rail Baseline Authority
    + Drag/Reset Fidelity Fixture Gate
 
-3. Terrain Clearing Surface Authority
-   + Edge/Seating/Layer-Coherence Fixture Gate
-
 4. Dynamic Environment Frame Authority
-   + Clock/Wind/Illumination Consumer Coherence Fixture Gate
+   + Consumer Coherence Fixture Gate
 
 5. Adaptive Quality Transaction Authority
    + Full-Recovery Fixture Gate
 ```
 
+Lifecycle remains first because a cell-aware renderer introduces more dynamic GPU and Three resource churn and should reuse one authoritative resource registry.
+
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T04-09-54-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T04-09-54-04-00.md
-.agent/architecture-audit/2026-07-11T04-09-54-04-00-runtime-session-resource-authority-dsk-map.md
-.agent/render-audit/2026-07-11T04-09-54-04-00-webgpu-resource-disposal-restart-gap.md
-.agent/gameplay-audit/2026-07-11T04-09-54-04-00-start-stop-restart-scenario-loop.md
-.agent/interaction-audit/2026-07-11T04-09-54-04-00-listener-timeout-session-admission-map.md
-.agent/lifecycle-audit/2026-07-11T04-09-54-04-00-route-session-epoch-disposal-contract.md
-.agent/deploy-audit/2026-07-11T04-09-54-04-00-runtime-lifecycle-fixture-gate.md
+.agent/trackers/2026-07-11T05-10-36-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T05-10-36-04-00.md
+.agent/architecture-audit/2026-07-11T05-10-36-04-00-core-world-render-commit-dsk-map.md
+.agent/render-audit/2026-07-11T05-10-36-04-00-cell-lifecycle-whole-island-render-gap.md
+.agent/gameplay-audit/2026-07-11T05-10-36-04-00-focus-provider-render-loop.md
+.agent/interaction-audit/2026-07-11T05-10-36-04-00-focus-command-render-result-map.md
+.agent/world-provider-audit/2026-07-11T05-10-36-04-00-provider-cell-consumption-contract.md
+.agent/deploy-audit/2026-07-11T05-10-36-04-00-provider-render-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- more cloud, fog, ocean, grass, terrain, lighting, post-processing, or quality resources
-- renderer replacement
-- new island content
-- more camera or visual tuning
-- runtime restart by simply calling `main()` again
-- public kit promotion before lifecycle fixture proof
-
-Every later authority slice should bind to a stable session epoch and disposal path.
+- new island content, expanded movement, or additional streamed regions
+- removal of `?world=legacy`
+- visible cell-renderer cutover without shadow parity
+- more persistent WebGPU/Three resources before lifecycle ownership
+- changes to terrain, biome, placement, cloud, fog, ocean, grass, or quality algorithms
+- public kit promotion before browser lifecycle and parity proof

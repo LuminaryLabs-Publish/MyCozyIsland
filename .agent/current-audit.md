@@ -1,22 +1,21 @@
-# Current Audit: MyCozyIsland Core World Focus Transaction Authority
+# Current Audit: MyCozyIsland Lazy Cell Materialization Authority
 
-Last updated: `2026-07-11T08-41-02-04-00`
+Last updated: `2026-07-11T08-58-02-04-00`
 
 ## Summary
 
-The Core World wrapper is deterministic on the normal path, but focus movement is not one transaction. Wrapper bookkeeping changes before the pinned runtime finishes, `setFocus()` and `updateWorld()` are separate production commits, provider stores mutate during the update, results collapse to Boolean, and current tests exercise only a materially simpler fake runtime.
+The runtime now separates lightweight Core World registration from heavy terrain, biome, shoreline, and presentation materialization. The staged scheduler is deterministic and row-bounded in isolation, but it is not called by the live browser host. Production therefore registers queued descriptors, builds the compatibility island, and renders forever without advancing the new materialization state.
 
 ## Plan ledger
 
-**Goal:** define a retriable focus transaction whose accepted result correlates wrapper state, production Core World state, provider-store state and the world revision available to rendering.
+**Goal:** document the complete lazy-world path and define the smallest authority boundary required to start it after the first committed frame, fence it to current world state, classify failures, and publish render-consumable readiness.
 
-- [x] Reconcile the full Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` after avoiding active writes on the nominal oldest target.
-- [x] Trace route startup and the per-frame camera-to-focus path.
-- [x] Read the pinned production Core World builder at commit `38229f59c22cb40024ffd13a9f48040de759f5d7`.
-- [x] Compare production selection, provider and rollback behavior with the local fake runtime.
-- [x] Identify every active domain, service group and kit.
-- [x] Define command, result, revision, checkpoint, rollback and fixture boundaries.
+- [x] Reconcile all accessible Publish repositories with the central ledger.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` due to new undocumented runtime commits.
+- [x] Read route, wrapper, scheduler, terrain, biome, shoreline, presentation, configuration, and test sources.
+- [x] Identify the interaction loop, domains, kits, and services.
+- [x] Verify the live route has no materialization-frame call.
+- [x] Define admission, budget, epoch, readiness, failure, observation, and render-handoff boundaries.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
@@ -29,156 +28,114 @@ world mode:          core by default
 rollback mode:       ?world=legacy
 world id:            world:cozy-island-webgpu-v3
 world seed:          cozy-island-webgpu-v2
-partition:           48 m uniform grid, radius 3
+partition:           48 m grid, radius 3
 initial cells:       49
 provider count:      7
 local kit count:     50
+package version:     0.3.1
 ```
 
 ## Interaction loop
 
 ```txt
 route boot
-  -> resolve pinned modules
-  -> validate kit catalog
-  -> initialize renderer/backend
+  -> pinned module admission
+  -> kit-catalog validation
+  -> renderer/backend startup
   -> createCozyIslandWorldRuntime()
   -> prepare()
-       prepared = true
-       commitFocus(origin)
-  -> create startup compatibility snapshot
-  -> build static whole-island render graph
-  -> register input and animation loop
+       Core World registers 49 cells
+       terrain/biome/shoreline descriptors remain queued
+  -> createLegacyRenderSnapshot()
+  -> build whole-island compatibility render graph
+  -> register input and renderer animation loop
   -> frame:
        scenario.tick(dt)
-       read camera render snapshot
-       apply camera transform
-       updateWorldFocus(camera.position, camera.mode, dt)
-       update world/foam time uniforms
-       sample quality
-       render post pipeline
-       project diagnostics
+       camera projection
+       updateWorldFocus(camera, mode, dt)
+       world/foam updates
+       post render
+       diagnostics
+       no lazy materialization step
 ```
 
-Player interaction remains scroll-to-descend, pointer drag, WASD movement inside the clearing, H diagnostics, blur key clearing and viewport resize.
+## Implemented lazy service path
 
-## Focus path
+`createLazyCellMaterializer()` provides:
 
 ```txt
-updateWorldFocus(position, mode, dt)
-  -> accumulate elapsed focus time
-  -> choose camera position only in first-person mode
-  -> locate target cell
-  -> compare target cell, elapsed interval and movement threshold
-  -> commitFocus(target)
-       wrapper lastFocus = target
-       engine.n.coreWorld.setFocus(worldId, target)
-       engine.n.coreWorld.updateWorld(worldId)
-       wrapper worldSnapshot = returned snapshot
-       wrapper lastCellKey = target cell
-       wrapper focusAccumulator = 0
-  -> return true
+sync active cell identities
+remove released scheduler rows
+prioritize by LOD, focus distance, stable cell ID
+advance at most maxCellsPerFrame candidates
+terrain -> biome -> shoreline -> presentation -> done
+report frames, workSteps, active, completed, pending, progress, per-cell stage
+reset scheduler state
 ```
 
-The normal path gives a stable 49-cell active set. The failure path is not represented.
-
-## Production Core World contract
-
-The pinned Core World domain owns world identity, partitions, cells, surfaces, effect descriptors, provider contracts, composition and snapshots. Its builder:
-
-- validates world and provider definitions;
-- commits `setFocus()` independently as `focusChanged`;
-- derives `required`, `updated`, `retained` and `released` cells;
-- releases providers in reverse order;
-- prepares and updates providers in phase order;
-- validates capabilities and records diagnostics;
-- rolls back providers prepared for a failed new cell;
-- marks cells `active` or `failed`;
-- commits cell state separately as `cellsChanged`;
-- rejects async provider methods.
-
-It does not expose an atomic `setFocusAndUpdateWorld()` operation.
-
-## Fake runtime contract
-
-The local fake:
-
-- stores focus by direct assignment;
-- returns a flat cell array from partition selection;
-- infers prepare/update/release itself;
-- invokes every provider without `matches()` or capability admission;
-- has no failed-cell state, diagnostic model or production rollback result;
-- does not model separate `focusChanged` and `cellsChanged` commits;
-- cannot inject an update failure after focus commit with production-equivalent readback.
-
-Current `core-world-runtime.mjs` and `world-cell-lifecycle.mjs` inject this fake and prove only the normal path.
-
-## Main failure states
-
-### Initial prepare poisoning
+Current budgets:
 
 ```txt
-prepare()
-  -> prepared = true
-  -> commitFocus(origin) throws
-  -> prepared remains true
-  -> worldSnapshot remains null or stale
-  -> second prepare() returns worldSnapshot without retry
+maxCellsPerFrame:          1
+terrainRowsPerStep:        1
+classificationRowsPerStep: 4
 ```
 
-### Focus/world split
+### Terrain stage
+
+Registers `cozy.terrain-patch.v2` descriptors without allocating fields. Materialization allocates height, normal, slope, curvature, moisture, exposure, rock exposure, shore distance, and clearing arrays, then fills bounded rows. A runtime handle is published only when all rows complete.
+
+### Biome stage
+
+Registers `cozy.biome-field.v2` descriptors and later derives seven normalized weight channels from the completed terrain arrays. It does not resample the terrain source.
+
+### Shoreline stage
+
+Registers `cozy.shoreline-field.v2` descriptors and later reuses terrain shore-distance values while deriving breaker, wetness, and planar normal arrays in bounded rows.
+
+### Presentation stage
+
+Rebuilds `cozy.render-cell.v2` after required fields are ready and changes its materialization marker from `queued` to `ready`.
+
+## Main finding
+
+The wrapper exports:
 
 ```txt
-commitFocus(target)
-  -> wrapper lastFocus becomes target
-  -> production setFocus commits target
-  -> updateWorld throws during selection/provider work
-  -> Core World focus remains target
-  -> wrapper snapshot/cell key remain previous
-  -> provider stores may reflect release/prepare side effects
-  -> visible renderer remains startup snapshot
+processMaterializationFrame()
+getMaterializationState()
 ```
 
-### Observation collapse
+The live host calls neither. Its renderer loop stops at `updateWorldFocus()` before updating compatibility resources and rendering. The new work therefore does not begin after the first frame, despite the new design document describing that behavior.
 
-`updateWorldFocus()` returns only `false` or `true`. It cannot represent:
+The isolated test directly constructs and steps the materializer. It proves:
 
 ```txt
-unchanged
-committed-complete
-committed-degraded
-rejected-stale
-rejected-invalid
-failed-before-focus
-failed-after-focus
-failed-provider-rolled-back
-failed-provider-partial
+registration performs zero terrain samples
+lowest-LOD nearest cell advances first
+one configured terrain row is sampled per step
+partial terrain does not publish a ready handle
+two test cells eventually complete
+biome and shoreline arrays exist
+presentation descriptor becomes ready
+released cells leave scheduler state
 ```
+
+It does not prove route integration, startup timing, a browser frame budget, session/focus epochs, provider exceptions, retries, stale completion rejection, or visible render handoff.
 
 ## Domain map
 
 ### Platform and route host
 
-Pinned module admission, kit-catalog validation, renderer/backend startup, loader/error projection, callback registration, animation-loop hosting and global diagnostic exposure.
+Pinned import maps, kit validation, loader/error projection, WebGPU/WebGL2 admission, input listeners, animation loop, page lifecycle, global host, and static compatibility rendering.
 
 ### NexusEngine Core World
 
-World registration, uniform-grid partitioning, focus state, cell selection, provider phase/capability admission, lifecycle transitions, diagnostics, snapshots, provider rollback/release and reset.
-
-Imported services:
-
-```txt
-createEngine
-createCoreWorldDomain
-createUniformGridPartition
-createFlatWorldSurface
-createTerrainProviderAdapter
-defineWorldEffectProvider
-```
+World identity, uniform-grid partitioning, focus, active-cell selection, provider phases, capability admission, descriptor lifecycle, diagnostics, snapshots, release, rollback, and reset.
 
 ### Product world wrapper
 
-Composition creation, pinned runtime resolution, seven-provider registration, initial prepare, focus throttling, wrapper snapshot/query/state, compatibility bridge and reset/dispose.
+Composition creation, provider registration, initial prepare, focus throttling, world snapshot/query projection, compatibility bridge, lazy scheduler construction, materialization stepping, state, reset, and disposal.
 
 ### Provider domains
 
@@ -199,45 +156,42 @@ PRESENTATION
   cell-presentation-provider
 ```
 
-### Scenario and gameplay
+### Lazy materialization
 
-Camera rail reveal, first-person clearing movement, deterministic environment clock and camera-driven Core World focus selection.
+Active-cell synchronization, deterministic priority, staged row work, provider runtime stores, readiness state, progress projection, and presentation refresh.
 
-### Semantic world domains
+### Semantic world and gameplay
 
-Terrain surface, clearing plateau, biome, shoreline, LOD, ground contact, paths, vegetation, rocks, props, campfire, ocean, foam, wind, weather, illumination, clouds, fog and aerial perspective.
+Deterministic clock, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
 
 ### Rendering
 
-WebGPU/WebGL2 host, static whole-island graph, layered grass, ocean, foam, generated atmosphere volumes, volumetric clouds, rolling fog, post processing, adaptive performance and debug projection.
+Static whole-island compatibility graph, WebGPU/WebGL2 adapters, layered grass, ocean, foam, atmosphere volumes, clouds, fog, post-processing, adaptive performance, diagnostics, disconnected cell-render controller, cache, and disposal helpers.
 
 ### Validation and deployment
 
-Static/catalog checks, deterministic domain tests, fake Core World normal-path tests, parity fixtures, isolated renderer cache/disposal tests and static GitHub Pages deployment.
+Static/catalog checks, semantic fixtures, fake Core World tests, lazy scheduler fixture, renderer cache/disposal fixtures, and GitHub Pages deployment.
 
 ## Services offered by the 50 local kits
 
 ```txt
 determinism and time:
-  stable seed, scoped RNG, hash/noise and deterministic environment clock
+  stable seed, scoped RNG, hash/noise, deterministic environment clock
 
-terrain and world:
-  height, normal, slope, fields, biome, shoreline, LOD, ground contact,
-  path, vegetation, rocks, props and campfire descriptors
+terrain and population:
+  field sampling, plateau, biome, shoreline, LOD, contact, paths,
+  vegetation, rocks, props, campfire
 
 ocean and atmosphere:
-  floor, waves, optics, underwater, caustics, glitter, foam, wind,
-  weather, illumination, clouds, fog and aerial perspective
+  floor, waves, optics, underwater, caustics, glitter, foam,
+  wind, weather, illumination, clouds, fog, aerial perspective
 
-render descriptors:
-  quality, materials, archetypes, immutable compatibility snapshots and fallback policy
-
-render adapters:
-  world, grass, ocean, foam, atmosphere volume, cloud, fog, post,
-  performance and debug projection
+render descriptors and adapters:
+  quality, materials, archetypes, snapshots, fallback, world, ocean,
+  foam, atmosphere, cloud, fog, post, performance, debug
 
 scenario:
-  camera rail, first-person movement, input state, tick, reset and snapshot
+  camera rail, first-person input/movement, tick, reset, snapshot
 ```
 
 ## Complete local kit inventory
@@ -295,48 +249,77 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Required focus authority
+## Runtime-implied kits and services
 
 ```txt
-FocusCommand
-FocusAdmissionResult
-FocusCheckpoint
-ProviderStoreCheckpoint
-FocusTransactionPlan
-FocusTransactionResult
-WorldRevision
-ProviderRevisionSet
-FocusRollbackResult
-FocusJournalEntry
-FocusObservation
+core-world-runtime-adapter        pinned runtime composition
+cozy-world-configuration          world, focus, terrain, budget policy
+island-terrain-provider           descriptor registration and row materialization
+biome-classification-provider     terrain-array classification
+shoreline-classification-provider terrain shore reuse and shoreline arrays
+vegetation/rock/prop providers    population descriptors and stores
+cell-presentation-provider        queued/ready render-cell descriptors
+lazy-cell-materializer            active-cell sync, priority, staged work, progress
+cozy-world-query                  semantic queries
+legacy-render-snapshot-bridge     compatibility snapshot
+renderer-cell-cache               cell resource cache
+renderer-resource-disposal        graph resource cleanup
+cell-aware-renderer-controller    proposed live cell consumer
+browser-input-adapter             wheel, pointer, keyboard, blur, resize
+animation-loop-host               per-frame scenario/render scheduling
+global-diagnostic-host            CozyIsland readback
 ```
 
-An accepted result must correlate:
+## Missing materialization authority
 
 ```txt
-sessionId
-sessionEpoch
-commandId
-previousWorldRevision
-worldRevision
-previousFocus
-focus
-previousCellKey
-cellKey
-selection counts
-provider result rows
-Core World state sequence
-wrapper snapshot fingerprint
-provider-store fingerprint
-completion policy
-result fingerprint
+host start admission
+sessionId and sessionEpoch
+focus/world revision fence
+materialization command identity
+cell work epoch
+elapsed-time budget
+provider-stage failure result
+retry/backoff policy
+stale completion rejection
+cell readiness revision
+provider readiness set
+bounded journal
+first-frame start acknowledgement
+render handoff result
+browser integration fixture
+```
+
+## Required composed domain
+
+```txt
+cozy-island-lazy-materialization-authority-domain
+  -> materialization-frame-command-kit
+  -> materialization-admission-kit
+  -> materialization-priority-kit
+  -> provider-stage-plan-kit
+  -> row-work-budget-kit
+  -> frame-time-budget-kit
+  -> materialization-epoch-kit
+  -> stale-cell-work-rejection-kit
+  -> provider-stage-result-kit
+  -> materialization-failure-kit
+  -> materialization-retry-kit
+  -> cell-readiness-revision-kit
+  -> provider-readiness-set-kit
+  -> presentation-readiness-commit-kit
+  -> compatibility-render-handoff-kit
+  -> materialization-observation-kit
+  -> materialization-journal-kit
+  -> lazy-materialization-fixture-kit
+  -> browser-first-frame-materialization-smoke-kit
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Pinned Core World Focus Transaction Authority
-+ Production/Fake Contract Parity and Failure Fixture Gate
+MyCozyIsland Lazy Cell Materialization Authority
++ Live Host Admission / Epoch / Readiness Fixture Gate
 ```
 
-The transaction should be implemented in the product wrapper first unless the required atomic primitive is generalized and accepted into the existing NexusEngine Core World domain. Do not create a parallel world framework.
+Implement this in the existing product world wrapper and host. Promote only reusable scheduling and readiness primitives into the existing NexusEngine Core World DSK; do not create a parallel world system.

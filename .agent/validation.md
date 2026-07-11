@@ -1,103 +1,113 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T04-09-54-04-00`
+Last updated: `2026-07-11T05-10-36-04-00`
 
 ## Documentation pass result
 
 ```txt
-runtime source changed: no
-rendering output changed: no
-package scripts changed: no
-dependencies changed: no
-deployment configuration changed: no
+selected repository: LuminaryLabs-Publish/MyCozyIsland
+selection reason: undocumented production Core World migration after prior audit
+runtime source changed by this pass: no
+rendering output changed by this pass: no
+package scripts changed by this pass: no
+dependencies changed by this pass: no
+deployment configuration changed by this pass: no
 branch created: no
 pull request created: no
 repo-local documentation pushed to main: yes
-central ledger update: yes
 ```
 
-## Existing test surface
+## Source identity verified
+
+```txt
+production migration commit:
+  0e30393bfd433a23bf207c8c87d5defd44aed69a
+
+Three.js:
+  0.185.0
+
+NexusEngine:
+  38229f59c22cb40024ffd13a9f48040de759f5d7
+
+route:
+  src/main-cloudform.js?v=core-world-1
+
+world modes:
+  core default
+  legacy rollback through ?world=legacy
+```
+
+## Existing test surface identified
 
 ```txt
 npm test
-  -> node tests/static-check.mjs
-  -> node tests/domain-smoke.mjs
+  -> static-check
+  -> domain-smoke
+  -> world-baseline
+  -> core-world-runtime
+  -> world-provider-order
+  -> world-query-parity
+  -> world-population-parity
+  -> world-snapshot-portability
+  -> world-cell-lifecycle
+  -> renderer-cell-cache
+  -> renderer-resource-disposal
 ```
 
-The static check validates 50 kit descriptors, deterministic-source constraints, renderer feature tokens, the Three/WebGPU import map, route script, and error markup.
+The expanded suite provides semantic baseline, provider-order, query/population parity, portable-snapshot, cell-lifecycle, and isolated renderer utility proof.
 
-The domain smoke composes deterministic world snapshots, compares terrain/shoreline/vegetation/rock data, checks inner-clearing flatness, and advances one scenario tick.
-
-Neither test executes `src/main-cloudform.js` in a browser-like environment or observes runtime lifecycle side effects.
-
-## Source-level lifecycle facts verified
+## Source-level Core World facts verified
 
 ```txt
-main() returns runtime-session handle: no
-session epoch: no
-startup transaction: no
-partial-startup rollback: no
-stop operation: no
-dispose operation: no
-restart operation: no
+Core World production mode: yes
+legacy rollback mode: yes
+uniform grid cell size: 48 m
+active radius: 3
+initial active cells: 49
+ordered providers: 7
+portable snapshot intent: yes
+world query facade: yes
+provider runtime stores: yes
+presentation provider: yes
+legacy render bridge: yes
+```
+
+## Source-level render-consumption facts verified
+
+```txt
+createLegacyRenderSnapshot called during startup: yes
+whole-island world renderer built from startup snapshot: yes
+updateWorldFocus called during frames: yes
+later compatibility snapshot created after focus update: no
+presentation descriptors committed to renderer: no
+cell-aware renderer controller wired in main host: no
+world revision exposed: no
+render revision exposed: no
+provider/render correlation result: no
+compatibility fallback kinds exposed: no
+rendered active-cell readback: no
+resource counts by cell: no
+```
+
+## Compatibility behavior verified
+
+The legacy bridge reads active provider records, but vegetation, rock, and prop rows are accepted only when their flattened counts equal the complete global graph. Otherwise, the bridge uses the original global composition for that kind.
+
+This preserves current visuals but does not prove visible cell authority.
+
+## Lifecycle facts retained
+
+```txt
+pagehide calls domains.dispose: yes
+Core World reset/dispose entry point: yes
 renderer.setAnimationLoop(null): absent
 removable listener registry: absent
 tracked loader timeout IDs: absent
-common renderer-consumer dispose contract: absent
-scene/resource traversal disposal: absent
-atmosphere 3D/storage texture disposal: absent
-post-pipeline disposal result: absent
+complete Three/WebGPU disposal path: absent
 renderer/backend disposal: absent
-global host tombstone/unpublish: absent
-bounded lifecycle/resource journal: absent
+global host retirement: absent
+session epoch and stale command admission: absent
 ```
-
-## Browser side effects observed
-
-```txt
-canvas listeners:
-  wheel
-  pointerdown
-  pointerup
-  pointercancel
-  pointermove
-
-window listeners:
-  keydown
-  keyup
-  blur
-  resize
-
-loader timeouts:
-  completion class after 260 ms
-  hide after another 520 ms
-
-animation loops:
-  one renderer.setAnimationLoop callback per startup
-```
-
-The callbacks and timeout IDs are not retained by a lifecycle owner.
-
-## Render resource classes observed
-
-```txt
-WebGPURenderer/backend
-scene and camera
-sky CanvasTexture/material/geometry
-lights and shadow resources
-world geometry/materials/instancing
-layered-grass atlas/geometry/material/mesh
-ocean geometry/material
-foam geometries/materials
-cloud geometry/materials
-fog geometry/material
-Data3DTexture or Storage3DTexture volumes
-compute nodes
-RenderPipeline, passes, blur nodes and uniforms
-global live-object host references
-```
-
-No common disposal journal or exact-once release proof exists.
 
 ## Validation not executed in this documentation run
 
@@ -106,41 +116,37 @@ npm install
 npm test
 browser smoke
 WebGPU initialization
-WebGL2 fallback
-GPU compute dispatch
-runtime stop/dispose/restart
-partial-startup rollback fixture
-listener/timer/loop leak fixture
-repeated browser restart smoke
-camera drag/reset fixture
-terrain edge/seating/layer-coherence fixture
-environment-frame coherence fixture
-adaptive-quality full recovery fixture
+WebGL2 fallback initialization
+focus movement across cells
+production cell-render synchronization
+provider-to-render fixture
+shadow parity fixture
+resource release/re-entry fixture
+runtime stop/dispose/restart fixture
 ```
 
-The GitHub connector was used for source inspection and writes. A local checkout could not be created from this execution environment, so no executable runtime-completion claim is made.
+The GitHub connector was used for source inspection and writes. A runnable checkout was unavailable in this execution environment, so no executable runtime-completion or test-pass claim is made.
 
-## Required lifecycle fixture
+## Required next fixture
 
-A future DOM-free fixture must prove:
+A DOM-free provider-to-render fixture must prove:
 
 ```txt
-startup acquisition journal is ordered
-failure at each acquisition step rolls back in reverse order
-rollback continues after one release failure
-stop freezes frame, scenario clock and input revisions
-listeners, timeouts and animation loop release exactly once
-dispose releases every owned fake resource exactly once
-second dispose returns unchanged
-restart increments session epoch
-old callbacks and commands are rejected
-same seed/options preserve semantic source fingerprint
-new runtime resource identities replace retired identities
-bounded readback is JSON-safe and contains no live release functions or Three objects
+one accepted world revision produces one render commit
+same revision is unchanged
+stale revision is rejected
+provider phase order and active-cell IDs are preserved
+presentation descriptors are consumed once
+released descriptors release cell-only resources once
+shared resources survive until their final reference is released
+compatibility fallback is explicit
+world and render fingerprints correlate
+bounded readback is structured-clone safe
+session disposal rejects later commits
 ```
 
-A browser smoke must then prove the same ownership boundary with real WebGPU/WebGL2 and Three resources across repeated restart cycles.
+A browser smoke must then prove the same boundary with real Three/WebGPU resources under both WebGPU and WebGL2 fallback.
 
 ## Readiness statement
 
-The route remains a working static scenic experience, but it is not proven stop-safe, dispose-safe, rollback-safe, or restart-safe. Runtime lifecycle authority is the first implementation gate before further persistent render-resource growth or downstream camera, terrain, environment, and adaptive-quality authority work.
+The Core World migration is source-backed, pinned, and supported by an expanded semantic/utility test surface. The visible route still uses a one-time compatibility render snapshot, so provider-cell lifecycle is not yet a production render authority. Complete runtime lifecycle ownership remains the first infrastructure gate, followed by a shadowed provider-to-render cutover.

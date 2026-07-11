@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T16-10-58-04-00`
+Last updated: `2026-07-11T17-50-37-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible aligned repository after full Publish/ledger comparison
+selection reason: oldest eligible documented repository after full Publish/ledger comparison
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -19,35 +19,54 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** distinguish source-backed findings from executable proof and define the exact fixture gate required before claiming adaptive-quality correctness.
+**Goal:** separate source-backed lifecycle findings from executable proof and define the exact stop, dispose, page lifecycle, resource-retirement and restart fixture gate.
 
-- [x] Inspect startup quality selection.
-- [x] Inspect performance-budget sampling and thresholds.
-- [x] Inspect all degrade/recover callback consumers.
-- [x] Inspect cloud/fog step mutation and post fog-resolution mutation.
-- [x] Confirm pixel ratio is skipped on level-0 recovery.
-- [x] Document transaction, rollback, cadence and visible-frame gaps.
+- [x] Inspect route startup and animation-loop installation.
+- [x] Inspect browser listeners and loader timers.
+- [x] Inspect `pagehide` behavior.
+- [x] Inspect Core World reset/dispose behavior.
+- [x] Inspect renderer factory contracts and resource ownership.
+- [x] Confirm explicit render-loop stop is absent.
+- [x] Confirm complete route-level resource retirement is absent.
+- [x] Document session, bfcache, stale callback and restart gaps.
 - [x] Change documentation only.
-- [ ] Add and run adaptive-quality behavioral fixtures.
-- [ ] Run browser and deployed Pages quality smokes.
+- [ ] Add and run lifecycle ownership fixtures.
+- [ ] Add and run production-route browser fixtures.
+- [ ] Run deployed Pages lifecycle smoke.
 
 ## Source-backed checks
 
 ```txt
-startup quality descriptor is immutable: yes
-performance level range is 0..2: yes
-slow threshold uses movingAverage > target * 1.26: yes
-fast threshold uses movingAverage < target * 0.86: yes
-degrade threshold counts 90 qualifying frames: yes
-recovery threshold counts 360 qualifying frames: yes
-cloud steps are mutated: yes
-fog steps are mutated: yes
-fog render-target scale is mutated: yes
-pixel ratio is mutated at levels 1 and 2: yes
-pixel ratio is explicitly restored at level 0: no
-transition ID/revision exists: no
-consumer result/rollback exists: no
-visible-frame acknowledgement exists: no
+renderer.setAnimationLoop(callback): yes
+renderer.setAnimationLoop(null): no
+pagehide handler: yes
+pagehide handler once-only: yes
+pagehide calls domains.dispose(): yes
+pageshow handler: no
+session ID/generation: no
+lifecycle state machine: no
+listener registry/removal: no
+timeout registry/cancellation: no
+stale callback fence: no
+scene/post/volume/renderer retirement transaction: no
+global readback revocation: no
+restart transaction: no
+first restarted frame receipt: no
+```
+
+## Source-backed render ownership checks
+
+```txt
+WebGPURenderer created by route: yes
+scene/camera/sky/lights created by route: yes
+world/ocean/foam/cloud/fog renderers created by route: yes
+volume textures created by route: yes
+post pipeline created by route: yes
+route calls renderer.dispose(): no
+route traverses and disposes scene resources: no
+route disposes volume textures: no
+route disposes post resources: no
+renderer factories expose unified dispose: no
 ```
 
 ## Existing validation surface
@@ -57,47 +76,56 @@ static architecture checks: present
 semantic domain tests: present
 Core World/provider tests: present
 materialization utility tests: present
-renderer cache/disposal utility tests: present
-adaptive performance budget unit fixture: not confirmed
-browser quality transition fixture: absent
-full recovery fixture: absent
-partial failure rollback fixture: absent
-visible-frame quality fixture: absent
-Pages adaptive-quality smoke: absent
+renderer cell-cache tests: present
+renderer resource-disposal utility tests: present
+production route lifecycle fixture: absent
+pagehide/pageshow fixture: absent
+animation-loop lease fixture: absent
+listener/timer retirement fixture: absent
+complete GPU retirement fixture: absent
+restart fixture: absent
+Pages lifecycle smoke: absent
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. cadence parity
-   equivalent wall-time streams at 30, 60 and 120 Hz
+1. lifecycle state table
+   valid transitions, invalid transitions and duplicate commands
 
-2. baseline recovery
-   level 0 -> 1 -> 0 restores cloud, fog, fog-resolution and pixel ratio
+2. animation-loop ownership
+   exactly one lease while running and zero after stop
 
-3. two-level recovery
-   level 0 -> 1 -> 2 -> 1 -> 0 restores all mutable baseline fields
+3. browser callback retirement
+   listeners removable, timers cancelled, pointer/input cleared
 
-4. partial failure
-   inject failure at each consumer and prove reverse rollback
+4. stale work
+   old-generation frame, input, resize, timer, world and quality callbacks rejected
 
-5. visibility and stalls
-   hidden-tab and long-stall samples follow a typed policy
+5. page lifecycle
+   persisted pagehide/pageshow follows declared suspend/resume policy
+   non-persisted pagehide follows final dispose policy
 
-6. resize
-   degraded and recovering pixel-ratio policy survives viewport resize
+6. render retirement
+   post, volume, texture, material, geometry, renderer and backend receipts
 
-7. stale revision
-   delayed old transition result cannot overwrite the new revision
+7. shared resources
+   cloud geometry/material and other shared resources disposed exactly once
 
-8. visible frame
-   first frame after commit carries the committed quality revision and fingerprint
+8. world retirement
+   Core World, providers and materializer reach declared terminal state
 
-9. backend capability
-   WebGPU and WebGL2 declare supported mutable fields explicitly
+9. restart
+   new sessionId/generation, one listener/loop set and clean baseline
 
-10. deployment
-   Pages smoke records transitions, applied values, console failures and frame receipt
+10. first frame
+   first resumed/restarted frame carries the active session and generation
+
+11. backend parity
+   WebGPU and WebGL2 expose the same lifecycle result schema
+
+12. deployment
+   Pages smoke records lifecycle results, leaks, console output and first-frame evidence
 ```
 
 ## Commands not run
@@ -106,24 +134,27 @@ Pages adaptive-quality smoke: absent
 npm test
 browser/WebGPU smoke
 browser/WebGL2 smoke
-Playwright or equivalent browser fixture
+pagehide/pageshow browser fixture
+resource retirement capture
 Pages live smoke
-GPU capture or frame timing capture
 ```
 
 ## Reason executable validation was not claimed
 
-This run used repository-source inspection and documentation writes. No local browser/GPU execution surface was available through the GitHub connector, and the required adaptive-quality fixtures do not yet exist in the repository.
+This run used repository-source inspection and GitHub documentation writes. The current repository does not contain the production-route lifecycle fixtures required to prove stop, resource retirement, bfcache behavior or restart correctness.
 
 ## Acceptance gate
 
 ```txt
-performance level equals the complete applied consumer state
-level 0 restores every mutable baseline value
-transition timing is cadence-independent by declared policy
-hidden/stalled samples are classified
-partial failure leaves no committed partial quality state
-stale transitions cannot commit
-first visible frame acknowledges the new quality revision
-diagnostics report actual applied values
+one running session owns one animation-loop lease
+no browser callback mutates after stop or disposal
+final dispose leaves zero listener, timer and loop leases
+all required world and render resources have retirement receipts
+shared resources retire exactly once
+duplicate lifecycle commands are idempotent
+persisted and non-persisted page lifecycle behavior is explicit
+restart uses a new generation
+old-generation work cannot alter the new session
+first resumed/restarted frame acknowledges the active session generation
+global readback exposes no disposed raw authority
 ```

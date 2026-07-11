@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T12-50-35-04-00`
+Last updated: `2026-07-11T12-58-06-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible current central-ledger entry
+selection reason: repo-local documentation newer than central tracking
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -19,17 +19,17 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** record source-backed adaptive-quality facts and the executable proof required before the feature can be described as stable.
+**Goal:** record source-backed environment coherence facts and the executable proof required before dynamic environment behavior can be described as authoritative.
 
 - [x] Verify the complete Publish selection comparison.
-- [x] Verify startup quality policy and active route identity.
-- [x] Verify performance EMA, thresholds, counters and adaptive levels.
-- [x] Verify every currently mutated render consumer.
-- [x] Verify frame-count dwell produces refresh-rate-dependent behavior.
-- [x] Verify level-zero recovery skips pixel-ratio restoration.
-- [x] Verify no prepare/commit/rollback or typed result exists.
-- [x] Verify current tests do not execute the production adaptive loop.
-- [ ] Execute adaptive fixtures after implementation exists.
+- [x] Verify route, dependency, world, provider and kit identities.
+- [x] Verify the environment clock advances in the scenario.
+- [x] Verify wind and illumination services are time-dependent when queried.
+- [x] Verify world composition samples dependent descriptors once.
+- [x] Verify scenario render snapshots refresh only clock and camera.
+- [x] Verify render consumers mix elapsed animation and startup-frozen environment values.
+- [x] Verify no environment frame transaction or visible-frame receipt exists.
+- [ ] Execute environment fixtures after implementation exists.
 
 ## Selection verification
 
@@ -38,7 +38,7 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 new or ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-selected oldest eligible: MyCozyIsland
+repo-local newer than central: MyCozyIsland
 excluded: TheCavalryOfRome
 ```
 
@@ -55,46 +55,42 @@ Core World providers: 7
 package version: 0.3.1
 ```
 
-## Adaptive facts verified
+## Environment facts verified
 
 ```txt
-startup tiers: low, medium, high, ultra
-adaptive levels: 0, 1, 2
-sample cadence: once per rendered frame
-sample clamp: 1..100 ms
-EMA weight: 0.93 previous + 0.07 current
-degrade threshold: target * 1.26
-recover threshold: target * 0.86
-degrade dwell: 90 samples
-recover dwell: 360 samples
-mutated consumers: cloud steps, fog steps, fog resolution, pixel ratio
-consumer transaction: absent
-transition result: absent
-quality frame receipt: absent
+clock tick: live each scenario frame
+clock reset: present
+wind field: time-dependent when sampled
+illumination state: time-dependent when sampled
+weather preset: immutable
+startup snapshot: frozen
+scenario snapshot refreshes clock: yes
+scenario snapshot refreshes camera: yes
+scenario snapshot refreshes wind: no
+scenario snapshot refreshes illumination: no
+scenario snapshot refreshes cloud/fog state: no
 ```
 
-## Cadence calculation verified
+## Consumer split verified
 
 ```txt
-90 samples at 30 Hz: 3.00 s
-90 samples at 60 Hz: 1.50 s
-90 samples at 120 Hz: 0.75 s
-360 samples at 30 Hz: 12.00 s
-360 samples at 60 Hz: 6.00 s
-360 samples at 120 Hz: 3.00 s
+elapsed-time consumers:
+  world generic sway
+  campfire flame/light pulse
+  ocean animation
+  foam animation
+
+startup-frozen consumers:
+  sky gradient
+  hemisphere light
+  sun transform/color/intensity
+  renderer exposure
+  scene fog
+  vegetation wind
+  campfire smoke wind
+  cloud weather/lighting/shadow/horizon
+  fog density/advection/placement
 ```
-
-## Recovery defect verified
-
-```txt
-applyPerformanceLevel(0)
-  cloud step scale: restored
-  fog step scale: restored
-  fog resolution scale: restored
-  pixel ratio: not restored
-```
-
-The pixel-ratio call is guarded by `if (level > 0)`.
 
 ## Existing test surface identified
 
@@ -114,7 +110,7 @@ npm test
   -> renderer-resource-disposal
 ```
 
-No current test constructs the production performance loop or checks adaptive level timing, full recovery, consumer rollback or frame correlation.
+No current test constructs a canonical live EnvironmentFrame or proves consumer coherence, reset replay, rollback or visible-frame acknowledgement.
 
 ## Validation not executed
 
@@ -125,31 +121,28 @@ browser launch
 WebGPU initialization
 WebGL2 fallback initialization
 Pages smoke
-adaptive transition execution
-cadence simulation
-failure injection
+environment frame derivation
+consumer transaction failure injection
+reset replay
 frame receipt capture
 ```
 
 The GitHub connector was used for source inspection and documentation writes. No runnable browser checkout was available, so no executable runtime claim is made.
 
-## Required adaptive fixture matrix
+## Required environment fixture matrix
 
 ```txt
-same elapsed evidence at 30/60/90/120 Hz produces same decision time
-irregular frame schedules preserve decision parity
-hidden/suspended frames follow declared policy
-minimum-level dwell prevents oscillation
-0 -> 1 and 1 -> 2 commit all consumers
-2 -> 1 and 1 -> 0 recover all consumers
-pixel ratio returns to startup value at level 0
+same seed and tick sequence produces same fingerprints
+one tick commits one revision across all consumers
+wind consumers agree across vegetation/campfire/cloud/fog
+illumination consumers agree across sky/sun/hemisphere/exposure
+reset reproduces the canonical initial frame
 prepare rejection causes no mutation
 commit failure rolls back every consumer
-stale session, renderer generation and revision reject
-reset/stop/dispose phases reject transitions
+stale session/generation/tick/revision rejects
 duplicate command is idempotent
 WebGPU and WebGL2 produce valid consumer plans
-effective quality fingerprint is stable
+effective environment fingerprint is stable
 first visible frame acknowledges committed revision
 ```
 
@@ -158,17 +151,16 @@ first visible frame acknowledges committed revision
 ```txt
 sessionId
 sessionGeneration
-rendererGeneration
-performanceSampleId
-monotonicTimeMs
-qualityPolicyRevision
-qualityRevision
-fromLevel
-toLevel
-decisionEvidence
+simulationTickId
+environmentFrameId
+environmentRevision
+clockSample
+weatherRevision
+windRevision
+illuminationRevision
 consumerReceipts[]
 rollbackReceipts[]
-effectiveQualityFingerprint
+environmentFingerprint
 committedFrameId
 status
 failures[]
@@ -176,4 +168,4 @@ failures[]
 
 ## Readiness statement
 
-Startup quality selection is source-backed, but adaptive quality is not yet transactionally reliable. Do not claim cadence-independent adaptation or full recovery until elapsed-time policy, session fencing, consumer prepare/commit/rollback, pixel-ratio restoration, effective-state fingerprinting and visible-frame fixtures pass.
+The clock, wind and illumination services are source-backed, but dynamic environment rendering is not coherent. Do not claim live weather, lighting or wind parity until one environment frame is derived per admitted tick, all consumers prepare and commit one revision, reset reproduces the baseline, failures roll back, observations expose the effective frame, and one visible frame acknowledges the fingerprint.

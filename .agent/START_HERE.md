@@ -1,25 +1,25 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-10T20-48-55-04-00`
+Last aligned: `2026-07-10T22-29-21-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: route-level runtime-session authority, event-loop ownership, and complete WebGPU/Three resource disposal.
+Current focus: preserve runtime-session lifecycle authority as the first implementation gate, then repair adaptive-quality transaction and recovery authority.
 
 ## Selection result
 
-The accessible `LuminaryLabs-Publish` inventory contains ten repositories. All nine eligible non-Cavalry repositories are represented in the central ledger and have root `.agent` state. `TheCavalryOfRome` remains excluded.
+The accessible `LuminaryLabs-Publish` inventory contains ten repositories. All nine eligible non-Cavalry repositories are represented in the central ledger and have root `.agent` state. `TheCavalryOfRome` remains excluded, so the oldest documented-selection rule applied.
 
 ```txt
-MyCozyIsland       selected / prior 2026-07-10T19-11-19-04-00
-PrehistoricRush    tracked  / 2026-07-10T19-30-36-04-00
-AetherVale         tracked  / 2026-07-10T19-38-41-04-00
-IntoTheMeadow      tracked  / 2026-07-10T19-48-39-04-00
-TheOpenAbove       tracked  / 2026-07-10T19-58-34-04-00
-HorrorCorridor     tracked  / 2026-07-10T20-08-46-04-00
-PhantomCommand     tracked  / 2026-07-10T20-19-35-04-00
-ZombieOrchard      tracked  / 2026-07-10T20-30-23-04-00
-TheUnmappedHouse   tracked  / 2026-07-10T20-38-24-04-00
+MyCozyIsland       selected / prior 2026-07-10T20-48-55-04-00
+PrehistoricRush    tracked  / 2026-07-10T21-00-16-04-00
+AetherVale         tracked  / 2026-07-10T21-08-52-04-00
+IntoTheMeadow      tracked  / 2026-07-10T21-19-36-04-00
+TheOpenAbove       tracked  / 2026-07-10T21-31-01-04-00
+HorrorCorridor     tracked  / 2026-07-10T21-39-22-04-00
+PhantomCommand     tracked  / 2026-07-10T21-49-26-04-00
+ZombieOrchard      tracked  / 2026-07-10T22-11-24-04-00
+TheUnmappedHouse   tracked  / 2026-07-10T22-21-17-04-00
 TheCavalryOfRome   excluded by rule
 ```
 
@@ -32,64 +32,72 @@ index.html
   -> Three/WebGPU 0.185.0 import map
   -> src/main-cloudform.js?v=webgpu-volumetric-2
   -> validate exactly 50 DomainServiceKit descriptors
-  -> initialize WebGPURenderer and choose quality
+  -> initialize WebGPURenderer and choose startup quality
   -> compose deterministic terrain/ocean/vegetation/weather snapshot
   -> create world, ocean, foam, cloud, fog, sky, and post resources
-  -> install wheel, pointer, keyboard, blur, and resize listeners
+  -> install browser listeners
   -> renderer.setAnimationLoop
-  -> tick scenario and camera
-  -> update world and foam
-  -> sample adaptive performance
-  -> render post pipeline
-  -> expose live objects and latest aggregate state through globalThis.CozyIsland
+  -> scenario/camera tick
+  -> world and foam update
+  -> performanceBudget.sample(frameMs)
+  -> sequential adaptive-quality mutations
+  -> post render
+  -> periodic debug and aggregate host readback
 ```
 
-## Main finding
+## Newly documented finding
 
-The route has complete construction authority but no complete runtime-session owner.
+The adaptive quality path can report a full recovery while leaving the renderer at a degraded pixel ratio.
 
 ```txt
-start owner: main()
-frame owner: anonymous renderer.setAnimationLoop callback
-listener owner: anonymous closures in main()
-rollback owner: none
-dispose owner: none
-restart owner: none
-host lifecycle proof: none
+level 0 startup
+  -> pixel ratio = min(devicePixelRatio, quality.pixelRatioCap)
+
+degrade to level 1
+  -> cloud/fog steps = 0.78 scale
+  -> fog resolution = 0.82 scale
+  -> pixel ratio = 0.88 scale
+
+recover to level 0
+  -> cloud/fog steps restored
+  -> fog resolution restored
+  -> pixel ratio restoration skipped because setPixelRatio only runs when level > 0
 ```
 
-The route allocates the renderer, sky texture/material/geometry, world resources, atmosphere volume textures and compute nodes, cloud/fog geometry and materials, ocean/foam resources, and post-processing resources. It also installs global and canvas listeners. None of those resources are coordinated behind one stop/dispose/restart boundary, and `fail()` reports startup errors without rolling back partially created state.
+The performance budget then reports `level: 0`, while the actual renderer can remain at the level-1 pixel ratio. The debug overlay shows only the static startup quality tier, and host readback omits the applied pixel ratio and fog resolution. There is no atomic transition result, rollback, transition journal, or policy for whether `?quality=` is a lock, ceiling, floor, or starting point.
 
-The previous layered-grass resource ownership finding remains valid, but it is now classified as the first child-resource family beneath the larger route-session lifecycle boundary.
+## Preserved first gate
+
+The route still lacks a complete runtime-session owner for animation-loop cancellation, listener removal, startup rollback, resource disposal, and restart. That remains the first implementation gate. Adaptive-quality authority is the second bounded gate because it should be owned and observed by the future session host.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-10T20-48-55-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T20-48-55-04-00.md
-.agent/architecture-audit/2026-07-10T20-48-55-04-00-runtime-session-resource-authority-dsk-map.md
-.agent/render-audit/2026-07-10T20-48-55-04-00-webgpu-resource-disposal-coverage-gap.md
-.agent/gameplay-audit/2026-07-10T20-48-55-04-00-scenario-frame-session-loop.md
-.agent/interaction-audit/2026-07-10T20-48-55-04-00-listener-session-admission-map.md
-.agent/lifecycle-audit/2026-07-10T20-48-55-04-00-stop-dispose-restart-contract.md
-.agent/deploy-audit/2026-07-10T20-48-55-04-00-session-resource-fixture-gate.md
+.agent/trackers/2026-07-10T22-29-21-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T22-29-21-04-00.md
+.agent/architecture-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transaction-dsk-map.md
+.agent/render-audit/2026-07-10T22-29-21-04-00-quality-recovery-pixel-ratio-commit-gap.md
+.agent/gameplay-audit/2026-07-10T22-29-21-04-00-scenario-performance-control-loop.md
+.agent/interaction-audit/2026-07-10T22-29-21-04-00-quality-override-runtime-admission-map.md
+.agent/performance-system-audit/2026-07-10T22-29-21-04-00-degrade-recover-state-machine-contract.md
+.agent/deploy-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transition-fixture-gate.md
 ```
 
-## Next safe ledge
+## Ordered safe ledges
 
 ```txt
-MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate
+1. MyCozyIsland Runtime Session Lifecycle Authority
+   + WebGPU Resource Disposal Fixture Gate
+
+2. MyCozyIsland Adaptive Quality Transaction Authority
+   + Full-Recovery Fixture Gate
 ```
 
 ## Do not start next with
 
 - cloud, fog, ocean, terrain, grass, camera, or lighting retuning
 - renderer replacement
+- new quality tiers
 - route-token churn
 - new island content
-- screenshot automation
-- additional GPU resource creation without lifecycle ownership
-
-## Validation state
-
-Documentation only. Runtime source, package scripts, dependencies, route behavior, rendering output, and deployment configuration did not change. No branch or pull request was created.
+- more GPU resource allocation without session ownership

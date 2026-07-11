@@ -1,140 +1,121 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T09-08-59-04-00`
+Last updated: `2026-07-11T11-10-29-04-00`
 
 ## Summary
 
-The production route now runs lazy materialization after the compatibility frame. The remaining critical gap is that scheduler progress is not a versioned readiness transaction and is not consumed by visible rendering.
+The current world wrapper cannot safely reset and prepare again. Its reset clears the pinned Core World runtime definitions, while the next prepare assumes the definition still exists.
 
-## Integration state
-
-```txt
-live host calls processMaterializationFrame: yes
-first call occurs after second rendered frame: yes
-aggregate progress reaches debug/global host: yes
-presentation descriptors can become ready: yes
-visible renderer consumes ready descriptors: no
-renderer-cell cache is wired to host: no
-visible-frame acknowledgement exists: no
-```
-
-## Authority gaps
+## Reset and recovery gaps
 
 ```txt
-session identity and epoch: absent
-accepted world revision: absent
-accepted focus revision: absent
-materialization command identity: absent
-cell generation: absent
-provider version fence: absent
-elapsed-time work budget: absent
-classified failure result: absent
-retry/backoff/quarantine policy: absent
-stale completion rejection: absent
-cell readiness revision: absent
-provider readiness set: absent
-renderer commit result: absent
-visible-frame acknowledgement: absent
-bounded journal: absent
+soft reset policy: absent
+hard teardown policy: implicit
+terminal disposal state: absent
+world generation: absent
+world definition checkpoint: absent
+world re-registration: absent
+provider release result: absent
+provider reset result: absent
+materializer cancellation result: absent
+reset/re-prepare transaction: absent
+recovery fingerprint: absent
+bounded recovery journal: absent
+stale callback rejection: absent
 ```
 
-## Scheduler gaps
+## Concrete defect
 
-- Candidate count and row count are bounded, but elapsed CPU time is not.
-- A provider exception can escape synchronously through the animation callback.
-- `sync()` removes released state without a typed cancellation or retirement result.
-- Partial state has no `cellGeneration`, so later asynchronous work would have no stale-result fence.
-- Completed state is Boolean instead of revisioned.
-- Progress is based on completed cells, not aggregate partial row completion.
-- Materialization cost is not correlated with a specific frame result.
-- No concurrency guard prevents accidental re-entry if the path later becomes asynchronous.
+- The world definition is registered once during wrapper construction.
+- `reset()` calls `coreWorld.resetWorlds()`.
+- The pinned implementation clears runtime definitions.
+- Product state is marked unprepared.
+- A later `prepare()` calls `setFocus(worldId)` without re-registering.
+- Existing tests never call `reset(); prepare();` on the same wrapper.
 
-## Provider readiness gaps
+## Provider-state gaps
 
-- Core World provider admission still means descriptors exist, not that heavy data is ready.
-- Presentation readiness is derived from store presence and status, not a canonical source-version set.
-- Vegetation, rocks, and props are referenced without a joined readiness fingerprint.
-- Descriptor versions can increment without a cell-wide readiness revision.
-- No policy declares which providers are mandatory, optional, degraded, or blocking for rendering.
-- Runtime stores expose implementation records rather than immutable readiness rows.
-- No provider failure can mark a cell as retriable, degraded, quarantined, or terminal.
+- Core World calls provider release and provider reset, but product code receives no structured release ledger.
+- Provider reset exceptions are swallowed by the pinned runtime.
+- Product provider stores have no joined before/after fingerprint.
+- Terrain materialization jobs are cleared separately from Core World provider release.
+- No proof establishes that all seven provider stores are empty before re-registration.
+- No generation fence prevents old provider or materializer work from writing after recovery.
 
-## Focus and release gaps
+## Snapshot and checkpoint gaps
 
-- `updateWorldFocus()` returns Boolean rather than a typed accepted revision.
-- Materialization work is not fenced to the focus transaction that admitted the active cell set.
-- A released cell has no cancellation sequence or generation increment.
-- Reset and dispose clear state but do not publish stale-command rejection results.
-- The wrapper has no checkpoint or rollback spanning Core World and provider stores.
-
-## Render gaps
-
-- The whole-island compatibility snapshot is created once at startup.
-- `worldRenderer.update()` receives elapsed time only.
-- `getPresentationDescriptors()` is not read by the host.
-- `createRendererCellCache()` is not connected to the route.
-- Ready provider fields do not create or update visible terrain, vegetation, rock, prop, grass, or shoreline resources.
-- No detached renderer plan cites `cellReadinessRevision`.
-- No atomic prepare/update/release transaction exists.
-- No rollback keeps the previous visible cell revision when preparation fails.
-- No first visible frame cites the provider and renderer revisions it consumed.
-- Resource disposal helpers are not exercised by live cell turnover.
+- `getWorldSnapshot()` exposes coordination state only.
+- The compatibility render snapshot is not a recovery checkpoint.
+- Provider snapshots are not joined with product wrapper fields.
+- Materializer partial rows and stage progress are not checkpointed.
+- Focus accumulator and last-cell identity are not versioned.
+- Scenario, environment, renderer, and world snapshots do not share one checkpoint ID.
+- No rollback can restore the pre-reset world if re-registration or prepare fails.
 
 ## Lifecycle gaps retained
 
-- No route-level runtime-session owner.
-- No startup acquisition and rollback stack.
-- Input listeners, timers, animation loop, renderer resources, and global host are not leased by one session.
-- `pagehide` disposes the world wrapper only.
-- Renderer, scene graph, volume textures, post resources, listeners, and animation loop are not fully retired.
-- No restart or stale-callback fixture exists.
+- No route-level session owner or session epoch.
+- No startup acquisition/rollback stack.
+- Input, timers, animation loop, renderer, volume textures, and global host are not leased by one session.
+- `pagehide` invokes world disposal only.
+- Terminal disposal does not mark the wrapper unusable or return a typed result.
+- Rendering and materialization do not reject stale generations.
+
+## Focus and materialization gaps retained
+
+- `updateWorldFocus()` returns Boolean rather than a typed revision.
+- Materialization has no world/focus/generation admission fence.
+- Provider readiness is not a canonical version set.
+- No elapsed-time work budget or classified provider failure result.
+- Ready descriptors are still not consumed by visible cell-aware rendering.
+
+## Render gaps
+
+- Reset has no render freeze/retire handshake.
+- The compatibility renderer can retain the old world while semantic state is cleared.
+- No renderer generation identifies which world generation a frame consumed.
+- No cell-resource rollback or first-visible-frame acknowledgement exists.
+- Cell cache/disposal utilities are disconnected from the live route.
 
 ## Validation gaps
 
 ```txt
-live route fixture for progress > 0
-materialization command/result fixture
-session/world/focus revision rejection
-elapsed-time budget fixture
-provider exception and retry fixture
-cell-generation release fixture
-provider readiness version parity
-readiness fingerprint determinism
-renderer-cell prepare/update/release fixture
-render rollback fixture
-visible-frame correlation
-WebGPU browser smoke
-WebGL2 browser smoke
-Pages smoke with Core World progress
+reset followed by prepare
+reset after partial materialization
+reset after focus crosses a cell
+provider release failure
+provider reset failure
+re-registration failure
+prepare failure after reset
+rollback to preceding generation
+stale materializer completion after reset
+stale focus callback after reset
+soft reset versus terminal dispose
+idempotent dispose
+disposed-command rejection
+browser restart with one animation loop
+renderer/world generation correlation
 ```
 
 ## Deployment blockers
 
 ```txt
-no typed failure containment around live materialization
-no accepted provider readiness revision
-no render consumer for ready cells
-no atomic renderer-cell rollback/disposal
-no visible-frame proof
-runtime lifecycle and focus prerequisites remain incomplete
+reset semantics contradict reusable wrapper shape
+no re-registration after definition-clearing reset
+no release/reset diagnostics
+no product checkpoint or rollback
+no world generation or stale-work fence
+no browser reset/restart fixture
 ```
-
-## Secondary risks
-
-- Static compatibility visuals can hide incorrect provider readiness indefinitely.
-- A resolution increase can make one nominal row exceed the expected frame budget.
-- Debug counters may look healthy while no visible resource changes.
-- Future asynchronous provider work would make the current missing generation fence immediately unsafe.
-- Repeated descriptor refreshes can allocate future cell resources without a disposal contract.
 
 ## Not currently blocked by
 
 - repository identity or main-branch policy;
 - pinned Three.js and NexusEngine revisions;
-- 50 local kit descriptors;
-- seven ordered provider definitions;
-- lightweight registration;
-- deterministic priority and row stepping;
-- production invocation of the materializer;
-- static compatibility fallback;
+- the 50 local kit descriptors;
+- seven ordered providers;
+- initial 49-cell preparation;
+- deterministic focus selection;
+- isolated lazy materialization;
+- compatibility rendering;
 - GitHub Pages configuration.

@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 52,
-  "lastUpdated": "2026-07-11T00-10-28-04-00",
+  "schemaVersion": 53,
+  "lastUpdated": "2026-07-11T01-50-30-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
@@ -8,6 +8,7 @@
   "orderedNextSlices": [
     "MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate",
     "MyCozyIsland Camera Rail Baseline Authority + Drag/Reset Fidelity Fixture Gate",
+    "MyCozyIsland Dynamic Environment Frame Authority + Clock/Wind/Illumination Consumer Coherence Fixture Gate",
     "MyCozyIsland Adaptive Quality Transaction Authority + Full-Recovery Fixture Gate"
   ],
   "implementedKitCount": 50,
@@ -71,6 +72,7 @@
     "plannedAuthorityDomains": [
       "runtime-session-lifecycle-and-resource-authority",
       "camera-rail-baseline-and-reset-authority",
+      "dynamic-environment-frame-and-consumer-authority",
       "adaptive-quality-transaction-and-observation-authority"
     ]
   },
@@ -84,29 +86,35 @@
     "render-descriptors-and-startup-quality",
     "webgpu-render-adapters",
     "camera-sequence-and-scenario",
+    "dynamic-environment-frame-and-consumer-projection",
     "adaptive-performance-and-debug-host"
   ],
-  "mainFinding": "Pre-transition pointer drag mutates authored camera rail positions, while reset restores scalar/input/player state but not the rail control points, so reset can preserve accumulated path drift.",
+  "mainFinding": "The environment clock advances every scenario tick, but wind-, illumination-, cloud-, fog-, vegetation-, campfire-, sky-, light-, and exposure-related semantic descriptors are sampled during startup and frozen. Shader time creates visual motion without proving that consumers applied one current shared environment frame.",
   "preservedFirstGate": "Route-owned runtime session lifecycle, rollback, resource disposal, and restart remain the first implementation gate.",
-  "candidateCameraSequenceKits": [
-    "camera-rail-authored-baseline-kit",
-    "camera-orbit-offset-state-kit",
-    "camera-sequence-input-result-kit",
-    "camera-sequence-state-kit",
-    "camera-sequence-reset-transaction-kit",
-    "camera-sequence-fingerprint-kit",
-    "scenario-reset-transaction-kit",
-    "camera-rail-reset-fixture-kit"
+  "candidateEnvironmentFrameKits": [
+    "environment-frame-authority-kit",
+    "environment-frame-identity-kit",
+    "environment-frame-sampler-kit",
+    "dynamic-illumination-state-kit",
+    "dynamic-wind-state-kit",
+    "environment-consumer-projection-kit",
+    "sky-lighting-consumer-kit",
+    "cloud-lighting-consumer-kit",
+    "fog-advection-consumer-kit",
+    "vegetation-wind-consumer-kit",
+    "campfire-wind-consumer-kit",
+    "environment-staleness-observation-kit",
+    "environment-frame-coherence-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-11T00-10-28-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-11T00-10-28-04-00.md",
-    ".agent/architecture-audit/2026-07-11T00-10-28-04-00-camera-rail-baseline-authority-dsk-map.md",
-    ".agent/render-audit/2026-07-11T00-10-28-04-00-camera-projection-reset-drift-gap.md",
-    ".agent/gameplay-audit/2026-07-11T00-10-28-04-00-reveal-drag-reset-exploration-loop.md",
-    ".agent/interaction-audit/2026-07-11T00-10-28-04-00-wheel-drag-reset-result-map.md",
-    ".agent/sequence-authority-audit/2026-07-11T00-10-28-04-00-authored-rail-baseline-reset-contract.md",
-    ".agent/deploy-audit/2026-07-11T00-10-28-04-00-camera-rail-reset-fixture-gate.md"
+    ".agent/trackers/2026-07-11T01-50-30-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-11T01-50-30-04-00.md",
+    ".agent/architecture-audit/2026-07-11T01-50-30-04-00-dynamic-environment-frame-authority-dsk-map.md",
+    ".agent/render-audit/2026-07-11T01-50-30-04-00-clock-environment-consumer-staleness-gap.md",
+    ".agent/gameplay-audit/2026-07-11T01-50-30-04-00-reveal-clock-environment-coherence-loop.md",
+    ".agent/interaction-audit/2026-07-11T01-50-30-04-00-reset-time-environment-result-map.md",
+    ".agent/environment-state-audit/2026-07-11T01-50-30-04-00-clock-wind-illumination-projection-contract.md",
+    ".agent/deploy-audit/2026-07-11T01-50-30-04-00-environment-frame-coherence-fixture-gate.md"
   ],
   "runtimeSourceChanged": false,
   "branchCreated": false,

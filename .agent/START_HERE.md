@@ -1,37 +1,35 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T07-01-49-04-00`
+Last aligned: `2026-07-11T08-41-02-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: establish one route-session owner for startup, frame admission, input, timers, Core World focus work, global exposure, WebGPU resources, stop, disposal and restart before making provider cells visually authoritative.
+Current focus: make Core World focus movement one retriable, observable transaction across wrapper state, the pinned production runtime, provider stores and the visible world before wiring provider cells into live rendering.
+
+## Summary
+
+`MyCozyIsland` has a deterministic 50-kit semantic world, seven Core World providers and a WebGPU-first renderer. The current wrapper commits focus in two steps, mutates its own bookkeeping before the production update completes, collapses every outcome to a Boolean and is tested only through a simplified fake runtime. A failed focus update can therefore split Core World focus, wrapper state, provider stores and the last visible snapshot without a typed result or retry boundary.
 
 ## Plan ledger
 
-**Goal:** make every browser-side resource and asynchronous callback belong to one identified runtime session, then prove that stopping or failing that session releases exactly what it acquired and rejects all stale work before another session can start.
+**Goal:** establish one versioned focus transaction that either commits a complete world/provider revision or returns a classified failure while preserving the last accepted revision and allowing deterministic retry.
 
 - [x] Compare the complete accessible `LuminaryLabs-Publish` inventory with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories remain tracked and have root `.agent` state.
-- [x] Prioritize `MyCozyIsland` because its `2026-07-11T06-50-30-04-00` repo-local audit was newer than the central `2026-07-11T05-10-36-04-00` record.
-- [x] Read the route host, Core World wrapper, renderer constructors, renderer-disposal utility, input registration, loader timers, animation loop and global host exposure.
-- [x] Identify the interaction loop, domains, all 50 local kits, imported Core World services, runtime-implied hosts and lifecycle-owned resources.
-- [x] Trace startup success, startup failure, pagehide, frame execution and the absent restart path.
-- [x] Add timestamped architecture, render, gameplay, interaction, lifecycle and deploy audits.
-- [x] Refresh all required root `.agent` documents.
+- [x] Confirm all nine eligible repositories remain centrally tracked with root `.agent` state.
+- [x] Avoid `IntoTheMeadow` because same-minute documentation commits were actively landing during selection.
+- [x] Select only `MyCozyIsland` as the next stable oldest eligible repository.
+- [x] Read the route host, Core World wrapper, production pinned world builder, fake runtime and lifecycle fixtures.
+- [x] Identify the interaction loop, active domains, all kits and all service groups.
+- [x] Trace initial prepare, normal focus movement and failure boundaries.
+- [x] Add timestamped architecture, render, gameplay, interaction, Core World and deploy audits.
+- [x] Refresh every required root `.agent` document.
 - [x] Change no runtime source, package scripts, rendering or deployment configuration.
-- [x] Push only to `main` and create no branch or pull request.
+- [x] Push only to `main`; create no branch or pull request.
 
 ## Selection result
 
-The accessible Publish inventory contains ten repositories. Nine are eligible after excluding `TheCavalryOfRome`. Every eligible repository is centrally tracked and has root `.agent` documentation, but `MyCozyIsland` had a newer repo-local breakdown that was not yet represented by the central ledger. That documentation drift takes priority over the oldest-documented fallback.
-
-```txt
-MyCozyIsland repo-local audit:  2026-07-11T06-50-30-04-00
-MyCozyIsland central ledger:    2026-07-11T05-10-36-04-00
-selected:                       MyCozyIsland
-excluded:                       TheCavalryOfRome
-```
+The accessible Publish inventory contains ten repositories. `TheCavalryOfRome` is excluded. All nine eligible repositories are already tracked and contain root `.agent` state. `IntoTheMeadow` was the nominal oldest entry, but it received active same-minute documentation writes during this run, so `MyCozyIsland` was selected as the next stable eligible target to avoid concurrent edits.
 
 Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization during this pass.
 
@@ -41,51 +39,68 @@ Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization 
 index.html
   -> pinned Three.js 0.185.0 and NexusEngine commit imports
   -> validate 50 local kit descriptors
-  -> construct and initialize one WebGPURenderer
-  -> choose backend and startup quality
-  -> create Core World wrapper and prepare 49 active cells
-  -> flatten providers into one compatibility render snapshot
-  -> construct scene, camera, sky, lights, world, ocean, foam,
-     atmosphere textures, cloud, fog, post, performance and debug resources
-  -> register canvas and window listeners
-  -> schedule two nested loader timers
-  -> install one renderer animation loop
+  -> construct and initialize WebGPURenderer
+  -> create Core World wrapper
+  -> prepare initial focus at origin
+       wrapper prepared = true
+       wrapper lastFocus = origin
+       Core World setFocus commits focusChanged
+       Core World updateWorld prepares 49 cells through seven providers
+       wrapper stores worldSnapshot and lastCellKey
+  -> flatten provider state into one startup compatibility render snapshot
+  -> construct scene, world, ocean, atmosphere, post and debug resources
+  -> register input and animation loop
   -> each frame:
        scenario tick
-       camera projection
-       Core World focus update
-       world and foam presentation update
-       performance sampling
-       post render
-       debug projection
-  -> publish live resources through globalThis.CozyIsland
-  -> pagehide calls only domains.dispose()
+       derive camera transform
+       updateWorldFocus(camera position, mode, dt)
+       update static whole-island presentation
+       render
 ```
 
-## Newly documented finding
+## Main finding
 
-The route has no session object or acquisition ledger. `main()` creates resources in sequence and publishes them only after the animation loop is active. A failure at any earlier await or constructor reaches `main().catch(fail)` without rolling back resources already acquired.
-
-The current page-exit path is also partial:
+The wrapper has no atomic focus operation.
 
 ```txt
-pagehide
-  -> domains.dispose()
-  -> Core World reset
-
-not released:
-  renderer animation loop
-  wheel/pointer/keyboard/blur/resize listeners
-  loader timers
-  scene geometries, materials and textures
-  ocean, foam, cloud and fog resources
-  atmosphere volume textures
-  post pipeline
-  renderer/backend
-  globalThis.CozyIsland
+commitFocus(target)
+  -> mutate wrapper lastFocus
+  -> Core World setFocus(target) commits focusChanged
+  -> Core World updateWorld() releases, updates and prepares cells/providers
+  -> mutate wrapper worldSnapshot, lastCellKey and accumulator
 ```
 
-The repository contains `disposeRendererObject()`, but the live whole-island host does not call it. Most renderer factories expose only live objects and update methods, not a common idempotent disposal result. There is no `stop()`, `restart()`, session epoch, stale-frame fence or previous-global restoration policy.
+If `updateWorld()` throws after `setFocus()` succeeds:
+
+```txt
+Core World focus: new
+wrapper lastFocus: new
+wrapper worldSnapshot: previous or null
+wrapper lastCellKey: previous
+focus accumulator: not reset
+provider stores: may have release/prepare side effects
+visible renderer: unchanged startup snapshot
+public result: exception or Boolean only
+retry identity: absent
+```
+
+Initial `prepare()` has an additional poison path: it sets `prepared = true` before `commitFocus()` succeeds. A failed first prepare can make later calls return the stale `worldSnapshot` instead of retrying.
+
+The test adapter does not model the pinned production contract. It returns a flat cell array rather than `required/retained/released/updated`, omits provider matching, capability admission, diagnostics, failed cells and production rollback semantics, and every current world-runtime test injects that fake.
+
+## Required authority flow
+
+```txt
+FocusCommand
+  -> session/epoch and expected world revision admission
+  -> capture accepted wrapper/Core World/provider checkpoint
+  -> validate target and partition selection
+  -> stage provider release/update/prepare outcomes
+  -> classify complete, degraded, rejected or failed result
+  -> commit wrapper focus, world snapshot, cell key and provider revision together
+  -> publish immutable FocusTransactionResult
+  -> admit render consumption only for accepted world revision
+```
 
 ## Priority order
 
@@ -93,8 +108,8 @@ The repository contains `disposeRendererObject()`, but the live whole-island hos
 1. Runtime Session Lifecycle Authority
    + Startup Rollback / Stop / Dispose / Restart Fixture Gate
 
-2. Pinned Core World Contract Parity and Focus Transaction Authority
-   + Production-Runtime Failure Parity Fixture Gate
+2. Pinned Core World Focus Transaction Authority
+   + Production/Fake Contract Parity and Failure Fixture Gate
 
 3. Core World Render Commit Authority
    + Provider/Cell Consumer Fidelity Fixture Gate
@@ -109,27 +124,27 @@ The repository contains `disposeRendererObject()`, but the live whole-island hos
    + Full-Recovery Fixture Gate
 ```
 
-Lifecycle remains first because every later focus, provider and render transaction requires a live session epoch, resource ownership and stale-work rejection boundary.
+Lifecycle remains prerequisite infrastructure. This pass defines the complete second gate so implementation can proceed without treating a Boolean focus change as an accepted world revision.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T07-01-49-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T07-01-49-04-00.md
-.agent/architecture-audit/2026-07-11T07-01-49-04-00-runtime-session-lifecycle-dsk-map.md
-.agent/render-audit/2026-07-11T07-01-49-04-00-webgpu-resource-ownership-disposal-gap.md
-.agent/gameplay-audit/2026-07-11T07-01-49-04-00-startup-run-stop-restart-loop.md
-.agent/interaction-audit/2026-07-11T07-01-49-04-00-listener-timer-animation-command-map.md
-.agent/lifecycle-audit/2026-07-11T07-01-49-04-00-session-epoch-resource-lease-contract.md
-.agent/deploy-audit/2026-07-11T07-01-49-04-00-lifecycle-restart-fixture-gate.md
+.agent/trackers/2026-07-11T08-41-02-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T08-41-02-04-00.md
+.agent/architecture-audit/2026-07-11T08-41-02-04-00-core-world-focus-transaction-dsk-map.md
+.agent/render-audit/2026-07-11T08-41-02-04-00-focus-world-render-revision-split.md
+.agent/gameplay-audit/2026-07-11T08-41-02-04-00-camera-focus-cell-transition-loop.md
+.agent/interaction-audit/2026-07-11T08-41-02-04-00-focus-command-admission-map.md
+.agent/core-world-audit/2026-07-11T08-41-02-04-00-production-fake-focus-contract.md
+.agent/deploy-audit/2026-07-11T08-41-02-04-00-focus-transaction-parity-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- visible cell-render authority
-- expanded movement or active radius
-- removal of `?world=legacy`
-- new world content or visual systems
-- additional persistent GPU resources
-- terrain, biome, vegetation, grass, rocks, ocean, cloud, fog, lighting or quality changes
-- treating `pagehide -> domains.dispose()` as complete route disposal
+- visible provider-cell rendering before focus results have accepted revision identity
+- replacing the pinned NexusEngine runtime without a contract comparison
+- expanding the active radius or movement bounds
+- removing `?world=legacy`
+- adding new terrain, vegetation, grass, ocean, cloud, fog or quality systems
+- treating `updateWorldFocus() === true` as proof of a complete provider commit
+- treating fake-runtime success as production-runtime parity

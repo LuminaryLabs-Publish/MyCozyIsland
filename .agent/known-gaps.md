@@ -1,112 +1,137 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T17-50-37-04-00`
+Last updated: `2026-07-11T19-20-22-04-00`
 
 ## Summary
 
-The route has no authoritative runtime session lifecycle. `pagehide` resets only the world runtime while the renderer loop, browser callbacks, timers, scenario state, render resources and global readback remain retained. There is no explicit bfcache policy, complete disposal transaction, stale-callback fence or clean restart proof.
+Browser startup has no transaction, acquisition ledger or rollback authority. Errors are presented in the DOM while partial semantic, browser and GPU ownership can remain alive. Core World preparation can also become poisoned by committing `prepared = true` before the initial world snapshot succeeds.
 
-## Concrete lifecycle defect
+## Concrete startup defect
 
 ```txt
-running page
-  -> renderer loop advances scenario and rendering
-  -> pagehide calls domains.dispose()
-  -> Core World prepared=false
-  -> materializer reset
-  -> renderer loop still retained
-  -> browser listeners and timers still retained
-  -> scene/GPU/post resources still retained
-  -> globalThis.CozyIsland still exposes references
-  -> no pageshow handler restores or rebuilds a coherent session
+main acquires renderer/world/resources
+  -> later phase throws
+  -> fail(error) updates error text only
+  -> acquired capabilities are not inventoried or retired
+  -> retry baseline is unknown
 ```
 
-## Session authority gaps
+## Poisoned prepare defect
 
 ```txt
-runtime session ID: absent
-session generation: absent
-lifecycle state machine: absent
-lifecycle command sequence: absent
-exclusive animation-loop lease: absent
-stop result: absent
-dispose result: absent
-restart result: absent
-bounded lifecycle journal: absent
+prepare sets prepared=true
+  -> commitFocus/provider update throws
+  -> worldSnapshot remains null
+  -> retry sees prepared=true
+  -> retry returns null without re-running preparation
+```
+
+## Startup authority gaps
+
+```txt
+startup transaction ID: absent
+startup phase/state machine: absent
+catalog/config/import admission result: absent
+backend initialization result: absent
+acquisition ledger: absent
+capability dependency graph: absent
+startup commit result: absent
+startup failure result: absent
+rollback plan: absent
+rollback receipts: absent
+retry classification: absent
+first-frame commit result: absent
+```
+
+## World prepare gaps
+
+```txt
+candidate snapshot: absent
+atomic prepared/snapshot commit: absent
+provider readiness result: absent
+materializer readiness result: absent
+prepare rollback: absent
+prepare attempt identity: absent
+clean retry fixture: absent
+prepared=true/null-snapshot invariant check: absent
+```
+
+## Partial render-resource gaps
+
+```txt
+resource IDs during startup: absent
+render factory capability descriptors: absent
+partial scene inventory: absent
+volume texture rollback: absent
+post pipeline rollback: absent
+renderer/backend rollback: absent
+shared-resource exactly-once retirement: absent
+first render result: absent
 ```
 
 ## Browser callback gaps
 
 ```txt
-listener registry: absent
-listener removal receipts: absent
-timeout registry: absent
-timeout cancellation: absent
-pointer-capture retirement: absent
-held-input retirement: partial, blur-only
-resize admission: absent
-stale callback fencing: absent
-pagehide persisted policy: absent
-pageshow handler: absent
-visibility lifecycle policy: absent
+startup listener leases: absent
+startup timer leases: absent
+animation-loop startup lease: absent
+callback installation rollback: absent
+stale startup callback fencing: absent
+duplicate Start/Retry exclusion: absent
 ```
 
-## Render-resource gaps
+## Public observation gaps
 
 ```txt
-post-pipeline disposal contract: absent
-pass/render-target retirement: absent
-cloud/fog volume texture retirement: absent
-scene resource inventory: absent
-shared-resource deduplication: absent
-world-renderer dispose: absent
-ocean-renderer dispose: absent
-foam-renderer dispose: absent
-cloud-renderer dispose: absent
-fog-renderer dispose: absent
-renderer.dispose() from route: absent
-backend retirement receipt: absent
-resource fingerprint: absent
+current startup phase: unavailable
+active startup transaction: unavailable
+acquired capability counts: unavailable
+rollback pending count: unavailable
+retry eligibility: unavailable
+first committed frame ID: unavailable
+partial raw ownership recovery: unavailable
 ```
 
-## World and gameplay gaps
+## Retained runtime lifecycle gaps
 
 ```txt
-Core World retirement result: absent
-provider-store retirement receipt: absent
-materializer in-flight work fence: absent
-scenario stop/reset ownership: absent
-camera/input lifecycle result: absent
-environment clock suspend/resume policy: absent
-world/scenario/render session parity: absent
+runtime session ID and generation: absent
+explicit animation-loop stop: absent
+pagehide/pageshow policy: absent
+complete final disposal: absent
+runtime restart transaction: absent
+global readback revocation: absent
 ```
 
-## Global readback gaps
+## Missing fixtures
 
 ```txt
-raw renderer exposure: present
-raw scene/camera exposure: present
-raw world runtime exposure: present
-raw renderer component exposure: present
-global revocation after dispose: absent
-clone-safe lifecycle observation: absent
-first resumed/restarted frame receipt: absent
+failure injection at every startup phase
+acquisition-ledger count parity
+reverse dependency rollback order
+exactly-once retirement
+automatic callback/loop rollback
+prepare failure and clean retry
+no global host before commit
+first-frame startup parity
+WebGPU/WebGL2 result parity
+Pages startup error/recovery smoke
 ```
 
-## bfcache and restart gaps
+## Risk ranking
 
 ```txt
-persisted pagehide classification: absent
-same-session suspend/resume contract: absent
-full dispose/restart contract: absent
-frame-time baseline reset: absent
-resource readiness revalidation: absent
-new generation on restart: absent
-old generation callback rejection: absent
-first restarted frame acknowledgement: absent
+P0  partial startup can leak renderer/world/browser/GPU ownership
+P0  failed prepare can poison the world runtime and block clean retry
+P0  running has no atomic first-frame commit boundary
+P0  runtime lifecycle has no authoritative committed startup input
+P1  duplicate attempts can overlap if retry is later added naively
+P1  error UI cannot report rollback or unresolved capabilities
+P1  bfcache and final disposal remain undefined
+P2  diagnostics do not expose startup transaction truth
 ```
 
-## Retained upstream and downstream gaps
+## Ordered gaps
 
 ```txt
 P0 browser startup admission and rollback
@@ -120,39 +145,6 @@ P1 dynamic environment frame authority
 P1 adaptive quality transaction authority
 ```
 
-## Missing fixtures
-
-```txt
-lifecycle state transition table
-animation-loop stop
-listener install/remove parity
-timeout cancellation
-stale callback rejection
-persisted pagehide/pageshow
-non-persisted pagehide
-scene/post/volume/renderer retirement
-shared resource exactly-once disposal
-Core World/materializer retirement
-duplicate stop/dispose
-restart generation monotonicity
-first resumed/restarted frame parity
-WebGPU/WebGL2 lifecycle parity
-Pages lifecycle smoke
-```
-
-## Risk ranking
-
-```txt
-P0  startup failure leaves partial resource graph
-P0  page lifecycle can create mixed reset/live runtime state
-P0  stale callbacks can outlive world or future session generation
-P0  final disposal does not retire browser and GPU ownership
-P1  bfcache resume and restart behavior are undefined
-P1  global raw references preserve disposed authority
-P1  downstream world/render/quality work lacks session fencing
-P2  detached diagnostics do not expose lifecycle truth
-```
-
 ## Non-goals of this documentation run
 
 ```txt
@@ -161,5 +153,5 @@ no renderer behavior changed
 no package scripts changed
 no dependencies changed
 no workflow or deployment changed
-no lifecycle correctness claim made
+no startup correctness claim made
 ```

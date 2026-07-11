@@ -27,9 +27,7 @@ export function createTerrainSurface(options = {}) {
     return { x: x + wx * 15, z: z + wz * 15 };
   }
 
-  function rawHeight(point = {}) {
-    const x = Number(point.x ?? 0);
-    const z = Number(point.z ?? 0);
+  function naturalHeightAt(x, z) {
     const warped = warpedCoordinates(x, z);
     const angle = Math.atan2(warped.z, warped.x);
     const coast = coastRadius(angle);
@@ -46,10 +44,30 @@ export function createTerrainSurface(options = {}) {
     const ridge = 1 - Math.abs(ridgeNoise);
     const mound = radial * state.maxHeight;
     const terrainDetail = broad * 4.2 * radial + ridge * ridge * 2.1 * radial;
-    const clearing = 1 - smoothstep(state.clearingRadius * 0.65, state.clearingRadius * 1.4, Math.hypot(x, z));
-    const clearingHeight = 7.1 + broad * 0.45;
-    const naturalHeight = Math.max(0, mound + terrainDetail);
-    return Math.max(0, lerp(naturalHeight, clearingHeight, clearing * 0.72));
+    return Math.max(0, mound + terrainDetail);
+  }
+
+  const clearingSampleRadius = state.clearingRadius * 1.32;
+  const clearingSampleCount = 12;
+  const clearingPlateauHeight = Array.from({ length: clearingSampleCount }, (_, index) => {
+    const angle = index / clearingSampleCount * TAU;
+    return naturalHeightAt(Math.cos(angle) * clearingSampleRadius, Math.sin(angle) * clearingSampleRadius);
+  }).reduce((sum, height) => sum + height, 0) / clearingSampleCount;
+
+  function rawHeight(point = {}) {
+    const x = Number(point.x ?? 0);
+    const z = Number(point.z ?? 0);
+    const naturalHeight = naturalHeightAt(x, z);
+    const radialDistance = Math.hypot(x, z);
+    const clearingBlend = 1 - smoothstep(state.clearingRadius * 0.78, state.clearingRadius * 1.16, radialDistance);
+    const surfaceVariation = fbm2D(`${state.seed}:clearing-surface`, x * 0.045, z * 0.045, {
+      octaves: 2,
+      frequency: 1,
+      amplitude: 0.5,
+      gain: 0.48
+    }) * 0.14;
+    const flattenedHeight = clearingPlateauHeight + surfaceVariation;
+    return Math.max(0, lerp(naturalHeight, flattenedHeight, clearingBlend));
   }
 
   function sampleHeight(point = {}) {
@@ -119,7 +137,8 @@ export function createTerrainBiomeField(surface) {
     const wetSand = smoothstep(-1.5, 1.4, shore) * (1 - smoothstep(1.1, 4.2, shore));
     const drySand = smoothstep(0.6, 4.8, shore) * (1 - smoothstep(7.5, surface.beachWidth + 2, shore));
     const grassBase = smoothstep(surface.beachWidth - 2, surface.beachWidth + 6, shore) * (1 - fields.rockExposure * 0.76);
-    const soil = clamp01(fields.clearing * 0.86 + fields.slope * 0.35) * (1 - wetSand);
+    const clearingSoil = smoothstep(0.18, 0.82, fields.clearing);
+    const soil = clamp01(clearingSoil * 0.56 + fields.slope * 0.2) * (1 - wetSand);
     const forest = clamp01(grassBase * fields.moisture * (1 - fields.exposure * 0.34));
     const moss = clamp01(forest * fields.curvature * 0.75);
     const rock = clamp01(fields.rockExposure + smoothstep(surface.maxHeight * 0.7, surface.maxHeight, fields.height) * 0.35);

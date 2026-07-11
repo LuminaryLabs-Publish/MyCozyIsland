@@ -1,90 +1,107 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T11-10-29-04-00`
+Last aligned: `2026-07-11T11-19-10-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make Core World reset, dispose, and re-prepare behavior explicit before any browser restart, recovery, or live cell-render cutover depends on it.
+Current focus: make the browser runtime session the sole owner of startup, callbacks, world recovery, rendering, stop, disposal, and restart before reusable reset or live cell rendering depends on it.
 
 ## Summary
 
-`MyCozyIsland` registers its Core World definition once during construction. Its public `reset()` then calls `coreWorld.resetWorlds()`, which releases active cells and clears the pinned runtime world definitions. The wrapper marks itself unprepared, but a later `prepare()` only calls `setFocus()` and `updateWorld()`; it never registers the world again. Reset therefore appears reusable at the product API while actually invalidating the runtime definition required by the next prepare.
+The Core World reset/re-prepare audit established that the world definition is cleared without re-registration. This follow-up identifies the parent lifecycle problem: `src/main-cloudform.js` installs a permanent renderer animation loop, anonymous browser listeners, delayed loader timers, a mutable global host, and a large render-resource graph, while `pagehide` calls only `domains.dispose()`.
+
+A raw `CozyIsland.worldRuntime.reset()` or `.dispose()` can therefore run while scenario, camera, focus, materialization, rendering, performance adaptation, and diagnostics continue executing. The route needs one session generation, phase machine, lease registry, startup rollback stack, reset-quiescence handshake, complete render retirement, and idempotent terminal result.
 
 ## Plan ledger
 
-**Goal:** document the reset/re-prepare defect and define one recoverable world-session transaction that preserves provider ordering, clears heavy state exactly once, re-registers the world definition when appropriate, and proves a fresh 49-cell state before rendering resumes.
+**Goal:** document the complete browser ownership graph and define a fixture-backed session lifecycle that quiesces live work before world recovery and retires every acquired callback and resource on stop.
 
 - [x] Compare all accessible Publish repositories with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` under the oldest eligible fallback rule.
-- [x] Trace `createCozyIslandWorldRuntime()`, `prepare()`, `reset()`, `dispose()`, the pinned Core World reset contract, provider stores, materializer state, and existing tests.
+- [x] Select only `MyCozyIsland` because its repo-local reset audit was newer than central tracking.
+- [x] Trace production startup, listeners, timers, animation loop, public host, world reset, pagehide, and render resources.
 - [x] Identify the interaction loop, domains, services, 50 local kits, seven providers, and runtime-implied adapters.
-- [x] Confirm `resetWorlds()` clears runtime definitions in the pinned NexusEngine implementation.
-- [x] Confirm product `prepare()` does not re-register the cleared world definition.
-- [x] Confirm existing tests dispose once but never prove reset followed by prepare.
-- [x] Add timestamped architecture, render, gameplay, interaction, recovery, and deploy audits.
+- [x] Confirm the animation callback has no session phase or generation admission.
+- [x] Confirm pagehide disposes only the world wrapper.
+- [x] Define runtime-session, quiescence, acquisition rollback, lease, disposal-result, and fixture boundaries.
+- [x] Add timestamped architecture, render, gameplay, interaction, lifecycle, and deploy audits.
 - [x] Change no runtime or deployment behavior.
-- [x] Push only to `main`; create no branch or pull request.
+- [x] Push directly to `main`; create no branch or pull request.
 
 ## Current interaction loop
 
 ```txt
 route startup
-  -> construct legacy semantic composition
-  -> create seven provider adapters and stores
-  -> create Core World engine
-  -> register world definition once
-  -> prepare at origin
-  -> build compatibility render graph
-  -> update focus and materialization each frame
+  -> initialize WebGPU/WebGL2 renderer
+  -> construct Core World wrapper and seven providers
+  -> prepare 49 cells
+  -> create compatibility world/ocean/foam/cloud/fog/post resources
+  -> attach wheel, pointer, keyboard, blur, resize and pagehide listeners
+  -> schedule loader timers
+  -> install renderer.setAnimationLoop
+  -> expose globalThis.CozyIsland with raw runtime and render objects
 
-reset path
-  -> coreWorld.resetWorlds()
-       release active provider cells
-       reset providers
-       clear runtime world definitions
-       replace coordination state
-  -> materializer.reset()
-  -> clear wrapper prepared/snapshot/focus fields
+frame
+  -> scenario.tick
+  -> camera projection
+  -> updateWorldFocus
+  -> compatibility renderer updates
+  -> postPipeline.render
+  -> processMaterializationFrame
+  -> debug/global observations
 
-subsequent prepare
-  -> commitFocus(origin)
-  -> setFocus(worldId)
-  -> fails because the runtime definition was cleared
+reset/dispose
+  -> raw worldRuntime remains callable
+  -> loop/listeners/timers remain admitted
+  -> semantic world can clear while old compatibility frame continues
+  -> pagehide retires only domains
 ```
 
 ## Main finding
 
-The wrapper currently conflates three different operations:
-
 ```txt
-soft reset
-  clear active cells and provider/materializer progress, retain definition
-
-hard world teardown
-  release cells, clear provider state, remove definition
-
-final disposal
-  retire the Core World domain and make the wrapper permanently unusable
+session owner: absent
+session phase/generation: absent
+startup acquisition ledger: absent
+startup rollback: absent
+animation-loop lease: absent
+listener/timer leases: absent
+reset quiescence: absent
+global host revocation: absent
+complete render-resource retirement: absent
+idempotent session disposal result: absent
+single-session/restart fixture: absent
 ```
 
-`reset()` performs hard teardown but exposes soft-reset semantics. `dispose()` calls that reset and then resets the whole domain. Neither operation returns a typed result, generation, before/after fingerprint, release journal, or explicit reusable/terminal state.
+World recovery is a child transaction of the browser session. It cannot become safe while the route continues admitting callbacks and rendering without a generation fence.
 
 ## Required authority flow
 
 ```txt
-ResetWorldCommand
-  -> admit current session/world generation
-  -> freeze focus and materialization admission
-  -> checkpoint definition and provider identities
-  -> release active cells in reverse provider order
-  -> clear provider and materializer state exactly once
-  -> choose soft-reset, recreate, or terminal-dispose policy
-  -> re-register definition for reusable reset
-  -> prepare origin and verify 49 active cells / seven provider layers
-  -> publish WorldRecoveryResult and new generation
-  -> allow rendering and materialization to resume
+StartSession
+  -> allocate session and generation
+  -> acquire renderer, world, render graph, listeners and timers
+  -> install one animation lease
+  -> publish a read-only command/observation host
+  -> commit running
+
+ResetWorld
+  -> enter quiescing
+  -> retire held input and successor frame work
+  -> freeze focus/materialization/render publication
+  -> execute Core World recovery
+  -> correlate new world and renderer generations
+  -> acknowledge first visible frame
+  -> resume running
+
+StopSession
+  -> retire generation
+  -> clear animation loop and timers
+  -> remove listeners
+  -> revoke public host
+  -> dispose world and complete render graph
+  -> publish detached idempotent result
 ```
 
 ## Priority order
@@ -103,21 +120,21 @@ ResetWorldCommand
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T11-10-29-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T11-10-29-04-00.md
-.agent/architecture-audit/2026-07-11T11-10-29-04-00-core-world-reset-reprepare-dsk-map.md
-.agent/render-audit/2026-07-11T11-10-29-04-00-reset-render-state-divergence-gap.md
-.agent/gameplay-audit/2026-07-11T11-10-29-04-00-reset-reprepare-world-loop.md
-.agent/interaction-audit/2026-07-11T11-10-29-04-00-reset-prepare-result-map.md
-.agent/recovery-audit/2026-07-11T11-10-29-04-00-world-definition-provider-store-recovery-contract.md
-.agent/deploy-audit/2026-07-11T11-10-29-04-00-reset-reprepare-fixture-gate.md
+.agent/trackers/2026-07-11T11-19-10-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T11-19-10-04-00.md
+.agent/architecture-audit/2026-07-11T11-19-10-04-00-browser-runtime-session-lifecycle-dsk-map.md
+.agent/render-audit/2026-07-11T11-19-10-04-00-animation-loop-world-generation-correlation-gap.md
+.agent/gameplay-audit/2026-07-11T11-19-10-04-00-reset-during-live-frame-loop.md
+.agent/interaction-audit/2026-07-11T11-19-10-04-00-global-host-listener-command-map.md
+.agent/lifecycle-audit/2026-07-11T11-19-10-04-00-session-quiescence-disposal-contract.md
+.agent/deploy-audit/2026-07-11T11-19-10-04-00-single-loop-reset-disposal-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- treating `reset()` and `dispose()` as synonyms;
-- calling `prepare()` after reset without re-registering or retaining the world definition;
-- reconnecting cell-aware rendering before reset/disposal ownership is fixture-backed;
-- restoring only Core World coordination state while ignoring provider/materializer state;
-- swallowing provider release failures;
-- adding browser restart behavior without a monotonic world generation and stale-callback fence.
+- calling world reset or dispose directly through `globalThis.CozyIsland`;
+- adding restart before the animation loop and callbacks are leased;
+- treating `pagehide` world disposal as complete browser teardown;
+- reconnecting cell-aware rendering before session/world/renderer generations exist;
+- disposing scene children without an inventory and typed result;
+- allowing retained old host or listener references to stay mutable after restart.

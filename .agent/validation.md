@@ -12,8 +12,8 @@ dependencies changed: no
 deployment configuration changed: no
 branch created: no
 pull request created: no
-repo-local documentation pushed to main: pending commit
-central ledger update: pending commit
+repo-local documentation pushed to main: yes
+central ledger update: yes
 ```
 
 ## Existing test surface

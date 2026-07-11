@@ -1,123 +1,123 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T09-08-59-04-00`
+Last aligned: `2026-07-11T11-10-29-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: turn the newly live lazy Core World materialization loop into a revisioned readiness commit that visible rendering can consume safely.
+Current focus: make Core World reset, dispose, and re-prepare behavior explicit before any browser restart, recovery, or live cell-render cutover depends on it.
 
 ## Summary
 
-`MyCozyIsland` now calls `processMaterializationFrame()` from the production animation loop after the compatibility island has rendered. This fixes the earlier dead integration path: terrain, biome, shoreline, and presentation work can now advance in the live route. The remaining boundary is authority and consumption. Materialization has no session/world/cell generation fence, no typed failure result or elapsed-time budget, and no ready-cell revision reaches the renderer.
+`MyCozyIsland` registers its Core World definition once during construction. Its public `reset()` then calls `coreWorld.resetWorlds()`, which releases active cells and clears the pinned runtime world definitions. The wrapper marks itself unprepared, but a later `prepare()` only calls `setFocus()` and `updateWorld()`; it never registers the world again. Reset therefore appears reusable at the product API while actually invalidating the runtime definition required by the next prepare.
 
 ## Plan ledger
 
-**Goal:** document the post-integration runtime and define the smallest command/result, readiness, and render-commit boundary needed before replacing the whole-island compatibility graph with cell-aware resources.
+**Goal:** document the reset/re-prepare defect and define one recoverable world-session transaction that preserves provider ordering, clears heavy state exactly once, re-registers the world definition when appropriate, and proves a fresh 49-cell state before rendering resumes.
 
 - [x] Compare all accessible Publish repositories with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `MyCozyIsland` because new runtime commits landed after the prior central audit.
-- [x] Trace the production animation loop, world wrapper, materializer, provider stores, presentation descriptors, bridge, cache, and tests.
-- [x] Identify the interaction loop, domains, 50 local kits, runtime-implied kits, and services.
-- [x] Confirm live materialization starts after the second committed compatibility frame.
-- [x] Confirm ready presentation descriptors are not consumed by visible rendering.
-- [x] Add timestamped architecture, render, gameplay, interaction, Core World, and deploy audits.
-- [x] Change no runtime or deployment behavior in this documentation pass.
+- [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
+- [x] Select only `MyCozyIsland` under the oldest eligible fallback rule.
+- [x] Trace `createCozyIslandWorldRuntime()`, `prepare()`, `reset()`, `dispose()`, the pinned Core World reset contract, provider stores, materializer state, and existing tests.
+- [x] Identify the interaction loop, domains, services, 50 local kits, seven providers, and runtime-implied adapters.
+- [x] Confirm `resetWorlds()` clears runtime definitions in the pinned NexusEngine implementation.
+- [x] Confirm product `prepare()` does not re-register the cleared world definition.
+- [x] Confirm existing tests dispose once but never prove reset followed by prepare.
+- [x] Add timestamped architecture, render, gameplay, interaction, recovery, and deploy audits.
+- [x] Change no runtime or deployment behavior.
 - [x] Push only to `main`; create no branch or pull request.
 
 ## Current interaction loop
 
 ```txt
 route startup
-  -> validate 50 local kit descriptors
-  -> initialize WebGPU/WebGL2
-  -> create Core World wrapper and seven providers
-  -> prepare origin and register 49 lightweight cells
-  -> create one compatibility render snapshot
-  -> build the whole-island scene, ocean, atmosphere, and post graph
-  -> register input and animation loop
+  -> construct legacy semantic composition
+  -> create seven provider adapters and stores
+  -> create Core World engine
+  -> register world definition once
+  -> prepare at origin
+  -> build compatibility render graph
+  -> update focus and materialization each frame
 
-per frame
-  -> scenario.tick(dt)
-  -> project camera
-  -> updateWorldFocus(camera, mode, dt)
-  -> update compatibility world and foam
-  -> sample performance
-  -> render compatibility frame
-  -> after frame 2, process one configured materialization stage
-  -> expose aggregate progress in debug and global host state
+reset path
+  -> coreWorld.resetWorlds()
+       release active provider cells
+       reset providers
+       clear runtime world definitions
+       replace coordination state
+  -> materializer.reset()
+  -> clear wrapper prepared/snapshot/focus fields
+
+subsequent prepare
+  -> commitFocus(origin)
+  -> setFocus(worldId)
+  -> fails because the runtime definition was cleared
 ```
 
 ## Main finding
 
-The production queue is no longer dead. The new gap is that a synchronous helper result is treated as readiness authority without carrying the identity required to make it safe or renderable.
+The wrapper currently conflates three different operations:
 
 ```txt
-materialization currently proves:
-  one scheduler step ran
-  aggregate counters changed
-  a provider stage may have advanced
-  a presentation descriptor may now say ready
+soft reset
+  clear active cells and provider/materializer progress, retain definition
 
-materialization does not prove:
-  which session/world/focus revision admitted the work
-  whether the cell generation is still current
-  which provider descriptor versions were joined
-  whether a failure was classified and contained
-  whether an elapsed-time budget was respected
-  whether a renderer accepted the ready revision
-  whether a visible frame consumed it
+hard world teardown
+  release cells, clear provider state, remove definition
+
+final disposal
+  retire the Core World domain and make the wrapper permanently unusable
 ```
 
-`getPresentationDescriptors()` and `createRendererCellCache()` exist, but `src/main-cloudform.js` never reads or commits them. The visible world remains the startup compatibility snapshot.
+`reset()` performs hard teardown but exposes soft-reset semantics. `dispose()` calls that reset and then resets the whole domain. Neither operation returns a typed result, generation, before/after fingerprint, release journal, or explicit reusable/terminal state.
 
 ## Required authority flow
 
 ```txt
-committed compatibility frame
-  -> admit MaterializationFrameCommand
-  -> fence to sessionEpoch + worldRevision + focusRevision
-  -> synchronize active cells and cellGeneration
-  -> spend bounded row and elapsed-time budget
-  -> classify provider-stage result or failure
-  -> join required provider versions
-  -> commit CellReadinessRevision
-  -> refresh presentation descriptor with source versions
-  -> prepare/update/release detached cell resources
-  -> atomically commit renderer-cell revision
-  -> acknowledge first visible frame
+ResetWorldCommand
+  -> admit current session/world generation
+  -> freeze focus and materialization admission
+  -> checkpoint definition and provider identities
+  -> release active cells in reverse provider order
+  -> clear provider and materializer state exactly once
+  -> choose soft-reset, recreate, or terminal-dispose policy
+  -> re-register definition for reusable reset
+  -> prepare origin and verify 49 active cells / seven provider layers
+  -> publish WorldRecoveryResult and new generation
+  -> allow rendering and materialization to resume
 ```
 
 ## Priority order
 
 ```txt
 1. Runtime Session Lifecycle Authority
-2. Pinned Core World Focus Transaction Authority
-3. Live Materialization Readiness Commit Authority
-4. Core World Render Commit Authority
-5. Camera Rail Baseline Authority
-6. Dynamic Environment Frame Authority
-7. Adaptive Quality Transaction Authority
+2. Core World Reset / Re-prepare Authority
+3. Pinned Core World Focus Transaction Authority
+4. Live Materialization Readiness Commit Authority
+5. Core World Render Commit Authority
+6. Camera Rail Baseline Authority
+7. Dynamic Environment Frame Authority
+8. Adaptive Quality Transaction Authority
 ```
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T09-08-59-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T09-08-59-04-00.md
-.agent/architecture-audit/2026-07-11T09-08-59-04-00-live-materialization-readiness-commit-dsk-map.md
-.agent/render-audit/2026-07-11T09-08-59-04-00-ready-cell-render-consumption-gap.md
-.agent/gameplay-audit/2026-07-11T09-08-59-04-00-camera-focus-materialize-render-loop.md
-.agent/interaction-audit/2026-07-11T09-08-59-04-00-frame-materialization-result-map.md
-.agent/core-world-audit/2026-07-11T09-08-59-04-00-live-materialization-generation-readiness-contract.md
-.agent/deploy-audit/2026-07-11T09-08-59-04-00-live-materialization-render-fixture-gate.md
+.agent/trackers/2026-07-11T11-10-29-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T11-10-29-04-00.md
+.agent/architecture-audit/2026-07-11T11-10-29-04-00-core-world-reset-reprepare-dsk-map.md
+.agent/render-audit/2026-07-11T11-10-29-04-00-reset-render-state-divergence-gap.md
+.agent/gameplay-audit/2026-07-11T11-10-29-04-00-reset-reprepare-world-loop.md
+.agent/interaction-audit/2026-07-11T11-10-29-04-00-reset-prepare-result-map.md
+.agent/recovery-audit/2026-07-11T11-10-29-04-00-world-definition-provider-store-recovery-contract.md
+.agent/deploy-audit/2026-07-11T11-10-29-04-00-reset-reprepare-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- reverting to claims that the live queue never advances;
-- replacing the compatibility world before renderer rollback and disposal exist;
-- treating `materialization: "ready"` as a versioned render commit;
-- increasing active radius, row budgets, or terrain resolution;
-- swallowing provider exceptions inside the animation loop;
-- creating a parallel world framework instead of extending the existing wrapper and Core World DSK.
+- treating `reset()` and `dispose()` as synonyms;
+- calling `prepare()` after reset without re-registering or retaining the world definition;
+- reconnecting cell-aware rendering before reset/disposal ownership is fixture-backed;
+- restoring only Core World coordination state while ignoring provider/materializer state;
+- swallowing provider release failures;
+- adding browser restart behavior without a monotonic world generation and stale-callback fence.

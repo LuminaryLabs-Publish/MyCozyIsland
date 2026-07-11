@@ -1,140 +1,150 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T04-09-54-04-00`
+Last updated: `2026-07-11T05-10-36-04-00`
 
 ## Plan ledger
 
-**Goal:** introduce one runtime-session authority that owns startup, rollback, running, stop, disposal, restart, and stale-session rejection before adding more persistent WebGPU or Three resources.
+**Goal:** preserve the new Core World semantic authority while introducing one lifecycle-safe, revisioned render-consumer path that can prove provider-to-visible-resource fidelity before the compatibility bridge is retired.
 
-- [ ] Add a route-session state machine with `idle`, `starting`, `running`, `stopping`, `stopped`, `disposing`, `disposed`, `rolling-back`, and `failed` states.
-- [ ] Allocate a monotonic `sessionEpoch` for every startup attempt that reaches resource acquisition.
-- [ ] Wrap startup in a transaction that records every acquired resource and release function in order.
-- [ ] Roll back acquired resources in reverse order when startup fails.
-- [ ] Replace anonymous canvas/window callbacks with removable listener leases.
-- [ ] Track and cancel both loader completion timeouts.
-- [ ] Own exactly one renderer animation-loop lease and clear it before teardown.
-- [ ] Add a resource registry for renderer, scene, geometry, materials, 2D/3D textures, storage textures, compute nodes, passes, pipeline resources, lights, shadow resources, listeners, timers, and globals.
-- [ ] Add explicit `dispose()` contracts to world, grass, ocean, foam, atmosphere-volume, cloud, fog, post, debug, and host adapters.
-- [ ] Deduplicate shared geometry, material, and texture disposal by identity.
-- [ ] Retire or tombstone `globalThis.CozyIsland` without retaining live renderer/service objects.
-- [ ] Add typed start, stop, dispose, restart, rollback, and stale-session results.
-- [ ] Add bounded JSON-safe lifecycle and resource readback.
-- [ ] Add a DOM-free runtime-lifecycle fixture to `npm test`.
-- [ ] Add a browser WebGPU/WebGL2 repeated-restart smoke.
-- [ ] Preserve camera, terrain, environment, and quality authority work behind the lifecycle gate.
+- [ ] Complete the route-session lifecycle and exact WebGPU/Three disposal gate first.
+- [ ] Add a monotonic world revision for every accepted Core World update.
+- [ ] Record ordered provider prepare/update/release results by world revision and cell ID.
+- [ ] Produce one immutable presentation descriptor snapshot per accepted world revision.
+- [ ] Add a typed world-render commit command and stable accepted/unchanged/rejected/failed result.
+- [ ] Wire `renderer-world-cells` through a named cell-render resource owner.
+- [ ] Track prepared, updated, retained, released, and rejected cell IDs.
+- [ ] Track shared geometry, material, texture, and pipeline resources separately from cell-owned resources.
+- [ ] Add explicit legacy, shadow-cell-consumer, and cell-authoritative policies.
+- [ ] Make compatibility fallback explicit by object kind and revision.
+- [ ] Correlate world revision, presentation revision, render revision, frame index, and source/render fingerprints.
+- [ ] Add bounded JSON-safe focus, provider, and render result journals to `CozyIsland.getState()`.
+- [ ] Add a DOM-free provider-to-render commit fixture to `npm test`.
+- [ ] Add a browser focus-movement and cell-disposal smoke for WebGPU and WebGL2 fallback.
+- [ ] Keep visible output on the compatibility renderer until shadow parity passes.
 
-## Immediate implementation slice
+## Immediate infrastructure slice
 
 ```txt
 MyCozyIsland Runtime Session Lifecycle Authority
 + WebGPU Resource Disposal and Restart Fixture Gate
 ```
 
+The current source migration increases the importance of this gate because a cell-aware renderer will create and release resources dynamically.
+
+## Immediate migration slice after lifecycle
+
+```txt
+MyCozyIsland Core World Render Commit Authority
++ Provider/Cell Consumer Fidelity Fixture Gate
+```
+
 ## Candidate kits
 
 ```txt
-route-session-state-kit
-runtime-session-epoch-kit
-runtime-command-admission-kit
-startup-transaction-kit
-resource-registration-kit
-startup-rollback-kit
-listener-lease-kit
-timeout-lease-kit
-animation-loop-lease-kit
-renderer-resource-owner-kit
-three-resource-disposal-kit
-atmosphere-volume-disposal-kit
-post-pipeline-disposal-kit
-global-host-publication-kit
-runtime-session-result-kit
-runtime-lifecycle-observation-kit
-runtime-lifecycle-fixture-kit
-browser-webgpu-restart-smoke-kit
+world-revision-kit
+focus-admission-result-kit
+provider-result-journal-kit
+presentation-descriptor-snapshot-kit
+world-render-command-kit
+world-revision-admission-kit
+cell-render-resource-owner-kit
+cell-render-prepare-kit
+cell-render-update-kit
+cell-render-release-kit
+shared-render-resource-registry-kit
+render-commit-result-kit
+compatibility-render-policy-kit
+world-render-correlation-kit
+world-render-observation-kit
+provider-render-fixture-kit
+browser-cell-lifecycle-smoke-kit
 ```
 
-## Minimum session state
+These should reuse the lifecycle resource registry rather than create a second disposal system.
+
+## Minimum world/render state
 
 ```txt
-sessionId
 sessionEpoch
-startupAttemptId
-status
-seed
-optionsFingerprint
-sourceFingerprint
-resourceRegistryFingerprint
-frameIndex
-activeLoop
-listenerLeaseCount
-timeoutLeaseCount
+worldId
+worldRevision
+focusRevision
+focusPosition
+activeCellIds
+providerRevisionById
+presentationRevision
+presentationFingerprint
+renderPolicy
+renderRevision
+renderedCellIds
+fallbackKinds
 resourceCountsByKind
-terminalReason
-lastResult
+resourceCountsByCell
+sourceFingerprint
+renderFingerprint
+lastFocusResult
+lastWorldResult
+lastRenderResult
 recentResults
 ```
 
-## Required start result
+## Required render commit result
 
 ```txt
 commandId
 sessionEpoch
-status: accepted | unchanged | rejected | failed
+worldId
+worldRevision
+previousRenderRevision
+renderRevision
+status
 reason
-beforeLifecycle
-afterLifecycle
-acquiredCount
-rolledBackCount
-remainingCount
+preparedCellIds
+updatedCellIds
+retainedCellIds
+releasedCellIds
+fallbackKinds
+resourceDelta
 sourceFingerprint
-resourceRegistryFingerprint
-```
-
-## Required disposal order
-
-```txt
-freeze new input/frame admission
-  -> clear renderer animation loop
-  -> remove listeners and release pointer capture
-  -> cancel timeouts
-  -> stop performance/debug/global publication
-  -> dispose post pipeline and passes
-  -> dispose cloud/fog consumers
-  -> dispose 3D/storage textures and compute resources
-  -> dispose foam/ocean/world/grass/sky scene resources
-  -> dispose lights and shadow resources
-  -> clear scene references
-  -> dispose renderer/backend
-  -> mark epoch disposed
+renderFingerprint
 ```
 
 ## Required fixture assertions
 
 ```txt
-start from idle succeeds exactly once
-start while running returns rejected or unchanged
-failure after each acquisition step rolls back only acquired rows
-rollback release order is reverse acquisition order
-one release failure does not stop remaining rollback
-stop freezes frame, clock and input revisions
-first dispose releases all owned resources once
-second dispose is unchanged and non-throwing
-restart increments sessionEpoch
-old callbacks and commands are rejected
-same seed/options preserve semantic source fingerprint
-new runtime resource identities are disjoint from retired epoch
-one listener set, one timeout set, one animation loop and one global host remain active
-bounded observation contains no live functions, Three objects, renderer, scene, materials, textures or pipeline objects
+initial prepare produces one world revision and one render commit
+same revision is unchanged
+stale revision is rejected
+provider phase order is stable
+presentation rows match active cell IDs
+one descriptor is consumed exactly once
+released descriptors release cell-only resources exactly once
+shared resources survive while referenced
+compatibility fallback is explicit
+shadow consumer matches legacy bounds, counts, IDs, and fingerprints
+world and render revisions remain correlated
+bounded readback structured-clones successfully
+session stop/dispose rejects later world and render commits
+```
+
+## Browser proof
+
+```txt
+core mode boots under WebGPU
+core mode boots under WebGL2 fallback
+legacy mode remains available
+shadow consumer changes no visible output
+focus movement advances world and render revisions together
+no duplicate cell groups appear
+released groups leave the scene
+pagehide/stop retires loop, listeners, timers, cell resources, shared resources, and global host
 ```
 
 ## Ordered follow-up slices
 
 ```txt
-2. Camera Rail Baseline Authority
+3. Camera Rail Baseline Authority
    + Drag/Reset Fidelity Fixture Gate
-
-3. Terrain Clearing Surface Authority
-   + Edge/Seating/Layer-Coherence Fixture Gate
 
 4. Dynamic Environment Frame Authority
    + Clock/Wind/Illumination Consumer Coherence Fixture Gate
@@ -145,8 +155,9 @@ bounded observation contains no live functions, Three objects, renderer, scene, 
 
 ## Deferred
 
-- more terrain, grass, vegetation, rock, fence, ocean, cloud, fog, sky, lighting, post-processing, or quality work
-- renderer replacement
-- new island content
+- new world content or expanded movement
+- active-radius changes
+- terrain, biome, vegetation, grass, rock, ocean, cloud, fog, lighting, or post changes
+- immediate removal of `?world=legacy`
+- visible cell-authoritative cutover without shadow parity
 - public kit promotion
-- restart implemented as an unguarded second call to `main()`

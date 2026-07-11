@@ -1,139 +1,154 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T06-50-30-04-00`
+Last updated: `2026-07-11T07-01-49-04-00`
 
-## Critical
+## Critical lifecycle gaps
 
-1. The browser ships the pinned NexusEngine Core World runtime, while Node world tests inject a materially simpler fake runtime.
-2. The fake does not model production `required`, `retained`, `released`, and `updated` selection results.
-3. The fake omits provider matching, capability dependencies, critical-provider failure, portable effect validation, diagnostics and failed-cell states.
-4. The fake cannot prove production rollback or release ordering.
-5. `prepare()` sets `prepared = true` before the initial focus commit, so one thrown startup update can poison every retry.
-6. `updateWorldFocus()` returns only a Boolean and conceals complete, degraded, rejected and partial-failure outcomes.
-7. Production Core World commits focus separately, releases old cells before preparing new cells, and can commit failed cell records.
-8. No wrapper-level active-cell-set transaction, provider-store checkpoint or explicit degradation policy exists.
-9. Core World semantic active cells still do not drive the production renderer.
-10. Route startup, rollback, stop, exact disposal, restart and stale-epoch admission remain absent.
+1. No runtime-session owner exists above `main()`.
+2. No `sessionId`, monotonic `sessionEpoch` or lifecycle state exists.
+3. Startup is a sequence of direct acquisitions rather than a transaction with rollback.
+4. `main().catch(fail)` projects an error but does not release resources acquired before the failure.
+5. `renderer.setAnimationLoop()` is installed without a route-level stop or generation fence.
+6. Wheel, pointer, keyboard, blur, resize and pagehide listeners are not represented as removable leases.
+7. Two nested loader timers are not retained or cancellable.
+8. `pagehide` calls only `domains.dispose()` and does not dispose the render graph or browser host.
+9. No restart path proves that an old callback cannot affect a new session.
+10. `globalThis.CozyIsland` is never retired, restored or tombstoned.
 
-## Test-runtime parity gaps
+## Startup rollback gaps
 
-- no exact pinned-runtime module harness in Node
-- no runtime commit assertion inside world fixtures
-- fake partition returns a bare array instead of the production selection contract
-- fake updates every retained cell rather than respecting production update detection
-- no provider `matches()` behavior
-- no `requires` and `provides` capability graph
-- no critical/noncritical failure distinction
-- no normalized portable effect validation
-- no provider status rows
-- no diagnostics and stable failure codes
-- no failed-cell retry semantics
-- no snapshot-load reconciliation behavior
-- no release-failure behavior
-- no contract matrix shared by fake and production adapters
+- no acquisition sequence or reverse cleanup stack
+- no failure injection by acquisition boundary
+- no typed startup result
+- no distinction between clean rollback and partial rollback
+- no proof `renderer.init()` failure retires the renderer
+- no proof initial Core World prepare failure resets engine/provider state
+- no proof atmosphere-generation failure disposes earlier world/ocean/foam resources
+- no proof listener or animation-loop setup failure removes prior callbacks
+- no second-start proof after a failed first start
 
-## Focus transaction gaps
+## Callback-admission gaps
 
-- no session epoch
-- no focus command ID
-- no focus revision
-- no world revision exposed by the wrapper
-- no previous versus requested focus result
-- no required/retained/updated/released cell delta in the result
-- no failed-cell IDs in the result
-- no provider failure list
-- no provider-store version/fingerprint checkpoint
-- no all-or-nothing active-cell-set commit
-- no previous-state-preserved proof
-- no explicit accepted-degraded or failed-partial state
-- no stale focus-command rejection
-- no bounded focus/provider journal
+- no session epoch on frame callbacks
+- no session epoch on Core World focus work
+- no session epoch on loader timeouts
+- no stale callback rejection count
+- no close-admission phase before disposal
+- no in-flight frame/focus/render barrier
+- no exact terminal callback result
 
-## Provider-store gaps
+## Browser lease gaps
 
-- stores mutate directly during provider prepare and update
-- store versions are not correlated with a world or focus revision
-- `remove()` does not advance store version
-- no stage, checkpoint, restore or transaction API
-- no aggregate provider-store fingerprint
-- no proof rollback restores every provider store to the previous accepted state
-- no proof release failure leaves a queryable residual record
+```txt
+canvas wheel
+canvas pointerdown
+canvas pointerup
+canvas pointercancel
+canvas pointermove
+window keydown
+window keyup
+window blur
+window resize
+window pagehide
+loader completion timeout
+loader hide timeout
+renderer animation loop
+globalThis.CozyIsland
+```
+
+None of these are registered in one owner-controlled ledger.
+
+## Render-resource gaps
+
+- no route-level render-resource registry
+- no shared renderer-consumer disposal interface
+- whole-island renderer exposes no `dispose()`
+- layered grass allocates a canvas texture, geometry, material and instanced mesh without a host teardown path
+- ocean allocates geometry and node material without a host teardown path
+- foam allocates per-band geometry and material without a host teardown path
+- generated cloud and fog volume textures have no route-level release result
+- cloud and fog renderer factories have no common disposal result
+- post pipeline/pass graph is not explicitly disposed
+- WebGPURenderer/backend is not explicitly disposed
+- sky texture, material and geometry are not explicitly retired
+- existing `disposeRendererObject()` is not called by the live route
+- no resource counts, identities or residual-resource fingerprint are exposed
+
+## Global-host gaps
+
+- live renderer, scene, camera, world runtime and render adapters remain reachable
+- host has no `stop`, `dispose` or `restart`
+- host has no lifecycle state or session epoch
+- host has no resource ownership or disposal readback
+- previous global values are not preserved
+- failed startup before host publication has no controller surface
+
+## Core World contract-parity gaps
+
+- browser ships the pinned production runtime while Node fixtures inject a simpler fake
+- fake selection shape does not model required/retained/released/updated
+- fake omits provider matching and capability admission
+- fake omits critical failure, diagnostics, failed cells and provider rollback
+- `prepare()` sets `prepared = true` before initial `commitFocus()` succeeds
+- `updateWorldFocus()` collapses complete, degraded, rejected and partial outcomes to Boolean
+- provider stores have no wrapper-level checkpoint or transaction
+- no focus/world/provider revision is correlated with the runtime session epoch
 
 ## Render-consumer gaps
 
 - one whole-island renderer is constructed from the startup compatibility snapshot
 - later provider changes are not synchronized into visible resources
-- failed provider cells are visually masked by the global render graph
+- failed provider transitions can be masked by the global graph
 - no render admission policy for incomplete world revisions
-- no cell render prepare/update/release transaction
-- no rendered-cell readback
-- no fallback-kind readback
-- no resource counts by cell
-- no shared-resource reference counting
+- no cell prepare/update/release commit in the live host
 - no world/render fingerprint comparison
-- no shadow consumer mode
+- no visible shadow-parity mode
 
-## Compatibility bridge gaps
-
-- vegetation rows are used only when they equal the complete global graph
-- rock rows are used only when they equal the complete global graph
-- prop rows are used only when they equal the complete global graph
-- fallback can hide failed or partial provider transitions
-- Core World mode can appear healthy while rendering remains global
-- no explicit legacy, shadow or cell-authoritative policy result
-
-## Runtime lifecycle gaps
-
-- no lifecycle state machine or monotonic session epoch
-- no startup transaction or partial-failure rollback
-- no listener, timeout or animation-loop leases
-- no common renderer-consumer disposal contract
-- no exact-once identity-deduplicated resource release
-- no global-host retirement or tombstone policy
-- no stale callback, focus, provider or render command rejection
-- no bounded lifecycle/resource journal
-
-## Existing scenario and quality gaps
+## Scenario and quality gaps
 
 - pointer drag during rail mode mutates authored rail points and reset does not restore the baseline
-- environment clock advances while several semantic descriptors remain startup-frozen
+- environment clock advances while several descriptors remain startup-frozen
 - adaptive-quality level zero can report recovery while renderer DPR remains degraded
 - performance sampling is not a direct GPU/render-submit result
 
 ## Proof gaps
 
-- no pinned production Core World contract fixture
-- no fake-versus-production parity fixture
-- no startup provider-failure/retry fixture
-- no cross-cell critical-failure preservation fixture
-- no provider-store checkpoint/rollback fixture
-- no release-failure fixture
-- no typed focus-result fixture
-- no browser pinned-import failure/recovery smoke
-- no provider-to-render commit fixture
-- no route lifecycle/restart fixture
-- no camera baseline/reset fixture
-- no environment-frame coherence fixture
-- no adaptive-quality full-recovery fixture
+```txt
+startup acquisition rollback fixture
+listener/timer/animation lease fixture
+stop-before-first-frame fixture
+stop-during-frame fixture
+stop-during-focus fixture
+idempotent disposal fixture
+resource residual-count fixture
+global-host retirement fixture
+old-callback-after-restart fixture
+WebGPU start/stop/restart smoke
+WebGL2 start/stop/restart smoke
+legacy-mode lifecycle smoke
+pinned Core World contract fixture
+provider failure and focus transaction fixture
+provider-to-render commit fixture
+camera baseline/reset fixture
+environment-frame coherence fixture
+adaptive-quality full-recovery fixture
+```
 
 ## Secondary risks
 
-- the central-clearing movement bound and island-centered seven-by-seven active set mask transition defects
-- a future larger world will make failed-cell and release-order behavior visible
-- global compatibility rendering can make provider tests look stronger than they are
-- `globalThis.CozyIsland` keeps live renderer and provider objects reachable
-- adding cell-owned GPU resources before lifecycle and focus authority increases cleanup risk
-- upgrading the pinned engine commit without a shared contract matrix can silently change world semantics
+- future cell-owned GPU resources will multiply cleanup paths before ownership is solved
+- the central-clearing movement bound masks many cross-cell lifecycle races
+- global compatibility rendering can make provider failures look harmless
+- stale `globalThis.CozyIsland` references can keep the complete graph alive after navigation
+- repeated module or host startup could register duplicate listeners and animation work
+- upgrading Three.js or NexusEngine can alter disposal requirements without a lifecycle contract
 
 ## Not currently blocked by
 
-- repository or runtime identity
-- pinned Three.js or NexusEngine URLs
+- repository identity
+- pinned Three.js and NexusEngine coordinates
 - local 50-kit catalog count
 - deterministic world generation
-- basic provider order under the fake runtime
-- query and population parity under normal success paths
-- portable snapshots under normal success paths
-- isolated renderer cache and disposal utilities
 - visual content availability
-- Pages configuration
+- isolated renderer-disposal helper existence
+- static Pages configuration

@@ -13,7 +13,11 @@ import { activeCellIdsFromSnapshot, cellKeyFromCoordinates } from "./cell-utils.
 
 async function resolveNexusRuntime(runtime) {
   if (runtime) return runtime;
-  return import("nexusengine");
+  const [engineModule, coreWorldModule] = await Promise.all([
+    import("nexusengine/engine"),
+    import("nexusengine/core-world")
+  ]);
+  return Object.freeze({ ...engineModule, ...coreWorldModule });
 }
 
 export async function createCozyIslandWorldRuntime({ quality, backend = "webgpu", mode = "core", runtime, config = COZY_WORLD_CONFIG } = {}) {

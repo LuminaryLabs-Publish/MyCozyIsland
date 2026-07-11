@@ -11,7 +11,7 @@ LuminaryLabs-Dev/NexusEngine
 commit 38229f59c22cb40024ffd13a9f48040de759f5d7
 ```
 
-The page imports the pinned `src/index.js` entry through the browser import map. Moving `main` is never used at runtime.
+The page imports only the pinned browser-safe `src/engine.js` and `src/core-domains/core-world-domain/index.js` entry points. The broad root index is intentionally avoided because it also exports Node-only headless-editor modules. Moving `main` is never used at runtime.
 
 ## Ownership
 
@@ -55,7 +55,7 @@ surface: flat
 terrain patch resolution: 49 x 49
 ```
 
-The requested five-by-five grid was corrected to seven-by-seven. A zero-anchored 48 m grid with radius 2 covers either `-96..144` or `-144..96`; neither covers the full `-108..108` island. Radius 3 preserves complete island ownership without changing world coordinates.
+The requested five-by-five grid was corrected to seven-by-seven. A zero-anchored 48 m grid with radius 2 does not cover the complete `-108..108` island; radius 3 preserves complete island ownership without changing world coordinates.
 
 ## Provider order
 
@@ -82,23 +82,7 @@ The current terrain, shoreline, biome, vegetation, rock, prop, ocean, atmosphere
 
 ## Shared query
 
-`createCozyWorldQuery()` is now the standard read API:
-
-```txt
-heightAt
-normalAt
-slopeAt
-fieldsAt
-biomeAt
-shorelineAt
-materialAt
-surfaceAt
-waterDepthAt
-groundContactAt
-cellAt
-```
-
-Legacy `sampleHeight`, `sampleNormal`, and `sampleFields` aliases remain available during migration.
+`createCozyWorldQuery()` exposes `heightAt`, `normalAt`, `slopeAt`, `fieldsAt`, `biomeAt`, `shorelineAt`, `materialAt`, `surfaceAt`, `waterDepthAt`, `groundContactAt`, and `cellAt`. Legacy sample aliases remain available during migration.
 
 ## Runtime lifecycle
 
@@ -106,31 +90,14 @@ During the aerial rail, focus remains at island center. After first-person landi
 
 ## Renderer migration boundary
 
-The current whole-island renderer remains active through the compatibility bridge. The repository now includes reusable cell-cache and disposal controllers for the next visual cutover:
-
-```txt
-src/kits/renderer-cell-cache.js
-src/kits/renderer-disposal.js
-src/kits/renderer-world-cells.js
-```
-
-They establish deterministic prepare/update/release behavior and resource disposal without changing the current visual result prematurely.
+The current whole-island renderer remains active through the compatibility bridge. `renderer-cell-cache.js`, `renderer-disposal.js`, and `renderer-world-cells.js` establish deterministic prepare/update/release and disposal contracts for the subsequent visual cutover without changing the current scene prematurely.
 
 ## Release gates
 
 ```txt
-Domain parity
-  terrain, biome, shoreline, population, and clearing output stay deterministic
-
-Host parity
-  Core World drives lifecycle while current renderers continue to work
-
-Snapshot portability
-  no Three.js objects, Maps, Sets, typed arrays, functions, or GPU handles in descriptors
-
-Lifecycle proof
-  focus movement retains overlap, prepares new cells, and releases old cells
-
-Renderer resource proof
-  cell-only geometry and materials dispose; shared resources survive
+Domain parity: terrain, biome, shoreline, population, and clearing stay deterministic
+Host parity: Core World drives lifecycle while current renderers continue to work
+Snapshot portability: no Three.js, Maps, Sets, typed arrays, functions, or GPU handles in descriptors
+Lifecycle proof: focus movement retains overlap, prepares new cells, and releases old cells
+Renderer resource proof: cell-only resources dispose while shared resources survive
 ```

@@ -65,8 +65,6 @@ Then open `http://localhost:8080/`.
 
 ## Debug surface
 
-After startup:
-
 ```js
 CozyIsland.getState()
 CozyIsland.kitCatalogStatus
@@ -79,4 +77,4 @@ The debug surface reports backend, quality, frame rate, active cloud/fog step co
 
 ## Deployment
 
-The project is static and requires no build step. GitHub Pages serves `index.html`, ES modules, and the domain kits directly. Three.js `0.185.0` and NexusEngine commit `38229f59c22cb40024ffd13a9f48040de759f5d7` are pinned through the import map.
+The project is static and requires no build step. GitHub Pages serves `index.html`, ES modules, and the domain kits directly. Three.js `0.185.0` and NexusEngine commit `38229f59c22cb40024ffd13a9f48040de759f5d7` are pinned through narrow browser-safe import-map entry points.

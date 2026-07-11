@@ -1,37 +1,70 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T05-10-36-04-00`
+Last updated: `2026-07-11T06-50-30-04-00`
 
 ## Critical
 
-1. Core World owns semantic active-cell lifecycle, but the production renderer consumes only the startup compatibility snapshot.
-2. `updateWorldFocus()` can advance world and provider state without a corresponding presentation or render commit.
-3. The production host does not wire the available cell-aware renderer controller.
-4. The presentation provider is not the visible renderer input.
-5. Compatibility fallback from provider rows to global vegetation, rock, or prop graphs is silent.
-6. No world revision, presentation revision, render revision, or correlation result exists.
-7. No cell-owned versus shared render-resource registry exists.
-8. Route-session startup, rollback, stop, exact disposal, restart, and stale-epoch admission remain absent.
-9. `pagehide` disposes Core World state only, not the animation loop, listeners, timers, Three/WebGPU graph, renderer/backend, or global host.
-10. Camera baseline, dynamic environment-frame, and adaptive-quality authority remain incomplete behind the lifecycle and world-render gates.
+1. The browser ships the pinned NexusEngine Core World runtime, while Node world tests inject a materially simpler fake runtime.
+2. The fake does not model production `required`, `retained`, `released`, and `updated` selection results.
+3. The fake omits provider matching, capability dependencies, critical-provider failure, portable effect validation, diagnostics and failed-cell states.
+4. The fake cannot prove production rollback or release ordering.
+5. `prepare()` sets `prepared = true` before the initial focus commit, so one thrown startup update can poison every retry.
+6. `updateWorldFocus()` returns only a Boolean and conceals complete, degraded, rejected and partial-failure outcomes.
+7. Production Core World commits focus separately, releases old cells before preparing new cells, and can commit failed cell records.
+8. No wrapper-level active-cell-set transaction, provider-store checkpoint or explicit degradation policy exists.
+9. Core World semantic active cells still do not drive the production renderer.
+10. Route startup, rollback, stop, exact disposal, restart and stale-epoch admission remain absent.
 
-## Core World and provider gaps
+## Test-runtime parity gaps
 
-- no public world revision or focus revision
-- no typed focus admission result
-- no ordered provider result journal
-- no provider revision by ID
-- no presentation descriptor revision
-- no presentation/source fingerprint exposed by the host
-- no proof every active presentation descriptor has one render-consumer result
-- no proof every released descriptor has one release result
-- provider reset/dispose does not quarantine outstanding render work because no render command identity exists
-- legacy mode and core mode do not expose a common typed parity result
+- no exact pinned-runtime module harness in Node
+- no runtime commit assertion inside world fixtures
+- fake partition returns a bare array instead of the production selection contract
+- fake updates every retained cell rather than respecting production update detection
+- no provider `matches()` behavior
+- no `requires` and `provides` capability graph
+- no critical/noncritical failure distinction
+- no normalized portable effect validation
+- no provider status rows
+- no diagnostics and stable failure codes
+- no failed-cell retry semantics
+- no snapshot-load reconciliation behavior
+- no release-failure behavior
+- no contract matrix shared by fake and production adapters
+
+## Focus transaction gaps
+
+- no session epoch
+- no focus command ID
+- no focus revision
+- no world revision exposed by the wrapper
+- no previous versus requested focus result
+- no required/retained/updated/released cell delta in the result
+- no failed-cell IDs in the result
+- no provider failure list
+- no provider-store version/fingerprint checkpoint
+- no all-or-nothing active-cell-set commit
+- no previous-state-preserved proof
+- no explicit accepted-degraded or failed-partial state
+- no stale focus-command rejection
+- no bounded focus/provider journal
+
+## Provider-store gaps
+
+- stores mutate directly during provider prepare and update
+- store versions are not correlated with a world or focus revision
+- `remove()` does not advance store version
+- no stage, checkpoint, restore or transaction API
+- no aggregate provider-store fingerprint
+- no proof rollback restores every provider store to the previous accepted state
+- no proof release failure leaves a queryable residual record
 
 ## Render-consumer gaps
 
-- one whole-island renderer is constructed from the startup snapshot
-- later active-cell changes are not synchronized into visible resources
+- one whole-island renderer is constructed from the startup compatibility snapshot
+- later provider changes are not synchronized into visible resources
+- failed provider cells are visually masked by the global render graph
+- no render admission policy for incomplete world revisions
 - no cell render prepare/update/release transaction
 - no rendered-cell readback
 - no fallback-kind readback
@@ -39,25 +72,25 @@ Last updated: `2026-07-11T05-10-36-04-00`
 - no shared-resource reference counting
 - no world/render fingerprint comparison
 - no shadow consumer mode
-- no browser proof for cell release and re-entry
 
 ## Compatibility bridge gaps
 
-- vegetation provider rows are used only when their count equals the complete global vegetation graph
-- rock provider rows are used only when their count equals the complete global rock graph
-- prop provider rows are used only when their count equals the complete global prop graph
-- fallback preserves visuals but can hide partial provider consumption
-- no explicit policy identifies legacy, shadow, or cell-authoritative presentation
+- vegetation rows are used only when they equal the complete global graph
+- rock rows are used only when they equal the complete global graph
+- prop rows are used only when they equal the complete global graph
+- fallback can hide failed or partial provider transitions
+- Core World mode can appear healthy while rendering remains global
+- no explicit legacy, shadow or cell-authoritative policy result
 
 ## Runtime lifecycle gaps
 
 - no lifecycle state machine or monotonic session epoch
 - no startup transaction or partial-failure rollback
-- no listener, timeout, or animation-loop leases
+- no listener, timeout or animation-loop leases
 - no common renderer-consumer disposal contract
 - no exact-once identity-deduplicated resource release
-- no global-host retirement/tombstone policy
-- no stale callback, focus, provider, or render command rejection
+- no global-host retirement or tombstone policy
+- no stale callback, focus, provider or render command rejection
 - no bounded lifecycle/resource journal
 
 ## Existing scenario and quality gaps
@@ -69,34 +102,38 @@ Last updated: `2026-07-11T05-10-36-04-00`
 
 ## Proof gaps
 
+- no pinned production Core World contract fixture
+- no fake-versus-production parity fixture
+- no startup provider-failure/retry fixture
+- no cross-cell critical-failure preservation fixture
+- no provider-store checkpoint/rollback fixture
+- no release-failure fixture
+- no typed focus-result fixture
+- no browser pinned-import failure/recovery smoke
 - no provider-to-render commit fixture
-- no shadow cell-consumer parity fixture
-- no production-host cell lifecycle fixture
-- no browser focus-movement resource proof
-- no WebGPU/WebGL2 cell-consumer matrix
 - no route lifecycle/restart fixture
-- no partial-startup rollback fixture
-- no listener/timer/loop leak fixture
 - no camera baseline/reset fixture
 - no environment-frame coherence fixture
 - no adaptive-quality full-recovery fixture
 
 ## Secondary risks
 
-- the central-clearing movement bound and island-centered seven-by-seven active set mask streaming discrepancies
-- expanding movement or world size before render cutover would expose semantic/visual divergence
-- silent compatibility fallback can make Core World diagnostics look authoritative while rendering remains global
+- the central-clearing movement bound and island-centered seven-by-seven active set mask transition defects
+- a future larger world will make failed-cell and release-order behavior visible
+- global compatibility rendering can make provider tests look stronger than they are
 - `globalThis.CozyIsland` keeps live renderer and provider objects reachable
-- adding dynamic cell resources before session lifecycle ownership increases disposal complexity
+- adding cell-owned GPU resources before lifecycle and focus authority increases cleanup risk
+- upgrading the pinned engine commit without a shared contract matrix can silently change world semantics
 
 ## Not currently blocked by
 
-- pinned NexusEngine or Three.js source identity
-- local kit catalog count
+- repository or runtime identity
+- pinned Three.js or NexusEngine URLs
+- local 50-kit catalog count
 - deterministic world generation
-- Core World provider ordering
-- query parity fixtures
-- snapshot portability fixtures
-- isolated renderer cell-cache and disposal utility fixtures
-- missing visual content
+- basic provider order under the fake runtime
+- query and population parity under normal success paths
+- portable snapshots under normal success paths
+- isolated renderer cache and disposal utilities
+- visual content availability
 - Pages configuration

@@ -1,34 +1,36 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T16-10-58-04-00`
+Last updated: `2026-07-11T17-50-37-04-00`
 
 ## Summary
 
-Keep the existing implementation order. Browser startup and runtime-session ownership remain prerequisites, while adaptive quality is the ninth bounded slice. When implemented, every transition must be derived from the immutable startup baseline, applied through typed consumer results, rolled back on partial failure and acknowledged by the visible frame.
+Browser startup admission remains first. Runtime Session Lifecycle Authority is the next implementation slice and must own one session identity, one animation-loop lease, removable listeners and timers, complete world/render retirement, explicit bfcache behavior and a clean restart frame.
 
 ## Plan ledger
 
-**Goal:** convert the current callback-based adaptive quality path into a complete and reversible quality transaction without creating a second lifecycle, frame or renderer authority.
+**Goal:** implement stop, dispose and restart as distinct lifecycle transactions without creating parallel session, world, renderer or frame identities.
 
 - [ ] Complete Browser Startup Admission and Failure Rollback Authority.
-- [ ] Complete Runtime Session Lifecycle Authority.
-- [ ] Reuse the runtime session generation for quality-command admission.
-- [ ] Reuse committed-frame identity for quality visible-frame acknowledgement.
-- [ ] Define a versioned `QualityPolicyDescriptor`.
-- [ ] Replace frame-count thresholds with an elapsed-time policy or prove cadence equivalence.
-- [ ] Add visibility and long-stall sample barriers.
-- [ ] Define one immutable level-0 baseline from admitted startup quality.
-- [ ] Define complete level-1 and level-2 candidate settings.
-- [ ] Declare each quality field mutable, rebuild-required or startup-fixed.
-- [ ] Add `QualityTransitionCommand`, `QualityTransitionPlan` and `QualityTransitionResult`.
-- [ ] Assign transition and quality revision identities.
-- [ ] Apply cloud, fog, post and renderer settings through typed consumer commands.
-- [ ] Verify actual applied values after each consumer command.
-- [ ] Roll back all already-applied consumers when any required consumer fails.
-- [ ] Restore pixel ratio explicitly when recovering to level 0.
-- [ ] Reject stale results from previous revisions or sessions.
-- [ ] Publish a visible-frame receipt carrying the committed quality revision.
-- [ ] Add cadence, recovery, failure, visibility, resize and browser fixtures.
+- [ ] Introduce `sessionId` and monotonic `generation` at admitted startup.
+- [ ] Add a lifecycle state machine for starting, running, suspended, stopping, stopped, disposing, disposed, restarting and failed.
+- [ ] Replace direct page events with typed lifecycle commands.
+- [ ] Define persisted-page suspend/resume versus final dispose policy.
+- [ ] Wrap `renderer.setAnimationLoop` in an exclusive lease.
+- [ ] Stop the loop with `renderer.setAnimationLoop(null)` before retirement.
+- [ ] Fence animation, input, resize, timer, focus, materialization and quality callbacks by generation.
+- [ ] Register every event listener with retained function and options.
+- [ ] Register and cancel every loader or delayed-work timer.
+- [ ] Release pointer capture, drag state and held input during stop.
+- [ ] Inventory scene, post, volume and renderer resources by identity.
+- [ ] Retire shared textures, materials and geometries exactly once.
+- [ ] Dispose post resources and off-scene render targets.
+- [ ] Dispose renderer/backend resources.
+- [ ] Integrate Core World, provider, materializer and scenario retirement.
+- [ ] Revoke raw `globalThis.CozyIsland` authority after stop/dispose.
+- [ ] Add typed Stop, Dispose, Resume and Restart results.
+- [ ] Add a bounded lifecycle journal and retirement receipts.
+- [ ] Require a first resumed/restarted frame receipt before reporting running.
+- [ ] Add headless ownership tests and real browser page lifecycle fixtures.
 
 ## Ordered implementation queue
 
@@ -44,148 +46,143 @@ Keep the existing implementation order. Browser startup and runtime-session owne
 9. Adaptive Quality Transaction Authority
 ```
 
-## Candidate quality kits
+## Candidate lifecycle kits
 
 ```txt
-quality-policy-descriptor-kit
-quality-sample-command-kit
-visibility-sample-barrier-kit
-quality-transition-id-kit
-quality-revision-kit
-quality-transition-admission-kit
-quality-candidate-plan-kit
-quality-consumer-capability-kit
-quality-consumer-command-kit
-quality-consumer-result-kit
-quality-transition-commit-kit
-quality-transition-rollback-kit
-full-recovery-policy-kit
-stale-quality-result-rejection-kit
-quality-visible-frame-ack-kit
-quality-observation-kit
-quality-journal-kit
-cadence-parity-fixture-kit
-full-recovery-fixture-kit
-partial-failure-rollback-fixture-kit
-browser-quality-frame-smoke-kit
+runtime-session-id-kit
+runtime-session-generation-kit
+runtime-lifecycle-state-kit
+lifecycle-command-envelope-kit
+lifecycle-command-admission-kit
+animation-loop-lease-kit
+page-lifecycle-adapter-kit
+bfcache-policy-kit
+event-listener-registry-kit
+timeout-registry-kit
+renderer-resource-registry-kit
+scene-resource-inventory-kit
+stale-callback-fence-kit
+runtime-stop-transaction-kit
+runtime-dispose-transaction-kit
+core-world-retirement-adapter-kit
+gpu-resource-retirement-kit
+global-readback-revocation-kit
+runtime-restart-transaction-kit
+lifecycle-result-kit
+lifecycle-journal-kit
+first-restarted-frame-ack-kit
+runtime-lifecycle-fixture-kit
+browser-pagehide-pageshow-smoke-kit
 ```
 
-## Required policy model
+## Required state model
 
 ```txt
-QualityPolicyDescriptor
-  id
-  schemaVersion
-  startupQualityFingerprint
-  backendCapabilityFingerprint
-  targetFrameMs
-  degradeDurationMs
-  recoverDurationMs
-  hiddenSamplePolicy
-  longStallPolicy
-  levels
-    0 -> full admitted baseline
-    1 -> bounded reduction
-    2 -> stronger bounded reduction
-  consumerCapabilities
-    cloudSteps -> mutable
-    fogSteps -> mutable
-    fogResolutionScale -> mutable
-    pixelRatio -> mutable
-    shadowMapSize -> rebuild-required or fixed
-    terrainResolution -> rebuild-required or fixed
-    vegetationScale -> rebuild-required or fixed
-    oceanSegments -> rebuild-required or fixed
-    cloudTextureSize -> rebuild-required or fixed
-    postBlur -> mutable or fixed, explicitly declared
+RuntimeSession
+  sessionId
+  generation
+  state
+  backend
+  worldMode
+  animationLoopLease
+  listenerLeases
+  timerLeases
+  worldOwner
+  scenarioOwner
+  renderResourceRegistry
+  postResourceRegistry
+  lastCommittedFrameId
+  lastLifecycleResult
+  retirementFingerprint
 ```
 
-## Required transaction
+## Required stop transaction
 
 ```txt
-receive normalized performance sample
-  -> verify session, visibility and frame identity
-  -> update elapsed-time pressure state
-  -> decide no-op, degrade or recover
-  -> create transitionId and qualityRevision
-  -> derive complete candidate from immutable baseline
-  -> send typed command to each participating consumer
-  -> read back actual applied value
-  -> classify accepted, clamped, rejected or failed
-  -> rollback all accepted consumers on required failure
-  -> commit level and revision only after all required consumers accept
-  -> render and acknowledge first visible frame for that revision
-  -> publish clone-safe observation and bounded journal
+StopCommand
+  -> admit current session/generation
+  -> move running/suspended -> stopping
+  -> revoke new work
+  -> stop animation loop
+  -> fence old callbacks
+  -> clear pointer/input state
+  -> cancel timers
+  -> remove listeners
+  -> publish StopResult
+  -> move -> stopped
 ```
 
-## Minimum consumer result
+## Required dispose transaction
 
 ```txt
-QualityConsumerResult
-  transitionId
-  qualityRevision
-  consumerId
-  requestedValue
-  appliedValue
-  previousValue
-  status
-    accepted
-    accepted-clamped
-    no-op
-    rejected-stale
-    rejected-capability
-    failed
-    rolled-back
-  errorCode
-  fingerprint
+DisposeCommand
+  -> stop first when necessary
+  -> inventory resources
+  -> retire post and volume resources
+  -> retire scene textures/materials/geometries exactly once
+  -> dispose renderer/backend
+  -> retire Core World/providers/materializer/scenario
+  -> revoke global readback
+  -> assert no active leases
+  -> publish DisposeResult
+  -> move -> disposed
 ```
 
-## Fixture matrix
+## Required restart transaction
 
 ```txt
-baseline observation before any transition
-30 Hz, 60 Hz and 120 Hz wall-time-equivalent sampling
-level 0 -> level 1
-level 1 -> level 2
-level 2 -> level 1
-level 1 -> level 0
-full baseline restoration, including pixel ratio
-partial failure at cloud consumer
-partial failure at fog consumer
-partial failure at post consumer
-partial failure at renderer pixel-ratio consumer
-rollback order and final fingerprint
-hidden tab and resumed tab
-100 ms and multi-second stalls
-resize during degraded state
-resize during recovery
-stale transition completion
-rapid opposite-direction decisions
-WebGPU capability set
-WebGL2 capability set
-first visible frame revision parity
+RestartCommand
+  -> verify prior generation terminal or validly suspended
+  -> create new sessionId/generation
+  -> run startup admission
+  -> install one listener/timer/loop set
+  -> prepare world/scenario baseline
+  -> render first frame
+  -> publish FirstRestartedFrameReceipt
+  -> expose clone-safe observation
+  -> move -> running
+```
+
+## Minimum fixture matrix
+
+```txt
+cold start ownership counts
+stop while running
+stop twice
+dispose while running
+dispose after stop
+dispose twice
+late frame/input/resize/timer callback
+persisted pagehide/pageshow
+non-persisted pagehide
+shared render resource exactly-once retirement
+post and volume resource retirement
+Core World/materializer retirement
+restart with new generation
+old generation cannot update new observation
+first restarted frame parity
+WebGPU and WebGL2 lifecycle parity
 ```
 
 ## Acceptance conditions
 
 ```txt
-performance level and applied renderer state cannot disagree
-level 0 always restores every mutable baseline field
-transition timing is defined in elapsed time, not display frame count
-hidden or stalled samples have a classified policy
-partial transitions never remain visible as committed state
-consumer clamping is observable
-stale revisions cannot overwrite newer quality state
-startup-fixed fields are explicitly classified
-one visible frame proves the committed revision
-public state exposes applied values without raw renderer authority
+one running session owns one animation-loop lease
+all browser callbacks are removable and generation-fenced
+final dispose leaves zero active listener/timer/loop leases
+all required world and render resources have retirement receipts
+duplicate lifecycle commands are idempotent
+bfcache behavior is explicit
+restart creates a new generation
+running is reported only after a first valid frame
+raw disposed authority is not exposed globally
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Adaptive Quality Transaction Authority
-+ Cadence Parity / Full Recovery / Partial Failure / Visible-Frame Fixture Gate
+MyCozyIsland Runtime Session Lifecycle Authority
++ Stop / Dispose / Pagehide / Pageshow / Restart / Resource-Retirement Fixture Gate
 ```
 
-Do not implement this slice before startup and runtime-session ownership are available. Reuse those identities and the committed-frame proof path.
+Do not implement downstream world reset, focus, materialization, render-commit or adaptive-quality authority with separate session identities. They must consume this lifecycle boundary.

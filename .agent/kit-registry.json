@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 61,
-  "lastUpdated": "2026-07-11T11-10-29-04-00",
+  "schemaVersion": 62,
+  "lastUpdated": "2026-07-11T11-19-10-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=core-world-1",
-  "selectionReason": "Oldest eligible documented repository after confirming the full Publish inventory had no new, ledger-missing, or root-.agent-missing eligible repository",
+  "selectionReason": "Repo-local Core World reset/re-prepare audit was newer than the central ledger, so MyCozyIsland was prioritized as centrally stale",
   "pinnedDependencies": {
     "three": "0.185.0",
     "nexusEngineCommit": "38229f59c22cb40024ffd13a9f48040de759f5d7"
@@ -19,7 +19,7 @@
     "rollbackMode": "legacy"
   },
   "orderedNextSlices": [
-    "MyCozyIsland Runtime Session Lifecycle Authority + Startup Rollback / Stop / Dispose / Restart Fixture Gate",
+    "MyCozyIsland Runtime Session Lifecycle Authority + Startup Rollback / Reset Quiescence / Stop / Dispose / Restart Fixture Gate",
     "MyCozyIsland Core World Reset / Re-prepare Authority + Definition / Provider / Materializer Recovery Fixture Gate",
     "MyCozyIsland Pinned Core World Focus Transaction Authority + Production/Fake Contract Parity and Failure Fixture Gate",
     "MyCozyIsland Live Materialization Readiness Commit Authority + Provider-Version / Failure / Stale-Generation Fixture Gate",
@@ -137,6 +137,23 @@
     "adaptive-performance-and-debug-host",
     "static-semantic-provider-render-utility-and-deploy-validation"
   ],
+  "browserSessionLifecycleState": {
+    "sessionOwnerExists": false,
+    "sessionPhaseExists": false,
+    "sessionGenerationExists": false,
+    "startupAcquisitionLedgerExists": false,
+    "startupRollbackExists": false,
+    "animationLoopLeased": false,
+    "animationLoopClearedOnPagehide": false,
+    "listenerLeaseRegistryExists": false,
+    "timerLeaseRegistryExists": false,
+    "resetQuiescenceExists": false,
+    "globalHostExposesRawRuntime": true,
+    "globalHostRevocationExists": false,
+    "completeRenderResourceInventoryExists": false,
+    "idempotentSessionDisposalResultExists": false,
+    "singleSessionRestartFixtureExists": false
+  },
   "resetRecoveryState": {
     "worldDefinitionRegisteredAtConstruction": true,
     "prepareRegistersDefinition": false,
@@ -155,6 +172,27 @@
     "staleCommandRejectionExists": false,
     "recoveryRollbackExists": false
   },
+  "candidateLifecycleKits": [
+    "runtime-session-authority-kit",
+    "runtime-session-phase-kit",
+    "runtime-session-generation-kit",
+    "startup-acquisition-ledger-kit",
+    "startup-rollback-kit",
+    "animation-loop-lease-kit",
+    "listener-lease-kit",
+    "timer-lease-kit",
+    "reset-quiescence-kit",
+    "input-retirement-kit",
+    "world-session-adapter-kit",
+    "renderer-resource-inventory-kit",
+    "renderer-retirement-kit",
+    "global-host-revocation-kit",
+    "idempotent-session-stop-kit",
+    "session-disposal-result-kit",
+    "session-lifecycle-journal-kit",
+    "browser-single-session-fixture-kit",
+    "browser-restart-smoke-kit"
+  ],
   "candidateRecoveryKits": [
     "world-reset-command-kit",
     "world-reset-admission-kit",
@@ -176,7 +214,6 @@
     "browser-world-restart-smoke-kit"
   ],
   "retainedCriticalGaps": {
-    "runtimeSessionOwner": false,
     "focusRevision": false,
     "materializationGenerationFence": false,
     "providerReadinessRevision": false,
@@ -184,16 +221,16 @@
     "visibleFrameAcknowledgement": false,
     "completeRenderDisposal": false
   },
-  "mainFinding": "The product reset API clears the pinned Core World runtime definitions but does not re-register them before a later prepare. Reset, reusable recreation, and terminal disposal need separate policies, a world generation, typed provider/materializer release results, and reset-reprepare fixtures.",
+  "mainFinding": "The production route has no session owner. The live animation callback, anonymous listeners, loader timers, raw global host and render resources remain active while Core World reset or disposal can run, and pagehide retires only the world wrapper.",
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-11T11-10-29-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-11T11-10-29-04-00.md",
-    ".agent/architecture-audit/2026-07-11T11-10-29-04-00-core-world-reset-reprepare-dsk-map.md",
-    ".agent/render-audit/2026-07-11T11-10-29-04-00-reset-render-state-divergence-gap.md",
-    ".agent/gameplay-audit/2026-07-11T11-10-29-04-00-reset-reprepare-world-loop.md",
-    ".agent/interaction-audit/2026-07-11T11-10-29-04-00-reset-prepare-result-map.md",
-    ".agent/recovery-audit/2026-07-11T11-10-29-04-00-world-definition-provider-store-recovery-contract.md",
-    ".agent/deploy-audit/2026-07-11T11-10-29-04-00-reset-reprepare-fixture-gate.md"
+    ".agent/trackers/2026-07-11T11-19-10-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-11T11-19-10-04-00.md",
+    ".agent/architecture-audit/2026-07-11T11-19-10-04-00-browser-runtime-session-lifecycle-dsk-map.md",
+    ".agent/render-audit/2026-07-11T11-19-10-04-00-animation-loop-world-generation-correlation-gap.md",
+    ".agent/gameplay-audit/2026-07-11T11-19-10-04-00-reset-during-live-frame-loop.md",
+    ".agent/interaction-audit/2026-07-11T11-19-10-04-00-global-host-listener-command-map.md",
+    ".agent/lifecycle-audit/2026-07-11T11-19-10-04-00-session-quiescence-disposal-contract.md",
+    ".agent/deploy-audit/2026-07-11T11-19-10-04-00-single-loop-reset-disposal-fixture-gate.md"
   ],
   "runtimeSourceChangedDuringDocumentationRun": false,
   "branchCreated": false,

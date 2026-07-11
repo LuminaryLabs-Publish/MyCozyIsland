@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 59,
-  "lastUpdated": "2026-07-11T08-58-02-04-00",
+  "schemaVersion": 60,
+  "lastUpdated": "2026-07-11T09-08-59-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=core-world-1",
-  "selectionReason": "Substantive lazy Core World materialization runtime, documentation, configuration, provider, and test commits landed after the prior central audit",
+  "selectionReason": "The production host began advancing lazy Core World materialization after the prior central audit, making the prior dead-queue finding stale and exposing the next readiness/render-commit boundary",
   "pinnedDependencies": {
     "three": "0.185.0",
     "nexusEngineCommit": "38229f59c22cb40024ffd13a9f48040de759f5d7"
@@ -16,8 +16,8 @@
   "orderedNextSlices": [
     "MyCozyIsland Runtime Session Lifecycle Authority + Startup Rollback / Stop / Dispose / Restart Fixture Gate",
     "MyCozyIsland Pinned Core World Focus Transaction Authority + Production/Fake Contract Parity and Failure Fixture Gate",
-    "MyCozyIsland Lazy Cell Materialization Authority + Live Host Admission / Epoch / Readiness Fixture Gate",
-    "MyCozyIsland Core World Render Commit Authority + Provider/Cell Consumer Fidelity Fixture Gate",
+    "MyCozyIsland Live Materialization Readiness Commit Authority + Provider-Version / Failure / Stale-Generation Fixture Gate",
+    "MyCozyIsland Core World Render Commit Authority + Cell Prepare / Update / Release / Visible-Frame Fixture Gate",
     "MyCozyIsland Camera Rail Baseline Authority + Drag/Reset Fidelity Fixture Gate",
     "MyCozyIsland Dynamic Environment Frame Authority + Consumer Coherence Fixture Gate",
     "MyCozyIsland Adaptive Quality Transaction Authority + Full-Recovery Fixture Gate"
@@ -138,7 +138,7 @@
     "priority": ["lod", "distance-to-focus", "cell-id"],
     "stages": ["terrain", "biome", "shoreline", "presentation", "done"]
   },
-  "lazyMaterializationState": {
+  "liveMaterializationState": {
     "lightweightRegistrationExists": true,
     "terrainRowsAreLazy": true,
     "biomeReusesTerrainArrays": true,
@@ -146,10 +146,13 @@
     "presentationRefreshExists": true,
     "deterministicIsolatedFixtureExists": true,
     "worldWrapperFrameMethodExists": true,
-    "liveHostCallsFrameMethod": false,
-    "firstFrameStartAcknowledgementExists": false,
+    "liveHostCallsFrameMethod": true,
+    "hostStartsAfterCompatibilityFrames": true,
+    "aggregateDebugProjectionExists": true,
+    "explicitFirstFrameAcknowledgementExists": false,
     "sessionEpochAdmissionExists": false,
     "worldRevisionAdmissionExists": false,
+    "focusRevisionAdmissionExists": false,
     "cellGenerationExists": false,
     "elapsedTimeBudgetExists": false,
     "typedFailureResultExists": false,
@@ -158,29 +161,35 @@
     "cellReadinessRevisionExists": false,
     "providerReadinessSetExists": false,
     "materializationJournalExists": false,
-    "renderHandoffExists": false,
+    "rendererCommitResultExists": false,
+    "visibleFrameAcknowledgementExists": false,
     "browserProgressFixtureExists": false
   },
-  "candidateMaterializationKits": [
+  "candidateReadinessKits": [
     "materialization-frame-command-kit",
     "materialization-admission-kit",
+    "materialization-epoch-kit",
+    "cell-generation-kit",
     "materialization-priority-kit",
     "provider-stage-plan-kit",
     "row-work-budget-kit",
     "frame-time-budget-kit",
-    "materialization-epoch-kit",
-    "stale-cell-work-rejection-kit",
     "provider-stage-result-kit",
-    "materialization-failure-kit",
+    "provider-failure-classification-kit",
     "materialization-retry-kit",
-    "cell-readiness-revision-kit",
+    "stale-cell-work-rejection-kit",
+    "provider-readiness-policy-kit",
     "provider-readiness-set-kit",
+    "cell-readiness-revision-kit",
     "presentation-readiness-commit-kit",
-    "compatibility-render-handoff-kit",
+    "renderer-cell-plan-kit",
+    "renderer-cell-commit-result-kit",
+    "renderer-cell-rollback-kit",
+    "visible-frame-acknowledgement-kit",
     "materialization-observation-kit",
     "materialization-journal-kit",
-    "lazy-materialization-fixture-kit",
-    "browser-first-frame-materialization-smoke-kit"
+    "live-materialization-fixture-kit",
+    "browser-ready-cell-render-smoke-kit"
   ],
   "focusTransactionState": {
     "typedFocusCommandExists": false,
@@ -190,6 +199,7 @@
     "providerStoreCheckpointExists": false,
     "focusRollbackExists": false,
     "worldRevisionExists": false,
+    "focusRevisionExists": false,
     "providerRevisionSetExists": false,
     "sessionEpochAdmissionExists": false,
     "productionFakeParityProven": false
@@ -215,16 +225,16 @@
     "liveRouteUsesDisposeRendererObject": false,
     "renderedCellReadbackExists": false
   },
-  "mainFinding": "Lazy terrain, biome, shoreline, and presentation materialization is implemented and tested in isolation, but the live browser animation loop never calls processMaterializationFrame. Active Core World descriptors therefore remain queued in production, and no session/world/cell readiness revision exists for safe render handoff.",
+  "mainFinding": "The live host now advances lazy terrain, biome, shoreline, and presentation work after the compatibility frame. The remaining boundary is authoritative readiness and rendering: work has no session/world/focus/cell generation fence or typed failure result, presentation readiness has no complete provider-version set, and the visible renderer never consumes the ready descriptors.",
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-11T08-58-02-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-11T08-58-02-04-00.md",
-    ".agent/architecture-audit/2026-07-11T08-58-02-04-00-lazy-cell-materialization-dsk-map.md",
-    ".agent/render-audit/2026-07-11T08-58-02-04-00-compatibility-render-materialization-commit-gap.md",
-    ".agent/gameplay-audit/2026-07-11T08-58-02-04-00-camera-focus-lazy-cell-work-loop.md",
-    ".agent/interaction-audit/2026-07-11T08-58-02-04-00-first-frame-materialization-admission-map.md",
-    ".agent/core-world-audit/2026-07-11T08-58-02-04-00-lazy-provider-readiness-contract.md",
-    ".agent/deploy-audit/2026-07-11T08-58-02-04-00-lazy-materialization-fixture-gate.md"
+    ".agent/trackers/2026-07-11T09-08-59-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-11T09-08-59-04-00.md",
+    ".agent/architecture-audit/2026-07-11T09-08-59-04-00-live-materialization-readiness-commit-dsk-map.md",
+    ".agent/render-audit/2026-07-11T09-08-59-04-00-ready-cell-render-consumption-gap.md",
+    ".agent/gameplay-audit/2026-07-11T09-08-59-04-00-camera-focus-materialize-render-loop.md",
+    ".agent/interaction-audit/2026-07-11T09-08-59-04-00-frame-materialization-result-map.md",
+    ".agent/core-world-audit/2026-07-11T09-08-59-04-00-live-materialization-generation-readiness-contract.md",
+    ".agent/deploy-audit/2026-07-11T09-08-59-04-00-live-materialization-render-fixture-gate.md"
   ],
   "runtimeSourceChangedDuringDocumentationRun": false,
   "branchCreated": false,

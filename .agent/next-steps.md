@@ -1,58 +1,62 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-10T22-29-21-04-00`
+Last updated: `2026-07-11T00-10-28-04-00`
 
-## Goal
+## Plan ledger
 
-Create one route-owned runtime session, then place adaptive quality behind an atomic target/apply/observe contract that can prove complete degradation and complete recovery.
+**Goal:** make route lifecycle, camera-sequence reset, and later adaptive quality deterministic and observable without changing the visual composition.
 
-## Gate 1 checklist: runtime-session lifecycle authority
+- [ ] Add one route runtime-session owner for startup, running, stop, dispose, and restart.
+- [ ] Register animation-loop, listener, timeout, and GPU/render resources with that owner.
+- [ ] Add startup rollback and idempotent disposal.
+- [ ] Preserve the authored camera rail as immutable construction data.
+- [ ] Store pointer orbit influence as separate runtime state instead of mutating authored control points.
+- [ ] Add typed wheel, drag, key, clear, tick, and reset results.
+- [ ] Add camera-sequence state with progress, mode, yaw, pitch, orbit offset, player position, pressed-key count, revision, and baseline fingerprint.
+- [ ] Make reset restore exact construction-time state and return before/after fingerprints.
+- [ ] Make scenario reset atomic across clock and camera sequence.
+- [ ] Add a DOM-free drag/reset/repeat fixture to `npm test`.
+- [ ] Add a browser smoke proving pointer interaction, reset, and restart do not drift the reveal path.
+- [ ] After lifecycle and sequence fidelity, implement adaptive-quality target transactions and exact level-0 recovery.
 
-- [ ] Introduce a session ID and lifecycle states.
-- [ ] Return a host controller from route construction.
-- [ ] Retain and stop the renderer animation loop.
-- [ ] Register and remove all canvas/window listeners through one ledger.
-- [ ] Add partial-start rollback.
-- [ ] Add route and child resource owners.
-- [ ] Make disposal ordered and idempotent.
-- [ ] Publish JSON-safe lifecycle and resource observations.
-- [ ] Add start-stop-dispose-restart fixtures.
-
-## Gate 2 checklist: adaptive-quality transaction authority
-
-- [ ] Define immutable applied-quality targets for levels 0, 1, and 2.
-- [ ] Include pixel ratio, cloud steps, fog steps, fog-resolution scale, and quality source in each target.
-- [ ] Separate requested level, admitted level, applied level, and observed renderer state.
-- [ ] Replace sequential anonymous mutations with one application transaction.
-- [ ] Always apply the full target, including restoring pixel ratio at level 0.
-- [ ] Capture per-control before/after observations.
-- [ ] Return typed `applied`, `no_change`, `rejected`, `partial_failure`, and `rolled_back` results.
-- [ ] Roll back prior controls when a later control application fails.
-- [ ] Define `?quality=` policy as lock, ceiling, floor, or startup hint.
-- [ ] Publish applied controls and a bounded transition journal through host diagnostics.
-- [ ] Update the H overlay to distinguish startup tier from dynamic applied level.
-- [ ] Add a DOM-free performance-budget state-machine fixture.
-- [ ] Add a renderer-control spy fixture covering 0→1→2→1→0.
-- [ ] Assert final pixel ratio equals the startup target after recovery to level 0.
-- [ ] Assert duplicate target application returns a typed no-op.
-- [ ] Preserve current visual tuning and threshold values during the authority refactor.
-
-## Ordered safe ledges
+## Immediate implementation slice
 
 ```txt
-1. MyCozyIsland Runtime Session Lifecycle Authority
-   + WebGPU Resource Disposal Fixture Gate
-
-2. MyCozyIsland Adaptive Quality Transaction Authority
-   + Full-Recovery Fixture Gate
+MyCozyIsland Camera Rail Baseline Authority
++ Drag/Reset Fidelity Fixture Gate
 ```
 
-## Do not combine with
+### Candidate kits
 
-- new quality tiers or threshold retuning
-- grass density/atlas changes
-- cloud/fog/ocean shader changes
-- camera rail changes
-- terrain regeneration
+```txt
+camera-rail-authored-baseline-kit
+camera-orbit-offset-state-kit
+camera-sequence-input-result-kit
+camera-sequence-state-kit
+camera-sequence-reset-transaction-kit
+camera-sequence-fingerprint-kit
+scenario-reset-transaction-kit
+camera-rail-reset-fixture-kit
+```
+
+### Required fixture assertions
+
+```txt
+construction descriptor fingerprint is stable
+pre-rail drag changes runtime projection without mutating baseline rows
+reset restores progress, yaw, pitch, player, keys, and orbit offset
+post-reset descriptor deep-equals construction descriptor
+10 drag/reset cycles produce the same post-reset fingerprint
+scenario reset restores clock and camera atomically
+invalid numeric input returns a typed rejection or normalization result
+fixture output is bounded JSON
+```
+
+## Deferred
+
+- camera feel and rail-point retuning
+- cloud/fog/ocean/grass/terrain visual changes
 - renderer replacement
 - new route content
+- new quality tiers
+- public kit promotion before the local contract is proven

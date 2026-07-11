@@ -1,23 +1,22 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-10T22-29-21-04-00`
+Last updated: `2026-07-11T00-10-28-04-00`
 
 ## Documentation pass result
 
 ```txt
 runtime source changed: no
+rendering output changed: no
 package scripts changed: no
 dependencies changed: no
-route behavior changed: no
-rendering output changed: no
 deployment configuration changed: no
 branch created: no
 pull request created: no
-repo-local documentation pushed to main: yes
-central ledger update: yes
+repo-local documentation pushed to main: pending commit
+central ledger update: pending commit
 ```
 
-## Existing declared gate
+## Existing test surface
 
 ```txt
 npm test
@@ -25,34 +24,20 @@ npm test
   -> node tests/domain-smoke.mjs
 ```
 
-The tests assert the 50-kit catalog, deterministic domain composition, renderer feature tokens, import-map pin, route script, and basic scenario state. They do not import `main-cloudform.js` in a browser-like host and do not test runtime lifecycle or adaptive-quality control application.
+The domain smoke composes two deterministic worlds, compares terrain/shoreline/vegetation/rock data, checks atmospheric descriptor sizes, ticks the scenario once, and verifies that the camera remains in rail mode. It does not call camera input methods, scenario reset, or repeated reset cycles.
 
-## Source-level facts verified in this pass
+## Source-level facts verified
 
 ```txt
-startup pixel ratio:
-  min(devicePixelRatio, quality.pixelRatioCap)
-
-level 1 target:
-  activeScale 0.78
-  fog resolution multiplier 0.82
-  pixel ratio multiplier 0.88
-
-level 2 target:
-  activeScale 0.62
-  fog resolution multiplier 0.68
-  pixel ratio multiplier 0.76
-
-level 0 recovery:
-  activeScale restored to 1
-  fog resolution restored to startup scale
-  renderer.setPixelRatio not called
-
-performance state:
-  level, movingAverage, fps, target only
-
-debug state:
-  startup tier, fps, cloud steps, fog steps, kit count
+camera rail positions: 7 mutable point objects
+camera look targets: 7 point objects
+rail completion threshold: progress >= 0.985
+pre-transition drag: mutates every railPositions point.x
+camera reset restores: progress, yaw, pitch, pressed keys, player position
+camera reset does not restore: railPositions
+scenario reset: clock.reset then cameraSequence.reset
+input/reset return values: undefined
+sequence baseline fingerprint: absent
 ```
 
 ## Validation not executed
@@ -64,30 +49,26 @@ browser smoke
 WebGPU initialization
 WebGL2 fallback
 GPU compute dispatch
-full degrade/recover cycle
-pixel-ratio recovery
-transition rollback
+camera drag/reset fixture
 runtime stop/dispose/restart
+adaptive-quality full recovery
 ```
 
-The execution environment could not reach GitHub through a shell clone, so no local Node test run is claimed. Repository inspection and writes used the GitHub connector.
+No runtime-completion claim is made. Repository inspection and writes used the GitHub connector.
 
-## Required adaptive-quality fixture
+## Required camera fixture
 
 A future fixture must prove:
 
 ```txt
-budget transitions 0 -> 1 -> 2 -> 1 -> 0 deterministically
-every transition resolves one immutable target
-every control is applied exactly once per changed target
-level 0 restores startup pixel ratio
-applied state equals observed renderer/control state
-duplicate target application is a typed no-op
-partial failure rolls back prior control changes
-quality override policy is explicit and tested
-transition journal is bounded and JSON-safe
+baseline descriptor is immutable
+runtime orbit state is separate from authored points
+reset restores construction-time descriptor exactly
+repeated drag/reset cycles do not drift
+clock and camera reset atomically at scenario level
+input and reset results are typed and JSON-safe
 ```
 
 ## Readiness statement
 
-This pass proves documentation alignment and a source-level recovery asymmetry. Runtime correctness remains unproven until the lifecycle and adaptive-quality fixtures exist and run successfully.
+This pass proves documentation alignment and a source-level camera reset asymmetry. Runtime lifecycle, camera-reset fidelity, resource disposal, and adaptive-quality recovery remain unproven until their fixtures exist and pass.

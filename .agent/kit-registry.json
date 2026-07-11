@@ -1,12 +1,13 @@
 {
-  "schemaVersion": 51,
-  "lastUpdated": "2026-07-10T22-29-21-04-00",
+  "schemaVersion": 52,
+  "lastUpdated": "2026-07-11T00-10-28-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
   "selectionReason": "oldest eligible documented fallback after complete Publish inventory and central ledger comparison",
   "orderedNextSlices": [
     "MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate",
+    "MyCozyIsland Camera Rail Baseline Authority + Drag/Reset Fidelity Fixture Gate",
     "MyCozyIsland Adaptive Quality Transaction Authority + Full-Recovery Fixture Gate"
   ],
   "implementedKitCount": 50,
@@ -69,6 +70,7 @@
     "atomicAndSharedDomains": 36,
     "plannedAuthorityDomains": [
       "runtime-session-lifecycle-and-resource-authority",
+      "camera-rail-baseline-and-reset-authority",
       "adaptive-quality-transaction-and-observation-authority"
     ]
   },
@@ -84,31 +86,27 @@
     "camera-sequence-and-scenario",
     "adaptive-performance-and-debug-host"
   ],
-  "mainFinding": "Adaptive recovery to level 0 restores cloud/fog/post controls but skips renderer pixel-ratio restoration, allowing declared budget level and applied renderer state to diverge.",
+  "mainFinding": "Pre-transition pointer drag mutates authored camera rail positions, while reset restores scalar/input/player state but not the rail control points, so reset can preserve accumulated path drift.",
   "preservedFirstGate": "Route-owned runtime session lifecycle, rollback, resource disposal, and restart remain the first implementation gate.",
-  "candidateAdaptiveQualityKits": [
-    "adaptive-quality-state-kit",
-    "adaptive-quality-target-descriptor-kit",
-    "adaptive-quality-transition-policy-kit",
-    "adaptive-quality-application-transaction-kit",
-    "adaptive-quality-result-kit",
-    "renderer-pixel-ratio-control-kit",
-    "volumetric-step-control-kit",
-    "fog-resolution-control-kit",
-    "quality-override-admission-kit",
-    "adaptive-quality-journal-kit",
-    "adaptive-quality-host-observation-kit",
-    "adaptive-quality-transition-fixture-kit"
+  "candidateCameraSequenceKits": [
+    "camera-rail-authored-baseline-kit",
+    "camera-orbit-offset-state-kit",
+    "camera-sequence-input-result-kit",
+    "camera-sequence-state-kit",
+    "camera-sequence-reset-transaction-kit",
+    "camera-sequence-fingerprint-kit",
+    "scenario-reset-transaction-kit",
+    "camera-rail-reset-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-10T22-29-21-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-10T22-29-21-04-00.md",
-    ".agent/architecture-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transaction-dsk-map.md",
-    ".agent/render-audit/2026-07-10T22-29-21-04-00-quality-recovery-pixel-ratio-commit-gap.md",
-    ".agent/gameplay-audit/2026-07-10T22-29-21-04-00-scenario-performance-control-loop.md",
-    ".agent/interaction-audit/2026-07-10T22-29-21-04-00-quality-override-runtime-admission-map.md",
-    ".agent/performance-system-audit/2026-07-10T22-29-21-04-00-degrade-recover-state-machine-contract.md",
-    ".agent/deploy-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transition-fixture-gate.md"
+    ".agent/trackers/2026-07-11T00-10-28-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-11T00-10-28-04-00.md",
+    ".agent/architecture-audit/2026-07-11T00-10-28-04-00-camera-rail-baseline-authority-dsk-map.md",
+    ".agent/render-audit/2026-07-11T00-10-28-04-00-camera-projection-reset-drift-gap.md",
+    ".agent/gameplay-audit/2026-07-11T00-10-28-04-00-reveal-drag-reset-exploration-loop.md",
+    ".agent/interaction-audit/2026-07-11T00-10-28-04-00-wheel-drag-reset-result-map.md",
+    ".agent/sequence-authority-audit/2026-07-11T00-10-28-04-00-authored-rail-baseline-reset-contract.md",
+    ".agent/deploy-audit/2026-07-11T00-10-28-04-00-camera-rail-reset-fixture-gate.md"
   ],
   "runtimeSourceChanged": false,
   "branchCreated": false,

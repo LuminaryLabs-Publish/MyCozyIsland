@@ -1,71 +1,39 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-10T22-29-21-04-00`
+Last updated: `2026-07-11T00-10-28-04-00`
 
-## Priority 1: runtime-session lifecycle
+## Critical
 
-The route still has no authoritative runtime-session owner.
+1. No route-owned runtime session controls animation-loop, listeners, timeouts, resource disposal, rollback, or restart.
+2. Pre-first-person pointer drag mutates authored camera-rail positions in place.
+3. Camera reset does not restore those rail positions, so reset is not deterministic after drag.
+4. Scenario reset has no atomic result or fingerprint and inherits the camera reset defect.
+5. Adaptive-quality level 0 can report recovery while renderer pixel ratio remains degraded.
 
-- no session ID or lifecycle state machine
-- no retained stop/dispose/restart controller
-- no coordinated listener removal
-- no explicit animation-loop cancellation surface
-- no partial-start rollback
-- no route-wide GPU/Three resource ledger
-- no idempotent disposal result
-- no restart or remount proof
-- no lifecycle state in host readback
+## Proof gaps
 
-## Priority 2: adaptive-quality transaction authority
+- no camera baseline fingerprint
+- no camera sequence revision or reset counter
+- no typed wheel/drag/key/reset result
+- no input/result journal
+- no drag/reset/repeat Node fixture
+- no browser reset/restart smoke
+- no lifecycle/resource disposal fixture
+- no applied-quality transition journal
 
-The adaptive quality controller has split declared and applied state.
+## Secondary risks
 
-- recovery to level 0 skips `renderer.setPixelRatio()`
-- `performance.level` can be 0 while renderer pixel ratio remains degraded
-- no canonical applied-quality descriptor exists
-- no atomic transition result exists
-- no rollback exists if a control application throws
-- no transition sequence, timestamp, source frame, or reason row exists
-- no policy defines whether `?quality=` locks, caps, floors, or initializes adaptation
-- debug overlay displays startup tier rather than complete applied controls
-- host readback omits actual pixel ratio and fog-resolution scale
-- no deterministic full-degrade/full-recovery fixture exists
+- wheel deltas are consumed as raw values without `deltaMode` normalization
+- rail drag changes authored geometry rather than a bounded orbit-offset state
+- yaw is unbounded during the rail phase
+- `globalThis.CozyIsland` exposes live renderer objects and mutable service handles
+- host readback does not include lifecycle, sequence baseline, applied quality, resource counts, or bounded result rows
+- tests do not execute `main-cloudform.js` in a browser-like environment
 
-## Resource ownership gaps
+## Not currently blocked by
 
-- sky texture/material/geometry have no route owner
-- atmosphere storage/data textures and compute nodes have no disposal contract
-- cloud, fog, ocean, foam, post, world, and layered-grass resources do not compose one disposal boundary
-- shared geometry/material/texture ownership is implicit
-- renderer disposal is not coordinated with child resources
-
-## Interaction and frame gaps
-
-- input calls return no accepted/rejected/no-op result rows
-- frame IDs and committed-frame rows are absent
-- input sequences are not correlated with render commits
-- performance transitions are not correlated with source frames
-- diagnostic drawing is periodic latest-state only
-
-## Host proof gaps
-
-`globalThis.CozyIsland` exposes live Three objects plus an aggregate snapshot but not:
-
-```txt
-sessionId
-lifecycleState
-resource counts
-dispose results
-frameId
-appliedQuality
-actualPixelRatio
-fogResolutionScale
-qualityTransitionId
-qualityTransitionResult
-qualityTransitionJournal
-qualityOverridePolicy
-```
-
-## Validation gaps
-
-The current `npm test` gate validates catalog, source, deterministic-domain, and route tokens. It does not instantiate the browser renderer and cannot prove lifecycle disposal or adaptive-quality application fidelity.
+- kit catalog count or ID validity
+- deterministic terrain/vegetation composition
+- lack of visual content
+- missing renderer features
+- deployment configuration

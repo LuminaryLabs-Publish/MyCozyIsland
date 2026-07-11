@@ -1,6 +1,6 @@
-# Current Audit: MyCozyIsland Runtime and Adaptive Quality Authority
+# Current Audit: MyCozyIsland Camera Rail Reset Authority
 
-Last updated: `2026-07-10T22-29-21-04-00`
+Last updated: `2026-07-11T00-10-28-04-00`
 
 ## Runtime identity
 
@@ -9,22 +9,21 @@ Last updated: `2026-07-10T22-29-21-04-00`
 ## Interaction loop
 
 ```txt
-load index.html and import Three/WebGPU
+load route and import Three/WebGPU
   -> validate exactly 50 DomainServiceKit descriptors
-  -> initialize WebGPURenderer
-  -> choose backend and startup quality
+  -> initialize WebGPURenderer and startup quality
   -> compose deterministic environment/render snapshot
-  -> construct sky, world, ocean, foam, density textures, clouds, fog, and post pipeline
+  -> construct scene, sky, terrain, vegetation, ocean, foam, cloud, fog, and post resources
   -> install wheel, pointer, keyboard, blur, and resize listeners
   -> start renderer.setAnimationLoop
   -> scenario.tick(dt)
-  -> project camera state
+  -> environment clock tick
+  -> camera rail or first-person state tick
+  -> project camera descriptor into Three camera
   -> update world and foam
-  -> sample frame interval
-  -> possibly degrade/recover adaptive quality
+  -> sample adaptive performance
   -> render post pipeline
-  -> draw periodic diagnostics
-  -> expose aggregate CozyIsland state
+  -> publish periodic debug and aggregate host state
 ```
 
 Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement after rail completion, Shift speed modifier, H diagnostics, blur key clearing, and resize projection updates.
@@ -37,19 +36,19 @@ Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement 
 - debug overlay
 - WebGL2 fallback policy
 - GPU/CPU atmosphere volume creation
-- world, ocean, foam, cloud, fog, and post render consumers
-- startup quality selection
-- adaptive performance budget
-- browser input and resize adaptation
+- world, ocean, foam, cloud, fog, sky, and post render consumers
+- startup quality selection and adaptive performance budget
+- browser input, animation-loop, loader, error, and resize adapters
 - global host diagnostics
 
-### Authored content and scenario
+### Authored sequence and gameplay domains
 
 - camera rail sequence
 - cozy-island scenario
 - reveal-to-first-person transition
 - constrained clearing movement
 - campfire exclusion and camera projection
+- scenario clock/reset composition
 
 ### Environment and world domains
 
@@ -65,11 +64,10 @@ Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement 
 ### Missing authority domains
 
 - route runtime-session lifecycle and resource ownership
-- adaptive-quality target state
-- adaptive-quality transition transaction
-- per-control application results and rollback
-- quality override admission semantics
-- applied-quality observation and transition journal
+- immutable authored camera-rail baseline
+- camera sequence state/readback and typed input results
+- deterministic reset transaction and reset fingerprint
+- adaptive-quality target, transaction, rollback, and observation
 
 ## Services offered by current kits
 
@@ -87,19 +85,16 @@ ocean:
   floor profile, wave state, optical and underwater descriptors, caustics, glitter, foam contours
 
 vegetation/world:
-  archetype catalog, placement graph, wind and LOD descriptors, rocks, props, campfire, layered world rendering
+  archetype catalog, placement graph, wind and LOD descriptors, rocks, props, campfire, layered rendering
 
 atmosphere:
-  cloud/fog recipes, lighting, LOD, shadow, horizon, advection, placement, volume texture creation
+  cloud/fog recipes, lighting, LOD, shadow, horizon, advection, placement, volume textures
 
-render description:
-  startup quality selection, material and archetype catalogs, immutable render snapshot, fallback policy
-
-render consumption:
-  world/ocean/foam/cloud/fog/post construction, frame update, render submission
+render description/consumption:
+  startup quality, material/archetype catalogs, immutable snapshot, fallback policy, world/ocean/foam/cloud/fog/post consumers
 
 scenario/input:
-  wheel/drag/key input, rail camera, first-person movement, scenario tick/reset/snapshot
+  wheel progress, pointer drag, key state, rail sampling, first-person movement, scenario tick/reset/snapshot
 
 performance/debug:
   moving-average frame sampling, hysteresis, degrade/recover callbacks, overlay projection, aggregate state
@@ -160,29 +155,21 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Verified adaptive-quality behavior
+## Verified camera-sequence behavior
 
-`createPerformanceBudget()` owns a three-level state machine: level 0, 1, and 2. It degrades after 90 over-budget samples and recovers after 360 under-budget samples. It exposes only `{ level, movingAverage, fps, target }`.
+`createCameraRailSequence()` creates seven authored rail positions and seven look targets. Before progress reaches `0.985`, `input.drag()` changes yaw and pitch and then mutates every position row in `railPositions` by adding an X offset.
 
-`applyPerformanceLevel()` applies a transition sequentially:
-
-```txt
-activeScale
-  -> cloudRenderer.setStepScale()
-  -> fogRenderer.setStepScale()
-  -> postPipeline.setFogResolutionScale()
-  -> renderer.setPixelRatio() only when level > 0
-```
+`reset()` restores progress, yaw, pitch, pressed keys, and player position, but does not restore the mutated rail positions. `createCozyIslandScenario().reset()` simply calls the clock reset and camera-sequence reset, so scenario reset inherits the incomplete camera reset.
 
 Consequences:
 
-- recovery to level 0 restores cloud steps, fog steps, and fog resolution
-- recovery to level 0 does not restore the startup pixel ratio
-- the budget can report level 0 while the renderer remains degraded
-- transition application has no typed result or rollback if one mutation fails
-- static `quality.tier` and `quality.source` do not describe the applied dynamic controls
-- `?quality=` has no documented runtime-adaptation admission policy
-- debug and host state omit the applied pixel ratio, fog-resolution scale, target control row, and transition history
+- a pre-transition pointer drag permanently changes the authored rail for that sequence instance
+- reset does not reproduce the construction-time camera descriptor
+- repeated drag/reset cycles can accumulate path drift
+- there is no immutable authored baseline separate from runtime orbit state
+- input methods and reset return no typed result
+- the descriptor exposes no path fingerprint, revision, reset count, or orbit offset
+- the current Node smoke test ticks one frame but never exercises drag/reset fidelity
 
 ## Safe implementation boundaries
 
@@ -190,8 +177,11 @@ Consequences:
 1. MyCozyIsland Runtime Session Lifecycle Authority
    + WebGPU Resource Disposal Fixture Gate
 
-2. MyCozyIsland Adaptive Quality Transaction Authority
+2. MyCozyIsland Camera Rail Baseline Authority
+   + Drag/Reset Fidelity Fixture Gate
+
+3. MyCozyIsland Adaptive Quality Transaction Authority
    + Full-Recovery Fixture Gate
 ```
 
-The first gate owns construction, stop, disposal, and restart. The second gate makes each dynamic quality transition atomic, reversible, and observable under that host.
+The lifecycle host should own the scenario instance. Camera reset must then restore a stable authored baseline exactly, and adaptive quality should remain a separate transaction under that host.

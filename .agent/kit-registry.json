@@ -1,13 +1,14 @@
 {
-  "schemaVersion": 53,
-  "lastUpdated": "2026-07-11T01-50-30-04-00",
+  "schemaVersion": 54,
+  "lastUpdated": "2026-07-11T02-02-59-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
-  "selectionReason": "oldest eligible documented fallback after complete Publish inventory and central ledger comparison",
+  "selectionReason": "central ledger stale after repo-local audit advancement and terrain-clearing runtime changes",
   "orderedNextSlices": [
     "MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate",
     "MyCozyIsland Camera Rail Baseline Authority + Drag/Reset Fidelity Fixture Gate",
+    "MyCozyIsland Terrain Clearing Surface Authority + Edge/Seating/Layer-Coherence Fixture Gate",
     "MyCozyIsland Dynamic Environment Frame Authority + Clock/Wind/Illumination Consumer Coherence Fixture Gate",
     "MyCozyIsland Adaptive Quality Transaction Authority + Full-Recovery Fixture Gate"
   ],
@@ -72,16 +73,18 @@
     "plannedAuthorityDomains": [
       "runtime-session-lifecycle-and-resource-authority",
       "camera-rail-baseline-and-reset-authority",
+      "terrain-clearing-surface-and-layer-consumer-authority",
       "dynamic-environment-frame-and-consumer-authority",
       "adaptive-quality-transaction-and-observation-authority"
     ]
   },
   "serviceGroups": [
     "determinism-and-time",
-    "weather-and-illumination",
-    "terrain-and-shoreline",
+    "terrain-natural-height-and-clearing-plateau",
+    "terrain-fields-biome-and-shoreline",
+    "ground-contact-and-world-placement",
     "ocean-and-foam",
-    "vegetation-and-world-placement",
+    "vegetation-and-layered-grass",
     "cloud-and-fog-atmosphere",
     "render-descriptors-and-startup-quality",
     "webgpu-render-adapters",
@@ -89,34 +92,48 @@
     "dynamic-environment-frame-and-consumer-projection",
     "adaptive-performance-and-debug-host"
   ],
-  "mainFinding": "The environment clock advances every scenario tick, but wind-, illumination-, cloud-, fog-, vegetation-, campfire-, sky-, light-, and exposure-related semantic descriptors are sampled during startup and frozen. Shader time creates visual motion without proving that consumers applied one current shared environment frame.",
-  "preservedFirstGate": "Route-owned runtime session lifecycle, rollback, resource disposal, and restart remain the first implementation gate.",
-  "candidateEnvironmentFrameKits": [
-    "environment-frame-authority-kit",
-    "environment-frame-identity-kit",
-    "environment-frame-sampler-kit",
-    "dynamic-illumination-state-kit",
-    "dynamic-wind-state-kit",
-    "environment-consumer-projection-kit",
-    "sky-lighting-consumer-kit",
-    "cloud-lighting-consumer-kit",
-    "fog-advection-consumer-kit",
-    "vegetation-wind-consumer-kit",
-    "campfire-wind-consumer-kit",
-    "environment-staleness-observation-kit",
-    "environment-frame-coherence-fixture-kit"
+  "terrainClearingState": {
+    "algorithm": "twelve-sample-terrain-relative-plateau",
+    "sourceSampleCount": 12,
+    "sourceSampleRadiusScale": 1.32,
+    "innerBlendRadiusScale": 0.78,
+    "outerBlendRadiusScale": 1.16,
+    "fenceRadiusScale": 1.14,
+    "testRadiusScale": 0.68,
+    "testVariationLimitMeters": 0.5,
+    "descriptorExposed": false,
+    "revisionExposed": false,
+    "consumerRowsExposed": false
+  },
+  "mainFinding": "The central crater was correctly replaced with a deterministic terrain-relative plateau, but its source samples, aggregate height, blend policy, algorithm revision and fingerprint remain hidden. Biome, contact, placement and render consumers cannot prove that they use one terrain revision, and the fence sits almost exactly on the untested outer blend edge.",
+  "preservedFirstGate": "Route-owned runtime session lifecycle, rollback, resource disposal and restart remain the first implementation gate.",
+  "candidateTerrainAuthorityKits": [
+    "terrain-source-revision-kit",
+    "terrain-clearing-descriptor-kit",
+    "terrain-source-sample-kit",
+    "terrain-plateau-aggregation-kit",
+    "terrain-blend-policy-kit",
+    "terrain-surface-variation-kit",
+    "terrain-field-frame-kit",
+    "terrain-biome-consumer-kit",
+    "ground-contact-consumer-kit",
+    "world-placement-consumer-kit",
+    "terrain-render-consumer-kit",
+    "terrain-consumer-result-kit",
+    "terrain-layer-observation-kit",
+    "terrain-layer-coherence-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-11T01-50-30-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-11T01-50-30-04-00.md",
-    ".agent/architecture-audit/2026-07-11T01-50-30-04-00-dynamic-environment-frame-authority-dsk-map.md",
-    ".agent/render-audit/2026-07-11T01-50-30-04-00-clock-environment-consumer-staleness-gap.md",
-    ".agent/gameplay-audit/2026-07-11T01-50-30-04-00-reveal-clock-environment-coherence-loop.md",
-    ".agent/interaction-audit/2026-07-11T01-50-30-04-00-reset-time-environment-result-map.md",
-    ".agent/environment-state-audit/2026-07-11T01-50-30-04-00-clock-wind-illumination-projection-contract.md",
-    ".agent/deploy-audit/2026-07-11T01-50-30-04-00-environment-frame-coherence-fixture-gate.md"
+    ".agent/trackers/2026-07-11T02-02-59-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-11T02-02-59-04-00.md",
+    ".agent/architecture-audit/2026-07-11T02-02-59-04-00-terrain-clearing-layer-authority-dsk-map.md",
+    ".agent/render-audit/2026-07-11T02-02-59-04-00-plateau-biome-placement-render-consumption-gap.md",
+    ".agent/gameplay-audit/2026-07-11T02-02-59-04-00-clearing-ground-contact-exploration-loop.md",
+    ".agent/interaction-audit/2026-07-11T02-02-59-04-00-camera-player-reset-terrain-revision-map.md",
+    ".agent/terrain-system-audit/2026-07-11T02-02-59-04-00-plateau-edge-seating-layer-contract.md",
+    ".agent/deploy-audit/2026-07-11T02-02-59-04-00-terrain-layer-fixture-gate.md"
   ],
-  "runtimeSourceChanged": false,
+  "runtimeSourceChangedDuringDocumentationRun": false,
   "branchCreated": false,
   "pullRequestCreated": false
 }

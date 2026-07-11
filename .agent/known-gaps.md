@@ -1,105 +1,108 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T12-58-06-04-00`
+Last updated: `2026-07-11T14-41-28-04-00`
 
 ## Summary
 
-The production route advances a clock but does not produce one authoritative environment frame. Dynamic and startup-frozen consumers coexist without shared revision, rollback, reset or visible-frame proof.
+Browser startup is not an authoritative transaction. Static CDN imports can fail before the route error handler exists, and later failures can leave partially allocated renderer, world and DOM resources alive without rollback, retry or a first-frame readiness receipt.
 
-The earlier lifecycle, Core World, render-commit and adaptive-quality gaps remain active prerequisites or downstream dependencies.
+The earlier runtime-session, Core World, render-commit, environment and adaptive-quality gaps remain dependent work.
 
-## Environment-frame gaps
-
-```txt
-versioned EnvironmentFrame schema: absent
-environmentFrameId: absent
-environment revision/fingerprint: absent
-session/generation/tick admission: absent
-monotonic clock sample identity: absent
-canonical effective environment state: absent
-bounded environment journal: absent
-```
-
-## Live-source projection gaps
+## Module admission gaps
 
 ```txt
-clock: live
-wind service: live only when queried
-illumination service: live only when queried
-weather: immutable preset
-scenario refreshes clock: yes
-scenario refreshes wind: no
-scenario refreshes illumination: no
-scenario refreshes cloud/fog descriptors: no
+immutable ModuleSourceManifest: absent
+module graph fingerprint: absent
+module fetch/parse/evaluation result: absent
+source integrity metadata: absent
+capability declaration per module: absent
+module failure projection before main(): absent
+alternate source policy: absent
 ```
 
-## Startup-frozen consumer gaps
+## Startup transaction gaps
 
 ```txt
-sky gradient
-hemisphere intensity
-sun direction/color/intensity
-renderer exposure
-scene fog descriptor
-vegetation wind descriptor
-campfire smoke wind direction/response
-cloud weather/lighting/shadow/horizon
-fog density/advection/placement
+startupId: absent
+startup generation: absent
+ordered stage plan: implicit only
+typed stage results: absent
+expected-stage admission: absent
+startup journal: absent
+single commit point: absent
 ```
 
-## Consumer transaction gaps
+## Renderer backend gaps
 
 ```txt
-consumer plan: absent
-prepare phase: absent
-atomic commit: absent
-rollback: absent
-typed consumer receipt: absent
-stale/duplicate rejection: absent
-partial-failure recovery: absent
+backend candidate record: absent
+capability negotiation: absent
+admitted backend result: absent
+fallback reason: absent
+consumer/backend compatibility proof: absent
+quality fingerprint tied to backend: absent
+WebGPU/WebGL2 parity fixture: absent
 ```
 
-## Reset gaps
+## Partial allocation and rollback gaps
 
 ```txt
-canonical baseline EnvironmentFrame: absent
-reset frame revision: absent
-consumer baseline prepare/commit: absent
-old-frame retirement: absent
-reset result/fingerprint: absent
-first visible reset frame receipt: absent
+resource ledger: absent
+reverse cleanup stack: absent
+renderer-init rollback: absent
+Core World prepare rollback: absent
+volume texture rollback: absent
+cloud/fog/ocean/post rollback: absent
+listener and timer rollback: absent
+startup host revocation: absent
 ```
 
-## Render-proof gaps
+## Loader and interaction gaps
 
 ```txt
-environmentRevision on render frame: absent
-environmentFingerprint on render frame: absent
-consumer acknowledgement set: absent
-first visible frame receipt: absent
-debug overlay environment parity: absent
-public host effective environment state: absent
+loader state is authoritative: no
+loader stage revision: absent
+loader failure code: absent
+retry control: absent
+retry generation: absent
+first user-input admission result: absent
+loader completion tied to first frame: no
 ```
 
-Elapsed seconds are not proof that sky, sun, wind, clouds, fog, ocean, vegetation and campfire agree.
+## First-frame readiness gaps
 
-## Lifecycle interaction gaps retained
+```txt
+firstFrameId: absent
+startup configuration fingerprint: absent
+world revision on ready receipt: absent
+backend/quality revision on ready receipt: absent
+consumer readiness set: absent
+visible frame acknowledgement: absent
+```
 
-- The animation loop has no session generation admission.
-- Reset, stop and disposal do not fence environment updates.
-- The global host exposes raw mutable runtime and renderer objects.
-- Pagehide does not retire the complete render graph.
-- Old environment callbacks cannot be revoked after restart.
+## Lifecycle interactions retained
+
+- `pagehide` is installed only after startup completes.
+- `pagehide` calls `domains.dispose()` but does not stop the renderer animation loop.
+- Loader timers are not retained or cancelled.
+- Input and resize listeners have no removal leases.
+- The global host exposes raw mutable renderer, scene, camera and runtime objects.
+- Renderer and atmosphere resources lack one ordered session-owned disposal result.
 
 ## Core World and render gaps retained
 
 - Reset clears world definitions without a complete re-registration transaction.
-- Focus updates return Boolean rather than a typed revision.
+- Focus updates return Boolean rather than a typed world revision.
 - Materialization lacks session/world/focus generation fencing.
-- Provider readiness is not a canonical version set.
-- Cell resources have no prepare/commit/rollback transaction.
-- Visible cell rendering remains disconnected from prepared descriptors.
-- No committed frame correlates world, renderer, environment and quality revisions.
+- Provider readiness is not represented by a canonical version set.
+- Cell render resources have no prepare/commit/rollback transaction.
+- No committed frame correlates startup, world, environment, quality and render revisions.
+
+## Dynamic environment gaps retained
+
+- The environment clock advances while most dependent descriptors remain startup-frozen.
+- There is no shared EnvironmentFrame, revision, fingerprint or consumer receipt set.
+- Reset does not commit a canonical baseline environment frame.
 
 ## Adaptive quality gaps retained
 
@@ -111,36 +114,39 @@ Elapsed seconds are not proof that sky, sun, wind, clouds, fog, ocean, vegetatio
 ## Validation gaps
 
 ```txt
-deterministic environment frame replay
-wind consumer parity
-illumination consumer parity
-cloud/fog consumer parity
-reset baseline replay
-stale session/generation/tick/revision rejection
-duplicate frame handling
-consumer prepare rejection
-consumer commit failure rollback
-WebGPU/WebGL2 parity
-first visible frame acknowledgement
+module fetch failure before main()
+module parse/evaluation failure
+renderer.init rejection
+backend capability rejection
+Core World prepare rejection
+cloud/fog volume creation rejection
+post-pipeline construction rejection
+partial allocation rollback order
+loader failure and retry generation
+stale prior-generation callback rejection
+first-frame readiness receipt
+WebGPU/WebGL2 startup parity
+Pages cold-load browser smoke
 ```
 
 ## Deployment blockers
 
 ```txt
-mixed live and startup-frozen environment state
-no environment frame identity or fingerprint
-no consumer transaction or rollback
-no reset baseline result
-no visible environment-frame acknowledgement
-no executable environment coherence fixtures
+no source-manifest or module-graph proof
+no startup stage journal
+no backend admission result
+no rollback after partial allocation
+no explicit retry contract
+no first-frame readiness receipt
+no executable startup failure fixtures
 ```
 
 ## Not currently blocked by
 
-- deterministic clock and seed services;
-- live wind and illumination functions;
-- existing scene, cloud, fog, ocean and foam consumers;
-- the 50 local kit catalog;
-- the seven provider order;
-- pinned Three.js and NexusEngine revisions;
+- a pinned Three.js version and NexusEngine commit;
+- a valid 50-kit catalog;
+- existing WebGPU/WebGL2 renderer policies;
+- deterministic world descriptors;
+- existing Core World providers;
+- the current static test suite;
 - GitHub Pages configuration.

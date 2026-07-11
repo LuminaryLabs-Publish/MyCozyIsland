@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T07-01-49-04-00`
+Last updated: `2026-07-11T08-41-02-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: newer repo-local audit was not yet synchronized to central tracking
+selection reason: next stable oldest eligible repository after active same-minute writes were detected on IntoTheMeadow
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -24,9 +24,9 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 new or ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-MyCozyIsland repo-local audit before this pass: 2026-07-11T06-50-30-04-00
-MyCozyIsland central ledger before this pass: 2026-07-11T05-10-36-04-00
-selected: MyCozyIsland
+nominal oldest entry: IntoTheMeadow
+active same-minute documentation writes on nominal oldest: yes
+selected stable repository: MyCozyIsland
 excluded: TheCavalryOfRome
 ```
 
@@ -44,71 +44,52 @@ local kit descriptors: 50
 Core World providers: 7
 ```
 
-## Lifecycle facts verified from source
+## Focus facts verified from source
 
 ```txt
-one top-level main() owns construction: yes
-top-level failure path: main().catch(fail)
-startup rollback stack: absent
-session ID: absent
-session epoch: absent
-lifecycle state machine: absent
-stop command: absent
-restart command: absent
-renderer animation loop installed: yes
-route-level animation-loop cancellation: absent
-canvas/window listeners installed: yes
-listener lease registry: absent
-two nested loader timers: yes
-timer lease registry: absent
-pagehide listener: yes
-pagehide action: domains.dispose only
-complete render graph disposal: absent
-renderer/backend disposal: absent
-global host publication: globalThis.CozyIsland
-global host retirement: absent
+prepare sets prepared before commitFocus: yes
+commitFocus mutates wrapper lastFocus before setFocus/updateWorld complete: yes
+production setFocus commits independently: yes
+production updateWorld commits cells separately: yes
+wrapper checkpoint before focus: absent
+provider-store checkpoint before focus: absent
+wrapper rollback after focus failure: absent
+provider-store rollback result exposed: absent
+world revision exposed: absent
+provider revision set exposed: absent
+updateWorldFocus result: Boolean
+initial prepare retry proof: absent
+focus command/session/epoch/revision admission: absent
 ```
 
-## Acquired resources identified
+## Production Core World facts verified
 
 ```txt
-browser:
-  wheel, pointerdown, pointerup, pointercancel, pointermove
-  keydown, keyup, blur, resize, pagehide
-  loader completion timeout, loader hide timeout
-  renderer animation loop
-  global host assignment
-
-world:
-  legacy semantic composition
-  pinned engine and Core World registration
-  partition, surface, providers and stores
-  query, bridge, scenario and clock
-
-render:
-  WebGPURenderer/backend
-  scene, camera, sky, lights and shadows
-  world and layered-grass graph
-  ocean and foam
-  cloud/fog volume textures
-  cloud and fog renderers
-  RenderPipeline and passes
-  performance and debug services
+selection shape: required / updated / retained / released
+selection validation: present
+provider phase ordering: present
+provider matches admission: present
+provider capability admission: present
+provider statuses: present
+failed-cell state: present
+new-cell prepared-provider rollback: present
+release order: reverse provider order
+async provider methods: rejected
+focusChanged and cellsChanged: separate commits
 ```
 
-## Disposal capability facts verified
+## Fake runtime differences verified
 
 ```txt
-domains.dispose resets Core World state: yes
-live route invokes disposeRendererObject: no
-disposeRendererObject can release graph geometry/material/texture resources: yes
-whole-island renderer common dispose result: no
-ocean renderer common dispose result: no
-foam renderer common dispose result: no
-cloud/fog common dispose result: no
-post pipeline common dispose result: no
-exact-once resource identity ledger: no
-residual-resource readback: no
+selection shape: flat array
+selection validation: absent
+provider matching: absent
+capability admission: absent
+diagnostics: minimal/absent
+failed-cell state: absent
+production-equivalent rollback result: absent
+separate focus/cell commits: absent
+provider failure matrix: absent
 ```
 
 ## Existing test surface identified
@@ -128,91 +109,89 @@ npm test
   -> renderer-resource-disposal
 ```
 
-These tests cover normal-path semantics and isolated renderer utilities. They do not prove route-level session ownership or complete browser/WebGPU teardown.
+`core-world-runtime.mjs` and `world-cell-lifecycle.mjs` inject `createFakeNexusWorldRuntime()` and cover only normal success behavior.
 
 ## Validation not executed in this documentation run
 
 ```txt
 npm install
 npm test
+exact pinned Core World Node fixture
+production/fake parity matrix
+initial prepare failure injection
+focus failure after setFocus commit
+provider capability failure
+critical provider rollback fixture
+noncritical degraded commit fixture
+provider release failure fixture
+provider-store checkpoint/restore fixture
+focus retry fixture
+world revision monotonicity fixture
+stale session/epoch/revision fixture
 browser smoke
 WebGPU initialization
 WebGL2 fallback initialization
-startup failure injection
-stop/dispose/restart fixture
-listener and timer lease fixture
-animation-loop cancellation fixture
-resource residual-count fixture
-global-host retirement fixture
-old-callback rejection fixture
-pinned-runtime contract parity fixture
-provider failure injection
-provider-to-render synchronization fixture
+Pages smoke
 ```
 
 The GitHub connector was used for source inspection and documentation writes. A runnable checkout and browser were unavailable, so no executable pass claim is made.
 
-## Required lifecycle fixture matrix
+## Required focus fixture matrix
 
-Inject a failure or stop at each row:
+Run each scenario against both the exact pinned runtime and the test adapter:
 
 ```txt
-before renderer construction
-after renderer construction
-inside renderer.init
-after Core World creation
-during initial world prepare
-after scene/sky/lights
-after world renderer
-after ocean
-after foam
-during atmosphere texture creation
-after cloud
-after fog
-after post pipeline
-after listener registration
-after timer registration
-after animation-loop registration
-after global-host publication
-before first frame
-during frame
-during focus update
-during render submit
+initial origin prepare
+same-cell no-op
+movement below timing threshold
+movement below distance threshold
+one-cell crossing
+multi-cell jump
+invalid partition selection
+provider not-applicable
+missing provider capability
+noncritical provider prepare failure
+critical provider prepare failure
+provider update failure
+provider release failure
+async provider rejection
+failure immediately after focusChanged commit
+reset during focus
+retry after failed initial prepare
+retry after failed movement
+repeat command ID
+stale session epoch
+stale expected world revision
 ```
 
 For every row prove:
 
 ```txt
-one terminal lifecycle result exists
-all acquired leases have release results
-no unowned listener or timeout remains
-animation loop is inactive
-old-epoch callbacks are rejected
-Core World state is reset or explicitly reported residual
-scene/GPU resources have zero unexplained residuals
-global host is retired or restored
-repeat disposal is unchanged and safe
-newer session starts without duplicate work
+result status and reason are explicit
+wrapper and Core World focus agree
+accepted world revision is monotonic
+active-cell IDs match accepted selection
+provider-store counts match policy
+provider transition rows are complete
+rollback identifies restored and residual state
+portable result fingerprint is deterministic
+failed initial prepare remains retriable
+stale commands cannot mutate state
+production and test classifications match
 ```
 
-## Browser proof required
+## Required browser proof
 
 ```txt
-WebGPU core start -> stop -> restart
-WebGL2 core start -> stop -> restart
-legacy start -> stop -> restart
-startup failure -> error projection -> clean retry
-pagehide -> zero live leases
-old frame callback after restart is rejected
-old focus callback after restart is rejected
-input after restart mutates only the new session
-H overlay after restart has one listener
+WebGPU core mode crosses a cell boundary with accepted revision readback
+WebGL2 core mode crosses a cell boundary with accepted revision readback
+provider failure is projected without corrupting the previous visible revision
+failed initial prepare can retry without reload
+focus command from an old session epoch is rejected
+visible render commit references the accepted world revision
+legacy mode remains explicitly separate
 ```
-
-## Second-gate proof retained
-
-After lifecycle passes, run the exact pinned Core World contract and provider-failure matrix against both production and fake adapters. Prove retriable prepare, typed focus results, provider rollback and session-epoch correlation before visible cell rendering.
 
 ## Readiness statement
 
-The route is visually and semantically functional, but `pagehide -> domains.dispose()` is not a complete runtime teardown. Runtime session identity, startup rollback, callback fencing, exact disposal and restart proof remain the first implementation gate.
+Normal-path world preparation and cell movement are covered through a simplified fake runtime. Production/fake contract parity, retriable initial prepare, atomic focus/world/provider revision handling and failure classification remain unproved. Runtime Session Lifecycle Authority remains the prerequisite; Pinned Core World Focus Transaction Authority is the fully documented second gate.

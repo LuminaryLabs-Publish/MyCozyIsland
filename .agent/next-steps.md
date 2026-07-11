@@ -1,94 +1,95 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T01-50-30-04-00`
+Last updated: `2026-07-11T02-02-59-04-00`
 
 ## Plan ledger
 
-**Goal:** make lifecycle, reset, environment time, and rendering agree on one deterministic session and frame model without changing the current visual composition.
+**Goal:** preserve the terrain-relative clearing while making terrain generation, biome derivation, object seating, and render consumption agree on one deterministic terrain revision.
 
 - [ ] Add a route runtime-session owner for startup, running, stop, dispose, restart, and startup rollback.
 - [ ] Register animation-loop, listeners, timeouts, GPU resources, Three resources, and global host publication with that owner.
-- [ ] Preserve the camera rail as immutable authored data.
-- [ ] Separate pointer orbit influence from authored camera control points.
-- [ ] Make scenario reset atomic across clock, camera, and later environment frame state.
-- [ ] Add an immutable environment-frame schema with session ID, simulation tick, source time, revision, and fingerprint.
-- [ ] Sample clock-derived wind and illumination exactly once per committed environment frame.
-- [ ] Derive cloud, fog, vegetation, campfire, sky, light, exposure, and optional ocean consumer inputs from that same frame.
-- [ ] Add typed consumer apply results with `applied`, `skipped`, `rejected`, or `unchanged`.
-- [ ] Add bounded environment-frame and consumer journals to host/debug readback.
-- [ ] Define environment update cadence independently from render cadence.
-- [ ] Add atomic reset semantics restoring the initial environment frame and consumer state.
-- [ ] Add a DOM-free clock/wind/illumination coherence fixture to `npm test`.
-- [ ] Add a browser smoke proving sky/light/cloud/fog/world consumers share one environment-frame revision.
-- [ ] Implement adaptive-quality transactions only after environment consumer provenance is available.
+- [ ] Preserve the camera rail as immutable authored data and separate pointer orbit state from authored points.
+- [ ] Add an immutable terrain-clearing descriptor with algorithm revision and fingerprint.
+- [ ] Expose the natural source samples, plateau aggregate, blend thresholds, and surface-variation policy.
+- [ ] Attach one terrain revision to biome, ground-contact, vegetation, rock, prop, campfire, path, and render-snapshot outputs.
+- [ ] Add typed consumer results with `applied`, `unchanged`, `skipped`, or `rejected`.
+- [ ] Add deterministic continuity checks across the inner clearing, fence radius, blend edge, and source-sample ring.
+- [ ] Prove fence posts, rails, campfire, player baseline, grass, and paths seat against the same terrain revision.
+- [ ] Prove render terrain positions and placement snapshots share one terrain fingerprint.
+- [ ] Add a DOM-free terrain-layer coherence fixture to `npm test`.
+- [ ] Add a browser smoke that reads terrain revision and consumer rows without exposing live renderer objects.
+- [ ] Add dynamic environment-frame authority only after terrain and camera reset identities are stable.
+- [ ] Implement adaptive-quality transactions only after lifecycle and semantic consumer provenance exist.
 
 ## Immediate implementation slice
 
 ```txt
-MyCozyIsland Dynamic Environment Frame Authority
-+ Clock/Wind/Illumination Consumer Coherence Fixture Gate
+MyCozyIsland Terrain Clearing Surface Authority
++ Edge/Seating/Layer-Coherence Fixture Gate
 ```
 
-This is the third implementation slice. Runtime lifecycle remains first and camera reset remains second.
+Runtime lifecycle remains first and camera reset remains second. This terrain slice is the first world-layer contract after those foundations.
 
 ## Candidate kits
 
 ```txt
-environment-frame-authority-kit
-environment-frame-identity-kit
-environment-frame-sampler-kit
-dynamic-illumination-state-kit
-dynamic-wind-state-kit
-environment-consumer-projection-kit
-sky-lighting-consumer-kit
-cloud-lighting-consumer-kit
-fog-advection-consumer-kit
-vegetation-wind-consumer-kit
-campfire-wind-consumer-kit
-environment-staleness-observation-kit
-environment-frame-coherence-fixture-kit
+terrain-source-revision-kit
+terrain-clearing-descriptor-kit
+terrain-source-sample-kit
+terrain-plateau-aggregation-kit
+terrain-blend-policy-kit
+terrain-surface-variation-kit
+terrain-field-frame-kit
+terrain-biome-consumer-kit
+ground-contact-consumer-kit
+world-placement-consumer-kit
+terrain-render-consumer-kit
+terrain-consumer-result-kit
+terrain-layer-observation-kit
+terrain-layer-coherence-fixture-kit
 ```
 
-## Minimum environment frame
+## Minimum clearing descriptor
 
 ```txt
-sessionId
-simulationTick
-environmentFrameId
-revision
-sourceElapsedSeconds
-weatherId
-wind.direction
-wind.strength
-wind.gust
-wind.turbulence
-illumination.sunDirection
-illumination.sunIntensity
-illumination.ambientIntensity
-illumination.exposure
+terrainRevision
+algorithmVersion
+seed
+clearingRadius
+sourceSampleRadius
+sourceSamples[]
+plateauHeight
+innerBlendRadius
+outerBlendRadius
+variationSeed
+variationAmplitude
 fingerprint
 ```
 
 ## Required fixture assertions
 
 ```txt
-same seed + same clock schedule => identical environment frames
-advancing clock changes declared wind and illumination when their functions change
-all derived consumers cite one environmentFrameId
-no consumer may apply a frame from a stale session or older revision
-unchanged semantic values produce explicit unchanged rows, not silent omission
-scenario reset restores the initial environment fingerprint
-consumer reset returns sky/light/cloud/fog/vegetation/campfire to the initial frame
-render cadence variation does not change semantic environment results
-bounded JSON readback contains no live renderer or mutable service handles
+same seed + same options => identical descriptor and fingerprint
+plateau height equals the declared source-sample aggregate
+inner clearing variation remains within the declared budget
+height and normal changes remain bounded across the blend edge
+fence radius is explicitly covered by the edge fixture
+campfire and every fence post cite the same terrain revision
+ground-contact and biome samples cite the same terrain revision
+placement graphs and render snapshot reject stale terrain revisions
+terrain grid vertices match authoritative height samples at probe coordinates
+biome weights remain normalized through center, edge, beach, and slope probes
+algorithm revision changes invalidate dependent cached snapshots
+bounded JSON readback contains no live functions or Three objects
 ```
 
 ## Deferred
 
-- visual lighting, sky, cloud, fog, wind, ocean, grass, and campfire retuning
+- further plateau, clearing-radius, blend, soil, grass, or fence tuning
+- erosion and terrain-system replacement
+- visual lighting, sky, cloud, fog, ocean, wind, and campfire retuning
 - dynamic weather transitions or new presets
 - renderer replacement
-- faster day/night cycles
 - new quality tiers
 - new island content
 - public kit promotion before local fixture proof

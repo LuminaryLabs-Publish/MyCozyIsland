@@ -1,36 +1,31 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T17-50-37-04-00`
+Last updated: `2026-07-11T19-20-22-04-00`
 
 ## Summary
 
-Browser startup admission remains first. Runtime Session Lifecycle Authority is the next implementation slice and must own one session identity, one animation-loop lease, removable listeners and timers, complete world/render retirement, explicit bfcache behavior and a clean restart frame.
+Browser Startup Admission and Failure Rollback Authority is the first implementation slice. It must produce the session, generation, world baseline, capability identities and first-frame evidence consumed by Runtime Session Lifecycle Authority and every downstream world/render authority.
 
 ## Plan ledger
 
-**Goal:** implement stop, dispose and restart as distinct lifecycle transactions without creating parallel session, world, renderer or frame identities.
+**Goal:** replace procedural `main()` construction with a staged commit-or-rollback startup transaction without duplicating renderer, world, resource or frame identities.
 
-- [ ] Complete Browser Startup Admission and Failure Rollback Authority.
-- [ ] Introduce `sessionId` and monotonic `generation` at admitted startup.
-- [ ] Add a lifecycle state machine for starting, running, suspended, stopping, stopped, disposing, disposed, restarting and failed.
-- [ ] Replace direct page events with typed lifecycle commands.
-- [ ] Define persisted-page suspend/resume versus final dispose policy.
-- [ ] Wrap `renderer.setAnimationLoop` in an exclusive lease.
-- [ ] Stop the loop with `renderer.setAnimationLoop(null)` before retirement.
-- [ ] Fence animation, input, resize, timer, focus, materialization and quality callbacks by generation.
-- [ ] Register every event listener with retained function and options.
-- [ ] Register and cancel every loader or delayed-work timer.
-- [ ] Release pointer capture, drag state and held input during stop.
-- [ ] Inventory scene, post, volume and renderer resources by identity.
-- [ ] Retire shared textures, materials and geometries exactly once.
-- [ ] Dispose post resources and off-scene render targets.
-- [ ] Dispose renderer/backend resources.
-- [ ] Integrate Core World, provider, materializer and scenario retirement.
-- [ ] Revoke raw `globalThis.CozyIsland` authority after stop/dispose.
-- [ ] Add typed Stop, Dispose, Resume and Restart results.
-- [ ] Add a bounded lifecycle journal and retirement receipts.
-- [ ] Require a first resumed/restarted frame receipt before reporting running.
-- [ ] Add headless ownership tests and real browser page lifecycle fixtures.
+- [ ] Introduce `startupTransactionId`, startup phase and command sequence.
+- [ ] Validate catalog, DOM, query mode and pinned import capabilities before acquisition.
+- [ ] Add a capability acquisition ledger with dependency and disposal metadata.
+- [ ] Return typed renderer/backend initialization results.
+- [ ] Make Core World prepare atomic: commit `prepared` only with a valid snapshot.
+- [ ] Add provider/materializer rollback for prepare failures.
+- [ ] Return typed capability descriptors from render factories.
+- [ ] Register browser listeners, timers and loop as startup leases.
+- [ ] Add a first-frame readiness and commit gate.
+- [ ] Publish clone-safe startup observations only after commit.
+- [ ] Generate reverse-order rollback from the acquisition ledger.
+- [ ] Dispose partial scene, volume, post, renderer and backend resources.
+- [ ] Restore a clean retry baseline and classify retryable versus terminal failures.
+- [ ] Prevent duplicate Start/Retry attempts while ownership remains active.
+- [ ] Add phase failure injection and clean-retry fixtures.
+- [ ] Add WebGPU/WebGL2 browser startup parity smokes.
 
 ## Ordered implementation queue
 
@@ -46,143 +41,117 @@ Browser startup admission remains first. Runtime Session Lifecycle Authority is 
 9. Adaptive Quality Transaction Authority
 ```
 
-## Candidate lifecycle kits
+## Candidate startup kits
 
 ```txt
-runtime-session-id-kit
-runtime-session-generation-kit
-runtime-lifecycle-state-kit
-lifecycle-command-envelope-kit
-lifecycle-command-admission-kit
-animation-loop-lease-kit
-page-lifecycle-adapter-kit
-bfcache-policy-kit
-event-listener-registry-kit
-timeout-registry-kit
-renderer-resource-registry-kit
-scene-resource-inventory-kit
-stale-callback-fence-kit
-runtime-stop-transaction-kit
-runtime-dispose-transaction-kit
-core-world-retirement-adapter-kit
-gpu-resource-retirement-kit
-global-readback-revocation-kit
-runtime-restart-transaction-kit
-lifecycle-result-kit
-lifecycle-journal-kit
-first-restarted-frame-ack-kit
-runtime-lifecycle-fixture-kit
-browser-pagehide-pageshow-smoke-kit
+startup-transaction-id-kit
+startup-phase-kit
+startup-config-admission-kit
+pinned-import-admission-kit
+backend-init-result-kit
+startup-acquisition-ledger-kit
+startup-capability-lease-kit
+world-prepare-transaction-kit
+startup-resource-descriptor-kit
+startup-callback-lease-kit
+first-frame-readiness-kit
+startup-commit-result-kit
+startup-failure-result-kit
+startup-rollback-plan-kit
+reverse-order-retirement-kit
+retry-baseline-kit
+startup-observation-kit
+startup-journal-kit
+startup-failure-injection-fixture-kit
+browser-backend-startup-smoke-kit
 ```
 
-## Required state model
+## Required startup state
 
 ```txt
-RuntimeSession
-  sessionId
-  generation
-  state
+StartupTransaction
+  transactionId
+  phase
+  admittedConfig
+  catalogFingerprint
   backend
   worldMode
-  animationLoopLease
-  listenerLeases
-  timerLeases
-  worldOwner
-  scenarioOwner
-  renderResourceRegistry
-  postResourceRegistry
-  lastCommittedFrameId
-  lastLifecycleResult
-  retirementFingerprint
+  acquisitionLedger
+  callbackLeases
+  rollbackPlan
+  worldPrepareResult
+  firstFrameId
+  commitResult
+  failureResult
+  retryClass
 ```
 
-## Required stop transaction
+## Required start transaction
 
 ```txt
-StopCommand
-  -> admit current session/generation
-  -> move running/suspended -> stopping
-  -> revoke new work
-  -> stop animation loop
-  -> fence old callbacks
-  -> clear pointer/input state
-  -> cancel timers
-  -> remove listeners
-  -> publish StopResult
-  -> move -> stopped
-```
-
-## Required dispose transaction
-
-```txt
-DisposeCommand
-  -> stop first when necessary
-  -> inventory resources
-  -> retire post and volume resources
-  -> retire scene textures/materials/geometries exactly once
-  -> dispose renderer/backend
-  -> retire Core World/providers/materializer/scenario
-  -> revoke global readback
-  -> assert no active leases
-  -> publish DisposeResult
-  -> move -> disposed
-```
-
-## Required restart transaction
-
-```txt
-RestartCommand
-  -> verify prior generation terminal or validly suspended
-  -> create new sessionId/generation
-  -> run startup admission
-  -> install one listener/timer/loop set
-  -> prepare world/scenario baseline
+StartCommand
+  -> admit configuration and imports
+  -> enter STARTING
+  -> acquire renderer/backend
+  -> acquire and atomically prepare Core World
+  -> acquire scene and render capabilities
+  -> install callback/timer/loop leases
   -> render first frame
-  -> publish FirstRestartedFrameReceipt
-  -> expose clone-safe observation
-  -> move -> running
+  -> publish StartupCommitResult
+  -> hand session ownership to Runtime Session Lifecycle
+```
+
+## Required rollback transaction
+
+```txt
+startup failure
+  -> freeze acquisition
+  -> stop loop and callbacks when present
+  -> retire recorded capabilities in reverse dependency order
+  -> reset world/provider/materializer candidate state
+  -> remove partial public projection
+  -> verify baseline fingerprint
+  -> publish StartupFailureResult
+  -> allow Retry only when rollback is complete
 ```
 
 ## Minimum fixture matrix
 
 ```txt
-cold start ownership counts
-stop while running
-stop twice
-dispose while running
-dispose after stop
-dispose twice
-late frame/input/resize/timer callback
-persisted pagehide/pageshow
-non-persisted pagehide
-shared render resource exactly-once retirement
-post and volume resource retirement
-Core World/materializer retirement
-restart with new generation
-old generation cannot update new observation
-first restarted frame parity
-WebGPU and WebGL2 lifecycle parity
+catalog failure
+renderer constructor/init failure
+pinned import/capability failure
+provider registration failure
+initial focus/update failure
+materializer sync failure
+world/ocean/foam failure
+volume/cloud/fog/post failure
+callback/timer/loop failure
+first-frame failure
+rollback order and exact retirement counts
+duplicate Start and premature Retry rejection
+prepare failure followed by successful retry
+no global host before commit
+WebGPU/WebGL2 parity
+first-frame transaction parity
 ```
 
 ## Acceptance conditions
 
 ```txt
-one running session owns one animation-loop lease
-all browser callbacks are removable and generation-fenced
-final dispose leaves zero active listener/timer/loop leases
-all required world and render resources have retirement receipts
-duplicate lifecycle commands are idempotent
-bfcache behavior is explicit
-restart creates a new generation
-running is reported only after a first valid frame
-raw disposed authority is not exposed globally
+prepared=true always implies a valid committed world snapshot
+every acquired capability has identity and retirement behavior
+failed startup leaves zero mandatory callback/loop/resource leases
+rollback reports unresolved capabilities instead of hiding them
+retry begins from a verified baseline under a new transaction ID
+only one startup transaction can acquire at a time
+running is published only after first-frame acknowledgement
+Runtime Session Lifecycle consumes the committed startup result
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Runtime Session Lifecycle Authority
-+ Stop / Dispose / Pagehide / Pageshow / Restart / Resource-Retirement Fixture Gate
+MyCozyIsland Browser Startup Admission and Failure Rollback Authority
++ Phase Failure Injection / Reverse Retirement / Clean Retry / First-Frame Commit Fixture Gate
 ```
-
-Do not implement downstream world reset, focus, materialization, render-commit or adaptive-quality authority with separate session identities. They must consume this lifecycle boundary.

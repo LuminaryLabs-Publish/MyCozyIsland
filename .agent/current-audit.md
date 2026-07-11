@@ -1,6 +1,6 @@
-# Current Audit: MyCozyIsland Runtime Session and Resource Authority
+# Current Audit: MyCozyIsland Runtime and Adaptive Quality Authority
 
-Last updated: `2026-07-10T20-48-55-04-00`
+Last updated: `2026-07-10T22-29-21-04-00`
 
 ## Runtime identity
 
@@ -11,72 +11,98 @@ Last updated: `2026-07-10T20-48-55-04-00`
 ```txt
 load index.html and import Three/WebGPU
   -> validate exactly 50 DomainServiceKit descriptors
-  -> initialize WebGPURenderer and choose backend/quality
-  -> compose deterministic environment and render snapshot
-  -> construct sky, world, ocean, foam, volume textures, clouds, fog, and post pipeline
-  -> install wheel/pointer/keyboard/blur/resize listeners
+  -> initialize WebGPURenderer
+  -> choose backend and startup quality
+  -> compose deterministic environment/render snapshot
+  -> construct sky, world, ocean, foam, density textures, clouds, fog, and post pipeline
+  -> install wheel, pointer, keyboard, blur, and resize listeners
   -> start renderer.setAnimationLoop
   -> scenario.tick(dt)
-  -> camera rail or first-person descriptor
-  -> world and foam updates
-  -> performance-budget sample and quality adjustment
-  -> postPipeline.render()
-  -> periodic diagnostics
-  -> globalThis.CozyIsland latest-state readback
+  -> project camera state
+  -> update world and foam
+  -> sample frame interval
+  -> possibly degrade/recover adaptive quality
+  -> render post pipeline
+  -> draw periodic diagnostics
+  -> expose aggregate CozyIsland state
 ```
 
-Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement after rail completion, Shift speed modifier, and H diagnostics. Movement is constrained to the authored clearing and excludes the central campfire radius.
+Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement after rail completion, Shift speed modifier, H diagnostics, blur key clearing, and resize projection updates.
 
 ## Domain map
 
 ### Platform and renderer adapters
 
-- debug overlay host
+- WebGPU/WebGL2 renderer host
+- debug overlay
 - WebGL2 fallback policy
-- WebGPU atmosphere compute
-- WebGPU foam
-- WebGPU ocean
-- performance budget
-- post-processing
-- rolling volumetric fog
-- stylized world rendering
-- volumetric clouds
+- GPU/CPU atmosphere volume creation
+- world, ocean, foam, cloud, fog, and post render consumers
+- startup quality selection
+- adaptive performance budget
+- browser input and resize adaptation
+- global host diagnostics
 
-### Authored content
+### Authored content and scenario
 
 - camera rail sequence
 - cozy-island scenario
+- reveal-to-first-person transition
+- constrained clearing movement
+- campfire exclusion and camera projection
 
-### Large domains
-
-- terrain surface generation
-- vegetation placement
-
-### Atomic and shared domains
+### Environment and world domains
 
 - deterministic seed and environment clock
 - wind, weather, illumination, and aerial perspective
-- terrain biome, shoreline, LOD, and ground contact
+- terrain surface, biome field, shoreline, LOD, and ground contact
 - ocean floor, waves, optics, underwater atmosphere, caustics, glitter, and foam
-- vegetation archetypes, wind, LOD, rocks, props, and campfire atmosphere
-- cloud weather, density, lighting, LOD, shadow, and horizon band
-- fog density, advection, and volume placement
-- render quality, materials, archetypes, and immutable render snapshot
+- vegetation archetypes, placement, wind, LOD, rocks, props, campfire, and layered grass
+- cloud weather, density, lighting, LOD, shadow, and horizon
+- fog density, advection, and placement
+- render materials, archetypes, quality, fallback, and immutable snapshot
 
-## Services offered by the kits
+### Missing authority domains
+
+- route runtime-session lifecycle and resource ownership
+- adaptive-quality target state
+- adaptive-quality transition transaction
+- per-control application results and rollback
+- quality override admission semantics
+- applied-quality observation and transition journal
+
+## Services offered by current kits
 
 ```txt
-seed: world seed, scoped RNG, stable identity, deterministic hashes
-time: deterministic tick, state snapshot, reset
-weather: weather state, wind field, illumination, aerial perspective
-terrain: height/field sampling, biome weights, shoreline distance, ground contact, terrain LOD
-water: floor profile, wave spectrum, optical descriptor, underwater descriptor, caustics, glitter, foam contours
-vegetation: archetype catalog, placement graph, wind descriptor, LOD policy, rock graph, prop graph
-atmosphere: cloud/fog recipes, lighting, LOD, shadow, horizon, advection, placement
-render descriptors: quality selection, material catalog, archetype catalog, immutable render snapshot, fallback policy
-render adapters: world/ocean/foam/cloud/fog/post construction and frame submission
-sequence/gameplay: rail input, camera descriptor, constrained movement, scenario tick/reset, render snapshot
-host diagnostics: performance sampling, adaptive degradation/recovery, debug overlay, latest aggregate state
+determinism:
+  stable seed, scoped RNG, hashes, value noise, FBM
+
+time/environment:
+  clock tick/state/reset, wind, weather, illumination, aerial perspective
+
+terrain:
+  height and field sampling, biome weights, shoreline distance, ground contact, LOD
+
+ocean:
+  floor profile, wave state, optical and underwater descriptors, caustics, glitter, foam contours
+
+vegetation/world:
+  archetype catalog, placement graph, wind and LOD descriptors, rocks, props, campfire, layered world rendering
+
+atmosphere:
+  cloud/fog recipes, lighting, LOD, shadow, horizon, advection, placement, volume texture creation
+
+render description:
+  startup quality selection, material and archetype catalogs, immutable render snapshot, fallback policy
+
+render consumption:
+  world/ocean/foam/cloud/fog/post construction, frame update, render submission
+
+scenario/input:
+  wheel/drag/key input, rail camera, first-person movement, scenario tick/reset/snapshot
+
+performance/debug:
+  moving-average frame sampling, hysteresis, degrade/recover callbacks, overlay projection, aggregate state
 ```
 
 ## Implemented kit inventory
@@ -134,22 +160,38 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Main finding
+## Verified adaptive-quality behavior
 
-Construction is centralized in `main()`, but lifecycle authority is absent.
+`createPerformanceBudget()` owns a three-level state machine: level 0, 1, and 2. It degrades after 90 over-budget samples and recovers after 360 under-budget samples. It exposes only `{ level, movingAverage, fps, target }`.
 
-- `renderer.setAnimationLoop()` is started without a public stop/restart contract.
-- wheel, pointer, keyboard, blur, and resize listeners are installed through anonymous closures and cannot be removed as a coordinated set.
-- `fail()` reports startup errors but does not roll back resources already created.
-- the sky texture/material/geometry, atmosphere textures/compute nodes, world, cloud, fog, ocean, foam, post, and renderer resources have no route-owned disposal ledger.
-- renderer factories generally return live objects and update controls, not `dispose()` or JSON-safe ownership snapshots.
-- `globalThis.CozyIsland` exposes mutable live handles and latest aggregate state, but no lifecycle state, session ID, resource counts, disposal result, or bounded journal.
-- repeated mount, hot reload, future route transition, or restart can create duplicate loops/listeners and orphan GPU resources.
-
-## Safe implementation boundary
+`applyPerformanceLevel()` applies a transition sequentially:
 
 ```txt
-MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate
+activeScale
+  -> cloudRenderer.setStepScale()
+  -> fogRenderer.setStepScale()
+  -> postPipeline.setFogResolutionScale()
+  -> renderer.setPixelRatio() only when level > 0
 ```
 
-The earlier layered-grass consumer/resource owner work remains the first child-resource proof under this boundary.
+Consequences:
+
+- recovery to level 0 restores cloud steps, fog steps, and fog resolution
+- recovery to level 0 does not restore the startup pixel ratio
+- the budget can report level 0 while the renderer remains degraded
+- transition application has no typed result or rollback if one mutation fails
+- static `quality.tier` and `quality.source` do not describe the applied dynamic controls
+- `?quality=` has no documented runtime-adaptation admission policy
+- debug and host state omit the applied pixel ratio, fog-resolution scale, target control row, and transition history
+
+## Safe implementation boundaries
+
+```txt
+1. MyCozyIsland Runtime Session Lifecycle Authority
+   + WebGPU Resource Disposal Fixture Gate
+
+2. MyCozyIsland Adaptive Quality Transaction Authority
+   + Full-Recovery Fixture Gate
+```
+
+The first gate owns construction, stop, disposal, and restart. The second gate makes each dynamic quality transition atomic, reversible, and observable under that host.

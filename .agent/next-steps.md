@@ -1,67 +1,74 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T08-58-02-04-00`
+Last updated: `2026-07-11T09-08-59-04-00`
 
 ## Summary
 
-Keep runtime lifecycle and focus transaction authority first. Then wire the existing lazy materializer into the live host through a session- and world-revision-fenced frame command, with typed provider-stage results and a readiness revision before any provider cell becomes visible.
+The live route now advances lazy cell materialization. The next step is to stop treating aggregate scheduler counters as authority and introduce revisioned provider readiness plus an atomic renderer-cell commit.
 
 ## Plan ledger
 
-**Goal:** make the implemented scheduler run safely after the first committed compatibility frame and produce trustworthy cell readiness for a later render transaction.
+**Goal:** preserve the working compatibility render while making every materialization step attributable, bounded, failure-safe, stale-resistant, and eligible for visible consumption only after a complete provider-version commit.
 
-- [ ] Complete Runtime Session Lifecycle Authority and expose `sessionId` plus `sessionEpoch`.
-- [ ] Complete Pinned Core World Focus Transaction Authority and expose accepted `worldRevision`.
-- [ ] Add one explicit first-frame materialization-start acknowledgement.
-- [ ] Call materialization through a typed host command, not an unowned helper call.
-- [ ] Fence every work step to session, world revision, cell identity, cell generation, and provider descriptor version.
-- [ ] Reject work for released, replaced, reset, or stale cells.
-- [ ] Add both row-count and elapsed-time budgets.
-- [ ] Return typed results for terrain, biome, shoreline, and presentation stages.
-- [ ] Add failure classification, retry limits, backoff, and terminal blocked state.
-- [ ] Assign monotonic `cellReadinessRevision` only after all required provider stages are ready.
-- [ ] Publish a `providerReadinessSet` and clone-safe progress observation.
-- [ ] Correlate presentation refresh with the readiness revision it consumes.
-- [ ] Keep compatibility rendering active until an explicit cell-render commit succeeds.
-- [ ] Add host, focus-change, release, reset, failure, and browser fixtures.
+- [ ] Complete Runtime Session Lifecycle Authority and expose `sessionId` and `sessionEpoch`.
+- [ ] Complete Pinned Core World Focus Transaction Authority and expose accepted `worldRevision` and `focusRevision`.
+- [ ] Replace the raw helper call with `MaterializationFrameCommand` and `MaterializationFrameResult`.
+- [ ] Attach `cellGeneration` and provider descriptor versions to every staged job.
+- [ ] Reject work from released, reset, replaced, or stale cells.
+- [ ] Add elapsed-time budgeting in addition to row and candidate limits.
+- [ ] Catch provider exceptions and return typed retriable or terminal failures.
+- [ ] Add bounded retry, backoff, and quarantine policy.
+- [ ] Define the canonical required provider set for a render cell.
+- [ ] Commit a monotonic `cellReadinessRevision` only after source-version parity passes.
+- [ ] Include source versions and fingerprint in the presentation descriptor.
+- [ ] Connect ready descriptors to the existing renderer cell cache.
+- [ ] Add atomic prepare, update, release, rollback, and disposal results.
+- [ ] Correlate a committed renderer-cell revision with its first visible frame.
+- [ ] Keep the startup compatibility island until the cell-aware commit is acknowledged.
+- [ ] Add DOM-free and browser fixtures for progress, failure, release, reset, and render consumption.
 
 ## Ordered implementation queue
 
 ```txt
 1. Runtime Session Lifecycle Authority
 2. Pinned Core World Focus Transaction Authority
-3. Lazy Cell Materialization Authority
+3. Live Materialization Readiness Commit Authority
 4. Core World Render Commit Authority
 5. Camera Rail Baseline Authority
 6. Dynamic Environment Frame Authority
 7. Adaptive Quality Transaction Authority
 ```
 
-## Candidate materialization kits
+## Candidate kits
 
 ```txt
 materialization-frame-command-kit
 materialization-admission-kit
+materialization-epoch-kit
+cell-generation-kit
 materialization-priority-kit
 provider-stage-plan-kit
 row-work-budget-kit
 frame-time-budget-kit
-materialization-epoch-kit
-stale-cell-work-rejection-kit
 provider-stage-result-kit
-materialization-failure-kit
+provider-failure-classification-kit
 materialization-retry-kit
-cell-readiness-revision-kit
+stale-cell-work-rejection-kit
+provider-readiness-policy-kit
 provider-readiness-set-kit
+cell-readiness-revision-kit
 presentation-readiness-commit-kit
-compatibility-render-handoff-kit
+renderer-cell-plan-kit
+renderer-cell-commit-result-kit
+renderer-cell-rollback-kit
+visible-frame-acknowledgement-kit
 materialization-observation-kit
 materialization-journal-kit
-lazy-materialization-fixture-kit
-browser-first-frame-materialization-smoke-kit
+live-materialization-fixture-kit
+browser-ready-cell-render-smoke-kit
 ```
 
-## Command contract
+## Materialization command
 
 ```txt
 MaterializationFrameCommand {
@@ -69,6 +76,7 @@ MaterializationFrameCommand {
   sessionId
   sessionEpoch
   expectedWorldRevision
+  expectedFocusRevision
   frameSequence
   cameraMode
   focus
@@ -81,16 +89,15 @@ MaterializationFrameCommand {
 Reject when:
 
 ```txt
-runtime not running
-first compatibility frame not committed
-wrong session or stale epoch
-unexpected world revision
-non-finite focus or budget
-materializer already executing
-reset/dispose in progress
+runtime is not running
+session or epoch is stale
+world or focus revision differs
+focus/budget values are non-finite
+materializer is already executing
+reset or dispose is in progress
 ```
 
-## Result contract
+## Materialization result
 
 ```txt
 MaterializationFrameResult {
@@ -98,6 +105,7 @@ MaterializationFrameResult {
   sessionId
   sessionEpoch
   worldRevision
+  focusRevision
   frameSequence
   status
   elapsedMilliseconds
@@ -125,48 +133,61 @@ failed-retriable
 failed-terminal
 ```
 
-## Per-cell authority flow
+## Readiness commit
 
 ```txt
-active descriptor admitted
-  -> assign materialization epoch
-  -> terrain row steps
-  -> terrain-ready result
-  -> biome row steps from accepted terrain arrays
-  -> shoreline row steps from accepted terrain arrays
-  -> provider readiness parity check
-  -> presentation refresh
-  -> cell readiness revision commit
-  -> eligible for detached render plan
+required provider rows accepted
+  -> verify worldRevision and cellGeneration
+  -> verify provider descriptor versions
+  -> verify terrain/biome/shoreline/population availability
+  -> compute providerReadinessSet fingerprint
+  -> refresh presentation descriptor
+  -> assign cellReadinessRevision
+  -> publish clone-safe result
+```
+
+## Renderer transaction
+
+```txt
+CellReadinessRevision
+  -> build detached RendererCellPlan
+  -> prepare or update Three/WebGPU resources
+  -> validate resource counts and bounds
+  -> commit scene membership atomically
+  -> release replaced resources
+  -> acknowledge first visible frame
+  -> retain rollback record until acknowledgement
 ```
 
 ## Required fixtures
 
 ```txt
-live host starts work only after first committed frame
-registration alone samples zero terrain rows
-configured cell and row budgets are respected
+production host advances materialization after compatibility frames
+configured candidate and row budgets hold
 elapsed-time budget stops additional work
-nearest lowest-LOD priority is deterministic
-focus change reprioritizes without duplicating jobs
-released cell cannot publish late readiness
-reset/dispose rejects old work
-provider throw is classified and bounded
-retry resumes or restarts by declared policy
-presentation readiness cites provider versions
-compatibility renderer remains stable during partial work
-browser debug state shows progress greater than zero
+priority is deterministic for identical inputs
+focus movement reprioritizes current cells
+released cell cannot publish a late readiness revision
+reset/dispose rejects old commands
+provider exception becomes typed failure
+retry count and backoff are bounded
+presentation readiness cites all required source versions
+same source versions produce same readiness fingerprint
+renderer prepares each accepted revision once
+renderer rollback leaves compatibility world intact
+released cells dispose resources once
+visible frame cites committed renderer-cell revision
+WebGPU and WebGL2 admission results agree
 ```
 
 ## Acceptance conditions
 
 ```txt
-production route advances materialization frames
-no work runs before first-frame acknowledgement
-all work carries current session and world revision
-released or stale jobs cannot commit
-provider failures cannot poison the animation loop
-ready cells have complete provider readiness sets
-render consumes only explicit readiness revisions
-isolated and live-host fixtures agree
+no untyped provider exception can terminate the animation loop
+all work is fenced to current session/world/focus/cell identity
+ready means a complete provider version set, not a Boolean marker
+renderer consumes only accepted readiness revisions
+compatibility rendering remains stable during partial or failed work
+resource preparation, commit, rollback, and disposal are observable
+browser proof shows a ready cell becoming visibly committed
 ```

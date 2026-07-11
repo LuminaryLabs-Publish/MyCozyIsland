@@ -1,43 +1,21 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-10T19-11-19-04-00`
+Last updated: `2026-07-10T20-48-55-04-00`
 
-## This pass
+## Documentation pass result
 
 ```txt
-runtime source changed by this pass: no
+runtime source changed: no
 package scripts changed: no
 dependencies changed: no
-route token changed: no
-deploy configuration changed: no
+route behavior changed: no
+rendering output changed: no
+deployment configuration changed: no
 branch created: no
 pull request created: no
-npm test: not run
-browser smoke: not run
-WebGPU/GPU validation: not run
-layered-grass consumer fixture: not run because it does not exist yet
-layered-grass lifecycle smoke: not run because it does not exist yet
-repo-local documentation pushed to main: yes
-central ledger update required: yes
 ```
 
-## Source inspection performed
-
-```txt
-src/main-cloudform.js
-src/kits/renderers.js
-src/kits/renderer-world-layered-grass.js
-src/kits/renderer-world.js
-package.json
-.agent/START_HERE.md
-.agent/current-audit.md
-.agent/next-steps.md
-.agent/known-gaps.md
-.agent/validation.md
-.agent/kit-registry.json
-```
-
-## Current available gate
+## Existing declared gate
 
 ```txt
 npm test
@@ -45,70 +23,56 @@ npm test
   -> node tests/domain-smoke.mjs
 ```
 
-## Current tests prove
-
-- the route references Three/WebGPU `0.185.0` and `src/main-cloudform.js`
-- exactly 50 valid DomainServiceKit manifests exist
-- kit IDs, capability graph, and dependency closure satisfy the static contract
-- source modules avoid unseeded `Math.random()` and wall-clock `Date.now()` outside the host boundary
-- deterministic terrain, shoreline, vegetation, rock, foam, cloud, fog, camera, and scenario composition
-- repeated domain composition produces stable selected descriptor rows
-
-## Current tests do not prove
-
-- that the public renderer facade resolves to `renderer-world-layered-grass.js`
-- that the original source snapshot is unchanged
-- that the base renderer receives zero accepted grass rows
-- that each accepted source row has exactly one renderer owner
-- source validation and typed rejection behavior
-- source fingerprint determinism
-- deterministic atlas and geometry descriptors independent of DOM and Three.js
-- exact resource creation counts
-- stable empty-source behavior
-- direct ownership of texture, geometry, material, mesh, and group
-- complete and idempotent disposal
-- JSON-safe grass policy, source ledger, and resource readback
-- explicit static update/wind/LOD/quality policy
-- browser WebGPU and fallback behavior for alpha-to-coverage
-
-## Next required gates
+Observed static assertions include:
 
 ```txt
-node tests/layered-grass-consumer-smoke.mjs
-browser integration: tests/layered-grass-browser-lifecycle-smoke.mjs
+exactly 50 valid DomainServiceKit descriptors
+unique kit IDs and required kit suffix
+broad capability graph
+no Math.random or Date.now in domain modules
+required WebGPU/TSL renderer feature tokens
+Three/WebGPU 0.185.0 import map
+active main-cloudform route
+error alert markup
+```
+
+## Validation not executed in this pass
+
+```txt
+npm install
 npm test
+browser smoke
+WebGPU initialization
+WebGL2 fallback
+GPU compute dispatch
+camera rail interaction
+first-person movement
+adaptive performance degradation/recovery
+resource disposal
+stop/restart
+hot reload
+partial-start rollback
 ```
 
-The DOM-free consumer fixture should assert:
+## Required lifecycle fixture
+
+A future fixture must prove:
 
 ```txt
-stable policy ID and source fingerprint
-three deterministic layer descriptors
-stable atlas-panel and blade descriptors
-sourceCount = acceptedCount + rejectedCount
-suppressedLegacyCount = acceptedCount
-renderedInstanceCount = acceptedCount
-zero-row input returns a valid empty ledger
-invalid rows return typed rejections
-original snapshot remains unchanged
-policy, ledger, and readback serialize to JSON
-same input produces byte-stable descriptor output
+one session creates one animation loop
+one session registers the expected listener set
+stop halts frame commits
+stop removes no resources unless policy says so
+dispose removes listeners and stops the loop
+dispose releases every owned child resource
+second dispose returns a typed no-op
+partial startup failure rolls back earlier allocations
+restart creates a new session ID
+restart does not duplicate loops or listeners
+live resource counts return to baseline after disposal
+host readback is JSON-safe and bounded
 ```
 
-The browser lifecycle smoke should assert:
+## Readiness statement
 
-```txt
-one grass group
-zero or one instanced mesh according to accepted source count
-three geometry layers when mesh exists
-one atlas texture when mesh exists
-exact rendered instance count
-expected unlit alpha/depth/fog/shadow/tone-mapping policy
-base renderer receives no accepted grass rows
-resource snapshot reports created and live state
-dispose releases texture, geometry, material, mesh, and group ownership
-second dispose returns dispose-noop
-outer world renderer composes grass disposal
-```
-
-A screenshot is not required for the first gate. The first objective is source and lifecycle proof while preserving the current output.
+This pass proves documentation alignment only. Runtime lifecycle correctness and resource-release completeness remain unproven until the new fixtures exist and run successfully.

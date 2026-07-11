@@ -1,95 +1,85 @@
-# Current Audit: MyCozyIsland Grass Consumer and Resource Ownership
+# Current Audit: MyCozyIsland Runtime Session and Resource Authority
 
-Last updated: `2026-07-10T19-11-19-04-00`
+Last updated: `2026-07-10T20-48-55-04-00`
 
-## Current runtime identity
+## Runtime identity
 
 `MyCozyIsland` is a static WebGPU-first scenic exploration route driven by `index.html` and `src/main-cloudform.js?v=webgpu-volumetric-2` with Three/WebGPU `0.185.0`.
-
-The route validates exactly 50 declared DomainServiceKit manifests, creates deterministic terrain/ocean/vegetation/atmosphere descriptors, constructs browser render consumers, runs a camera-rail-to-first-person scenario, applies a frame-interval quality policy, and exposes aggregate live state through `globalThis.CozyIsland`.
-
-The active world-render facade now points to `renderer-world-layered-grass.js`. That wrapper suppresses legacy grass in the base renderer and injects a three-layer unlit alpha-cutout instanced grass renderer.
 
 ## Interaction loop
 
 ```txt
-route shell and import map
-  -> validate the 50-kit catalog
-  -> initialize WebGPURenderer and startup quality
-  -> compose deterministic source snapshot
-  -> create camera rail and scenario
-  -> createStylizedWorldRenderer(snapshot)
-     -> shallow-copy snapshot with grass-patch rows emptied
-     -> create base world renderer from the filtered snapshot
-     -> read original grass-patch rows
-     -> create procedural CanvasTexture atlas
-     -> create three crossed quad layers in one BufferGeometry
-     -> create one unlit alpha-tested material
-     -> project source rows into one InstancedMesh
-     -> attach grass group to base world group
-     -> discard grass renderer handles outside the wrapper
-  -> create ocean, foam, volume texture, cloud, fog, and post consumers
-  -> consume wheel, pointer, keyboard, blur, debug-toggle, and resize input
+load index.html and import Three/WebGPU
+  -> validate exactly 50 DomainServiceKit descriptors
+  -> initialize WebGPURenderer and choose backend/quality
+  -> compose deterministic environment and render snapshot
+  -> construct sky, world, ocean, foam, volume textures, clouds, fog, and post pipeline
+  -> install wheel/pointer/keyboard/blur/resize listeners
+  -> start renderer.setAnimationLoop
   -> scenario.tick(dt)
-  -> project camera state
-  -> update base world and foam
-  -> execute no-op grass update
-  -> sample frame interval
-  -> submit post pipeline
-  -> expose aggregate host state
+  -> camera rail or first-person descriptor
+  -> world and foam updates
+  -> performance-budget sample and quality adjustment
+  -> postPipeline.render()
+  -> periodic diagnostics
+  -> globalThis.CozyIsland latest-state readback
 ```
 
-## Domains in use
+Player interaction is scroll-to-descend, pointer-drag look/orbit, WASD movement after rail completion, Shift speed modifier, and H diagnostics. Movement is constrained to the authored clearing and excludes the central campfire radius.
 
-```txt
-route shell, loader, error, hint, debug, import-map, and route-token domains
-DomainServiceKit manifest, capability, dependency, and exact-count validation
-seed identity, scoped random, stable hash, noise, FBM, and environment clock
-wind field, weather state, illumination, and aerial perspective
-terrain surface, terrain fields, biome weighting, shoreline, terrain LOD, ground contact, and paths
-ocean floor, waves, optics, foam, underwater atmosphere, caustics, and sun glitter
-vegetation archetypes, deterministic placement, per-type grouping, wind descriptors, and vegetation LOD
-rock placement, prop placement, campfire atmosphere, and ground contact
-grass-patch source production and source grouping
-legacy stylized world rendering
-layered grass facade substitution and legacy source suppression
-procedural grass atlas generation
-three-layer grass geometry generation
-unlit alpha-cutout material policy
-grass instance transform and tint projection
-cloud weather, density, lighting, LOD, shadow, and horizon
-fog density, advection, and bounded volume placement
-material descriptors, render archetypes, render quality, fallback, and immutable render snapshot
-camera rail, first-person clearing movement, and scenario state
-WebGPU host, scene, sky, lighting, and renderer composition
-ocean, foam, atmosphere volume, cloud, fog, and post consumers
-performance sampling, degrade/recover callbacks, and quality mutation
-browser input, resize, animation-loop, and debug-overlay domains
-legacy aggregate diagnostics
-Node static checks and deterministic domain smoke validation
-planned grass source ledger, resource owner, disposal, readback, and fixture domains
-```
+## Domain map
+
+### Platform and renderer adapters
+
+- debug overlay host
+- WebGL2 fallback policy
+- WebGPU atmosphere compute
+- WebGPU foam
+- WebGPU ocean
+- performance budget
+- post-processing
+- rolling volumetric fog
+- stylized world rendering
+- volumetric clouds
+
+### Authored content
+
+- camera rail sequence
+- cozy-island scenario
+
+### Large domains
+
+- terrain surface generation
+- vegetation placement
+
+### Atomic and shared domains
+
+- deterministic seed and environment clock
+- wind, weather, illumination, and aerial perspective
+- terrain biome, shoreline, LOD, and ground contact
+- ocean floor, waves, optics, underwater atmosphere, caustics, glitter, and foam
+- vegetation archetypes, wind, LOD, rocks, props, and campfire atmosphere
+- cloud weather, density, lighting, LOD, shadow, and horizon band
+- fog density, advection, and volume placement
+- render quality, materials, archetypes, and immutable render snapshot
 
 ## Services offered by the kits
 
-- **Catalog:** kit identity, owned domain, capability provision, dependency closure, metadata, and exact-count validation.
-- **Determinism:** stable seed derivation, scoped random streams, hashes, value noise, and FBM.
-- **Environment:** environment clock, wind field, weather, illumination, aerial perspective, and vegetation-wind descriptors.
-- **Terrain:** height/surface sampling, biome weights, shoreline fields, LOD, ground contact, and path descriptors.
-- **Ocean:** floor profile, wave state, optics, foam contours, underwater state, caustics, and sun glitter.
-- **Vegetation:** archetype catalog, placement graph, source grouping, transforms, phase/tint rows, LOD, rocks, props, and campfire descriptors.
-- **Atmosphere:** cloud/fog recipes, lighting, shadows, horizon bands, advection, bounded placement, and volume textures.
-- **Render description:** material catalog, render archetypes, startup quality, fallback policy, and immutable render snapshot.
-- **Scenario:** camera input, rail reveal, first-person movement, scenario tick/reset, and render snapshots.
-- **Base world rendering:** terrain, seabed, paths, vegetation, rocks, props, campfire, grouping, and time updates.
-- **Layered grass rendering:** source suppression, atlas drawing, three crossed planes, alpha-test material, instance matrices/colors, and group composition.
-- **Other rendering:** ocean, foam, volumetric cloud, rolling fog, post-processing, WebGL2 fallback, and debug overlay.
-- **Performance:** smoothed frame interval, hysteresis, degrade/recover callbacks, and aggregate budget state.
-- **Validation:** route/catalog/source assertions and deterministic domain composition checks.
+```txt
+seed: world seed, scoped RNG, stable identity, deterministic hashes
+time: deterministic tick, state snapshot, reset
+weather: weather state, wind field, illumination, aerial perspective
+terrain: height/field sampling, biome weights, shoreline distance, ground contact, terrain LOD
+water: floor profile, wave spectrum, optical descriptor, underwater descriptor, caustics, glitter, foam contours
+vegetation: archetype catalog, placement graph, wind descriptor, LOD policy, rock graph, prop graph
+atmosphere: cloud/fog recipes, lighting, LOD, shadow, horizon, advection, placement
+render descriptors: quality selection, material catalog, archetype catalog, immutable render snapshot, fallback policy
+render adapters: world/ocean/foam/cloud/fog/post construction and frame submission
+sequence/gameplay: rail input, camera descriptor, constrained movement, scenario tick/reset, render snapshot
+host diagnostics: performance sampling, adaptive degradation/recovery, debug overlay, latest aggregate state
+```
 
-## Declared source kits
-
-The authoritative declared catalog contains these 50 kits:
+## Implemented kit inventory
 
 ```txt
 debug-overlay-host-kit
@@ -144,84 +134,22 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Runtime-implied kits
-
-```txt
-webgpu-static-shell-kit
-webgpu-importmap-kit
-webgpu-route-token-kit
-webgpu-render-host-kit
-webgpu-quality-selection-kit
-webgpu-scene-composition-kit
-sky-gradient-kit
-lighting-composition-kit
-world-render-consumer-kit
-layered-alpha-grass-render-consumer-kit
-grass-alpha-atlas-generator-kit
-grass-render-substitution-adapter-kit
-ocean-render-consumer-kit
-foam-render-consumer-kit
-atmosphere-texture-compute-kit
-volumetric-cloud-consumer-kit
-rolling-fog-consumer-kit
-post-pipeline-consumer-kit
-performance-budget-consumer-kit
-input-consumer-kit
-resize-consumer-kit
-animation-loop-kit
-legacy-CozyIsland-diagnostics-kit
-node-static-check-kit
-node-domain-smoke-kit
-```
-
-## Source-backed grass ownership finding
-
-The export chain is:
-
-```txt
-src/kits/index.js
-  -> src/kits/renderers.js
-  -> renderer-world-layered-grass.js
-  -> renderer-world.js
-```
-
-Verified behavior:
-
-- `renderers.js` aliases the wrapper as the public `createStylizedWorldRenderer()` implementation.
-- `createSnapshotWithoutLegacyGrass()` creates a shallow filtered snapshot and sets only `vegetation.byType["grass-patch"]` to an empty array.
-- The base renderer therefore receives zero grass rows while the wrapper reads the original rows.
-- `createGrassAlphaAtlas()` creates a DOM canvas and returns a `THREE.CanvasTexture`.
-- `createUnlitGrassMaterial()` calls `createGrassAlphaAtlas()` inline, so no dedicated resource owner retains the texture handle.
-- `createLayeredGrassGeometry()` allocates one `BufferGeometry` containing three quad layers.
-- `createLayeredGrassRenderer()` allocates one `InstancedMesh` when source rows exist; its zero-row path returns only a group and no-op update.
-- The inner grass renderer can return `mesh`, but the outer world renderer returns only `group` and `update()`.
-- Neither layer exposes `getState()`, source reconciliation, resource counts, ownership identity, or `dispose()`.
-- The base world renderer also returns only `group` and `update()`.
-- Grass `update()` is a no-op. Placement phase influences startup height only.
-- `globalThis.CozyIsland.getState()` does not expose grass policy, source count, rendered count, resource state, or disposal state.
-
-## Missing next kits
-
-```txt
-layered-grass-render-policy-kit
-layered-grass-source-validator-kit
-layered-grass-source-consumption-ledger-kit
-layered-grass-atlas-descriptor-kit
-layered-grass-geometry-descriptor-kit
-layered-grass-resource-owner-kit
-layered-grass-disposal-result-kit
-layered-grass-readback-kit
-layered-grass-catalog-contract-kit
-node-layered-grass-consumer-fixture-kit
-browser-layered-grass-lifecycle-smoke-kit
-```
-
 ## Main finding
 
-The visual renderer is active, but the source and GPU-resource lifecycle remain implicit. The next safe change is not more grass fidelity. It is to establish a single authoritative grass consumer, retain every owned resource handle, expose immutable JSON-safe state, and prove complete idempotent disposal while preserving the current rendering output.
+Construction is centralized in `main()`, but lifecycle authority is absent.
 
-## Next safe ledge
+- `renderer.setAnimationLoop()` is started without a public stop/restart contract.
+- wheel, pointer, keyboard, blur, and resize listeners are installed through anonymous closures and cannot be removed as a coordinated set.
+- `fail()` reports startup errors but does not roll back resources already created.
+- the sky texture/material/geometry, atmosphere textures/compute nodes, world, cloud, fog, ocean, foam, post, and renderer resources have no route-owned disposal ledger.
+- renderer factories generally return live objects and update controls, not `dispose()` or JSON-safe ownership snapshots.
+- `globalThis.CozyIsland` exposes mutable live handles and latest aggregate state, but no lifecycle state, session ID, resource counts, disposal result, or bounded journal.
+- repeated mount, hot reload, future route transition, or restart can create duplicate loops/listeners and orphan GPU resources.
+
+## Safe implementation boundary
 
 ```txt
-MyCozyIsland Layered Grass Consumer Ledger + Resource Ownership Fixture Gate
+MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate
 ```
+
+The earlier layered-grass consumer/resource owner work remains the first child-resource proof under this boundary.

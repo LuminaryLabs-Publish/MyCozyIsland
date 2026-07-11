@@ -1,105 +1,50 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-10T19-11-19-04-00`
+Last updated: `2026-07-10T20-48-55-04-00`
+
+## Goal
+
+Create one route-owned runtime-session boundary that can start, stop, dispose, and restart the current WebGPU scene without changing its visual output.
+
+## Checklist
+
+- [ ] Introduce a session ID and explicit states: `created`, `starting`, `running`, `stopping`, `disposed`, `failed`.
+- [ ] Return a host controller from route construction instead of discarding lifecycle authority inside `main()`.
+- [ ] Retain the animation-loop callback and stop it with `renderer.setAnimationLoop(null)`.
+- [ ] Register every canvas/window listener through one listener ledger.
+- [ ] Remove all listeners during stop/dispose and make repeated removal a typed no-op.
+- [ ] Add startup rollback for partial failures after renderer initialization.
+- [ ] Add child resource owners for sky, world/grass, volume textures, clouds, fog, ocean, foam, post, and renderer.
+- [ ] Require every renderer factory to expose `dispose()` and a JSON-safe ownership snapshot.
+- [ ] Dispose shared resources exactly once and document shared geometry/material ownership.
+- [ ] Publish lifecycle state, session ID, resource counts, and bounded result rows through `CozyIslandHost` or an additive `CozyIsland.lifecycle` surface.
+- [ ] Preserve the existing route token, 50-kit catalog, camera behavior, visuals, and WebGL2 fallback.
+- [ ] Add DOM-free lifecycle policy tests.
+- [ ] Add browser start-stop-dispose-restart smoke coverage.
+- [ ] Assert no duplicate listener, animation loop, or live resource counts after restart.
+- [ ] Keep the layered-grass consumer/resource ledger as the first child-resource fixture.
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Layered Grass Consumer Ledger + Resource Ownership Fixture Gate
+MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate
 ```
 
-## Goal
-
-Make the active layered grass path a single authoritative, deterministic, inspectable, and disposable render consumer without changing its current three-layer unlit alpha-cutout appearance.
-
-## Plan ledger
-
-- [ ] Decide whether layered grass is a dedicated declared DomainServiceKit or an explicit capability of `webgpu-stylized-material-renderer-kit`.
-- [ ] Name the active capability, such as `render:layered-alpha-grass`, and identify its provider in the catalog or a validated internal adapter map.
-- [ ] Extract an immutable JSON-safe grass render policy.
-- [ ] Extract deterministic atlas and geometry descriptors that require no DOM, Three.js, browser, or GPU.
-- [ ] Add a source validator for `position`, `rotation`, `scale`, `phase`, and optional `tint`.
-- [ ] Add a source-consumption ledger with source, accepted, rejected, suppressed-legacy, and rendered counts.
-- [ ] Prove one-and-only-one ownership of every accepted `grass-patch` row.
-- [ ] Retain direct handles for atlas texture, geometry, material, mesh, and group.
-- [ ] Define a resource owner that reports created, live, disposed, and dispose-noop states.
-- [ ] Add idempotent `dispose()` to the grass renderer.
-- [ ] Compose grass disposal into the outer world renderer lifecycle.
-- [ ] Define whether the base world renderer also receives a general disposal traversal or keeps a narrower explicit owner list.
-- [ ] Add immutable `getState()` readback for policy identity, source reconciliation, resource counts, and disposed state.
-- [ ] Expose only JSON-safe grass readback through an additive `globalThis.CozyIsland` host surface.
-- [ ] Replace the ambiguous no-op update with an explicit update policy such as `static-startup-only`.
-- [ ] State whether vegetation wind, vegetation LOD, adaptive quality, shadows, and tone mapping are unsupported, delegated, or startup-only.
-- [ ] Preserve the filtered snapshot behavior without mutating the original snapshot.
-- [ ] Add a DOM-free source/descriptor fixture.
-- [ ] Add a browser lifecycle smoke for exact resource creation and complete disposal.
-- [ ] Extend static checks to prove the facade selects the layered adapter and that the adapter exposes lifecycle/readback methods.
-- [ ] Add stable fixtures to `npm test` only after they are deterministic.
-
-## Candidate files
+## Order after this ledge
 
 ```txt
-src/grass/layered-grass-render-policy.js
-src/grass/layered-grass-source-validator.js
-src/grass/layered-grass-consumption-ledger.js
-src/grass/layered-grass-atlas-descriptor.js
-src/grass/layered-grass-geometry-descriptor.js
-src/grass/layered-grass-resource-owner.js
-src/grass/layered-grass-readback.js
-src/kits/renderer-world-layered-grass.js
-src/kits/renderer-world.js
-src/kits/renderers.js
-src/kits/catalog.js
-src/main-cloudform.js
-tests/layered-grass-consumer-smoke.mjs
-tests/layered-grass-browser-lifecycle-smoke.mjs
-package.json
+1. route session lifecycle and rollback
+2. child resource ownership, beginning with layered grass
+3. source-consumer and render attribution journals
+4. deterministic input/frame correlation
+5. visual or content expansion
 ```
 
-## Required invariants
+## Do not combine with
 
-```txt
-one authoritative consumer owns accepted grass-patch rows
-sourceCount = acceptedCount + rejectedCount
-suppressedLegacyCount = acceptedCount
-renderedInstanceCount = acceptedCount
-zero source rows produce zero mesh resources and a valid empty ledger
-source snapshot remains unchanged
-policy and descriptors are immutable and JSON-safe
-same source snapshot produces the same descriptors and source fingerprint
-DOM and Three.js APIs remain outside pure descriptor modules
-current visual policy remains three unlit alpha-cutout layers
-atlas texture, geometry, material, mesh, and group have named ownership
-all owned resources are released exactly once
-dispose is idempotent
-readback contains no live Three.js objects
-outer world renderer composes grass lifecycle rather than discarding it
-```
-
-## Suggested result vocabulary
-
-```txt
-grass_source_accepted
-grass_source_rejected_invalid
-grass_legacy_suppressed
-grass_instances_created
-grass_empty_source
-grass_resource_created
-grass_resource_live
-grass_resource_disposed
-grass_dispose_noop
-grass_update_static_startup_only
-grass_policy_valid
-grass_contract_valid
-grass_contract_invalid
-```
-
-## Not next
-
-- blade-shape, atlas-color, alpha-threshold, layer-count, or placement-density tuning
-- wind animation before update authority is explicit
-- cloud, fog, ocean, terrain, camera, lighting, or scenario retuning
-- renderer replacement or broad extraction
-- new island content
-- route-token changes
-- screenshot automation
+- grass density or atlas tuning
+- cloud/fog/ocean shader changes
+- camera rail retuning
+- terrain regeneration changes
+- renderer replacement
+- new content or route-token changes

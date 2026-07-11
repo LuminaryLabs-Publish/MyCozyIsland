@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T06-50-30-04-00`
+Last updated: `2026-07-11T07-01-49-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible documented repository
+selection reason: newer repo-local audit was not yet synchronized to central tracking
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -24,31 +24,91 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 new or ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-selected oldest eligible timestamp: MyCozyIsland at 2026-07-11T05-10-36-04-00
+MyCozyIsland repo-local audit before this pass: 2026-07-11T06-50-30-04-00
+MyCozyIsland central ledger before this pass: 2026-07-11T05-10-36-04-00
+selected: MyCozyIsland
 excluded: TheCavalryOfRome
 ```
 
 ## Source identity verified
 
 ```txt
-production Core World migration:
-  0e30393bfd433a23bf207c8c87d5defd44aed69a
+route: src/main-cloudform.js?v=core-world-1
+Three.js: 0.185.0
+NexusEngine: 38229f59c22cb40024ffd13a9f48040de759f5d7
+world default: core
+world rollback: ?world=legacy
+world id: world:cozy-island-webgpu-v3
+initial active cells: 49
+local kit descriptors: 50
+Core World providers: 7
+```
 
-current documentation baseline before this pass:
-  5e68fe2a88374a98eb427c9a80081d0cf0c6de14
+## Lifecycle facts verified from source
 
-Three.js:
-  0.185.0
+```txt
+one top-level main() owns construction: yes
+top-level failure path: main().catch(fail)
+startup rollback stack: absent
+session ID: absent
+session epoch: absent
+lifecycle state machine: absent
+stop command: absent
+restart command: absent
+renderer animation loop installed: yes
+route-level animation-loop cancellation: absent
+canvas/window listeners installed: yes
+listener lease registry: absent
+two nested loader timers: yes
+timer lease registry: absent
+pagehide listener: yes
+pagehide action: domains.dispose only
+complete render graph disposal: absent
+renderer/backend disposal: absent
+global host publication: globalThis.CozyIsland
+global host retirement: absent
+```
 
-NexusEngine:
-  38229f59c22cb40024ffd13a9f48040de759f5d7
+## Acquired resources identified
 
-route:
-  src/main-cloudform.js?v=core-world-1
+```txt
+browser:
+  wheel, pointerdown, pointerup, pointercancel, pointermove
+  keydown, keyup, blur, resize, pagehide
+  loader completion timeout, loader hide timeout
+  renderer animation loop
+  global host assignment
 
-world modes:
-  core default
-  legacy rollback through ?world=legacy
+world:
+  legacy semantic composition
+  pinned engine and Core World registration
+  partition, surface, providers and stores
+  query, bridge, scenario and clock
+
+render:
+  WebGPURenderer/backend
+  scene, camera, sky, lights and shadows
+  world and layered-grass graph
+  ocean and foam
+  cloud/fog volume textures
+  cloud and fog renderers
+  RenderPipeline and passes
+  performance and debug services
+```
+
+## Disposal capability facts verified
+
+```txt
+domains.dispose resets Core World state: yes
+live route invokes disposeRendererObject: no
+disposeRendererObject can release graph geometry/material/texture resources: yes
+whole-island renderer common dispose result: no
+ocean renderer common dispose result: no
+foam renderer common dispose result: no
+cloud/fog common dispose result: no
+post pipeline common dispose result: no
+exact-once resource identity ledger: no
+residual-resource readback: no
 ```
 
 ## Existing test surface identified
@@ -68,85 +128,7 @@ npm test
   -> renderer-resource-disposal
 ```
 
-The suite covers normal-path semantic parity, provider order, portable snapshots, basic focus movement and isolated renderer utilities.
-
-## Test-double facts verified
-
-```txt
-world fixtures inject tests/helpers/fake-nexus-world.mjs: yes
-exact pinned production modules loaded by those fixtures: no
-fake partition result matches production selection object: no
-provider.matches modeled: no
-requires/provides capability admission modeled: no
-critical-provider failure modeled: no
-portable effect validation modeled: no
-provider statuses modeled: no
-diagnostics modeled: no
-failed cells modeled: no
-provider-chain rollback modeled: no
-snapshot-load reconciliation modeled: no
-```
-
-## Production Core World facts verified
-
-```txt
-selection fields:
-  required
-  retained
-  released
-  updated
-
-provider lifecycle:
-  matches
-  capability admission
-  prepare/update/release
-  portable effect normalization
-  provider status
-  diagnostics
-  per-cell rollback
-
-world update order:
-  release
-  update
-  prepare
-  retained retry
-  state commit
-
-failed cell records can be committed: yes
-focus is committed separately before world update: yes
-```
-
-## Wrapper facts verified
-
-```txt
-prepare sets prepared=true before commitFocus: yes
-failed initial commit automatically restores prepared=false: no
-failed initial commit is retried by second prepare call: no
-updateWorldFocus typed result: no
-updateWorldFocus result type: Boolean
-focus revision: absent
-world revision in wrapper state: absent
-failed cell IDs in wrapper state: absent
-provider status in wrapper state: absent
-provider diagnostics exposed separately: yes
-provider-store checkpoint/rollback: absent
-```
-
-## Render and lifecycle facts retained
-
-```txt
-startup compatibility snapshot: yes
-whole-island renderer built once: yes
-later provider changes committed to renderer: no
-failed provider transition can be masked by global render graph: yes
-pagehide resets Core World: yes
-animation loop cancellation: absent
-listener/timer lease registry: absent
-complete Three/WebGPU disposal: absent
-renderer/backend disposal: absent
-global host retirement: absent
-session epoch and stale admission: absent
-```
+These tests cover normal-path semantics and isolated renderer utilities. They do not prove route-level session ownership or complete browser/WebGPU teardown.
 
 ## Validation not executed in this documentation run
 
@@ -156,70 +138,81 @@ npm test
 browser smoke
 WebGPU initialization
 WebGL2 fallback initialization
-exact pinned-runtime Node fixture
+startup failure injection
+stop/dispose/restart fixture
+listener and timer lease fixture
+animation-loop cancellation fixture
+resource residual-count fixture
+global-host retirement fixture
+old-callback rejection fixture
+pinned-runtime contract parity fixture
 provider failure injection
-prepare retry test
-focus rollback test
-provider-store rollback test
-release-failure test
-runtime stop/dispose/restart test
-provider-to-render synchronization test
+provider-to-render synchronization fixture
 ```
 
-The GitHub connector was used for source inspection and documentation writes. A runnable checkout was unavailable, so no executable test-pass or runtime-completion claim is made.
+The GitHub connector was used for source inspection and documentation writes. A runnable checkout and browser were unavailable, so no executable pass claim is made.
 
-## Required contract-parity fixture
+## Required lifecycle fixture matrix
 
-The same fixture matrix must run against the exact pinned runtime and the local fake adapter:
+Inject a failure or stop at each row:
 
 ```txt
-initial prepare
-unchanged focus
-cross-cell transition
-retained update
-not-applicable provider
-missing noncritical capability
-missing critical capability
-foundation failure
-classification failure
-population failure
-presentation failure
-provider update failure
-provider release failure
-failed-cell retry
-reset and dispose
-snapshot portability
+before renderer construction
+after renderer construction
+inside renderer.init
+after Core World creation
+during initial world prepare
+after scene/sky/lights
+after world renderer
+after ocean
+after foam
+during atmosphere texture creation
+after cloud
+after fog
+after post pipeline
+after listener registration
+after timer registration
+after animation-loop registration
+after global-host publication
+before first frame
+during frame
+during focus update
+during render submit
 ```
 
-It must prove:
+For every row prove:
 
 ```txt
-runtime commit identity is recorded
-selection deltas match
-provider phase order matches
-failure statuses and diagnostics match
-rollback order matches
-initial failure leaves prepare retriable
-rejected focus preserves prior focus and active cells
-rejected focus preserves provider-store fingerprints
-partial/degraded results are explicit
-stale epoch and stale focus command are rejected
-results are bounded and structured-clone safe
+one terminal lifecycle result exists
+all acquired leases have release results
+no unowned listener or timeout remains
+animation loop is inactive
+old-epoch callbacks are rejected
+Core World state is reset or explicitly reported residual
+scene/GPU resources have zero unexplained residuals
+global host is retired or restored
+repeat disposal is unchanged and safe
+newer session starts without duplicate work
 ```
 
 ## Browser proof required
 
 ```txt
-pinned browser import resolves
-core mode prepares 49 complete cells
-injected provider failure yields a typed visible result
-failure does not silently become changed=true
-recovery or retry follows the declared policy
-previous visible resources remain stable for rejected revisions
-pagehide/stop rejects later focus work
-WebGPU and WebGL2 paths report the same semantic result
+WebGPU core start -> stop -> restart
+WebGL2 core start -> stop -> restart
+legacy start -> stop -> restart
+startup failure -> error projection -> clean retry
+pagehide -> zero live leases
+old frame callback after restart is rejected
+old focus callback after restart is rejected
+input after restart mutates only the new session
+H overlay after restart has one listener
 ```
+
+## Second-gate proof retained
+
+After lifecycle passes, run the exact pinned Core World contract and provider-failure matrix against both production and fake adapters. Prove retriable prepare, typed focus results, provider rollback and session-epoch correlation before visible cell rendering.
 
 ## Readiness statement
 
-The current normal-path fixtures are useful but are not proof of the pinned Core World contract. Complete runtime lifecycle ownership remains first; pinned-runtime contract parity and focus transaction authority are now required before the cell-aware renderer can become visible authority.
+The route is visually and semantically functional, but `pagehide -> domains.dispose()` is not a complete runtime teardown. Runtime session identity, startup rollback, callback fencing, exact disposal and restart proof remain the first implementation gate.

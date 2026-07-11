@@ -1,155 +1,202 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T05-10-36-04-00`
+Last updated: `2026-07-11T06-50-30-04-00`
 
 ## Plan ledger
 
-**Goal:** preserve the new Core World semantic authority while introducing one lifecycle-safe, revisioned render-consumer path that can prove provider-to-visible-resource fidelity before the compatibility bridge is retired.
+**Goal:** keep lifecycle ownership first, then make the wrapper and test harness faithfully expose pinned Core World selection, provider-failure, rollback, diagnostic and active-cell completeness semantics before any provider revision reaches visible rendering.
 
-- [ ] Complete the route-session lifecycle and exact WebGPU/Three disposal gate first.
-- [ ] Add a monotonic world revision for every accepted Core World update.
-- [ ] Record ordered provider prepare/update/release results by world revision and cell ID.
-- [ ] Produce one immutable presentation descriptor snapshot per accepted world revision.
-- [ ] Add a typed world-render commit command and stable accepted/unchanged/rejected/failed result.
-- [ ] Wire `renderer-world-cells` through a named cell-render resource owner.
-- [ ] Track prepared, updated, retained, released, and rejected cell IDs.
-- [ ] Track shared geometry, material, texture, and pipeline resources separately from cell-owned resources.
-- [ ] Add explicit legacy, shadow-cell-consumer, and cell-authoritative policies.
-- [ ] Make compatibility fallback explicit by object kind and revision.
-- [ ] Correlate world revision, presentation revision, render revision, frame index, and source/render fingerprints.
-- [ ] Add bounded JSON-safe focus, provider, and render result journals to `CozyIsland.getState()`.
-- [ ] Add a DOM-free provider-to-render commit fixture to `npm test`.
-- [ ] Add a browser focus-movement and cell-disposal smoke for WebGPU and WebGL2 fallback.
-- [ ] Keep visible output on the compatibility renderer until shadow parity passes.
+- [ ] Complete the route-session lifecycle and exact WebGPU/Three disposal gate.
+- [ ] Load the exact pinned Core World modules in a Node contract harness.
+- [ ] Run the same contract matrix against the pinned runtime and the local fake.
+- [ ] Replace or upgrade the fake until selection, capability, failure, diagnostic, rollback and release behavior match.
+- [ ] Fix `prepare()` so a thrown initial focus commit leaves the wrapper retriable.
+- [ ] Add monotonic session, focus, world and provider revisions.
+- [ ] Replace Boolean focus results with a typed result envelope.
+- [ ] Define whether an incomplete provider transition is rejected, rolled back or accepted as explicit degradation.
+- [ ] Stage provider-store and active-cell changes before committing an accepted focus revision.
+- [ ] Preserve the prior accepted focus and active-cell set on rejected transitions.
+- [ ] Correlate every provider result with session epoch, focus command, world revision, cell ID and provider ID.
+- [ ] Expose failed cells, missing capabilities, release failures and diagnostics through bounded JSON-safe readback.
+- [ ] Add deterministic failure injection for each provider phase.
+- [ ] Add a pinned-runtime focus/failure fixture to `npm test`.
+- [ ] Add a browser smoke that proves the pinned import, failure result and recovery path.
+- [ ] Keep the current compatibility renderer visible until contract parity and shadow render parity both pass.
 
-## Immediate infrastructure slice
+## First infrastructure slice
 
 ```txt
 MyCozyIsland Runtime Session Lifecycle Authority
 + WebGPU Resource Disposal and Restart Fixture Gate
 ```
 
-The current source migration increases the importance of this gate because a cell-aware renderer will create and release resources dynamically.
+Lifecycle remains first because focus commands, provider work and future render commits must be fenced by a session epoch and exact teardown boundary.
 
-## Immediate migration slice after lifecycle
+## Second infrastructure slice
+
+```txt
+MyCozyIsland Pinned Core World Contract Parity
++ Focus Transaction and Production-Runtime Failure Fixture Gate
+```
+
+## Candidate kits
+
+```txt
+core-world-runtime-identity-kit
+core-world-contract-adapter-kit
+focus-command-envelope-kit
+focus-admission-kit
+focus-transition-stage-kit
+active-cell-set-transaction-kit
+provider-failure-policy-kit
+provider-result-journal-kit
+provider-store-checkpoint-kit
+focus-rollback-kit
+focus-result-kit
+world-correlation-kit
+pinned-runtime-test-harness-kit
+fake-runtime-contract-fixture-kit
+production-runtime-failure-fixture-kit
+browser-focus-failure-smoke-kit
+```
+
+## Minimum focus transaction state
+
+```txt
+sessionEpoch
+runtimeCommit
+worldId
+worldSeed
+focusCommandId
+focusRevision
+previousFocusRevision
+requestedPosition
+acceptedPosition
+previousWorldRevision
+worldRevision
+previousActiveCellIds
+activeCellIds
+requiredCellIds
+retainedCellIds
+updatedCellIds
+releasedCellIds
+failedCellIds
+providerResults
+providerStoreVersions
+status
+reason
+degradationPolicy
+sourceFingerprint
+resultFingerprint
+recentResults
+```
+
+## Required focus result
+
+```txt
+commandId
+sessionEpoch
+runtimeCommit
+worldId
+previousFocusRevision
+focusRevision
+previousWorldRevision
+worldRevision
+status
+reason
+requestedPosition
+acceptedPosition
+requiredCellIds
+retainedCellIds
+updatedCellIds
+releasedCellIds
+failedCellIds
+missingCapabilities
+providerFailures
+releaseFailures
+rolledBackProviderIds
+previousStatePreserved
+sourceFingerprint
+resultFingerprint
+```
+
+Allowed statuses should be explicit:
+
+```txt
+accepted-complete
+accepted-degraded
+unchanged
+rejected-stale
+rejected-invalid
+failed-rolled-back
+failed-partial
+```
+
+`accepted-degraded` and `failed-partial` must never be represented as Boolean success.
+
+## Required contract matrix
+
+Run each row against the pinned runtime and the fake adapter:
+
+```txt
+initial 49-cell prepare
+same-cell unchanged focus
+cross-cell required/retained/released selection
+retained-cell update
+provider not-applicable
+missing required capability on noncritical provider
+missing required capability on critical provider
+foundation prepare failure
+classification prepare failure
+population prepare failure
+presentation prepare failure
+provider update failure
+provider release failure
+failed-cell retry
+reset and dispose
+snapshot portability
+```
+
+## Required fixture assertions
+
+```txt
+pinned runtime commit identity is recorded
+fake and production selection deltas match
+provider phase order matches
+capability blocking and critical failure status match
+provider diagnostics use stable codes
+per-cell rollback order matches
+prepare failure does not poison wrapper retry
+rejected focus preserves previous accepted focus
+rejected focus preserves previous active-cell set
+rejected focus preserves provider-store fingerprints
+partial/degraded outcomes are explicit
+stale session or focus command is rejected
+results structured-clone successfully
+bounded journals contain no typed arrays, Maps, functions or GPU objects
+```
+
+If the chosen policy intentionally permits a partial world commit, the fixture must instead prove that failed cells are named, previous visible resources remain authoritative, and the render admission layer rejects the incomplete world revision.
+
+## Third slice after contract parity
 
 ```txt
 MyCozyIsland Core World Render Commit Authority
 + Provider/Cell Consumer Fidelity Fixture Gate
 ```
 
-## Candidate kits
-
-```txt
-world-revision-kit
-focus-admission-result-kit
-provider-result-journal-kit
-presentation-descriptor-snapshot-kit
-world-render-command-kit
-world-revision-admission-kit
-cell-render-resource-owner-kit
-cell-render-prepare-kit
-cell-render-update-kit
-cell-render-release-kit
-shared-render-resource-registry-kit
-render-commit-result-kit
-compatibility-render-policy-kit
-world-render-correlation-kit
-world-render-observation-kit
-provider-render-fixture-kit
-browser-cell-lifecycle-smoke-kit
-```
-
-These should reuse the lifecycle resource registry rather than create a second disposal system.
-
-## Minimum world/render state
-
-```txt
-sessionEpoch
-worldId
-worldRevision
-focusRevision
-focusPosition
-activeCellIds
-providerRevisionById
-presentationRevision
-presentationFingerprint
-renderPolicy
-renderRevision
-renderedCellIds
-fallbackKinds
-resourceCountsByKind
-resourceCountsByCell
-sourceFingerprint
-renderFingerprint
-lastFocusResult
-lastWorldResult
-lastRenderResult
-recentResults
-```
-
-## Required render commit result
-
-```txt
-commandId
-sessionEpoch
-worldId
-worldRevision
-previousRenderRevision
-renderRevision
-status
-reason
-preparedCellIds
-updatedCellIds
-retainedCellIds
-releasedCellIds
-fallbackKinds
-resourceDelta
-sourceFingerprint
-renderFingerprint
-```
-
-## Required fixture assertions
-
-```txt
-initial prepare produces one world revision and one render commit
-same revision is unchanged
-stale revision is rejected
-provider phase order is stable
-presentation rows match active cell IDs
-one descriptor is consumed exactly once
-released descriptors release cell-only resources exactly once
-shared resources survive while referenced
-compatibility fallback is explicit
-shadow consumer matches legacy bounds, counts, IDs, and fingerprints
-world and render revisions remain correlated
-bounded readback structured-clones successfully
-session stop/dispose rejects later world and render commits
-```
-
-## Browser proof
-
-```txt
-core mode boots under WebGPU
-core mode boots under WebGL2 fallback
-legacy mode remains available
-shadow consumer changes no visible output
-focus movement advances world and render revisions together
-no duplicate cell groups appear
-released groups leave the scene
-pagehide/stop retires loop, listeners, timers, cell resources, shared resources, and global host
-```
+It should reuse the lifecycle resource registry and consume only focus/world results that satisfy the chosen completeness policy.
 
 ## Ordered follow-up slices
 
 ```txt
-3. Camera Rail Baseline Authority
+4. Camera Rail Baseline Authority
    + Drag/Reset Fidelity Fixture Gate
 
-4. Dynamic Environment Frame Authority
+5. Dynamic Environment Frame Authority
    + Clock/Wind/Illumination Consumer Coherence Fixture Gate
 
-5. Adaptive Quality Transaction Authority
+6. Adaptive Quality Transaction Authority
    + Full-Recovery Fixture Gate
 ```
 
@@ -157,7 +204,7 @@ pagehide/stop retires loop, listeners, timers, cell resources, shared resources,
 
 - new world content or expanded movement
 - active-radius changes
-- terrain, biome, vegetation, grass, rock, ocean, cloud, fog, lighting, or post changes
 - immediate removal of `?world=legacy`
-- visible cell-authoritative cutover without shadow parity
+- visible cell-authoritative rendering
+- terrain, biome, vegetation, grass, rocks, ocean, clouds, fog, lighting or post changes
 - public kit promotion

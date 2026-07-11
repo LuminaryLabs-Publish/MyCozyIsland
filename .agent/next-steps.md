@@ -1,30 +1,31 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T11-10-29-04-00`
+Last updated: `2026-07-11T11-19-10-04-00`
 
 ## Summary
 
-Fix the world reset contract before adding browser restart or cell-aware rendering. A reusable reset must retain or recreate the world definition, clear provider/materializer state exactly once, advance a world generation, and prove fresh preparation.
+Implement browser runtime-session ownership before reusable Core World reset, restart, or live cell-render cutover. The session must own startup acquisitions, callback admission, world recovery quiescence, renderer retirement, public-host revocation, and idempotent disposal.
 
 ## Plan ledger
 
-**Goal:** separate reusable reset from terminal disposal and make every recovery step observable, rollback-capable, generation-fenced, and fixture-backed.
+**Goal:** convert the implicit `main()` ownership graph into one explicit lifecycle transaction with phase, generation, leases, rollback, detached results, and executable browser proof.
 
-- [ ] Add route-level `sessionId` and `sessionEpoch` ownership.
-- [ ] Introduce `WorldResetCommand` with `soft-reset`, `recreate`, and `terminal-dispose` policies.
-- [ ] Reject reset while startup, focus commit, materialization, or render-cell commit is in an unsafe phase.
-- [ ] Capture the admitted world definition and provider order before release.
-- [ ] Advance a monotonic `worldGeneration` before old work can complete.
-- [ ] Freeze focus, materialization, and renderer-cell admission for the old generation.
-- [ ] Collect typed provider release/reset results instead of relying on swallowed failures.
-- [ ] Clear all seven provider stores and materializer jobs exactly once.
-- [ ] For reusable reset, retain or re-register the world definition before prepare.
-- [ ] Prepare the origin and verify 49 active cells and seven provider layers.
-- [ ] Publish `WorldRecoveryResult` with before/after fingerprints and diagnostics.
-- [ ] Roll back or remain blocked when re-registration or prepare fails.
-- [ ] Make terminal disposal idempotent and reject all later commands explicitly.
-- [ ] Correlate renderer state and visible frames with `worldGeneration`.
-- [ ] Add DOM-free reset/re-prepare and browser restart fixtures.
+- [ ] Add `sessionId`, `sessionGeneration`, and a canonical session phase machine.
+- [ ] Wrap every startup acquisition in a reverse-order rollback ledger.
+- [ ] Retain and lease the renderer animation-loop installation.
+- [ ] Retain exact handler/options tuples for every browser listener.
+- [ ] Retain loader timeout handles and fence delayed DOM callbacks.
+- [ ] Replace raw callback mutation with session-generation admission.
+- [ ] Replace raw `globalThis.CozyIsland` mutation surfaces with typed commands and detached observations.
+- [ ] Add a `quiescing` phase that freezes scenario, input, focus, materialization, rendering, adaptive quality, and debug publication before world recovery.
+- [ ] Integrate the Core World reset/re-prepare transaction as a child of the session lifecycle.
+- [ ] Add `worldGeneration` and `rendererGeneration` correlation.
+- [ ] Acknowledge the first visible frame before resuming from reset.
+- [ ] Inventory and dispose scene, material, texture, render-target, pipeline, renderer, and canvas ownership.
+- [ ] Make pagehide and explicit stop converge on one idempotent terminal transaction.
+- [ ] Revoke old global-host and callback references after generation retirement.
+- [ ] Publish bounded lifecycle journals and detached disposal/recovery results.
+- [ ] Add DOM-free, WebGPU, WebGL2, legacy-mode, pagehide, reset, stop, and restart fixtures.
 
 ## Ordered implementation queue
 
@@ -39,147 +40,171 @@ Fix the world reset contract before adding browser restart or cell-aware renderi
 8. Adaptive Quality Transaction Authority
 ```
 
-## Candidate kits
+## Candidate lifecycle kits
 
 ```txt
-world-reset-command-kit
-world-reset-admission-kit
-world-reset-policy-kit
-world-generation-kit
-world-definition-checkpoint-kit
-provider-release-plan-kit
-provider-release-result-kit
-provider-store-reset-kit
-materializer-cancellation-kit
-world-reregistration-kit
-world-reprepare-kit
-world-recovery-result-kit
-world-recovery-fingerprint-kit
-world-recovery-journal-kit
-world-recovery-rollback-kit
-world-terminal-disposal-kit
-reset-reprepare-fixture-kit
-browser-world-restart-smoke-kit
+runtime-session-authority-kit
+runtime-session-phase-kit
+runtime-session-generation-kit
+startup-acquisition-ledger-kit
+startup-rollback-kit
+animation-loop-lease-kit
+listener-lease-kit
+timer-lease-kit
+reset-quiescence-kit
+input-retirement-kit
+world-session-adapter-kit
+renderer-resource-inventory-kit
+renderer-retirement-kit
+global-host-revocation-kit
+idempotent-session-stop-kit
+session-disposal-result-kit
+session-lifecycle-journal-kit
+browser-single-session-fixture-kit
+browser-restart-smoke-kit
 ```
 
-## Reset command
+## Session command contracts
 
 ```txt
-WorldResetCommand {
+StartSessionCommand {
+  commandId
+  requestedMode
+  expectedRouteRevision
+}
+
+ResetWorldCommand {
   commandId
   sessionId
-  sessionEpoch
-  expectedWorldId
+  expectedSessionGeneration
   expectedWorldGeneration
   policy
   reason
-  preserveDefinition
-  restoreFocus
 }
-```
 
-Policies:
-
-```txt
-soft-reset
-  release active cells and heavy provider state
-  retain registered definition
-  prepare fresh origin generation
-
-recreate
-  release and remove definition
-  re-register the admitted definition
-  prepare fresh origin generation
-
-terminal-dispose
-  release and remove everything
-  reject future prepare/focus/materialization commands
-```
-
-## Recovery result
-
-```txt
-WorldRecoveryResult {
+StopSessionCommand {
   commandId
   sessionId
-  sessionEpoch
-  priorWorldGeneration
-  nextWorldGeneration
-  policy
-  status
-  releasedCells[]
-  providerResults[]
-  materializerResult
-  definitionResult
-  prepareResult
-  activeCellCount
-  providerCellCounts
-  diagnostics[]
-  beforeFingerprint
-  afterFingerprint
+  expectedSessionGeneration
+  reason
 }
 ```
 
-Statuses:
+## Session phases
 
 ```txt
-reset-complete
-recreated-and-prepared
-disposed
-rejected-stale
-rejected-state
-release-failed
-registration-failed
-prepare-failed
-rollback-complete
+created
+booting
+running
+quiescing
+resetting
+repreparing
+stopping
+disposing
 blocked
+failed
+disposed
+```
+
+## Required startup transaction
+
+```txt
+admit StartSession
+  -> allocate session generation
+  -> initialize renderer
+  -> construct and prepare world
+  -> acquire scene/render graph
+  -> acquire performance/debug services
+  -> register listeners and timers
+  -> install one animation-loop lease
+  -> publish read-only host
+  -> commit running
+
+on any failure
+  -> retire acquired steps in reverse order
+  -> publish rollback result
+  -> leave no active loop, listener, timer, host or renderer owner
 ```
 
 ## Required reset transaction
 
 ```txt
-admit command
-  -> mark old generation closing
-  -> freeze focus/materialization/render admission
-  -> checkpoint definition and observable state
-  -> release active cells in reverse provider order
-  -> reset provider stores and materializer
-  -> clear or retain definition according to policy
-  -> register definition when required
-  -> prepare origin
-  -> verify 49 active cells and seven provider stores
-  -> publish new generation and result
-  -> resume admission
+admit ResetWorld
+  -> enter quiescing
+  -> retire held input and drag state
+  -> reject successor old-generation callbacks
+  -> freeze scenario/focus/materialization/render publication
+  -> execute Core World recovery
+  -> prepare new world generation
+  -> correlate renderer generation
+  -> commit and acknowledge first visible frame
+  -> resume running
 ```
 
-## Required fixtures
+## Required stop/dispose transaction
 
 ```txt
-prepare -> reset -> prepare succeeds on same wrapper
-fresh generation differs from prior generation
-active cell count returns to 49
-all provider cell counts return to 49
-old materializer jobs cannot publish after reset
-reset after partial terrain rows produces clean providers
-reset after a cell crossing releases prior cells once
-provider release failure is reported
-provider reset failure is reported
-registration failure leaves runtime blocked or rolled back
-prepare failure does not resume rendering/materialization
-terminal dispose is idempotent
-prepare after terminal dispose is rejected
-browser restart owns one animation loop and one listener set
-visible frame identifies the new world generation
+admit StopSession
+  -> retire session generation
+  -> clear animation loop
+  -> clear timers
+  -> remove listeners
+  -> revoke public host
+  -> dispose world
+  -> dispose post/cloud/fog/ocean/foam/world/scene resources
+  -> dispose renderer and canvas ownership
+  -> publish detached terminal result
+```
+
+## Session disposal result
+
+```txt
+SessionDisposalResult {
+  commandId
+  sessionId
+  sessionGeneration
+  status
+  phaseBefore
+  phaseAfter
+  animationLoopResult
+  listenerResults[]
+  timerResults[]
+  inputResult
+  worldResult
+  renderResourceResults[]
+  rendererResult
+  globalHostResult
+  failures[]
+  fingerprintBefore
+  fingerprintAfter
+}
+```
+
+## Required fixture matrix
+
+```txt
+one startup creates one renderer, loop, listener set, timer set and host
+startup failure after every acquisition rolls back cleanly
+reset freezes all live consumers before world recovery
+held input and pointer drag cannot cross reset generation
+world recovery creates a fresh world generation
+first visible frame identifies new world and renderer generations
+retained old callbacks and host references are inert
+pagehide during startup, reset and running is idempotent
+terminal stop twice returns the same terminal identity
+restart creates one clean successor session
+WebGPU, WebGL2 and legacy modes pass
 ```
 
 ## Acceptance conditions
 
 ```txt
-reset and dispose are distinct explicit policies
-no definition-clearing reset can be followed by an unregistered prepare
-all seven providers participate in one observable release/reset result
-all old-generation commands and callbacks are rejected
-reusable reset returns a fully prepared 49-cell world
-terminal dispose permanently closes the wrapper
-renderer and debug readback cite the current world generation
+all mutation enters session admission
+all callbacks are leased and generation-fenced
+world reset cannot run under an admitted old frame
+all startup acquisitions have rollback
+all terminal resources have disposal results
+pagehide and explicit stop share one transaction
+old references cannot mutate successor state
+restart leaves exactly one active browser session
 ```

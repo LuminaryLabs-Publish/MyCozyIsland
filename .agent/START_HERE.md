@@ -1,111 +1,125 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T12-58-06-04-00`
+Last aligned: `2026-07-11T14-41-28-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: define one deterministic Dynamic Environment Frame that synchronizes clock, wind, weather, illumination, cloud, fog, ocean, vegetation, campfire and visible rendering.
+Current focus: define one browser-startup admission transaction that owns module-source identity, renderer-backend selection, staged resource allocation, failure rollback, loader projection, retry and first-frame readiness.
 
 ## Summary
 
-MyCozyIsland advances its environment clock every frame, but most environment descriptors are sampled once during startup. The scenario returns the current clock and camera while retaining startup-frozen illumination, wind-derived, cloud and fog descriptors.
+The route is WebGPU-first and pins Three.js plus NexusEngine through an import map. Those module imports execute before `main()` and therefore before the route's `main().catch(fail)` error projection exists. A CDN or module-graph failure can leave the page on its initial loader without a classified startup result.
 
-The route therefore mixes live elapsed animation with frozen sun/sky/exposure, vegetation wind, campfire smoke wind, cloud weather/lighting/shadow and fog advection. No environment revision, fingerprint, consumer transaction, reset result or visible-frame receipt proves that dynamic consumers agree.
+After imports succeed, `main()` allocates the renderer, Core World runtime, scene graph, atmosphere textures and render consumers in sequence. Any later exception is displayed by `fail(error)`, but already-created GPU, world and DOM resources are not retired because cleanup ownership and the `pagehide` handler are installed only after startup has completed.
 
 ## Plan ledger
 
-**Goal:** document the missing environment-frame authority while preserving runtime-session, Core World and render-commit prerequisites.
+**Goal:** make browser startup an explicit, observable and retriable transaction before runtime-session, world, render and environment authority are allowed to begin.
 
-- [x] Compare all accessible Publish repositories with central tracking.
+- [x] Compare all ten accessible Publish repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` because repo-local audit state was newer than central tracking.
-- [x] Trace clock, wind, weather, illumination, cloud, fog, ocean, vegetation, campfire and render consumers.
-- [x] Identify the interaction loop, domains, services and all 50 local kits.
-- [x] Confirm scenario snapshots update only clock and camera.
-- [x] Define frame identity, prepare/commit/rollback, reset and visible-frame proof.
-- [x] Add timestamped architecture, render, gameplay, interaction, environment and deploy audits.
+- [x] Select only `MyCozyIsland` as the oldest eligible central entry.
+- [x] Trace import-map admission, `main()`, renderer initialization, world preparation, render-resource creation, loader completion, listeners, animation loop and pagehide cleanup.
+- [x] Identify the interaction loop, domains, all 50 local kits, imported NexusEngine services and seven ordered providers.
+- [x] Define startup identity, staged results, resource ownership, rollback, retry and first-frame readiness proof.
+- [x] Add timestamped architecture, render, gameplay, interaction, startup and deploy audits.
 - [x] Change no runtime or deployment behavior.
 - [x] Push directly to `main`; create no branch or pull request.
 
 ## Current interaction loop
 
 ```txt
-startup
-  -> create clock, wind and illumination services
-  -> sample environment-dependent descriptors once
-  -> freeze render snapshot
-  -> construct scene and render consumers
-
-frame
-  -> tick clock and camera
-  -> return static snapshot + current clock/camera
-  -> animate selected consumers from elapsedSeconds
-  -> render with mixed live and frozen environment values
-
-reset
-  -> reset clock and camera
-  -> no environment revision or consumer acknowledgement
+HTML parse
+  -> install import map
+  -> fetch Three.js and route module graph
+  -> evaluate static imports
+  -> call main()
+  -> validate 50 kits
+  -> initialize WebGPURenderer
+  -> infer WebGPU or WebGL2 backend
+  -> choose startup quality
+  -> create and prepare Core World runtime
+  -> create scene, camera, lights and static snapshot consumers
+  -> create atmosphere textures and cloud/fog/ocean/post resources
+  -> install input and resize listeners
+  -> schedule loader completion timers
+  -> start renderer animation loop
+  -> install pagehide callback
+  -> expose CozyIsland global host
 ```
 
 ## Main finding
 
 ```txt
-clock: live
-wind and illumination services: live when queried
-scenario environment projection: startup-frozen
-shared EnvironmentFrame: absent
-environment revision/fingerprint: absent
-consumer prepare/commit/rollback: absent
-reset baseline result: absent
-first visible frame acknowledgement: absent
+module-graph admission result: absent
+startup transaction id/revision: absent
+stage result journal: absent
+backend candidate/admission result: absent
+resource ledger and cleanup stack: absent
+rollback after partial allocation: absent
+retry command/result: absent
+first-frame readiness receipt: absent
+module-fetch failure projection: absent
 ```
+
+The static `three/webgpu` import can fail before `main()` runs. Later failures are caught, but `fail()` only updates the error panel and loader text. It does not stop a partial animation loop, dispose renderer resources, reset Core World, remove listeners, cancel loader timers or revoke the global host.
 
 ## Required authority flow
 
 ```txt
-ClockSample
-  -> session/generation/tick admission
-  -> derive immutable EnvironmentFrame
-  -> assign revision and fingerprint
-  -> prepare every dynamic consumer
-  -> commit all or rollback all
-  -> render one frame
-  -> collect consumer and visible-frame acknowledgement
-  -> publish typed result and bounded journal
+StartupCommand
+  -> resolve immutable ModuleSourceManifest
+  -> admit required module capabilities
+  -> allocate startup transaction and generation
+  -> execute ordered StartupStagePlan
+  -> register every acquired resource in reverse cleanup order
+  -> classify renderer backend and quality candidate
+  -> prepare Core World and render consumers
+  -> commit listeners, loop, loader state and public host
+  -> render first frame
+  -> publish StartupReadyReceipt
+
+on any failure
+  -> classify failed stage
+  -> fence callbacks
+  -> rollback acquired resources in reverse order
+  -> project stable failure state
+  -> admit explicit retry or terminal stop
 ```
 
 ## Priority order
 
 ```txt
-1. Runtime Session Lifecycle Authority
-2. Core World Reset / Re-prepare Authority
-3. Pinned Core World Focus Transaction Authority
-4. Live Materialization Readiness Commit Authority
-5. Core World Render Commit Authority
-6. Camera Rail Baseline Authority
-7. Dynamic Environment Frame Authority
-8. Adaptive Quality Transaction Authority
+1. Browser Startup Admission + Failure Rollback Authority
+2. Runtime Session Lifecycle Authority
+3. Core World Reset / Re-prepare Authority
+4. Pinned Core World Focus Transaction Authority
+5. Live Materialization Readiness Commit Authority
+6. Core World Render Commit Authority
+7. Camera Rail Baseline Authority
+8. Dynamic Environment Frame Authority
+9. Adaptive Quality Transaction Authority
 ```
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T12-58-06-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T12-58-06-04-00.md
-.agent/architecture-audit/2026-07-11T12-58-06-04-00-dynamic-environment-frame-dsk-map.md
-.agent/render-audit/2026-07-11T12-58-06-04-00-environment-consumer-frame-correlation-gap.md
-.agent/gameplay-audit/2026-07-11T12-58-06-04-00-clock-environment-coherence-loop.md
-.agent/interaction-audit/2026-07-11T12-58-06-04-00-environment-frame-admission-result-map.md
-.agent/environment-audit/2026-07-11T12-58-06-04-00-dynamic-consumer-coherence-contract.md
-.agent/deploy-audit/2026-07-11T12-58-06-04-00-dynamic-environment-fixture-gate.md
+.agent/trackers/2026-07-11T14-41-28-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T14-41-28-04-00.md
+.agent/architecture-audit/2026-07-11T14-41-28-04-00-browser-startup-admission-dsk-map.md
+.agent/render-audit/2026-07-11T14-41-28-04-00-renderer-init-first-frame-readiness-gap.md
+.agent/gameplay-audit/2026-07-11T14-41-28-04-00-loader-startup-interaction-loop.md
+.agent/interaction-audit/2026-07-11T14-41-28-04-00-module-startup-retry-admission-map.md
+.agent/startup-audit/2026-07-11T14-41-28-04-00-module-backend-rollback-contract.md
+.agent/deploy-audit/2026-07-11T14-41-28-04-00-startup-failure-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- adding more visual time effects without an EnvironmentFrame;
-- independently sampling wind in each consumer;
-- updating only the sun while cloud, fog and smoke remain stale;
-- treating elapsed seconds as proof of consumer coherence;
-- resetting consumers separately without a baseline frame result;
-- exposing raw mutable clock or renderer authority through the global host.
+- adding a second ad-hoc renderer constructor;
+- hiding module failures behind a longer loader timeout;
+- treating `renderer.init()` success as complete application readiness;
+- retrying without a new startup generation and old-resource rollback;
+- adding more globals before startup commit;
+- claiming WebGL2 fallback without an executable backend-admission fixture.

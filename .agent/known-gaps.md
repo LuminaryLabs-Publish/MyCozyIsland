@@ -1,121 +1,153 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T11-10-29-04-00`
+Last updated: `2026-07-11T11-19-10-04-00`
 
 ## Summary
 
-The current world wrapper cannot safely reset and prepare again. Its reset clears the pinned Core World runtime definitions, while the next prepare assumes the definition still exists.
+The production page has no authoritative runtime-session owner. Startup acquisitions, animation work, input listeners, loader timers, world recovery, renderer resources, global host exposure, pagehide, stop, disposal, and restart are not coordinated by one phase or generation.
+
+The Core World reset/re-prepare defect remains active: reset clears runtime definitions and a later prepare does not re-register them.
+
+## Runtime-session gaps
+
+```txt
+sessionId: absent
+session generation: absent
+session phase machine: absent
+command admission: absent
+startup acquisition ledger: absent
+startup rollback: absent
+quiescing phase: absent
+blocked phase: absent
+bounded lifecycle journal: absent
+detached lifecycle result: absent
+```
+
+## Callback and lease gaps
+
+```txt
+animation-loop lease: absent
+animation-loop clear on pagehide: absent
+animation callback generation check: absent
+listener handler registry: absent
+listener option registry: absent
+listener removal result: absent
+timer handle registry: absent
+timer generation check: absent
+held input retirement: absent
+pointer drag retirement: absent
+stale callback rejection: absent
+```
+
+## Public host gaps
+
+- `globalThis.CozyIsland` exposes the raw renderer, scene, camera, world runtime, scenario, renderers, post pipeline, and performance controller.
+- A same-page caller can invoke world reset or disposal without session admission.
+- Old host references cannot be revoked after stop or restart.
+- The host has no command sequence, semantic result, session identity, generation, or bounded journal.
+- Observations are assembled from live mutable objects rather than detached committed state.
 
 ## Reset and recovery gaps
 
 ```txt
 soft reset policy: absent
-hard teardown policy: implicit
+hard recreate policy: implicit
 terminal disposal state: absent
 world generation: absent
 world definition checkpoint: absent
 world re-registration: absent
-provider release result: absent
-provider reset result: absent
+provider release/reset results: absent
 materializer cancellation result: absent
 reset/re-prepare transaction: absent
-recovery fingerprint: absent
-bounded recovery journal: absent
-stale callback rejection: absent
+recovery fingerprint and rollback: absent
 ```
 
-## Concrete defect
+- Reset can run while scenario, camera, input, renderer, performance, and debug work remain live.
+- No session quiescence precedes world recovery.
+- No first-visible-frame acknowledgement completes recovery.
+- No renderer generation identifies which world generation a frame consumed.
 
-- The world definition is registered once during wrapper construction.
-- `reset()` calls `coreWorld.resetWorlds()`.
-- The pinned implementation clears runtime definitions.
-- Product state is marked unprepared.
-- A later `prepare()` calls `setFocus(worldId)` without re-registering.
-- Existing tests never call `reset(); prepare();` on the same wrapper.
+## Startup failure gaps
 
-## Provider-state gaps
+- `main().catch(fail)` projects failure but does not unwind acquired resources.
+- Renderer initialization may succeed before later world or render-resource creation fails.
+- Partial scene, volume texture, listener, timer, animation, or host acquisitions have no rollback entries.
+- Failure cleanup errors cannot be aggregated or inspected.
 
-- Core World calls provider release and provider reset, but product code receives no structured release ledger.
-- Provider reset exceptions are swallowed by the pinned runtime.
-- Product provider stores have no joined before/after fingerprint.
-- Terrain materialization jobs are cleared separately from Core World provider release.
-- No proof establishes that all seven provider stores are empty before re-registration.
-- No generation fence prevents old provider or materializer work from writing after recovery.
+## Render-resource gaps
 
-## Snapshot and checkpoint gaps
+```txt
+renderer.setAnimationLoop(null): never called by route
+scene resource inventory: absent
+geometry/material/texture retirement result: absent
+cloud/fog volume texture retirement: absent
+post target/pipeline retirement: absent
+world/ocean/foam/cloud/fog renderer retirement: incomplete or unproven
+WebGPURenderer disposal result: absent
+canvas/context ownership result: absent
+```
 
-- `getWorldSnapshot()` exposes coordination state only.
-- The compatibility render snapshot is not a recovery checkpoint.
-- Provider snapshots are not joined with product wrapper fields.
-- Materializer partial rows and stage progress are not checkpointed.
-- Focus accumulator and last-cell identity are not versioned.
-- Scenario, environment, renderer, and world snapshots do not share one checkpoint ID.
-- No rollback can restore the pre-reset world if re-registration or prepare fails.
+`pagehide` invokes only `domains.dispose()`. The compatibility renderer and GPU resource graph remain outside the world wrapper's disposal boundary.
 
-## Lifecycle gaps retained
+## Gameplay and interaction gaps
 
-- No route-level session owner or session epoch.
-- No startup acquisition/rollback stack.
-- Input, timers, animation loop, renderer, volume textures, and global host are not leased by one session.
-- `pagehide` invokes world disposal only.
-- Terminal disposal does not mark the wrapper unusable or return a typed result.
-- Rendering and materialization do not reject stale generations.
+- Scenario time and camera continue after semantic world reset.
+- Held keys and drag state are not retired before recovery.
+- Input callbacks have no phase admission.
+- Resize can mutate renderer/camera during disposal.
+- Adaptive performance callbacks can mutate renderer quality during reset or stop.
+- Loader timers can mutate DOM after startup failure or session retirement.
 
-## Focus and materialization gaps retained
+## Focus, materialization, and render gaps retained
 
 - `updateWorldFocus()` returns Boolean rather than a typed revision.
-- Materialization has no world/focus/generation admission fence.
+- Materialization has no session/world/focus/generation admission fence.
 - Provider readiness is not a canonical version set.
 - No elapsed-time work budget or classified provider failure result.
-- Ready descriptors are still not consumed by visible cell-aware rendering.
-
-## Render gaps
-
-- Reset has no render freeze/retire handshake.
-- The compatibility renderer can retain the old world while semantic state is cleared.
-- No renderer generation identifies which world generation a frame consumed.
-- No cell-resource rollback or first-visible-frame acknowledgement exists.
-- Cell cache/disposal utilities are disconnected from the live route.
+- Ready descriptors are not consumed by visible cell-aware rendering.
+- No cell-resource commit, rollback, or visible-frame acknowledgement exists.
 
 ## Validation gaps
 
 ```txt
-reset followed by prepare
-reset after partial materialization
-reset after focus crosses a cell
-provider release failure
-provider reset failure
-re-registration failure
-prepare failure after reset
-rollback to preceding generation
-stale materializer completion after reset
-stale focus callback after reset
-soft reset versus terminal dispose
-idempotent dispose
-disposed-command rejection
-browser restart with one animation loop
-renderer/world generation correlation
+single active animation loop
+single listener and timer lease set
+startup rollback after every acquisition stage
+reset quiescence before world recovery
+held-input and pointer-drag retirement
+reset followed by re-prepare
+new world and renderer generation correlation
+first visible frame after reset
+retained old callback rejection
+retained old host rejection
+pagehide during startup/reset/running
+complete render-resource disposal
+idempotent stop/dispose
+clean browser restart
+WebGPU/WebGL2/legacy mode parity
 ```
 
 ## Deployment blockers
 
 ```txt
-reset semantics contradict reusable wrapper shape
-no re-registration after definition-clearing reset
-no release/reset diagnostics
-no product checkpoint or rollback
-no world generation or stale-work fence
-no browser reset/restart fixture
+raw mutable global host
+unleased live callbacks
+world reset under active frame loop
+no startup rollback
+pagehide world-only disposal
+no complete renderer/resource retirement
+no idempotent terminal result
+no clean restart proof
 ```
 
 ## Not currently blocked by
 
-- repository identity or main-branch policy;
+- repository identity or direct-main policy;
 - pinned Three.js and NexusEngine revisions;
-- the 50 local kit descriptors;
+- 50 local kit descriptors;
 - seven ordered providers;
 - initial 49-cell preparation;
 - deterministic focus selection;
 - isolated lazy materialization;
-- compatibility rendering;
+- startup compatibility rendering;
 - GitHub Pages configuration.

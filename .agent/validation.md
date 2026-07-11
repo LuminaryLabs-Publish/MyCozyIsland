@@ -13,7 +13,7 @@ deployment configuration changed: no
 branch created: no
 pull request created: no
 repo-local documentation pushed to main: yes
-central ledger update: pending after repo-local documentation
+central ledger update: yes
 ```
 
 ## Existing test surface
@@ -85,4 +85,4 @@ bounded JSON observation contains no live functions or Three objects
 
 ## Readiness statement
 
-The runtime improvement removes the artificial crater and adds a useful deterministic inner-clearing test. Terrain-layer authority is not complete until the plateau descriptor, transition edge, dependent placement, and render consumption share one revision and pass deterministic fixtures.
+The runtime improvement removes the artificial crater and adds a useful deterministic inner-clearing test. Terrain-layer authority is not complete until the plateau descriptor, transition edge, dependent placement, and render consumption share one revision and pass deterministic fixtures. The dynamic-environment companion audit is also centrally logged and remains queued after terrain authority.

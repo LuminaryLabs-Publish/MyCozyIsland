@@ -10,5 +10,10 @@ export const COZY_WORLD_CONFIG = Object.freeze({
   }),
   surface: Object.freeze({ kind: "flat" }),
   terrain: Object.freeze({ resolution: 49 }),
-  focus: Object.freeze({ updateHz: 10, minimumMovement: 4 })
+  focus: Object.freeze({ updateHz: 10, minimumMovement: 4 }),
+  materialization: Object.freeze({
+    maxCellsPerFrame: 1,
+    terrainRowsPerStep: 1,
+    classificationRowsPerStep: 4
+  })
 });

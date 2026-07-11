@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T08-41-02-04-00`
+Last updated: `2026-07-11T08-58-02-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: next stable oldest eligible repository after active same-minute writes were detected on IntoTheMeadow
+selection reason: substantive lazy Core World runtime commits landed after the prior central audit
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -24,9 +24,7 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 new or ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-nominal oldest entry: IntoTheMeadow
-active same-minute documentation writes on nominal oldest: yes
-selected stable repository: MyCozyIsland
+recently changed but centrally undocumented: MyCozyIsland
 excluded: TheCavalryOfRome
 ```
 
@@ -39,57 +37,32 @@ NexusEngine: 38229f59c22cb40024ffd13a9f48040de759f5d7
 world default: core
 world rollback: ?world=legacy
 world id: world:cozy-island-webgpu-v3
-initial active cells: 49
+initial active descriptors: 49
 local kit descriptors: 50
 Core World providers: 7
+package version: 0.3.1
 ```
 
-## Focus facts verified from source
+## Lazy implementation facts verified
 
 ```txt
-prepare sets prepared before commitFocus: yes
-commitFocus mutates wrapper lastFocus before setFocus/updateWorld complete: yes
-production setFocus commits independently: yes
-production updateWorld commits cells separately: yes
-wrapper checkpoint before focus: absent
-provider-store checkpoint before focus: absent
-wrapper rollback after focus failure: absent
-provider-store rollback result exposed: absent
-world revision exposed: absent
-provider revision set exposed: absent
-updateWorldFocus result: Boolean
-initial prepare retry proof: absent
-focus command/session/epoch/revision admission: absent
-```
-
-## Production Core World facts verified
-
-```txt
-selection shape: required / updated / retained / released
-selection validation: present
-provider phase ordering: present
-provider matches admission: present
-provider capability admission: present
-provider statuses: present
-failed-cell state: present
-new-cell prepared-provider rollback: present
-release order: reverse provider order
-async provider methods: rejected
-focusChanged and cellsChanged: separate commits
-```
-
-## Fake runtime differences verified
-
-```txt
-selection shape: flat array
-selection validation: absent
-provider matching: absent
-capability admission: absent
-diagnostics: minimal/absent
-failed-cell state: absent
-production-equivalent rollback result: absent
-separate focus/cell commits: absent
-provider failure matrix: absent
+terrain registration allocates heavy fields: no
+terrain materializes by bounded rows: yes
+biome reuses terrain arrays: yes
+shoreline reuses terrain shore-distance values: yes
+presentation refresh operation exists: yes
+priority order: LOD, focus distance, stable cell ID
+max cells per frame config: 1
+terrain rows per step config: 1
+classification rows per step config: 4
+world wrapper exposes processMaterializationFrame: yes
+world wrapper exposes getMaterializationState: yes
+live host calls processMaterializationFrame: no
+first-frame materialization acknowledgement: no
+cell readiness revision: no
+provider readiness set: no
+elapsed-time budget: no
+typed failure/retry result: no
 ```
 
 ## Existing test surface identified
@@ -105,93 +78,65 @@ npm test
   -> world-population-parity
   -> world-snapshot-portability
   -> world-cell-lifecycle
+  -> lazy-world-materialization
   -> renderer-cell-cache
   -> renderer-resource-disposal
 ```
 
-`core-world-runtime.mjs` and `world-cell-lifecycle.mjs` inject `createFakeNexusWorldRuntime()` and cover only normal success behavior.
+The new lazy fixture directly instantiates the scheduler. It proves registration is lightweight, deterministic priority, configured row work, eventual provider readiness, presentation refresh, and scheduler removal of released cells. It does not run `src/main-cloudform.js` or prove production browser admission.
 
 ## Validation not executed in this documentation run
 
 ```txt
 npm install
 npm test
-exact pinned Core World Node fixture
-production/fake parity matrix
-initial prepare failure injection
-focus failure after setFocus commit
-provider capability failure
-critical provider rollback fixture
-noncritical degraded commit fixture
-provider release failure fixture
-provider-store checkpoint/restore fixture
-focus retry fixture
-world revision monotonicity fixture
-stale session/epoch/revision fixture
-browser smoke
+browser launch
 WebGPU initialization
 WebGL2 fallback initialization
 Pages smoke
+live host materialization progress
+first-frame start acknowledgement
+focus/release concurrency
+provider failure and retry
+elapsed-time budget
+cell readiness revision
+render handoff
 ```
 
 The GitHub connector was used for source inspection and documentation writes. A runnable checkout and browser were unavailable, so no executable pass claim is made.
 
-## Required focus fixture matrix
-
-Run each scenario against both the exact pinned runtime and the test adapter:
+## Required fixture matrix
 
 ```txt
-initial origin prepare
-same-cell no-op
-movement below timing threshold
-movement below distance threshold
-one-cell crossing
-multi-cell jump
-invalid partition selection
-provider not-applicable
-missing provider capability
-noncritical provider prepare failure
-critical provider prepare failure
-provider update failure
-provider release failure
-async provider rejection
-failure immediately after focusChanged commit
-reset during focus
-retry after failed initial prepare
-retry after failed movement
-repeat command ID
-stale session epoch
-stale expected world revision
-```
-
-For every row prove:
-
-```txt
-result status and reason are explicit
-wrapper and Core World focus agree
-accepted world revision is monotonic
-active-cell IDs match accepted selection
-provider-store counts match policy
-provider transition rows are complete
-rollback identifies restored and residual state
-portable result fingerprint is deterministic
-failed initial prepare remains retriable
-stale commands cannot mutate state
-production and test classifications match
+registration samples zero heavy terrain rows
+first committed browser frame precedes materialization
+host materialization progress advances above zero
+configured cell/row limits hold
+elapsed-time budget prevents extra work
+priority is deterministic
+focus movement reprioritizes current cells
+released cell cannot publish late readiness
+reset/dispose rejects old work
+provider exception becomes typed failure
+retry count and backoff are bounded
+ready presentation cites source provider versions
+compatibility renderer stays stable during partial work
+cell readiness maps to later render commit
+WebGPU and WebGL2 produce equivalent admission results
 ```
 
 ## Required browser proof
 
 ```txt
-WebGPU core mode crosses a cell boundary with accepted revision readback
-WebGL2 core mode crosses a cell boundary with accepted revision readback
-provider failure is projected without corrupting the previous visible revision
-failed initial prepare can retry without reload
-focus command from an old session epoch is rejected
-visible render commit references the accepted world revision
-legacy mode remains explicitly separate
+core mode reports materialization frames > 0
+pending cells decline after the first frame
+provider stage progress is clone-safe and visible
+focus crossing does not complete a released cell
+provider failure does not terminate the render loop
+legacy mode reports an explicit idle materialization state
+compatibility island remains visible until render handoff
 ```
 
 ## Readiness statement
 
-Normal-path world preparation and cell movement are covered through a simplified fake runtime. Production/fake contract parity, retriable initial prepare, atomic focus/world/provider revision handling and failure classification remain unproved. Runtime Session Lifecycle Authority remains the prerequisite; Pinned Core World Focus Transaction Authority is the fully documented second gate.
+The scheduler implementation and isolated deterministic fixture are meaningful progress, but the live route does not execute the scheduler. Do not claim production lazy Core World materialization until host admission, session/world fencing, failure handling, readiness revisions, and browser progress proof exist.

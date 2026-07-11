@@ -1,148 +1,148 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T12-58-06-04-00`
+Last updated: `2026-07-11T14-41-28-04-00`
 
 ## Summary
 
-Keep Dynamic Environment Frame Authority behind runtime-session, Core World and render-commit ownership. When those exist, replace startup-frozen environment descriptors with one deterministic frame transaction shared by all gameplay and render consumers.
+Make startup authoritative before extending runtime, world or rendering behavior. The browser must admit an immutable module graph, choose one renderer backend, track every acquired resource, roll back partial startup, expose a typed failure state, retry under a new generation and acknowledge the first visible frame.
 
 ## Plan ledger
 
-**Goal:** implement coherent dynamic environment state without allowing independent consumer clocks or partial visual updates.
+**Goal:** replace implicit top-level startup with one staged, observable and retriable transaction.
 
-- [ ] Complete Runtime Session Lifecycle Authority.
-- [ ] Complete Core World Reset / Re-prepare Authority.
-- [ ] Complete focus, materialization and render commit authority.
-- [ ] Define a versioned `EnvironmentFrame` schema.
-- [ ] Add session, generation, simulation tick and monotonic clock admission.
-- [ ] Derive wind, weather, illumination, cloud, fog, ocean, vegetation and campfire state from one clock sample.
-- [ ] Add immutable frame revision and fingerprint.
-- [ ] Add prepare/commit/rollback adapters for every dynamic consumer.
-- [ ] Publish canonical effective environment state and consumer receipts.
-- [ ] Derive reset from a canonical baseline frame.
-- [ ] Correlate one visible render frame with the committed environment revision.
-- [ ] Add deterministic replay, reset, stale-frame, failure and WebGPU/WebGL2 fixtures.
+- [ ] Add an immutable module-source manifest with source and capability fingerprints.
+- [ ] Move route boot behind a small loader boundary that can catch module-fetch and evaluation failure.
+- [ ] Define `StartupCommand`, `StartupStagePlan` and `StartupResult`.
+- [ ] Assign startup transaction and generation identities.
+- [ ] Classify WebGPU and WebGL2 backend candidates explicitly.
+- [ ] Admit startup quality only after backend capability checks pass.
+- [ ] Register renderer, world, textures, scene resources, listeners, timers, loop and global host in one resource ledger.
+- [ ] Roll back all acquired resources in reverse order on any failed stage.
+- [ ] Project a stable failure code and explicit retry command.
+- [ ] Reject stale callbacks and results from previous startup generations.
+- [ ] Hide the loader only after a first-frame readiness receipt.
+- [ ] Add module, backend, rollback, retry and Pages cold-load fixtures.
 
 ## Ordered implementation queue
 
 ```txt
-1. Runtime Session Lifecycle Authority
-2. Core World Reset / Re-prepare Authority
-3. Pinned Core World Focus Transaction Authority
-4. Live Materialization Readiness Commit Authority
-5. Core World Render Commit Authority
-6. Camera Rail Baseline Authority
-7. Dynamic Environment Frame Authority
-8. Adaptive Quality Transaction Authority
+1. Browser Startup Admission + Failure Rollback Authority
+2. Runtime Session Lifecycle Authority
+3. Core World Reset / Re-prepare Authority
+4. Pinned Core World Focus Transaction Authority
+5. Live Materialization Readiness Commit Authority
+6. Core World Render Commit Authority
+7. Camera Rail Baseline Authority
+8. Dynamic Environment Frame Authority
+9. Adaptive Quality Transaction Authority
 ```
 
-## Candidate environment-frame kits
+## Candidate startup kits
 
 ```txt
-environment-frame-schema-kit
-environment-frame-id-kit
-environment-clock-sample-kit
-environment-frame-admission-kit
-wind-frame-kit
-weather-frame-kit
-illumination-frame-kit
-cloud-environment-frame-kit
-fog-environment-frame-kit
-ocean-environment-frame-kit
-vegetation-wind-frame-kit
-campfire-smoke-frame-kit
-environment-consumer-plan-kit
-environment-consumer-prepare-kit
-environment-consumer-commit-kit
-environment-consumer-rollback-kit
-environment-frame-result-kit
-environment-frame-fingerprint-kit
-environment-frame-ack-kit
-environment-reset-baseline-kit
-environment-frame-journal-kit
-environment-consumer-coherence-fixture-kit
-environment-reset-replay-fixture-kit
-browser-environment-frame-smoke-kit
-```
-
-## Required frame shape
-
-```txt
-EnvironmentFrame {
-  id
-  revision
-  sessionId
-  sessionGeneration
-  simulationTickId
-  elapsedSeconds
-  weather
-  wind
-  illumination
-  clouds
-  fog
-  ocean
-  vegetationWind
-  campfireSmoke
-  fingerprint
-}
+module-source-manifest-kit
+module-graph-admission-kit
+startup-command-kit
+startup-transaction-id-kit
+startup-generation-kit
+startup-stage-plan-kit
+startup-stage-result-kit
+renderer-backend-candidate-kit
+renderer-backend-admission-kit
+startup-quality-admission-kit
+startup-resource-ledger-kit
+startup-cleanup-stack-kit
+startup-rollback-kit
+startup-failure-classification-kit
+loader-state-projection-kit
+startup-retry-kit
+first-frame-readiness-kit
+startup-result-kit
+startup-journal-kit
+startup-observation-kit
+module-fetch-failure-fixture-kit
+renderer-backend-fallback-fixture-kit
+partial-startup-rollback-fixture-kit
+browser-startup-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-admit ClockSample
-  -> derive candidate EnvironmentFrame
-  -> verify expected revision
-  -> build exact consumer plan
-  -> prepare all consumers
-  -> commit all consumers
-  -> rollback all on any failure
-  -> publish EffectiveEnvironmentState
-  -> render one frame
-  -> publish EnvironmentFrameReceipt
-  -> return detached EnvironmentFrameResult
+receive StartupCommand
+  -> create startupId and generation
+  -> resolve ModuleSourceManifest
+  -> admit module graph and required capabilities
+  -> create renderer backend candidates
+  -> initialize and admit one backend
+  -> derive startup quality fingerprint
+  -> execute ordered stages
+  -> register cleanup after every successful stage
+  -> prepare Core World and all render consumers
+  -> commit listeners, timers, loop and public host
+  -> render first frame
+  -> publish StartupReadyReceipt
+
+on failure
+  -> classify failed stage and error code
+  -> reject new work for the failed generation
+  -> execute cleanup stack in reverse order
+  -> publish StartupFailedResult
+  -> admit retry only with a new generation
 ```
 
-## Consumer set
+## Required stage set
 
 ```txt
-sky gradient
-hemisphere light
-sun transform/color/intensity
-renderer exposure
-scene fog
-cloud lighting/shadow/horizon
-fog density/advection/placement
-ocean and foam
-vegetation sway
-campfire smoke
-debug and public observations
+MODULE_GRAPH
+KIT_CATALOG
+RENDERER_INIT
+BACKEND_ADMISSION
+QUALITY_ADMISSION
+WORLD_CREATE
+WORLD_PREPARE
+SNAPSHOT_CREATE
+SCENE_CREATE
+ATMOSPHERE_TEXTURES
+RENDER_CONSUMERS
+INPUT_AND_RESIZE
+LOADER_AND_LOOP
+PUBLIC_HOST
+FIRST_FRAME
+COMMITTED
 ```
 
 ## Fixture matrix
 
 ```txt
-same seed and tick sequence -> same fingerprints
-clock advance -> all consumers share one revision
-wind parity across vegetation/campfire/cloud/fog
-illumination parity across sky/sun/hemisphere/exposure
-reset -> canonical initial frame
-stale session/generation/tick/revision rejection
-duplicate frame idempotency
-consumer prepare rejection
-consumer commit failure rollback
-WebGPU/WebGL2 consumer parity
-first visible frame acknowledgement
+Three.js module fetch failure before main()
+NexusEngine module fetch failure inside world creation
+renderer.init rejection
+WebGPU candidate rejected and WebGL2 candidate admitted
+no compatible backend
+Core World prepare failure
+cloud/fog volume creation failure
+post-pipeline creation failure
+listener installation failure
+first-frame render failure
+reverse cleanup order after each failed stage
+retry creates a new generation
+stale old-generation completion is rejected
+duplicate retry is idempotent
+loader remains truthful through failure and retry
+first visible frame carries startup/backend/world fingerprints
+Pages cold-load smoke on WebGPU and WebGL2-capable browsers
 ```
 
 ## Acceptance conditions
 
 ```txt
-one clock sample produces one environment frame
-all consumers share one revision and fingerprint
-no partial environment state survives failure
-reset reproduces the baseline frame
-retired sessions cannot mutate consumers
-observations expose every effective environment field
-one visible frame acknowledges the committed revision
+one boot attempt has one startupId and generation
+every successful stage has a typed result and cleanup lease
+module failures reach a stable visible error state
+partial startup leaves no live resources after rollback
+backend and quality are admitted, not inferred
+retry cannot reuse stale resources or callbacks
+loader completion follows first-frame acknowledgement
+public observations are clone-safe and do not expose raw authority
 ```

@@ -1,99 +1,100 @@
-# Current Audit: MyCozyIsland Browser Startup Admission Authority
+# Current Audit: MyCozyIsland Adaptive Quality Transaction Authority
 
-Last updated: `2026-07-11T14-41-28-04-00`
+Last updated: `2026-07-11T16-10-58-04-00`
 
 ## Summary
 
-`MyCozyIsland` has a clear successful startup path, but no authoritative startup transaction. Static CDN imports are evaluated before `main()` and are outside `main().catch(fail)`. Once `main()` begins, renderer, Core World and GPU resources are allocated incrementally, but failures only update DOM text and do not roll back already-acquired resources.
+`MyCozyIsland` has a useful adaptive performance budget, but quality transitions are not authoritative transactions. The budget samples each RAF interval, changes a numeric level after frame-count thresholds, and invokes a callback that mutates cloud steps, fog steps, fog render-target scale and renderer pixel ratio in sequence.
 
-The result is a split contract: module-graph failures can strand the initial loader with no application error state, while later startup failures can display an error but leave partial renderer/world resources alive. No startup ID, generation, stage journal, resource ledger, retry policy or first-frame receipt proves that the page became ready exactly once.
+The callback is not atomic and has a concrete recovery defect. Pixel ratio is only assigned when `level > 0`, so recovery from level 1 to level 0 restores the volumetric settings but leaves the renderer at the degraded pixel ratio. The public performance state can report `level: 0` even though the rendered resolution has not returned to the startup baseline.
 
 ## Plan ledger
 
-**Goal:** define one ordered browser-startup transaction with module admission, backend classification, rollback, retry and first-visible-frame proof.
+**Goal:** define one revisioned quality transition that plans, applies, verifies, rolls back and visibly acknowledges all participating render consumers.
 
-- [x] Reconcile the complete Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` as the oldest eligible repository.
-- [x] Read `index.html`, `src/main-cloudform.js`, Core World runtime, renderer factories and the test entrypoint.
-- [x] Identify the interaction loop, domains, implemented kits and services.
-- [x] Trace every startup stage and the point at which its cleanup becomes reachable.
-- [x] Define a composed startup authority domain and fixture matrix.
+- [x] Reconcile the complete Publish inventory and exclude Cavalry of Rome.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` through the oldest eligible aligned-repository rule.
+- [x] Read the route host, render-quality descriptor, performance budget, atmosphere renderers and post pipeline.
+- [x] Trace startup quality selection and every runtime adaptive setter.
+- [x] Identify the level-0 pixel-ratio recovery defect.
+- [x] Identify frame-count cadence dependence, background-sampling risk and partial-application risk.
+- [x] Identify all active domains, kits and services.
+- [x] Define an adaptive-quality authority domain and fixture matrix.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
 
 ```txt
 route script:         src/main-cloudform.js?v=core-world-3
-Three.js import:      0.185.0 three.webgpu.js
-NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
 package version:      0.3.1
+Three.js:             0.185.0
+NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
 world id:             world:cozy-island-webgpu-v3
-world seed:           cozy-island-webgpu-v2
-default world mode:   core
-rollback query mode:  ?world=legacy
 local kit count:      50
 Core World providers: 7
+quality levels:       0, 1, 2
+sample source:        RAF callback interval
+slow threshold:       movingAverage > target * 1.26
+fast threshold:       movingAverage < target * 0.86
+degrade threshold:    90 qualifying frames
+recover threshold:    360 qualifying frames
 ```
 
-## Startup interaction loop
+## Adaptive-quality interaction loop
 
 ```txt
-browser parses index.html
-  -> import map pins Three.js and NexusEngine URLs
-  -> browser fetches and evaluates main-cloudform.js graph
-  -> static Three.js imports resolve before main()
-  -> main() validates kit catalog
-  -> construct WebGPURenderer
-  -> await renderer.init()
-  -> inspect renderer backend
-  -> choose quality and mutate renderer settings
-  -> create Core World or legacy runtime
-  -> await domains.prepare()
-  -> create compatibility render snapshot
-  -> create scene, camera, sky and lights
-  -> allocate world, ocean and foam renderers
-  -> allocate or compute cloud/fog volume textures
-  -> allocate cloud, fog and post-processing renderers
-  -> create performance and debug services
-  -> install input and resize listeners
-  -> schedule loader completion timers
-  -> start renderer animation loop
-  -> install pagehide handler
-  -> publish global CozyIsland host
+startup
+  -> detect backend
+  -> choose render-quality tier
+  -> set pixel-ratio cap
+  -> create shadows, geometry, volume textures and post pipeline
+  -> initialize performance level 0
+
+render loop
+  -> compute frameMs from RAF callback timestamps
+  -> clamp frameMs to 1..100 inside performance budget
+  -> update moving average and FPS estimate
+  -> count over-budget or under-budget frames
+  -> emit degrade or recover callback
+  -> applyPerformanceLevel(level)
+       cloudRenderer.setStepScale()
+       fogRenderer.setStepScale()
+       postPipeline.setFogResolutionScale()
+       renderer.setPixelRatio() only when level > 0
+  -> render frame
+  -> periodically publish detached debug state
 ```
 
 ## Domain map
 
 ```txt
-browser module admission
-  import map, CDN source identity, static module graph and route evaluation
+browser startup admission
+  module graph, backend selection, startup quality and resource creation
 
-startup authority
-  command, transaction, generation, stage plan, results, rollback, retry and readiness
+runtime session lifecycle
+  animation-loop ownership, visibility, stop, dispose and restart
 
-renderer backend admission
-  WebGPURenderer initialization, backend detection, startup quality and fallback claims
+adaptive performance policy
+  frame samples, moving average, threshold counters, level changes and FPS estimate
 
-runtime lifecycle
-  renderer/world/session ownership, callbacks, stop, dispose and restart
+quality transition authority
+  command, transition identity, revision, plan, consumer results, commit and rollback
 
-Core World
-  engine, domain, partition, surface, provider registration, focus, effects and snapshots
+quality consumers
+  cloud raymarch steps
+  fog raymarch steps
+  fog render-target resolution
+  renderer pixel ratio
+  startup-fixed shadows, terrain, vegetation, ocean, textures and post blur
 
-semantic world
-  terrain, clearing, biome, shoreline, paths, population, ocean and atmosphere
+visible-frame authority
+  committed quality fingerprint and first frame rendered with that revision
 
-environment
-  deterministic seed, clock, wind, weather, illumination, clouds, fog and aerial perspective
-
-scenario and interaction
-  camera rail, wheel, drag, keys, blur reset, resize and frame tick
-
-rendering
-  sky, lights, world, ocean, foam, cloud, fog, post processing and debug projection
+Core World and semantic world
+  focus, providers, materialization, terrain, population, ocean and atmosphere
 
 validation and deployment
-  static Node checks, domain/world/provider/materialization/render utility tests and Pages
+  Node/static tests, browser quality fixtures and Pages smoke
 ```
 
 ## Provider domains
@@ -128,16 +129,16 @@ ocean and atmosphere
   floor, waves, optics, underwater, caustics, glitter, foam, clouds, fog and aerial perspective
 
 render descriptors and adapters
-  quality selection, material/archetype descriptors, snapshots, WebGPU/WebGL2 adapters, post processing and debug
+  startup quality, materials, archetypes, portable snapshots, WebGPU/WebGL2 consumers and post processing
+
+adaptive performance
+  moving-average sampling, degrade/recover decisions, cloud/fog step scaling, fog-resolution scaling and renderer pixel-ratio scaling
 
 scenario
   camera rail, first-person movement, input state, tick, reset and render snapshots
 
 Core World integration
-  grid partition, focus, provider order, cell lifecycle, portable snapshots, lazy materialization, query and legacy bridge
-
-performance
-  frame sampling, degrade/recover decisions, volumetric step scaling, fog-resolution scaling and pixel-ratio scaling
+  grid partition, focus, provider order, cell lifecycle, snapshots, materialization, query and compatibility bridge
 ```
 
 ## Complete local kit inventory
@@ -208,87 +209,108 @@ defineWorldEffectProvider
 
 ## Main findings
 
-### Static module failures bypass the route error handler
+### Full recovery is false for renderer pixel ratio
 
-`three/webgpu`, `three/tsl` and renderer modules are static imports. If the CDN module graph fails to fetch, parse or evaluate, `main()` is never entered and `main().catch(fail)` cannot update the error panel.
+`applyPerformanceLevel()` calls `renderer.setPixelRatio()` only inside `if (level > 0)`. Recovery to level 0 updates cloud steps, fog steps and fog resolution, but skips the pixel-ratio baseline assignment. The quality policy and visible renderer can therefore disagree.
 
-### Startup has no transaction identity
+### The transition is a sequence of side effects
 
-There is no `startupId`, generation, expected stage, monotonic revision or typed result. The loader percentage is a presentation side effect, not an authoritative stage record.
+The host mutates four consumers in order and receives no typed acknowledgement from any of them. If one setter throws or clamps unexpectedly, earlier consumers remain changed and later consumers are not applied. There is no rollback plan or partial-failure result.
 
-### Partial allocation has no rollback
+### Thresholds are frame-count based
 
-The renderer is initialized before Core World and all render consumers. A failure during world preparation, volume-texture creation or later renderer construction leaves earlier resources without a registered reverse cleanup stack.
+The degrade and recovery counters count qualifying samples, not elapsed wall time. Ninety samples represent different wall durations at 30, 60 and 120 Hz. The policy is therefore cadence-dependent even before rendering work changes.
 
-### Cleanup becomes reachable too late
+### Visibility and stalls are not lifecycle barriers
 
-The `pagehide` callback is installed after the animation loop begins, and it calls only `domains.dispose()`. It does not stop the renderer loop, cancel loader timers, remove input/resize listeners, dispose the renderer or retire cloud/fog/ocean/post resources.
+RAF intervals are clamped and sampled without an explicit visibility baseline reset. Background throttling, tab restoration and long stalls can influence the moving average and transition counters without a typed defer, drop or resume result.
 
-### Backend readiness is inferred, not admitted
+### Startup-fixed and adaptive quality are not separated by capability
 
-The route reads `renderer.backend?.isWebGPUBackend` after `renderer.init()` and labels the other case `webgl2`. There is no candidate record, capability negotiation result, fallback reason or proof that all selected consumers support the effective backend.
+Only four consumers participate dynamically. Shadow resolution, terrain resolution, ocean segments, vegetation scale, cloud texture size and post blur stay startup-fixed. That may be valid, but there is no capability manifest explaining which fields are mutable, rebuild-required or immutable.
 
-### First frame is not part of startup commit
+### Diagnostics do not prove applied quality
 
-The loader is hidden by timers before any structured first-frame acknowledgement. No frame ID ties startup configuration, backend, world snapshot and render output to one ready receipt.
+The overlay prints the startup tier, FPS and cloud/fog steps. It does not print quality revision, actual renderer pixel ratio, fog render-target scale, per-consumer result, transition status or the first visible frame that consumed the change.
 
 ## Required parent domain
 
 ```txt
-cozy-island-browser-startup-admission-authority-domain
+cozy-island-adaptive-quality-transaction-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-module-source-manifest-kit
-module-graph-admission-kit
-startup-command-kit
-startup-transaction-id-kit
-startup-generation-kit
-startup-stage-plan-kit
-startup-stage-result-kit
-renderer-backend-candidate-kit
-renderer-backend-admission-kit
-startup-quality-admission-kit
-startup-resource-ledger-kit
-startup-cleanup-stack-kit
-startup-rollback-kit
-startup-failure-classification-kit
-loader-state-projection-kit
-startup-retry-kit
-first-frame-readiness-kit
-startup-result-kit
-startup-journal-kit
-startup-observation-kit
-module-fetch-failure-fixture-kit
-renderer-backend-fallback-fixture-kit
-partial-startup-rollback-fixture-kit
-browser-startup-smoke-kit
+quality-policy-descriptor-kit
+quality-sample-command-kit
+visibility-sample-barrier-kit
+quality-transition-id-kit
+quality-revision-kit
+quality-transition-admission-kit
+quality-candidate-plan-kit
+quality-consumer-capability-kit
+quality-consumer-command-kit
+quality-consumer-result-kit
+quality-transition-commit-kit
+quality-transition-rollback-kit
+full-recovery-policy-kit
+stale-quality-result-rejection-kit
+quality-visible-frame-ack-kit
+quality-observation-kit
+quality-journal-kit
+cadence-parity-fixture-kit
+full-recovery-fixture-kit
+partial-failure-rollback-fixture-kit
+browser-quality-frame-smoke-kit
 ```
 
-## Required result shape
+## Required quality transaction
 
 ```txt
-StartupResult {
-  startupId
-  generation
-  status
-  failedStage
-  moduleManifestFingerprint
-  backendCandidate
-  admittedBackend
-  qualityFingerprint
-  acquiredResources[]
-  rollbackReceipts[]
-  worldRevision
-  firstFrameId
-  startedAt
-  committedAt
-  failureCode
-}
+receive QualitySampleCommand
+  -> admit runtime session and visibility state
+  -> normalize sample against monotonic time
+  -> evaluate elapsed-time policy
+  -> create transitionId and next qualityRevision
+  -> derive complete candidate settings from immutable baseline
+  -> classify each consumer as mutable, rebuild-required or fixed
+  -> apply candidate settings to detached/rollback-capable consumers
+  -> collect typed consumer results
+  -> rollback all applied consumers if any required consumer fails
+  -> atomically commit quality level and revision
+  -> render one frame
+  -> publish QualityVisibleFrameReceipt
+  -> expose clone-safe observation and bounded journal
 ```
 
-## Existing proof surface
+## Fixture matrix
 
-`npm test` checks kit metadata, source tokens, pinned import strings, world/provider behavior, lazy materialization, cell caching and renderer utility disposal. It does not execute the browser module graph, simulate CDN failure, inject renderer initialization failure, prove backend fallback, verify partial-startup rollback or capture a first-frame readiness receipt.
+```txt
+30/60/120 Hz equivalent sample streams produce equal wall-time transition behavior
+level 0 -> 1 -> 0 restores every mutable baseline value
+level 0 -> 1 -> 2 -> 1 -> 0 restores every mutable baseline value
+pixel ratio is observed directly after every transition
+one injected consumer failure rolls back all preceding consumers
+stale old-revision results cannot commit
+hidden-tab intervals do not cause an unclassified transition
+resize during transition preserves the selected pixel-ratio policy
+diagnostics and visible frame carry the same quality revision
+WebGPU and WebGL2 capability manifests are explicit
+```
+
+## Ordered queue
+
+```txt
+1. Browser Startup Admission and Failure Rollback Authority
+2. Runtime Session Lifecycle Authority
+3. Core World Reset / Re-prepare Authority
+4. Pinned Core World Focus Transaction Authority
+5. Live Materialization Readiness Commit Authority
+6. Core World Render Commit Authority
+7. Camera Rail Baseline Authority
+8. Dynamic Environment Frame Authority
+9. Adaptive Quality Transaction Authority
+```
+
+Adaptive quality remains downstream of startup, runtime-session and visible-frame authority. This audit defines the contract without changing that dependency order.

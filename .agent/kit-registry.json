@@ -1,11 +1,14 @@
 {
-  "schemaVersion": 50,
-  "lastUpdated": "2026-07-10T20-48-55-04-00",
+  "schemaVersion": 51,
+  "lastUpdated": "2026-07-10T22-29-21-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
   "currentRoute": "index.html -> src/main-cloudform.js?v=webgpu-volumetric-2",
   "selectionReason": "oldest eligible documented fallback after complete Publish inventory and central ledger comparison",
-  "selectedNextSlice": "MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate",
+  "orderedNextSlices": [
+    "MyCozyIsland Runtime Session Lifecycle Authority + WebGPU Resource Disposal Fixture Gate",
+    "MyCozyIsland Adaptive Quality Transaction Authority + Full-Recovery Fixture Gate"
+  ],
   "implementedKitCount": 50,
   "implementedSourceKits": [
     "debug-overlay-host-kit",
@@ -63,7 +66,11 @@
     "platformHostAdapters": 10,
     "authoredSequences": 2,
     "largeDomains": 2,
-    "atomicAndSharedDomains": 36
+    "atomicAndSharedDomains": 36,
+    "plannedAuthorityDomains": [
+      "runtime-session-lifecycle-and-resource-authority",
+      "adaptive-quality-transaction-and-observation-authority"
+    ]
   },
   "serviceGroups": [
     "determinism-and-time",
@@ -72,22 +79,36 @@
     "ocean-and-foam",
     "vegetation-and-world-placement",
     "cloud-and-fog-atmosphere",
-    "render-descriptors-and-quality",
+    "render-descriptors-and-startup-quality",
     "webgpu-render-adapters",
     "camera-sequence-and-scenario",
-    "performance-and-debug-host"
+    "adaptive-performance-and-debug-host"
   ],
-  "mainFinding": "The route constructs and runs the full WebGPU scene but has no route-owned stop, rollback, dispose, restart, listener ledger, animation-loop owner, or complete GPU resource ownership snapshot.",
-  "preservedCompanionRequirement": "Layered grass consumer ledger and resource ownership fixture remains the first child-resource proof.",
+  "mainFinding": "Adaptive recovery to level 0 restores cloud/fog/post controls but skips renderer pixel-ratio restoration, allowing declared budget level and applied renderer state to diverge.",
+  "preservedFirstGate": "Route-owned runtime session lifecycle, rollback, resource disposal, and restart remain the first implementation gate.",
+  "candidateAdaptiveQualityKits": [
+    "adaptive-quality-state-kit",
+    "adaptive-quality-target-descriptor-kit",
+    "adaptive-quality-transition-policy-kit",
+    "adaptive-quality-application-transaction-kit",
+    "adaptive-quality-result-kit",
+    "renderer-pixel-ratio-control-kit",
+    "volumetric-step-control-kit",
+    "fog-resolution-control-kit",
+    "quality-override-admission-kit",
+    "adaptive-quality-journal-kit",
+    "adaptive-quality-host-observation-kit",
+    "adaptive-quality-transition-fixture-kit"
+  ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-10T20-48-55-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-10T20-48-55-04-00.md",
-    ".agent/architecture-audit/2026-07-10T20-48-55-04-00-runtime-session-resource-authority-dsk-map.md",
-    ".agent/render-audit/2026-07-10T20-48-55-04-00-webgpu-resource-disposal-coverage-gap.md",
-    ".agent/gameplay-audit/2026-07-10T20-48-55-04-00-scenario-frame-session-loop.md",
-    ".agent/interaction-audit/2026-07-10T20-48-55-04-00-listener-session-admission-map.md",
-    ".agent/lifecycle-audit/2026-07-10T20-48-55-04-00-stop-dispose-restart-contract.md",
-    ".agent/deploy-audit/2026-07-10T20-48-55-04-00-session-resource-fixture-gate.md"
+    ".agent/trackers/2026-07-10T22-29-21-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-10T22-29-21-04-00.md",
+    ".agent/architecture-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transaction-dsk-map.md",
+    ".agent/render-audit/2026-07-10T22-29-21-04-00-quality-recovery-pixel-ratio-commit-gap.md",
+    ".agent/gameplay-audit/2026-07-10T22-29-21-04-00-scenario-performance-control-loop.md",
+    ".agent/interaction-audit/2026-07-10T22-29-21-04-00-quality-override-runtime-admission-map.md",
+    ".agent/performance-system-audit/2026-07-10T22-29-21-04-00-degrade-recover-state-machine-contract.md",
+    ".agent/deploy-audit/2026-07-10T22-29-21-04-00-adaptive-quality-transition-fixture-gate.md"
   ],
   "runtimeSourceChanged": false,
   "branchCreated": false,

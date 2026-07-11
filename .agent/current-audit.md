@@ -1,22 +1,23 @@
-# Current Audit: MyCozyIsland Live Materialization Readiness Commit
+# Current Audit: MyCozyIsland Core World Reset / Re-prepare Authority
 
-Last updated: `2026-07-11T09-08-59-04-00`
+Last updated: `2026-07-11T11-10-29-04-00`
 
 ## Summary
 
-The production browser route now advances lazy Core World materialization after rendering the compatibility island. Terrain, biome, shoreline, and presentation stages can therefore complete in the live host. The remaining defect is not scheduler activation; it is missing transactional identity, failure containment, provider-version readiness, and visible render consumption.
+The product wrapper registers `world:cozy-island-webgpu-v3` once during construction. Its public `reset()` calls the pinned Core World `resetWorlds()` operation, which releases active cells, resets providers, clears runtime world definitions, and replaces coordination state. The wrapper then marks itself unprepared. A subsequent `prepare()` calls `setFocus()` and `updateWorld()` without registering the world again, so reset is not actually recoverable.
 
 ## Plan ledger
 
-**Goal:** reconcile the newly wired production loop and define the authority required to convert synchronous provider progress into a stable `CellReadinessRevision` and then a committed visible frame.
+**Goal:** define a reusable reset and terminal disposal boundary that keeps Core World definitions, provider stores, lazy materialization, snapshots, and renderer admission coherent across a fresh world generation.
 
-- [x] Reconcile the full accessible Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` due to new undocumented runtime integration.
-- [x] Read the route, world wrapper, materializer, presentation provider, descriptor schema, compatibility bridge, renderer cache, and lazy fixture.
+- [x] Reconcile all accessible Publish repositories with central tracking.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` under the oldest eligible fallback rule.
+- [x] Read the product wrapper, pinned Core World domain, world-builder reset implementation, provider stores, materializer, host route, and tests.
 - [x] Identify the interaction loop, domains, kits, and services.
-- [x] Verify the host now invokes `processMaterializationFrame()` after the second rendered frame.
-- [x] Verify the live renderer still consumes only the startup compatibility snapshot.
-- [x] Define command, epoch, generation, readiness-set, render-commit, and fixture boundaries.
+- [x] Verify reset clears Core World runtime definitions.
+- [x] Verify product prepare does not re-register after reset.
+- [x] Verify tests cover prepare/dispose and cell turnover, not reset/re-prepare parity.
+- [x] Define reset command, policy, generation, release result, re-registration, recovery result, and fixture boundaries.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
@@ -25,12 +26,10 @@ The production browser route now advances lazy Core World materialization after 
 route:               src/main-cloudform.js?v=core-world-1
 Three.js:            0.185.0
 NexusEngine commit:  38229f59c22cb40024ffd13a9f48040de759f5d7
-world mode:          core by default
-rollback mode:       ?world=legacy
 world id:            world:cozy-island-webgpu-v3
 world seed:          cozy-island-webgpu-v2
-partition:           48 m grid, radius 3
-initial cells:       49
+partition:           48 m uniform grid, radius 3
+initial active cells:49
 provider count:      7
 local kit count:     50
 package version:     0.3.1
@@ -39,174 +38,158 @@ package version:     0.3.1
 ## Interaction loop
 
 ```txt
-route boot
-  -> pinned module admission
-  -> validate local kit catalog
-  -> initialize WebGPU/WebGL2 renderer
-  -> createCozyIslandWorldRuntime()
-  -> prepare()
-       Core World registers 49 lightweight cells
-       provider stores receive queued descriptors
-  -> createLegacyRenderSnapshot()
-  -> construct whole-island compatibility graph
-  -> construct ocean, foam, cloud, fog, post, input, and diagnostics
-  -> start renderer animation loop
+construction
+  -> create deterministic legacy composition
+  -> create terrain, biome, shoreline, vegetation, rock, prop, presentation providers
+  -> create partition, surface, engine, and Core World domain
+  -> register world definition once
+  -> create query, bridge, and lazy materializer
 
-frame
-  -> calculate frameMs and dt
-  -> scenario.tick(dt)
-  -> project camera
-  -> updateWorldFocus(camera, mode, dt)
-  -> update compatibility render uniforms
-  -> sample adaptive performance
-  -> render compatibility frame
-  -> increment frame counter
-  -> when frames > 1:
-       processMaterializationFrame(camera, mode)
-       sync active cells
-       select one candidate by LOD, distance, cell ID
-       advance terrain, biome, shoreline, or presentation stage
-  -> periodically project aggregate materialization counters
-```
+prepare
+  -> if already prepared return cached world snapshot
+  -> mark prepared true
+  -> commitFocus(origin)
+       setFocus(worldId)
+       updateWorld(worldId)
+       materializer.sync()
 
-## Implemented materialization services
+runtime
+  -> update focus at 10 Hz or cell crossing
+  -> process one bounded materialization candidate after render
+  -> expose coordination and provider counts
 
-`createLazyCellMaterializer()` provides:
-
-```txt
-active-cell synchronization
-released-state removal
-deterministic priority by LOD, focus distance, cell ID
-bounded candidate count per call
-terrain row stepping
-biome row stepping from accepted terrain arrays
-shoreline row stepping from accepted terrain fields
-presentation descriptor refresh
-aggregate frame/work/completion counters
-per-cell stage observation
 reset
-```
+  -> coreWorld.resetWorlds()
+  -> materializer.reset()
+  -> prepared false
+  -> worldSnapshot null
+  -> focus fields cleared
 
-Current policy:
-
-```txt
-maxCellsPerFrame:          1
-terrainRowsPerStep:        1
-classificationRowsPerStep: 4
-stages: terrain -> biome -> shoreline -> presentation -> done
+dispose
+  -> reset()
+  -> coreWorld.reset()
 ```
 
 ## Main finding
 
-The live integration fixes the previous dead-queue defect, but the helper result is not a durable authority result.
+### Product contract mismatch
 
-### Identity gap
+`reset()` is public on the reusable world-runtime object and leaves `prepare()` available, which implies the same wrapper can be prepared again. The implementation does not satisfy that contract.
 
-`processMaterializationFrame()` accepts only position, camera mode, and an optional cell count. It carries no:
+### Pinned Core World behavior
 
-```txt
-commandId
-sessionId or sessionEpoch
-worldRevision
-focusRevision
-cellGeneration
-provider descriptor version
-frame sequence acknowledgement
-```
-
-### Failure gap
-
-Provider calls are synchronous and unguarded. A terrain, biome, shoreline, or presentation exception can escape through the animation callback. There is no typed failure, retry policy, quarantine state, or terminal blocked result.
-
-### Budget gap
-
-The scheduler limits candidate count and provider rows, not elapsed CPU time. A configured row can become more expensive as resolution or provider complexity grows. Materialization runs after the visible render, and its current cost is not correlated with the frame or readiness result that caused it.
-
-### Readiness gap
-
-The presentation provider sets `materialization` to `ready` when terrain, biome, and shoreline records are present, but it does not publish a canonical required-provider version set or a monotonic `cellReadinessRevision`. Vegetation, rock, and prop handles are included without a joined source fingerprint.
-
-### Render-consumption gap
-
-The host builds `worldRenderer` once from `createLegacyRenderSnapshot()` at startup. It never reads:
+The pinned `resetWorlds()` implementation:
 
 ```txt
-getPresentationDescriptors()
-provider runtime readiness
-renderer-cell-cache
-cell-aware renderer controller
-cell readiness revision
+disposeRuntime(clearDefinitions: true)
+  -> release every active cell
+  -> call provider.reset for every provider
+  -> clear runtimeWorlds
+createInitialWorldState()
+commit reset state
 ```
 
-Materialization can complete while the visible scene remains unchanged. Debug counters prove scheduler progress, not render consumption.
+After that operation, `setFocus(worldId)` cannot resolve a registered runtime definition.
+
+### Provider and materializer split
+
+Core World performs provider release/reset during `resetWorlds()`. The product wrapper then separately calls `materializer.reset()`. There is no combined result proving:
+
+```txt
+all provider releases completed
+all provider stores are empty
+materializer jobs were cancelled
+world definition was retained or re-registered
+new generation differs from the old one
+fresh prepare recreated the expected 49 cells
+```
+
+### Failure and rollback gap
+
+Provider reset failures are swallowed by the pinned runtime. The product wrapper receives no release diagnostics or rollback information. If a provider partially fails to reset, the wrapper still clears its own references and reports no failure.
+
+### Snapshot and recovery gap
+
+Core World supports portable coordination and provider snapshots, but the product wrapper exposes only the current world snapshot and compatibility render snapshot. It does not expose a versioned product checkpoint joining:
+
+```txt
+world definition identity
+Core World coordination state
+provider snapshots or provider-store fingerprints
+materializer stage state
+focus accumulator and cell key
+scenario/environment state
+renderer compatibility revision
+```
 
 ## Domain map
 
 ### Platform and route host
 
-Pinned import maps, catalog validation, loader/error projection, WebGPU/WebGL2 admission, browser input, resize, animation loop, pagehide callback, performance adaptation, and global diagnostic publication.
+Pinned module admission, catalog validation, loader/error projection, WebGPU/WebGL2 setup, browser input, resize, animation loop, pagehide disposal, adaptive performance, and global diagnostics.
 
-### NexusEngine Core World
+### Core World coordination
 
-World registration, uniform-grid partition, surface, focus, active-cell selection, ordered providers, capability admission, effect descriptors, snapshots, diagnostics, release, rollback, and reset.
+World definition registration, partition, surface, focus, active-cell selection, ordered provider lifecycle, effect descriptors, snapshots, diagnostics, reset, and domain disposal.
 
 ### Product world wrapper
 
-Legacy semantic composition, Core World runtime resolution, provider creation, prepare, throttled focus updates, query/state projection, compatibility bridge, materializer construction, frame processing, reset, and disposal.
+Legacy composition, provider construction, one-time registration, prepare, focus throttling, lazy materialization, query facade, compatibility snapshot bridge, reset, dispose, and state projection.
 
 ### Provider domains
 
 ```txt
 FOUNDATION
   cozy-island-terrain-provider
-
 CLASSIFICATION
   biome-classification-provider
   shoreline-classification-provider
-
 POPULATION
   vegetation-provider
   rock-provider
   prop-provider
-
 PRESENTATION
   cell-presentation-provider
 ```
 
 ### Semantic world and gameplay
 
-Deterministic seed and clock, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
+Deterministic seed/time, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
 
 ### Rendering
 
-Startup render snapshot, whole-island stylized renderer, layered grass, ocean, foam, volume textures, cloud/fog consumers, post-processing, adaptive quality, diagnostics, renderer cell cache, resource disposal helper, and disconnected cell-aware controller.
+Compatibility render snapshot, whole-island stylized renderer, layered grass, ocean, foam, cloud/fog volumes, post-processing, quality adaptation, cell-cache utilities, disposal helpers, and disconnected cell-aware renderer controller.
 
 ### Validation and deployment
 
-Catalog/static checks, deterministic domain smoke, Core World runtime and provider-order tests, query/population parity, snapshot portability, cell lifecycle, isolated lazy materialization, renderer cache/disposal tests, and GitHub Pages deployment.
+Static catalog checks, deterministic domain smoke, Core World runtime/provider/query/population/snapshot/cell tests, lazy materialization, renderer cache/disposal tests, and GitHub Pages deployment.
 
-## Services offered by the 50 local kits
+## Services offered by the local kits
 
 ```txt
-determinism and time:
-  stable seed, scoped RNG, hash/noise, deterministic environment clock
+determinism and time
+  stable seeds, scoped RNG, identities, deterministic environment clock
 
-terrain and population:
+terrain and population
   height/normal/slope/curvature/moisture/exposure fields
-  local plateau, biome and shoreline classification, terrain LOD
-  ground contact, paths, vegetation, rocks, props, campfire
+  plateau, biome, shoreline, LOD, ground contact, paths
+  vegetation, rock, prop, campfire placement
 
-ocean and atmosphere:
+ocean and atmosphere
   floor, waves, optics, underwater, caustics, glitter, foam
   wind, weather, illumination, clouds, fog, aerial perspective
 
-render descriptors and adapters:
-  quality, material and archetype descriptors, portable snapshots
-  WebGL2 fallback, WebGPU world/ocean/foam/atmosphere/cloud/fog/post
-  adaptive performance and debug projection
+render descriptors and adapters
+  quality, materials, archetypes, immutable snapshots
+  WebGPU/WebGL2 world, ocean, foam, atmosphere, cloud, fog, post
+  performance budgeting and debug projection
 
-scenario:
-  camera rail, first-person input/movement, tick, reset, snapshot
+scenario
+  camera rail, first-person movement, scenario tick/reset/snapshot
+
+Core World integration
+  grid focus, provider order, cell lifecycle, portable coordination snapshots
+  lazy row materialization, query facade, compatibility bridge
 ```
 
 ## Complete local kit inventory
@@ -264,90 +247,33 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Imported NexusEngine services
+## Required parent domain
 
 ```txt
-createEngine
-createCoreWorldDomain
-createUniformGridPartition
-createFlatWorldSurface
-createTerrainProviderAdapter
-defineWorldEffectProvider
+cozy-island-world-recovery-domain
 ```
 
-## Runtime-implied kits and services
+Candidate kits:
 
 ```txt
-core-world-runtime-adapter         pinned runtime composition
-cozy-world-configuration           world/focus/materialization policy
-island-terrain-provider            descriptor and row materialization
-biome-classification-provider      terrain-array classification
-shoreline-classification-provider  shore-distance reuse and shoreline arrays
-vegetation-provider                cell population records
-rock-provider                      cell rock records
-prop-provider                      prop and campfire records
-cell-presentation-provider         queued/ready render-cell descriptors
-lazy-cell-materializer             sync, priority, staged work, counters
-cozy-world-query                   semantic query facade
-legacy-render-snapshot-bridge      startup compatibility snapshot
-renderer-cell-cache                prepare/update/release cache
-renderer-resource-disposal         graph resource cleanup
-cell-aware-world-renderer-controller proposed live cell consumer
-browser-input-adapter              wheel, pointer, keyboard, blur, resize
-animation-loop-host                scenario, render, materialization scheduling
-global-diagnostic-host             CozyIsland readback
+world-reset-command-kit
+world-reset-admission-kit
+world-reset-policy-kit
+world-generation-kit
+world-definition-checkpoint-kit
+provider-release-result-kit
+provider-store-reset-kit
+materializer-cancellation-kit
+world-reregistration-kit
+world-reprepare-kit
+world-recovery-result-kit
+world-recovery-fingerprint-kit
+world-recovery-journal-kit
+world-terminal-disposal-kit
+reset-reprepare-fixture-kit
+browser-world-restart-smoke-kit
 ```
 
-## Missing authority
+## Acceptance boundary
 
-```txt
-runtime session and epoch
-accepted world/focus revision
-materialization command/result identity
-cell generation
-provider source-version set
-elapsed-time budget
-classified provider failure
-retry/backoff/terminal policy
-stale completion rejection
-cell readiness revision
-renderer prepare/update/release transaction
-visible-frame acknowledgement
-bounded journal and browser fixture
-```
-
-## Required composed domain
-
-```txt
-cozy-island-live-materialization-readiness-domain
-  -> materialization-frame-command-kit
-  -> materialization-admission-kit
-  -> materialization-epoch-kit
-  -> cell-generation-kit
-  -> materialization-priority-kit
-  -> row-work-budget-kit
-  -> frame-time-budget-kit
-  -> provider-stage-result-kit
-  -> provider-failure-classification-kit
-  -> materialization-retry-kit
-  -> stale-cell-work-rejection-kit
-  -> provider-readiness-set-kit
-  -> cell-readiness-revision-kit
-  -> presentation-readiness-commit-kit
-  -> renderer-cell-plan-kit
-  -> renderer-cell-commit-result-kit
-  -> visible-frame-acknowledgement-kit
-  -> materialization-observation-kit
-  -> materialization-journal-kit
-  -> live-materialization-fixture-kit
-  -> browser-ready-cell-render-smoke-kit
-```
-
-## Next safe ledge
-
-```txt
-MyCozyIsland Live Materialization Readiness Commit Authority
-+ Provider-Version / Render-Consumption Fixture Gate
-```
-
-Implement the authority inside the existing world wrapper and route. Promote only reusable generation/readiness primitives into the existing NexusEngine Core World DSK. Keep the compatibility renderer until a cell-render commit can prepare, acknowledge, roll back, and dispose resources deterministically.
+A reusable reset is complete only when a new generation is prepared with the same admitted definition/provider order, 49 active cells, empty old materializer jobs, fresh provider rows, and no stale callback or renderer revision from the preceding generation. A terminal dispose is complete only when future prepare/focus/materialization commands are explicitly rejected.

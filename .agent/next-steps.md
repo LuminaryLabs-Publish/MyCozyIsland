@@ -1,276 +1,280 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T07-01-49-04-00`
+Last updated: `2026-07-11T08-41-02-04-00`
+
+## Summary
+
+Implement lifecycle ownership first, then replace Boolean focus updates with a versioned transaction that can be run against both the exact pinned Core World runtime and a contract-faithful test adapter. Do not wire live provider cells into rendering until an accepted world revision exists.
 
 ## Plan ledger
 
-**Goal:** introduce one route-session authority that can start, fail, stop, dispose and restart the complete browser runtime without leaking listeners, timers, animation work, Core World state, GPU resources or global references.
+**Goal:** produce one accepted focus revision across wrapper state, Core World state and all seven provider stores, with deterministic retry and failure classification.
 
-- [ ] Create a session owner before constructing the renderer.
-- [ ] Assign monotonic `sessionId` and `sessionEpoch` values.
-- [ ] Model `idle`, `starting`, `running`, `stopping`, `disposing`, `stopped` and `failed` states.
-- [ ] Route all resource acquisition through a reverse-order cleanup stack.
-- [ ] Register every listener and timeout as a named lease.
-- [ ] Wrap `renderer.setAnimationLoop()` in an animation-loop lease with explicit cancellation.
-- [ ] Fence frame, focus and render callbacks by session epoch.
-- [ ] Give each renderer/host adapter an idempotent structured disposal result.
-- [ ] Use `disposeRendererObject()` for owned scene graphs while preserving explicitly shared resources.
-- [ ] Dispose generated volume, sky, grass and post resources exactly once.
-- [ ] Dispose the renderer/backend after dependent resources retire.
-- [ ] Retire or restore `globalThis.CozyIsland` through an ownership lease.
-- [ ] Roll back partial startup failures automatically.
-- [ ] Make `stop()` safe during startup, a frame, a focus update or disposal.
-- [ ] Add a fresh-session restart transaction that begins only after prior disposal succeeds or reports an explicit degraded policy.
-- [ ] Expose bounded lifecycle and resource observations through the host.
-- [ ] Add deterministic Node fixtures and a real browser WebGPU/WebGL2 restart smoke.
-- [ ] Keep Core World contract parity second and visible cell rendering third.
+- [ ] Complete Runtime Session Lifecycle Authority and expose `sessionId` plus `sessionEpoch`.
+- [ ] Define `FocusCommand` with command, session, epoch, expected revision, target and reason.
+- [ ] Make initial `prepare()` retriable; set `prepared = true` only after an accepted initial focus result.
+- [ ] Replace pre-commit wrapper mutation with detached target calculation.
+- [ ] Capture wrapper, Core World and provider-store checkpoints before mutation.
+- [ ] Run the exact pinned production runtime in Node fixtures.
+- [ ] Upgrade or replace the fake runtime so it implements the same selection and provider contract.
+- [ ] Add explicit `required`, `updated`, `retained` and `released` selection readback.
+- [ ] Add provider result rows for every phase/cell/provider action.
+- [ ] Classify complete, degraded, rejected, rolled-back and partial outcomes.
+- [ ] Restore the last accepted wrapper/Core World/provider revision after a failed transaction where policy permits.
+- [ ] Publish monotonic `worldRevision` and `providerRevisionSet` values.
+- [ ] Return immutable `FocusTransactionResult` instead of Boolean.
+- [ ] Journal bounded focus commands/results and expose clone-safe observations.
+- [ ] Correlate accepted focus revisions with the runtime session epoch.
+- [ ] Add production/fake parity, failure injection and retry fixtures.
+- [ ] Keep visible provider-cell render consumption as the next separate transaction.
 
-## First implementation slice
+## Current implementation queue
 
 ```txt
-MyCozyIsland Runtime Session Lifecycle Authority
-+ Startup Rollback / Stop / Dispose / Restart Fixture Gate
+1. Runtime Session Lifecycle Authority
+   + Startup Rollback / Stop / Dispose / Restart Fixture Gate
+
+2. Pinned Core World Focus Transaction Authority
+   + Production/Fake Contract Parity and Failure Fixture Gate
+
+3. Core World Render Commit Authority
+   + Provider/Cell Consumer Fidelity Fixture Gate
+
+4. Camera Rail Baseline Authority
+   + Drag/Reset Fidelity Fixture Gate
+
+5. Dynamic Environment Frame Authority
+   + Consumer Coherence Fixture Gate
+
+6. Adaptive Quality Transaction Authority
+   + Full-Recovery Fixture Gate
 ```
 
-## Candidate kits
+## Focus transaction candidate kits
 
 ```txt
-runtime-session-id-kit
-runtime-session-state-kit
-runtime-session-command-kit
-runtime-session-result-kit
-runtime-session-owner-kit
-startup-acquisition-ledger-kit
-reverse-cleanup-stack-kit
-listener-lease-kit
-timer-lease-kit
-animation-loop-lease-kit
-session-epoch-admission-kit
-frame-generation-fence-kit
-focus-work-generation-fence-kit
-render-resource-registry-kit
-renderer-disposal-adapter-kit
-global-exposure-lease-kit
-startup-rollback-kit
-terminal-disposal-kit
-restart-handoff-kit
-lifecycle-observation-kit
-runtime-lifecycle-journal-kit
-runtime-lifecycle-fixture-kit
-browser-restart-smoke-kit
+focus-command-kit
+focus-target-normalization-kit
+focus-admission-kit
+focus-checkpoint-kit
+provider-store-checkpoint-kit
+focus-selection-plan-kit
+provider-transition-result-kit
+focus-transaction-kit
+focus-rollback-kit
+world-revision-kit
+provider-revision-set-kit
+focus-result-kit
+focus-journal-kit
+focus-observation-kit
+core-world-contract-adapter-kit
+core-world-parity-fixture-kit
+focus-failure-injection-kit
+focus-retry-fixture-kit
 ```
 
-## Required session commands
+Prefer extending the existing product world wrapper and existing NexusEngine Core World DSK. Add a reusable core primitive only when the transaction semantics are general across worlds.
+
+## Command contract
 
 ```txt
-StartRuntimeSession
-StopRuntimeSession
-DisposeRuntimeSession
-RestartRuntimeSession
+FocusCommand {
+  commandId
+  sessionId
+  sessionEpoch
+  expectedWorldRevision
+  source
+  reason
+  cameraMode
+  targetPosition
+  deltaSeconds
+}
 ```
 
-Each command must carry:
+Admission rejects:
 
 ```txt
-commandId
-expectedSessionId
-expectedSessionEpoch
-reason
-requestedAt
+wrong session
+stale epoch
+unexpected revision
+runtime not prepared
+runtime stopping or disposed
+non-portable or non-finite target
+unsupported camera mode
 ```
 
-## Required result envelope
+## Result contract
 
 ```txt
-commandId
-sessionId
-previousSessionEpoch
-sessionEpoch
-previousState
-state
-status
-reason
-startedAt
-completedAt
-acquiredResourceCount
-releasedResourceCount
-residualResourceCount
-listenerLeaseCount
-timerLeaseCount
-animationLoopActive
-globalLeaseActive
-staleCallbacksRejected
-disposalFailures
-resourceFingerprint
-resultFingerprint
+FocusTransactionResult {
+  commandId
+  sessionId
+  sessionEpoch
+  status
+  reason
+  previousWorldRevision
+  worldRevision
+  previousFocus
+  focus
+  previousCellKey
+  cellKey
+  selection: { required, updated, retained, released }
+  providerResults[]
+  coreWorldSequence
+  wrapperSnapshotFingerprint
+  providerStoreFingerprint
+  rollback
+  diagnostics[]
+  resultFingerprint
+}
 ```
 
 Allowed statuses:
 
 ```txt
-started
-stopped
-disposed
-restarted
 unchanged
+committed-complete
+committed-degraded
 rejected-stale
 rejected-state
-failed-rolled-back
-failed-partial
+rejected-invalid
+failed-before-focus
+failed-after-focus-rolled-back
+failed-provider-rolled-back
+failed-provider-partial
 ```
 
-## Acquisition contract
-
-Every successful acquisition appends one cleanup entry containing:
+## Transaction order
 
 ```txt
-resourceId
-resourceKind
-ownerSessionId
-ownerEpoch
-acquiredAt
-releaseOrder
-release()
-released
-releaseResult
+normalize command
+  -> validate session/epoch/revision
+  -> calculate target and cell without mutating wrapper state
+  -> capture accepted checkpoint
+  -> stage or execute production focus/cell transition
+  -> collect provider and Core World outcomes
+  -> validate world/provider parity
+  -> commit wrapper bookkeeping only after acceptance
+  -> assign world revision and fingerprint
+  -> publish result and journal entry
 ```
 
-Acquisition groups:
+## Initial prepare repair
+
+Current order:
 
 ```txt
-module and backend admission
-Core World and providers
-scene and camera
-world, ocean and foam
-atmosphere textures
-cloud, fog and post
-performance and debug
-input listeners
-resize and page lifecycle listeners
-loader timers
-animation loop
-global host
+prepared = true
+commitFocus(origin)
 ```
 
-## Stop and disposal contract
+Required order:
 
 ```txt
-stop admission
-  -> state = stopping
-  -> increment epoch or close old-epoch admission
-  -> clear animation loop
-  -> cancel timers
-  -> remove listeners
-  -> await or reject in-flight focus/render work
-  -> state = disposing
-  -> execute cleanup stack in reverse order
-  -> release global host
-  -> publish one terminal result
-  -> state = stopped or failed
+status = preparing
+execute initial FocusCommand
+if committed:
+  prepared = true
+  status = ready
+else:
+  prepared = false
+  retain or restore clean checkpoint
+  return typed failure
 ```
 
-Calling stop/dispose again must return `unchanged` with the original terminal result fingerprint.
+A second `prepare()` after failure must retry or return an explicit terminal rejection; it must not silently return `null` or stale state.
 
-## Startup rollback fixtures
+## Contract parity fixture
 
-Inject failure after each acquisition boundary:
+Run the same scenario matrix against:
 
 ```txt
-renderer construction
-renderer initialization
-Core World creation
-initial prepare
-world renderer creation
-ocean creation
-foam creation
-atmosphere texture creation
-cloud creation
-fog creation
-post creation
-listener registration
-timer registration
-animation-loop registration
-global-host publication
+A. exact pinned NexusEngine modules
+B. local contract adapter used by deterministic tests
 ```
 
-For every row prove:
+Scenarios:
 
 ```txt
-all earlier resources are released
-later resources were never acquired
-no animation callback remains admissible
-no listener or timeout remains owned
-Core World has no active session-owned state
-renderer/backend status is explicit
-no live global host references the failed session
-second start succeeds with a newer epoch
+initial 49-cell prepare
+same-cell no-op
+movement below interval
+movement below minimum distance
+single cell-boundary crossing
+multiple-cell jump
+provider not-applicable
+missing required capability
+noncritical provider failure
+critical provider failure
+release failure
+partition selection validation failure
+provider async-method rejection
+retry after initial failure
+retry after movement failure
+reset/dispose during focus command
 ```
 
-## Runtime stop/restart fixtures
+Compare:
 
 ```txt
-stop before first frame
-stop during frame callback
-stop during Core World focus update
-stop while loader timers are pending
-pagehide after explicit stop
-repeat stop/dispose
-restart after clean stop
-restart after rollback failure
-old frame callback after restart
-old focus result after restart
-old timeout after restart
+selection identities and counts
+provider order and actions
+cell states and descriptor versions
+diagnostics and failure codes
+release/rollback order
+active-cell IDs
+provider-store counts
+focus and Core World sequence
+portable snapshots
+result classifications
 ```
 
-## Browser smoke matrix
+## Failure injection points
 
 ```txt
-WebGPU core mode start -> stop -> restart
-WebGL2 core mode start -> stop -> restart
-legacy mode start -> stop -> restart
-startup failure -> visible error -> clean retry
-pagehide -> zero live session leases
-H overlay and input after restart belong only to the new epoch
+before setFocus
+immediately after setFocus commit
+partition.selectCells
+selection validation
+first released cell
+provider release
+first updated cell
+provider update
+first required cell
+provider prepare
+provider effect normalization
+Core World state validation
+cellsChanged commit
+wrapper snapshot assignment
+wrapper cell-key assignment
+result publication
 ```
 
-## Second implementation slice
+## Acceptance conditions
 
 ```txt
-MyCozyIsland Pinned Core World Contract Parity
-+ Focus Transaction and Production-Runtime Failure Fixture Gate
+failed initial prepare is retriable
+no failed focus reports committed-complete
+wrapper and Core World focus agree after every terminal result
+accepted world revision has deterministic active-cell IDs
+all provider stores match accepted active-cell policy
+rollback result identifies every restored or residual row
+stale session/epoch/revision commands cannot mutate state
+repeat command ID is idempotent or explicitly rejected
+production and test adapter classifications match
+render receives only committed world revisions
 ```
 
-After lifecycle authority exists:
+## Follow-on render gate
 
-- load the exact pinned Core World modules in Node
-- run the same contract matrix against production and fake adapters
-- fix retriable `prepare()` state
-- replace Boolean focus results with typed results
-- add provider-store checkpoints, failure policy and rollback proof
-- correlate world/focus/provider results with the session epoch
-
-## Third implementation slice
+After focus authority is executable:
 
 ```txt
-MyCozyIsland Core World Render Commit Authority
-+ Provider/Cell Consumer Fidelity Fixture Gate
+accepted FocusTransactionResult
+  -> detached provider/cell render plan
+  -> resource capacity and lifecycle preflight
+  -> atomic visible-cell commit
+  -> RenderCommitResult correlated with worldRevision
 ```
 
-It must reuse the lifecycle resource registry and accept only world revisions whose session epoch and completeness policy are valid.
-
-## Ordered follow-up slices
-
-```txt
-4. Camera Rail Baseline Authority
-5. Dynamic Environment Frame Authority
-6. Adaptive Quality Transaction Authority
-```
-
-## Deferred
-
-- new world content or expanded movement
-- active-radius changes
-- immediate removal of `?world=legacy`
-- visible cell-authoritative rendering
-- terrain, biome, vegetation, grass, rocks, ocean, clouds, fog, lighting or post changes
-- public kit promotion
+Do not let the existing startup compatibility snapshot stand in for this proof.

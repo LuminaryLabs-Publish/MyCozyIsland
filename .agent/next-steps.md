@@ -1,31 +1,30 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T11-19-10-04-00`
+Last updated: `2026-07-11T12-50-35-04-00`
 
 ## Summary
 
-Implement browser runtime-session ownership before reusable Core World reset, restart, or live cell-render cutover. The session must own startup acquisitions, callback admission, world recovery quiescence, renderer retirement, public-host revocation, and idempotent disposal.
+Keep adaptive quality behind the existing runtime-session, Core World and render-commit prerequisites. When those exist, replace frame-count callbacks with one elapsed-time quality transaction that can prepare, commit, rollback, recover fully and prove the first visible frame.
 
 ## Plan ledger
 
-**Goal:** convert the implicit `main()` ownership graph into one explicit lifecycle transaction with phase, generation, leases, rollback, detached results, and executable browser proof.
+**Goal:** implement a cadence-independent adaptive-quality authority without allowing presentation changes to bypass session or renderer ownership.
 
-- [ ] Add `sessionId`, `sessionGeneration`, and a canonical session phase machine.
-- [ ] Wrap every startup acquisition in a reverse-order rollback ledger.
-- [ ] Retain and lease the renderer animation-loop installation.
-- [ ] Retain exact handler/options tuples for every browser listener.
-- [ ] Retain loader timeout handles and fence delayed DOM callbacks.
-- [ ] Replace raw callback mutation with session-generation admission.
-- [ ] Replace raw `globalThis.CozyIsland` mutation surfaces with typed commands and detached observations.
-- [ ] Add a `quiescing` phase that freezes scenario, input, focus, materialization, rendering, adaptive quality, and debug publication before world recovery.
-- [ ] Integrate the Core World reset/re-prepare transaction as a child of the session lifecycle.
-- [ ] Add `worldGeneration` and `rendererGeneration` correlation.
-- [ ] Acknowledge the first visible frame before resuming from reset.
-- [ ] Inventory and dispose scene, material, texture, render-target, pipeline, renderer, and canvas ownership.
-- [ ] Make pagehide and explicit stop converge on one idempotent terminal transaction.
-- [ ] Revoke old global-host and callback references after generation retirement.
-- [ ] Publish bounded lifecycle journals and detached disposal/recovery results.
-- [ ] Add DOM-free, WebGPU, WebGL2, legacy-mode, pagehide, reset, stop, and restart fixtures.
+- [ ] Complete Runtime Session Lifecycle Authority.
+- [ ] Complete Core World Reset / Re-prepare Authority.
+- [ ] Complete pinned Core World focus transaction and materialization readiness.
+- [ ] Complete Core World render commit and visible-frame proof.
+- [ ] Define a versioned `QualityPolicy` with elapsed-time dwell values.
+- [ ] Add monotonic performance samples with session, generation, frame and visibility identity.
+- [ ] Replace 90/360 frame counters with elapsed-time windows.
+- [ ] Add a typed quality transition command and admission result.
+- [ ] Fence transitions during booting, quiescing, reset, stop and disposal.
+- [ ] Build one immutable consumer plan per target level.
+- [ ] Add prepare/commit/rollback adapters for cloud, fog, post and pixel ratio.
+- [ ] Restore the startup pixel ratio when returning to level 0.
+- [ ] Publish canonical effective quality state and fingerprint.
+- [ ] Correlate one visible frame with the committed quality revision.
+- [ ] Add cadence, full-recovery, partial-failure and lifecycle fixtures.
 
 ## Ordered implementation queue
 
@@ -40,171 +39,104 @@ Implement browser runtime-session ownership before reusable Core World reset, re
 8. Adaptive Quality Transaction Authority
 ```
 
-## Candidate lifecycle kits
+## Candidate adaptive-quality kits
 
 ```txt
-runtime-session-authority-kit
-runtime-session-phase-kit
-runtime-session-generation-kit
-startup-acquisition-ledger-kit
-startup-rollback-kit
-animation-loop-lease-kit
-listener-lease-kit
-timer-lease-kit
-reset-quiescence-kit
-input-retirement-kit
-world-session-adapter-kit
-renderer-resource-inventory-kit
-renderer-retirement-kit
-global-host-revocation-kit
-idempotent-session-stop-kit
-session-disposal-result-kit
-session-lifecycle-journal-kit
-browser-single-session-fixture-kit
-browser-restart-smoke-kit
+quality-policy-schema-kit
+performance-sample-envelope-kit
+performance-window-timebase-kit
+quality-level-decision-kit
+quality-transition-command-kit
+quality-transition-admission-kit
+quality-session-fence-kit
+quality-consumer-plan-kit
+quality-consumer-prepare-kit
+quality-consumer-commit-kit
+quality-consumer-rollback-kit
+effective-quality-state-kit
+pixel-ratio-restore-kit
+quality-transition-result-kit
+quality-transition-journal-kit
+quality-frame-ack-kit
+quality-cadence-parity-fixture-kit
+quality-full-recovery-fixture-kit
+quality-partial-failure-fixture-kit
 ```
 
-## Session command contracts
+## Required policy shape
 
 ```txt
-StartSessionCommand {
-  commandId
-  requestedMode
-  expectedRouteRevision
-}
-
-ResetWorldCommand {
-  commandId
-  sessionId
-  expectedSessionGeneration
-  expectedWorldGeneration
-  policy
-  reason
-}
-
-StopSessionCommand {
-  commandId
-  sessionId
-  expectedSessionGeneration
-  reason
+QualityPolicy {
+  id
+  revision
+  targetFrameMs
+  degradeThresholdMs
+  recoverThresholdMs
+  degradeDwellMs
+  recoverDwellMs
+  minimumLevelDwellMs
+  visibilityPolicy
+  levels[]
+  fingerprint
 }
 ```
 
-## Session phases
+## Required transition
 
 ```txt
-created
-booting
-running
-quiescing
-resetting
-repreparing
-stopping
-disposing
-blocked
-failed
-disposed
+admit QualityTransitionCommand
+  -> verify session and renderer generations
+  -> verify expected quality revision
+  -> resolve exact target values
+  -> prepare all consumers
+  -> commit all consumers
+  -> rollback all on any failure
+  -> publish EffectiveQualityState
+  -> render one frame
+  -> publish QualityFrameReceipt
+  -> return detached QualityTransitionResult
 ```
 
-## Required startup transaction
+## Consumer plan
 
 ```txt
-admit StartSession
-  -> allocate session generation
-  -> initialize renderer
-  -> construct and prepare world
-  -> acquire scene/render graph
-  -> acquire performance/debug services
-  -> register listeners and timers
-  -> install one animation-loop lease
-  -> publish read-only host
-  -> commit running
-
-on any failure
-  -> retire acquired steps in reverse order
-  -> publish rollback result
-  -> leave no active loop, listener, timer, host or renderer owner
+cloud step scale
+fog step scale
+fog resolution scale
+pixel ratio cap scale
 ```
 
-## Required reset transaction
+Future adaptive dimensions must not be added until they implement the same prepare/commit/rollback contract.
+
+## Fixture matrix
 
 ```txt
-admit ResetWorld
-  -> enter quiescing
-  -> retire held input and drag state
-  -> reject successor old-generation callbacks
-  -> freeze scenario/focus/materialization/render publication
-  -> execute Core World recovery
-  -> prepare new world generation
-  -> correlate renderer generation
-  -> commit and acknowledge first visible frame
-  -> resume running
-```
-
-## Required stop/dispose transaction
-
-```txt
-admit StopSession
-  -> retire session generation
-  -> clear animation loop
-  -> clear timers
-  -> remove listeners
-  -> revoke public host
-  -> dispose world
-  -> dispose post/cloud/fog/ocean/foam/world/scene resources
-  -> dispose renderer and canvas ownership
-  -> publish detached terminal result
-```
-
-## Session disposal result
-
-```txt
-SessionDisposalResult {
-  commandId
-  sessionId
-  sessionGeneration
-  status
-  phaseBefore
-  phaseAfter
-  animationLoopResult
-  listenerResults[]
-  timerResults[]
-  inputResult
-  worldResult
-  renderResourceResults[]
-  rendererResult
-  globalHostResult
-  failures[]
-  fingerprintBefore
-  fingerprintAfter
-}
-```
-
-## Required fixture matrix
-
-```txt
-one startup creates one renderer, loop, listener set, timer set and host
-startup failure after every acquisition rolls back cleanly
-reset freezes all live consumers before world recovery
-held input and pointer drag cannot cross reset generation
-world recovery creates a fresh world generation
-first visible frame identifies new world and renderer generations
-retained old callbacks and host references are inert
-pagehide during startup, reset and running is idempotent
-terminal stop twice returns the same terminal identity
-restart creates one clean successor session
-WebGPU, WebGL2 and legacy modes pass
+30/60/90/120 Hz cadence parity
+irregular frame schedule parity
+hidden-tab policy
+stalled-frame policy
+minimum level dwell
+0 -> 1 -> 2 degrade completeness
+2 -> 1 -> 0 full recovery
+pixel ratio returns to startup value
+consumer prepare rejection
+consumer commit failure rollback
+stale session/revision rejection
+duplicate transition idempotency
+reset/stop/dispose fencing
+WebGPU/WebGL2 parity
+effective fingerprint stability
+first visible frame acknowledgement
 ```
 
 ## Acceptance conditions
 
 ```txt
-all mutation enters session admission
-all callbacks are leased and generation-fenced
-world reset cannot run under an admitted old frame
-all startup acquisitions have rollback
-all terminal resources have disposal results
-pagehide and explicit stop share one transaction
-old references cannot mutate successor state
-restart leaves exactly one active browser session
+transition timing is based on elapsed evidence
+all consumers share one quality revision
+no partial quality state survives failure
+level 0 equals original startup effective state
+quality callbacks cannot mutate retired sessions
+observations expose every effective consumer value
+one visible frame acknowledges the committed revision
 ```

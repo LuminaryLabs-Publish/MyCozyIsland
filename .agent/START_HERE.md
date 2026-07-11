@@ -1,107 +1,87 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T11-19-10-04-00`
+Last aligned: `2026-07-11T12-50-35-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make the browser runtime session the sole owner of startup, callbacks, world recovery, rendering, stop, disposal, and restart before reusable reset or live cell rendering depends on it.
+Current focus: define adaptive quality as an elapsed-time, session-fenced, reversible render transaction with complete recovery and visible-frame proof.
 
 ## Summary
 
-The Core World reset/re-prepare audit established that the world definition is cleared without re-registration. This follow-up identifies the parent lifecycle problem: `src/main-cloudform.js` installs a permanent renderer animation loop, anonymous browser listeners, delayed loader timers, a mutable global host, and a large render-resource graph, while `pagehide` calls only `domains.dispose()`.
+MyCozyIsland selects a complete startup quality descriptor, then samples one value per display frame and directly mutates cloud steps, fog steps, fog resolution and pixel ratio when its internal level changes. The path has no transition identity, admission, prepare/commit/rollback, effective-state fingerprint or frame acknowledgement.
 
-A raw `CozyIsland.worldRuntime.reset()` or `.dispose()` can therefore run while scenario, camera, focus, materialization, rendering, performance adaptation, and diagnostics continue executing. The route needs one session generation, phase machine, lease registry, startup rollback stack, reset-quiescence handshake, complete render retirement, and idempotent terminal result.
+Two concrete issues are now the focus of this audit. The 90-frame degrade and 360-frame recovery thresholds run four times faster at 120 Hz than at 30 Hz, and recovery to level 0 does not restore the original pixel ratio because the route only calls `renderer.setPixelRatio(...)` when `level > 0`.
 
 ## Plan ledger
 
-**Goal:** document the complete browser ownership graph and define a fixture-backed session lifecycle that quiesces live work before world recovery and retires every acquired callback and resource on stop.
+**Goal:** document a cadence-independent adaptive-quality transaction while preserving the existing lifecycle, world and render-commit prerequisites.
 
 - [x] Compare all accessible Publish repositories with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` because its repo-local reset audit was newer than central tracking.
-- [x] Trace production startup, listeners, timers, animation loop, public host, world reset, pagehide, and render resources.
-- [x] Identify the interaction loop, domains, services, 50 local kits, seven providers, and runtime-implied adapters.
-- [x] Confirm the animation callback has no session phase or generation admission.
-- [x] Confirm pagehide disposes only the world wrapper.
-- [x] Define runtime-session, quiescence, acquisition rollback, lease, disposal-result, and fixture boundaries.
-- [x] Add timestamped architecture, render, gameplay, interaction, lifecycle, and deploy audits.
+- [x] Select only `MyCozyIsland`, the oldest current eligible entry.
+- [x] Trace startup quality, frame sampling, level decisions and all mutable consumers.
+- [x] Identify the interaction loop, domains, services and all 50 local kits.
+- [x] Confirm refresh-rate-dependent dwell behavior.
+- [x] Confirm pixel-ratio recovery is incomplete at level 0.
+- [x] Define transition, rollback, effective-state, journal and frame-proof kits.
+- [x] Add timestamped architecture, render, gameplay, interaction, performance and deploy audits.
 - [x] Change no runtime or deployment behavior.
 - [x] Push directly to `main`; create no branch or pull request.
 
 ## Current interaction loop
 
 ```txt
-route startup
+startup
+  -> validate kit catalog
   -> initialize WebGPU/WebGL2 renderer
-  -> construct Core World wrapper and seven providers
-  -> prepare 49 cells
-  -> create compatibility world/ocean/foam/cloud/fog/post resources
-  -> attach wheel, pointer, keyboard, blur, resize and pagehide listeners
-  -> schedule loader timers
-  -> install renderer.setAnimationLoop
-  -> expose globalThis.CozyIsland with raw runtime and render objects
+  -> choose startup quality
+  -> create world and render graph
+  -> create performance budget
+  -> install callbacks and animation loop
 
 frame
-  -> scenario.tick
-  -> camera projection
-  -> updateWorldFocus
-  -> compatibility renderer updates
-  -> postPipeline.render
-  -> processMaterializationFrame
-  -> debug/global observations
-
-reset/dispose
-  -> raw worldRuntime remains callable
-  -> loop/listeners/timers remain admitted
-  -> semantic world can clear while old compatibility frame continues
-  -> pagehide retires only domains
+  -> sample frameMs
+  -> tick scenario and camera
+  -> update focus and render animation
+  -> sample performance budget
+  -> maybe invoke direct degrade/recover callback
+  -> mutate cloud/fog/post/pixel-ratio consumers
+  -> render
+  -> materialize cells
+  -> project debug/global state
 ```
 
 ## Main finding
 
 ```txt
-session owner: absent
-session phase/generation: absent
-startup acquisition ledger: absent
-startup rollback: absent
-animation-loop lease: absent
-listener/timer leases: absent
-reset quiescence: absent
-global host revocation: absent
-complete render-resource retirement: absent
-idempotent session disposal result: absent
-single-session/restart fixture: absent
+startup quality policy: present
+adaptive levels: present
+elapsed-time dwell: absent
+refresh-rate parity: absent
+session/renderer generation fence: absent
+transaction identity: absent
+consumer prepare/commit/rollback: absent
+effective-quality fingerprint: absent
+full level-zero recovery: broken for pixel ratio
+first visible frame acknowledgement: absent
+adaptive transition fixtures: absent
 ```
-
-World recovery is a child transaction of the browser session. It cannot become safe while the route continues admitting callbacks and rendering without a generation fence.
 
 ## Required authority flow
 
 ```txt
-StartSession
-  -> allocate session and generation
-  -> acquire renderer, world, render graph, listeners and timers
-  -> install one animation lease
-  -> publish a read-only command/observation host
-  -> commit running
-
-ResetWorld
-  -> enter quiescing
-  -> retire held input and successor frame work
-  -> freeze focus/materialization/render publication
-  -> execute Core World recovery
-  -> correlate new world and renderer generations
-  -> acknowledge first visible frame
-  -> resume running
-
-StopSession
-  -> retire generation
-  -> clear animation loop and timers
-  -> remove listeners
-  -> revoke public host
-  -> dispose world and complete render graph
-  -> publish detached idempotent result
+PerformanceSample
+  -> session, generation, visibility and monotonic-time admission
+  -> elapsed-time performance window
+  -> QualityDecision
+  -> immutable consumer plan
+  -> prepare every consumer
+  -> commit all or rollback all
+  -> EffectiveQualityState + fingerprint
+  -> render one frame
+  -> consumer and visible-frame acknowledgement
+  -> typed result and bounded journal
 ```
 
 ## Priority order
@@ -120,21 +100,21 @@ StopSession
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T11-19-10-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T11-19-10-04-00.md
-.agent/architecture-audit/2026-07-11T11-19-10-04-00-browser-runtime-session-lifecycle-dsk-map.md
-.agent/render-audit/2026-07-11T11-19-10-04-00-animation-loop-world-generation-correlation-gap.md
-.agent/gameplay-audit/2026-07-11T11-19-10-04-00-reset-during-live-frame-loop.md
-.agent/interaction-audit/2026-07-11T11-19-10-04-00-global-host-listener-command-map.md
-.agent/lifecycle-audit/2026-07-11T11-19-10-04-00-session-quiescence-disposal-contract.md
-.agent/deploy-audit/2026-07-11T11-19-10-04-00-single-loop-reset-disposal-fixture-gate.md
+.agent/trackers/2026-07-11T12-50-35-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T12-50-35-04-00.md
+.agent/architecture-audit/2026-07-11T12-50-35-04-00-adaptive-quality-transaction-dsk-map.md
+.agent/render-audit/2026-07-11T12-50-35-04-00-quality-consumer-frame-correlation-gap.md
+.agent/gameplay-audit/2026-07-11T12-50-35-04-00-frame-budget-quality-gameplay-loop.md
+.agent/interaction-audit/2026-07-11T12-50-35-04-00-quality-transition-admission-result-map.md
+.agent/performance-audit/2026-07-11T12-50-35-04-00-cadence-independent-full-recovery-contract.md
+.agent/deploy-audit/2026-07-11T12-50-35-04-00-adaptive-quality-fixture-gate.md
 ```
 
 ## Do not start next with
 
-- calling world reset or dispose directly through `globalThis.CozyIsland`;
-- adding restart before the animation loop and callbacks are leased;
-- treating `pagehide` world disposal as complete browser teardown;
-- reconnecting cell-aware rendering before session/world/renderer generations exist;
-- disposing scene children without an inventory and typed result;
-- allowing retained old host or listener references to stay mutable after restart.
+- patching only the pixel-ratio branch without defining effective quality state;
+- keeping frame-count dwell thresholds;
+- allowing quality callbacks during reset, stop or disposal;
+- treating the internal budget level as proof that all consumers match;
+- adding more adaptive consumers before prepare/commit/rollback exists;
+- claiming recovery until level 0 restores every original consumer value.

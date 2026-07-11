@@ -2,49 +2,9 @@ import * as THREE from "three/webgpu";
 import { validateKitCatalog } from "./core/domain-kit.js";
 import {
   kitCatalog,
-  createDeterministicSeedService,
-  createEnvironmentClock,
-  createWindField,
-  createWeatherState,
-  createIlluminationState,
-  createTerrainSurface,
-  createTerrainBiomeField,
-  createShorelineField,
-  createTerrainLodPolicy,
-  createOceanFloorProfile,
-  createOceanWaveState,
-  createOceanOpticsDescriptor,
-  createShorelineFoamDescriptor,
-  createUnderwaterAtmosphereDescriptor,
-  createOceanCausticsDescriptor,
-  createSunGlitterDescriptor,
-  createVegetationArchetypeCatalog,
-  createGroundContactService,
-  createVegetationPlacementGraph,
-  createVegetationWindDescriptor,
-  createVegetationLodPolicy,
-  createRockGraph,
-  createPropGraph,
-  createCampfireAtmosphereDescriptor,
-  createCloudWeatherState,
-  createCloudDensityRecipe,
-  createCloudLightingProfile,
-  createCloudLodPolicy,
-  createCloudShadowDescriptor,
-  createCloudHorizonBandDescriptor,
-  createFogDensityRecipe,
-  createFogAdvectionDescriptor,
-  createFogVolumePlacement,
-  createAerialPerspectiveDescriptor,
-  createStylizedMaterialCatalog,
-  createRenderArchetypeCatalog,
   chooseRenderQuality,
-  createRenderSnapshot,
   createPerformanceBudget,
-  createWebGL2FallbackPolicy,
   createDebugOverlay,
-  createCameraRailSequence,
-  createCozyIslandScenario,
   createStylizedWorldRenderer,
   createAtmosphereVolumeTextures,
   createVolumetricCloudRenderer,
@@ -53,6 +13,7 @@ import {
   createWebGPUFoamRenderer,
   createWebGPUPostPipeline
 } from "./kits/index.js";
+import { createCozyIslandWorldRuntime } from "./world/index.js";
 
 const canvas = document.querySelector("#game");
 const loader = document.querySelector("#loader");
@@ -97,99 +58,6 @@ function createSky(illumination) {
   return sky;
 }
 
-function createDomainSnapshot({ backend, quality }) {
-  const seedService = createDeterministicSeedService("cozy-island-webgpu-v2");
-  const clock = createEnvironmentClock({ initialSeconds: 48, timeScale: 1 });
-  const windField = createWindField({ seedService, clock });
-  const weather = createWeatherState({ preset: "sunrise-haze" });
-  const illuminationService = createIlluminationState({ clock, weather });
-  const illumination = illuminationService.getState();
-
-  const terrain = createTerrainSurface({ seed: seedService.seed, radius: 108, maxHeight: 24, beachWidth: 12, clearingRadius: 17 });
-  const biomeField = createTerrainBiomeField(terrain);
-  const shoreline = createShorelineField(terrain);
-  const terrainLod = createTerrainLodPolicy(quality);
-  const oceanFloor = createOceanFloorProfile(terrain);
-  const oceanWaves = createOceanWaveState();
-  const oceanOptics = createOceanOpticsDescriptor();
-  const underwater = createUnderwaterAtmosphereDescriptor();
-  const caustics = createOceanCausticsDescriptor();
-  const sunGlitter = createSunGlitterDescriptor();
-  const foam = createShorelineFoamDescriptor(terrain, { segments: quality.tier === "low" ? 220 : 320 });
-
-  const vegetationArchetypes = createVegetationArchetypeCatalog();
-  const groundContact = createGroundContactService(terrain);
-  const vegetation = createVegetationPlacementGraph({
-    surface: terrain,
-    biomeField,
-    archetypes: vegetationArchetypes,
-    groundContact,
-    seed: `${seedService.seed}:vegetation`,
-    qualityTier: quality.tier
-  });
-  const vegetationWind = createVegetationWindDescriptor(windField);
-  const vegetationLod = createVegetationLodPolicy(quality);
-  const rocks = createRockGraph({ surface: terrain, groundContact, seed: `${seedService.seed}:rocks`, qualityTier: quality.tier });
-  const props = createPropGraph(terrain, `${seedService.seed}:props`);
-  const campfire = createCampfireAtmosphereDescriptor(terrain, windField);
-
-  const cloudWeather = createCloudWeatherState(weather, windField);
-  const cloudDensity = createCloudDensityRecipe(cloudWeather, quality);
-  const cloudLighting = createCloudLightingProfile(illuminationService);
-  const cloudLod = createCloudLodPolicy(quality);
-  const cloudShadow = createCloudShadowDescriptor(cloudWeather, cloudLod);
-  const cloudHorizon = createCloudHorizonBandDescriptor(cloudWeather);
-
-  const fogDensity = createFogDensityRecipe(weather, quality);
-  const fogAdvection = createFogAdvectionDescriptor(windField);
-  const fogPlacement = createFogVolumePlacement(fogDensity);
-  const aerialPerspective = createAerialPerspectiveDescriptor();
-  const materials = createStylizedMaterialCatalog();
-  const renderArchetypes = createRenderArchetypeCatalog();
-  const fallbackPolicy = createWebGL2FallbackPolicy();
-
-  const snapshot = createRenderSnapshot({
-    seed: seedService.seed,
-    quality,
-    terrain,
-    terrainLod,
-    biomeField,
-    shoreline,
-    oceanFloor,
-    oceanWaves,
-    oceanOptics,
-    underwater,
-    caustics,
-    sunGlitter,
-    foam,
-    vegetation,
-    vegetationArchetypes,
-    vegetationWind,
-    vegetationLod,
-    rocks,
-    props,
-    campfire,
-    cloudWeather,
-    cloudDensity,
-    cloudLighting,
-    cloudLod,
-    cloudShadow,
-    cloudHorizon,
-    fogDensity,
-    fogAdvection,
-    fogPlacement,
-    illumination,
-    aerialPerspective,
-    materials,
-    renderArchetypes,
-    fallbackPolicy
-  });
-
-  const cameraSequence = createCameraRailSequence(terrain);
-  const scenario = createCozyIslandScenario({ clock, cameraSequence, snapshot });
-  return { snapshot, scenario, cameraSequence, clock, windField, weather, illuminationService };
-}
-
 async function main() {
   if (!canvas) throw new Error("Missing #game canvas.");
 
@@ -208,6 +76,7 @@ async function main() {
   await renderer.init();
   const backend = renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2";
   const quality = chooseRenderQuality({ backend });
+  const worldMode = new URLSearchParams(location.search).get("world") === "legacy" ? "legacy" : "core";
 
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap));
   renderer.setSize(innerWidth, innerHeight, false);
@@ -217,14 +86,19 @@ async function main() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  setLoad(14, `Composing ${catalogStatus.kitCount} domain kits`);
-  const domains = createDomainSnapshot({ backend, quality });
-  const snapshot = domains.snapshot;
+  setLoad(14, worldMode === "core" ? "Registering Core World providers" : "Composing legacy world");
+  const domains = await createCozyIslandWorldRuntime({ backend, quality, mode: worldMode });
+  await domains.prepare();
+  const snapshot = domains.createLegacyRenderSnapshot();
   renderer.toneMappingExposure = snapshot.illumination.exposure;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#efc69d");
-  scene.fog = new THREE.Fog(new THREE.Color(snapshot.aerialPerspective.horizonTint), snapshot.aerialPerspective.nearStart * 2.5, snapshot.aerialPerspective.farEnd);
+  scene.fog = new THREE.Fog(
+    new THREE.Color(snapshot.aerialPerspective.horizonTint),
+    snapshot.aerialPerspective.nearStart * 2.5,
+    snapshot.aerialPerspective.farEnd
+  );
   const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 3200);
 
   scene.add(createSky(snapshot.illumination));
@@ -291,7 +165,9 @@ async function main() {
     cloudRenderer.setStepScale(activeScale);
     fogRenderer.setStepScale(activeScale);
     postPipeline.setFogResolutionScale(quality.fogResolutionScale * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68));
-    if (level > 0) renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)));
+    if (level > 0) {
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)));
+    }
   };
 
   const performanceBudget = createPerformanceBudget({
@@ -335,7 +211,7 @@ async function main() {
   addEventListener("resize", resize);
   resize();
 
-  setLoad(100, `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} ready`);
+  setLoad(100, `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · ${worldMode} world ready`);
   setTimeout(() => {
     if (loader) loader.classList.add("is-complete");
     setTimeout(() => { if (loader) loader.hidden = true; }, 520);
@@ -351,6 +227,7 @@ async function main() {
     const renderState = domains.scenario.getRenderSnapshot();
     camera.position.set(renderState.camera.position.x, renderState.camera.position.y, renderState.camera.position.z);
     camera.lookAt(renderState.camera.lookAt.x, renderState.camera.lookAt.y, renderState.camera.lookAt.z);
+    domains.updateWorldFocus(renderState.camera.position, renderState.camera.mode, dt);
 
     worldRenderer.update(renderState.clock.elapsedSeconds);
     foamRenderer.update(renderState.clock.elapsedSeconds);
@@ -362,7 +239,7 @@ async function main() {
       const perf = performanceBudget.getState();
       debugOverlay.draw({
         backend: backend === "webgpu" ? `WebGPU compute · ${volumeTextures.source}` : `WebGL2 · ${volumeTextures.source}`,
-        quality: `${quality.tier} (${quality.source})`,
+        quality: `${quality.tier} (${quality.source}) · ${worldMode}`,
         fps: perf.fps || 60,
         cloudSteps: cloudRenderer.getSteps(),
         fogSteps: fogRenderer.getSteps(),
@@ -371,12 +248,17 @@ async function main() {
     }
   });
 
+  addEventListener("pagehide", () => domains.dispose(), { once: true });
+
   globalThis.CozyIsland = Object.freeze({
     renderer,
     scene,
     camera,
     backend,
     quality,
+    worldMode,
+    worldRuntime: domains,
+    worldQuery: domains.getQuery(),
     kitCatalog,
     kitCatalogStatus: catalogStatus,
     snapshot,
@@ -392,6 +274,7 @@ async function main() {
       return {
         backend,
         quality,
+        world: domains.getState(),
         camera: domains.cameraSequence.descriptor(),
         clock: domains.clock.getState(),
         performance: performanceBudget.getState(),

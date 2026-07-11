@@ -1,0 +1,20 @@
+{
+  "schema": "cozy.world-baseline.v1",
+  "seed": "cozy-island-webgpu-v2",
+  "terrainRadius": 108,
+  "clearingRadius": 17,
+  "clearingMaximumVariation": 0.5,
+  "terrainPoints": [
+    { "x": 0, "z": 0 },
+    { "x": 11.56, "z": 0 },
+    { "x": 42.5, "z": -31.25 },
+    { "x": -42, "z": 28 },
+    { "x": 95, "z": 0 },
+    { "x": -103, "z": 18 }
+  ],
+  "shorelinePoints": [
+    { "x": 101, "z": 0 },
+    { "x": 0, "z": 104 },
+    { "x": -76, "z": 55 }
+  ]
+}

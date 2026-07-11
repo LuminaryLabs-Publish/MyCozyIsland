@@ -2,6 +2,21 @@
 
 The rebuild was designed after reviewing upstream implementations. No third-party project was copied wholesale; the application uses its own NexusEngine domain contracts and scene composition.
 
+## NexusEngine Core World
+
+Repository: `LuminaryLabs-Dev/NexusEngine`  
+Pinned commit: `38229f59c22cb40024ffd13a9f48040de759f5d7`
+
+Imported capabilities:
+
+- `createCoreWorldDomain`
+- `createUniformGridPartition`
+- `createFlatWorldSurface`
+- `createTerrainProviderAdapter`
+- `defineWorldEffectProvider`
+
+The Core World domain coordinates portable world identity, cells, focus, provider phases, lifecycle, and snapshots. MyCozyIsland retains ownership of terrain generation, biome classification, population data, Three.js objects, GPU buffers, and visual effects.
+
 ## Three.js
 
 Repository: `mrdoob/three.js`  
@@ -30,7 +45,7 @@ Reviewed implementation areas:
 - `examples/jsm/tsl/utils/Raymarching.js`
   - bounded box intersection and step traversal
 
-The runtime pins Three.js `0.185.0` through the browser import map and package dependency.
+The runtime pins Three.js `0.185.0` through the browser import map.
 
 ## Sebastian Lague — Clouds
 
@@ -41,4 +56,4 @@ Reviewed as a conceptual reference for readable raymarched cloud volumes and the
 
 ## Attribution rule
 
-The application retains this reference record and the upstream MIT license information. Three.js remains an external dependency; no Three.js source files are vendored into this repository.
+The application retains this reference record and the upstream license information. Three.js and NexusEngine remain external pinned dependencies; their source files are not vendored into this repository.

@@ -1,46 +1,74 @@
 # Lazy Core World Materialization
 
-The compatibility island renders first. Core World terrain, biome, shoreline, and presentation cell data materialize afterward in deterministic priority order under a bounded per-frame budget.
+## Goal
 
-## Startup
+Render the existing global island immediately, then materialize Core World cell data incrementally without blocking startup.
 
-```txt
-build the existing global island once
-register lightweight Core World descriptors
-construct and render the compatibility scene
-```
-
-No terrain patch rows, biome arrays, or shoreline arrays are generated while Core World registers the initial 49 cells.
-
-## After the first frame
+## Startup path
 
 ```txt
-prioritize active cells by LOD, distance to focus, then stable cell ID
-advance at most one cell job per frame
-sample one terrain row per terrain step
-classify four biome rows per biome step
-classify four shoreline rows per shoreline step
-refresh the presentation descriptor after completion
+create deterministic global world once
+register lightweight Core World provider descriptors
+build the existing compatibility render snapshot
+create the WebGPU scene
+submit the first rendered frame
 ```
 
-## Data reuse
+No terrain, biome, or shoreline cell arrays are generated during `prepare()`.
 
-Biome materialization reads the completed terrain provider arrays instead of calling the full terrain sampler again. Shoreline materialization reuses terrain shore-distance values and only derives breaker, wetness, and planar shoreline normal data.
+## Background path
+
+Beginning with the second animation callback:
+
+```txt
+select the highest-priority active cell
+materialize a bounded number of terrain rows
+reuse the terrain arrays to classify biome weights
+materialize shoreline classification rows
+refresh the portable presentation descriptor
+repeat on later frames
+```
+
+## Priority
+
+Cells are ordered by:
+
+1. Core World LOD
+2. Distance from the current first-person focus
+3. Stable cell ID
+
+During the aerial rail, focus remains at island center.
 
 ## Budgets
 
 ```txt
-maxCellsPerFrame: 1
-terrainRowsPerStep: 1
-classificationRowsPerStep: 4
+cells advanced per frame: 1
+terrain rows per step: 1
+classification rows per step: 4
 ```
 
-These values are declared in `src/world/world-config.js` and can be tuned without changing provider contracts.
+These values live in `COZY_WORLD_CONFIG.materialization`.
 
-## Ownership
+## Data reuse
 
-Core World descriptors remain portable and lightweight. Typed arrays remain in provider runtime stores. The existing global world snapshot remains the visible source until cell-aware rendering is promoted.
+The terrain provider owns:
 
-## Diagnostics
+```txt
+height
+normal
+slope
+curvature
+moisture
+exposure
+rock exposure
+shore distance
+clearing
+```
 
-`CozyIsland.worldRuntime.getMaterializationState()` reports queue size, active cell, stage counts, completed cells, and progress. The work does not begin until `startLazyMaterialization()` is called by the host after its first rendered callback.
+The biome provider reads those arrays directly. It does not call the expensive terrain sampler a second time.
+
+The shoreline provider reuses the terrain shore-distance array and computes only shoreline-specific normal, breaker, and wetness data.
+
+## Renderer boundary
+
+The existing whole-island renderer remains unchanged and continues to draw the compatibility snapshot. Lazy cell arrays prepare the next cell-renderer cutover without delaying the current visual experience.

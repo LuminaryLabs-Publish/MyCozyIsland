@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T08-58-02-04-00`
+Last updated: `2026-07-11T09-08-59-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: substantive lazy Core World runtime commits landed after the prior central audit
+selection reason: new production materialization integration landed after the prior central audit
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -24,7 +24,7 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 new or ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-recently changed but centrally undocumented: MyCozyIsland
+recently changed but centrally stale: MyCozyIsland
 excluded: TheCavalryOfRome
 ```
 
@@ -37,32 +37,36 @@ NexusEngine: 38229f59c22cb40024ffd13a9f48040de759f5d7
 world default: core
 world rollback: ?world=legacy
 world id: world:cozy-island-webgpu-v3
-initial active descriptors: 49
+initial cells: 49
 local kit descriptors: 50
 Core World providers: 7
 package version: 0.3.1
 ```
 
-## Lazy implementation facts verified
+## Live materialization facts verified from source
 
 ```txt
-terrain registration allocates heavy fields: no
-terrain materializes by bounded rows: yes
+lightweight provider registration: yes
+terrain materializes by rows: yes
 biome reuses terrain arrays: yes
 shoreline reuses terrain shore-distance values: yes
-presentation refresh operation exists: yes
-priority order: LOD, focus distance, stable cell ID
+presentation refresh operation: yes
+priority: LOD, focus distance, stable cell ID
 max cells per frame config: 1
 terrain rows per step config: 1
 classification rows per step config: 4
-world wrapper exposes processMaterializationFrame: yes
-world wrapper exposes getMaterializationState: yes
-live host calls processMaterializationFrame: no
-first-frame materialization acknowledgement: no
-cell readiness revision: no
-provider readiness set: no
+world wrapper frame method: yes
+live host calls frame method: yes
+first host call: after second compatibility render
+aggregate progress in debug/global host: yes
+session/world/focus command fence: no
+cell generation: no
 elapsed-time budget: no
 typed failure/retry result: no
+cell readiness revision: no
+provider readiness set: no
+renderer consumes ready descriptors: no
+visible-frame acknowledgement: no
 ```
 
 ## Existing test surface identified
@@ -83,7 +87,7 @@ npm test
   -> renderer-resource-disposal
 ```
 
-The new lazy fixture directly instantiates the scheduler. It proves registration is lightweight, deterministic priority, configured row work, eventual provider readiness, presentation refresh, and scheduler removal of released cells. It does not run `src/main-cloudform.js` or prove production browser admission.
+The isolated lazy fixture proves zero heavy work during registration, deterministic priority, configured row stepping, eventual terrain/biome/shoreline readiness, presentation refresh, and scheduler removal of released cells. It does not import or execute the browser route, exercise provider failures, prove revision admission, or correlate ready cells with visible resources.
 
 ## Validation not executed in this documentation run
 
@@ -94,34 +98,37 @@ browser launch
 WebGPU initialization
 WebGL2 fallback initialization
 Pages smoke
-live host materialization progress
-first-frame start acknowledgement
+live provider failure injection
 focus/release concurrency
-provider failure and retry
 elapsed-time budget
-cell readiness revision
-render handoff
+readiness fingerprint
+renderer-cell commit
+visible-frame correlation
+full runtime disposal and restart
 ```
 
-The GitHub connector was used for source inspection and documentation writes. A runnable checkout and browser were unavailable, so no executable pass claim is made.
+The GitHub connector was used for source inspection and documentation writes. A runnable checkout and browser were unavailable, so no executable validation claim is made.
 
 ## Required fixture matrix
 
 ```txt
 registration samples zero heavy terrain rows
-first committed browser frame precedes materialization
-host materialization progress advances above zero
-configured cell/row limits hold
-elapsed-time budget prevents extra work
+production host advances work after compatibility frames
+candidate and row limits hold
+elapsed-time budget stops additional work
 priority is deterministic
-focus movement reprioritizes current cells
-released cell cannot publish late readiness
-reset/dispose rejects old work
+focus change reprioritizes current cells
+released generation cannot publish readiness
+reset/dispose rejects old commands
 provider exception becomes typed failure
-retry count and backoff are bounded
-ready presentation cites source provider versions
-compatibility renderer stays stable during partial work
-cell readiness maps to later render commit
+retry/backoff are bounded
+ready presentation cites complete provider versions
+readiness fingerprint is deterministic
+same readiness revision is committed once
+renderer update replaces prior resources atomically
+failed prepare rolls back to compatibility/prior cell resources
+released cells dispose resources once
+visible frame cites renderer-cell revision
 WebGPU and WebGL2 produce equivalent admission results
 ```
 
@@ -129,14 +136,16 @@ WebGPU and WebGL2 produce equivalent admission results
 
 ```txt
 core mode reports materialization frames > 0
-pending cells decline after the first frame
-provider stage progress is clone-safe and visible
-focus crossing does not complete a released cell
-provider failure does not terminate the render loop
-legacy mode reports an explicit idle materialization state
-compatibility island remains visible until render handoff
+pending cells decline
+completed cells increase
+provider exception does not terminate animation loop
+focus crossing cannot commit released generation
+ready descriptor produces a renderer-cell plan
+committed cell revision appears in visible-frame readback
+legacy mode reports explicit idle materialization state
+compatibility world remains visible until cell commit succeeds
 ```
 
 ## Readiness statement
 
-The scheduler implementation and isolated deterministic fixture are meaningful progress, but the live route does not execute the scheduler. Do not claim production lazy Core World materialization until host admission, session/world fencing, failure handling, readiness revisions, and browser progress proof exist.
+Production lazy materialization now runs, but it is not yet an authoritative or render-consumed system. Do not claim cell-aware Core World rendering until session/world/focus fencing, failure handling, provider readiness versions, atomic renderer commits, disposal, and visible-frame proof exist.

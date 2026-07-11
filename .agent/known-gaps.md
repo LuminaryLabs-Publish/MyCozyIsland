@@ -1,99 +1,99 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T12-50-35-04-00`
+Last updated: `2026-07-11T12-58-06-04-00`
 
 ## Summary
 
-The production route has an adaptive frame-budget controller, but no adaptive-quality authority. Decisions are tied to rendered-frame counts, consumers mutate directly, full recovery is incomplete, and no quality revision is correlated with a visible frame.
+The production route advances a clock but does not produce one authoritative environment frame. Dynamic and startup-frozen consumers coexist without shared revision, rollback, reset or visible-frame proof.
 
-The earlier lifecycle, Core World reset, focus, materialization and render-commit gaps remain prerequisites.
+The earlier lifecycle, Core World, render-commit and adaptive-quality gaps remain active prerequisites or downstream dependencies.
 
-## Adaptive policy gaps
+## Environment-frame gaps
 
 ```txt
-versioned quality policy: absent
-policy revision/fingerprint: absent
-elapsed-time dwell windows: absent
-refresh-rate parity: absent
-visibility/suspension policy: absent
-minimum-level dwell: absent
-monotonic sample identity: absent
+versioned EnvironmentFrame schema: absent
+environmentFrameId: absent
+environment revision/fingerprint: absent
+session/generation/tick admission: absent
+monotonic clock sample identity: absent
+canonical effective environment state: absent
+bounded environment journal: absent
 ```
 
-The current 90-frame degrade and 360-frame recovery counters react at different elapsed times on different refresh rates.
-
-## Transition authority gaps
+## Live-source projection gaps
 
 ```txt
-transition command: absent
-command id/sequence: absent
-expected quality revision: absent
-session and renderer generation admission: absent
-duplicate/stale rejection: absent
+clock: live
+wind service: live only when queried
+illumination service: live only when queried
+weather: immutable preset
+scenario refreshes clock: yes
+scenario refreshes wind: no
+scenario refreshes illumination: no
+scenario refreshes cloud/fog descriptors: no
+```
+
+## Startup-frozen consumer gaps
+
+```txt
+sky gradient
+hemisphere intensity
+sun direction/color/intensity
+renderer exposure
+scene fog descriptor
+vegetation wind descriptor
+campfire smoke wind direction/response
+cloud weather/lighting/shadow/horizon
+fog density/advection/placement
+```
+
+## Consumer transaction gaps
+
+```txt
+consumer plan: absent
 prepare phase: absent
 atomic commit: absent
 rollback: absent
-typed transition result: absent
-bounded transition journal: absent
+typed consumer receipt: absent
+stale/duplicate rejection: absent
+partial-failure recovery: absent
 ```
 
-## Consumer-state gaps
+## Reset gaps
 
 ```txt
-canonical effective quality state: absent
-consumer-complete fingerprint: absent
-cloud step acknowledgement: absent
-fog step acknowledgement: absent
-fog resolution getter/acknowledgement: absent
-pixel ratio in quality observation: absent
-consumer revision matching: absent
+canonical baseline EnvironmentFrame: absent
+reset frame revision: absent
+consumer baseline prepare/commit: absent
+old-frame retirement: absent
+reset result/fingerprint: absent
+first visible reset frame receipt: absent
 ```
-
-## Concrete recovery defect
-
-`applyPerformanceLevel()` changes pixel ratio only when `level > 0`. Returning from level 1 to level 0 restores cloud steps, fog steps and fog resolution, but leaves the reduced pixel ratio active.
-
-```txt
-0 -> 1: pixel ratio reduced
-1 -> 0: pixel ratio not restored
-```
-
-## Partial-commit risk
-
-The route mutates consumers sequentially:
-
-```txt
-cloud steps
-fog steps
-fog resolution
-pixel ratio
-```
-
-If a later mutation fails, earlier changes have no rollback path.
 
 ## Render-proof gaps
 
 ```txt
-qualityRevision on render frame: absent
-qualityFingerprint on render frame: absent
+environmentRevision on render frame: absent
+environmentFingerprint on render frame: absent
 consumer acknowledgement set: absent
 first visible frame receipt: absent
-debug overlay effective-state parity: absent
+debug overlay environment parity: absent
+public host effective environment state: absent
 ```
 
-The budget level is not proof that every render consumer matches that level.
+Elapsed seconds are not proof that sky, sun, wind, clouds, fog, ocean, vegetation and campfire agree.
 
 ## Lifecycle interaction gaps retained
 
-- Performance callbacks are not fenced from reset, stop or disposal.
-- The renderer animation loop has no session generation admission.
-- The global host exposes the raw performance controller and renderer.
-- Pagehide does not retire the full render graph.
-- Old callbacks cannot be revoked after restart.
+- The animation loop has no session generation admission.
+- Reset, stop and disposal do not fence environment updates.
+- The global host exposes raw mutable runtime and renderer objects.
+- Pagehide does not retire the complete render graph.
+- Old environment callbacks cannot be revoked after restart.
 
 ## Core World and render gaps retained
 
-- Reset clears world definitions without re-registration.
+- Reset clears world definitions without a complete re-registration transaction.
 - Focus updates return Boolean rather than a typed revision.
 - Materialization lacks session/world/focus generation fencing.
 - Provider readiness is not a canonical version set.
@@ -101,43 +101,45 @@ The budget level is not proof that every render consumer matches that level.
 - Visible cell rendering remains disconnected from prepared descriptors.
 - No committed frame correlates world, renderer, environment and quality revisions.
 
+## Adaptive quality gaps retained
+
+- Dwell thresholds are frame-count based.
+- Quality consumer mutations are not atomic.
+- Recovery to level zero does not restore pixel ratio.
+- Effective quality state and frame acknowledgement are absent.
+
 ## Validation gaps
 
 ```txt
-30/60/90/120 Hz cadence parity
-irregular frame schedule parity
-hidden-tab and suspension policy
-full 0 -> 1 -> 2 -> 1 -> 0 recovery
-pixel-ratio restoration
+deterministic environment frame replay
+wind consumer parity
+illumination consumer parity
+cloud/fog consumer parity
+reset baseline replay
+stale session/generation/tick/revision rejection
+duplicate frame handling
 consumer prepare rejection
 consumer commit failure rollback
-stale session/revision rejection
-duplicate transition handling
-reset/stop/dispose fencing
 WebGPU/WebGL2 parity
-effective-quality fingerprint stability
 first visible frame acknowledgement
 ```
 
 ## Deployment blockers
 
 ```txt
-frame-count-based dwell policy
-partial direct consumer mutation
-broken level-zero pixel-ratio recovery
-no effective quality fingerprint
-no transition result or rollback
-no quality-frame acknowledgement
-no adaptive-quality fixtures
+mixed live and startup-frozen environment state
+no environment frame identity or fingerprint
+no consumer transaction or rollback
+no reset baseline result
+no visible environment-frame acknowledgement
+no executable environment coherence fixtures
 ```
 
 ## Not currently blocked by
 
-- startup quality tier selection;
-- the immutable quality descriptor table;
-- cloud and fog step-scaling setters;
-- fog-resolution scaling setter;
-- the existing debug overlay;
+- deterministic clock and seed services;
+- live wind and illumination functions;
+- existing scene, cloud, fog, ocean and foam consumers;
 - the 50 local kit catalog;
 - the seven provider order;
 - pinned Three.js and NexusEngine revisions;

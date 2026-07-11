@@ -1,27 +1,34 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T14-41-28-04-00`
+Last updated: `2026-07-11T16-10-58-04-00`
 
 ## Summary
 
-Make startup authoritative before extending runtime, world or rendering behavior. The browser must admit an immutable module graph, choose one renderer backend, track every acquired resource, roll back partial startup, expose a typed failure state, retry under a new generation and acknowledge the first visible frame.
+Keep the existing implementation order. Browser startup and runtime-session ownership remain prerequisites, while adaptive quality is the ninth bounded slice. When implemented, every transition must be derived from the immutable startup baseline, applied through typed consumer results, rolled back on partial failure and acknowledged by the visible frame.
 
 ## Plan ledger
 
-**Goal:** replace implicit top-level startup with one staged, observable and retriable transaction.
+**Goal:** convert the current callback-based adaptive quality path into a complete and reversible quality transaction without creating a second lifecycle, frame or renderer authority.
 
-- [ ] Add an immutable module-source manifest with source and capability fingerprints.
-- [ ] Move route boot behind a small loader boundary that can catch module-fetch and evaluation failure.
-- [ ] Define `StartupCommand`, `StartupStagePlan` and `StartupResult`.
-- [ ] Assign startup transaction and generation identities.
-- [ ] Classify WebGPU and WebGL2 backend candidates explicitly.
-- [ ] Admit startup quality only after backend capability checks pass.
-- [ ] Register renderer, world, textures, scene resources, listeners, timers, loop and global host in one resource ledger.
-- [ ] Roll back all acquired resources in reverse order on any failed stage.
-- [ ] Project a stable failure code and explicit retry command.
-- [ ] Reject stale callbacks and results from previous startup generations.
-- [ ] Hide the loader only after a first-frame readiness receipt.
-- [ ] Add module, backend, rollback, retry and Pages cold-load fixtures.
+- [ ] Complete Browser Startup Admission and Failure Rollback Authority.
+- [ ] Complete Runtime Session Lifecycle Authority.
+- [ ] Reuse the runtime session generation for quality-command admission.
+- [ ] Reuse committed-frame identity for quality visible-frame acknowledgement.
+- [ ] Define a versioned `QualityPolicyDescriptor`.
+- [ ] Replace frame-count thresholds with an elapsed-time policy or prove cadence equivalence.
+- [ ] Add visibility and long-stall sample barriers.
+- [ ] Define one immutable level-0 baseline from admitted startup quality.
+- [ ] Define complete level-1 and level-2 candidate settings.
+- [ ] Declare each quality field mutable, rebuild-required or startup-fixed.
+- [ ] Add `QualityTransitionCommand`, `QualityTransitionPlan` and `QualityTransitionResult`.
+- [ ] Assign transition and quality revision identities.
+- [ ] Apply cloud, fog, post and renderer settings through typed consumer commands.
+- [ ] Verify actual applied values after each consumer command.
+- [ ] Roll back all already-applied consumers when any required consumer fails.
+- [ ] Restore pixel ratio explicitly when recovering to level 0.
+- [ ] Reject stale results from previous revisions or sessions.
+- [ ] Publish a visible-frame receipt carrying the committed quality revision.
+- [ ] Add cadence, recovery, failure, visibility, resize and browser fixtures.
 
 ## Ordered implementation queue
 
@@ -37,112 +44,148 @@ Make startup authoritative before extending runtime, world or rendering behavior
 9. Adaptive Quality Transaction Authority
 ```
 
-## Candidate startup kits
+## Candidate quality kits
 
 ```txt
-module-source-manifest-kit
-module-graph-admission-kit
-startup-command-kit
-startup-transaction-id-kit
-startup-generation-kit
-startup-stage-plan-kit
-startup-stage-result-kit
-renderer-backend-candidate-kit
-renderer-backend-admission-kit
-startup-quality-admission-kit
-startup-resource-ledger-kit
-startup-cleanup-stack-kit
-startup-rollback-kit
-startup-failure-classification-kit
-loader-state-projection-kit
-startup-retry-kit
-first-frame-readiness-kit
-startup-result-kit
-startup-journal-kit
-startup-observation-kit
-module-fetch-failure-fixture-kit
-renderer-backend-fallback-fixture-kit
-partial-startup-rollback-fixture-kit
-browser-startup-smoke-kit
+quality-policy-descriptor-kit
+quality-sample-command-kit
+visibility-sample-barrier-kit
+quality-transition-id-kit
+quality-revision-kit
+quality-transition-admission-kit
+quality-candidate-plan-kit
+quality-consumer-capability-kit
+quality-consumer-command-kit
+quality-consumer-result-kit
+quality-transition-commit-kit
+quality-transition-rollback-kit
+full-recovery-policy-kit
+stale-quality-result-rejection-kit
+quality-visible-frame-ack-kit
+quality-observation-kit
+quality-journal-kit
+cadence-parity-fixture-kit
+full-recovery-fixture-kit
+partial-failure-rollback-fixture-kit
+browser-quality-frame-smoke-kit
+```
+
+## Required policy model
+
+```txt
+QualityPolicyDescriptor
+  id
+  schemaVersion
+  startupQualityFingerprint
+  backendCapabilityFingerprint
+  targetFrameMs
+  degradeDurationMs
+  recoverDurationMs
+  hiddenSamplePolicy
+  longStallPolicy
+  levels
+    0 -> full admitted baseline
+    1 -> bounded reduction
+    2 -> stronger bounded reduction
+  consumerCapabilities
+    cloudSteps -> mutable
+    fogSteps -> mutable
+    fogResolutionScale -> mutable
+    pixelRatio -> mutable
+    shadowMapSize -> rebuild-required or fixed
+    terrainResolution -> rebuild-required or fixed
+    vegetationScale -> rebuild-required or fixed
+    oceanSegments -> rebuild-required or fixed
+    cloudTextureSize -> rebuild-required or fixed
+    postBlur -> mutable or fixed, explicitly declared
 ```
 
 ## Required transaction
 
 ```txt
-receive StartupCommand
-  -> create startupId and generation
-  -> resolve ModuleSourceManifest
-  -> admit module graph and required capabilities
-  -> create renderer backend candidates
-  -> initialize and admit one backend
-  -> derive startup quality fingerprint
-  -> execute ordered stages
-  -> register cleanup after every successful stage
-  -> prepare Core World and all render consumers
-  -> commit listeners, timers, loop and public host
-  -> render first frame
-  -> publish StartupReadyReceipt
-
-on failure
-  -> classify failed stage and error code
-  -> reject new work for the failed generation
-  -> execute cleanup stack in reverse order
-  -> publish StartupFailedResult
-  -> admit retry only with a new generation
+receive normalized performance sample
+  -> verify session, visibility and frame identity
+  -> update elapsed-time pressure state
+  -> decide no-op, degrade or recover
+  -> create transitionId and qualityRevision
+  -> derive complete candidate from immutable baseline
+  -> send typed command to each participating consumer
+  -> read back actual applied value
+  -> classify accepted, clamped, rejected or failed
+  -> rollback all accepted consumers on required failure
+  -> commit level and revision only after all required consumers accept
+  -> render and acknowledge first visible frame for that revision
+  -> publish clone-safe observation and bounded journal
 ```
 
-## Required stage set
+## Minimum consumer result
 
 ```txt
-MODULE_GRAPH
-KIT_CATALOG
-RENDERER_INIT
-BACKEND_ADMISSION
-QUALITY_ADMISSION
-WORLD_CREATE
-WORLD_PREPARE
-SNAPSHOT_CREATE
-SCENE_CREATE
-ATMOSPHERE_TEXTURES
-RENDER_CONSUMERS
-INPUT_AND_RESIZE
-LOADER_AND_LOOP
-PUBLIC_HOST
-FIRST_FRAME
-COMMITTED
+QualityConsumerResult
+  transitionId
+  qualityRevision
+  consumerId
+  requestedValue
+  appliedValue
+  previousValue
+  status
+    accepted
+    accepted-clamped
+    no-op
+    rejected-stale
+    rejected-capability
+    failed
+    rolled-back
+  errorCode
+  fingerprint
 ```
 
 ## Fixture matrix
 
 ```txt
-Three.js module fetch failure before main()
-NexusEngine module fetch failure inside world creation
-renderer.init rejection
-WebGPU candidate rejected and WebGL2 candidate admitted
-no compatible backend
-Core World prepare failure
-cloud/fog volume creation failure
-post-pipeline creation failure
-listener installation failure
-first-frame render failure
-reverse cleanup order after each failed stage
-retry creates a new generation
-stale old-generation completion is rejected
-duplicate retry is idempotent
-loader remains truthful through failure and retry
-first visible frame carries startup/backend/world fingerprints
-Pages cold-load smoke on WebGPU and WebGL2-capable browsers
+baseline observation before any transition
+30 Hz, 60 Hz and 120 Hz wall-time-equivalent sampling
+level 0 -> level 1
+level 1 -> level 2
+level 2 -> level 1
+level 1 -> level 0
+full baseline restoration, including pixel ratio
+partial failure at cloud consumer
+partial failure at fog consumer
+partial failure at post consumer
+partial failure at renderer pixel-ratio consumer
+rollback order and final fingerprint
+hidden tab and resumed tab
+100 ms and multi-second stalls
+resize during degraded state
+resize during recovery
+stale transition completion
+rapid opposite-direction decisions
+WebGPU capability set
+WebGL2 capability set
+first visible frame revision parity
 ```
 
 ## Acceptance conditions
 
 ```txt
-one boot attempt has one startupId and generation
-every successful stage has a typed result and cleanup lease
-module failures reach a stable visible error state
-partial startup leaves no live resources after rollback
-backend and quality are admitted, not inferred
-retry cannot reuse stale resources or callbacks
-loader completion follows first-frame acknowledgement
-public observations are clone-safe and do not expose raw authority
+performance level and applied renderer state cannot disagree
+level 0 always restores every mutable baseline field
+transition timing is defined in elapsed time, not display frame count
+hidden or stalled samples have a classified policy
+partial transitions never remain visible as committed state
+consumer clamping is observable
+stale revisions cannot overwrite newer quality state
+startup-fixed fields are explicitly classified
+one visible frame proves the committed revision
+public state exposes applied values without raw renderer authority
 ```
+
+## Next safe ledge
+
+```txt
+MyCozyIsland Adaptive Quality Transaction Authority
++ Cadence Parity / Full Recovery / Partial Failure / Visible-Frame Fixture Gate
+```
+
+Do not implement this slice before startup and runtime-session ownership are available. Reuse those identities and the committed-frame proof path.

@@ -1,149 +1,165 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T16-10-58-04-00`
+Last updated: `2026-07-11T17-50-37-04-00`
 
 ## Summary
 
-Adaptive quality can degrade and recover its numeric level, but it does not own a complete quality transaction. Recovery to level 0 fails to restore renderer pixel ratio, transition timing depends on qualifying frame counts, and four render consumers are mutated sequentially without rollback or a committed-frame receipt.
+The route has no authoritative runtime session lifecycle. `pagehide` resets only the world runtime while the renderer loop, browser callbacks, timers, scenario state, render resources and global readback remain retained. There is no explicit bfcache policy, complete disposal transaction, stale-callback fence or clean restart proof.
 
-Startup, runtime-session, Core World, render-commit and environment authority gaps remain prerequisites.
-
-## Concrete adaptive-quality defect
+## Concrete lifecycle defect
 
 ```txt
-level 1 -> level 0
-cloud step scale: restored
-fog step scale: restored
-fog resolution scale: restored
-renderer pixel ratio: not restored
-reported performance level: 0
-visible resolution: still degraded
+running page
+  -> renderer loop advances scenario and rendering
+  -> pagehide calls domains.dispose()
+  -> Core World prepared=false
+  -> materializer reset
+  -> renderer loop still retained
+  -> browser listeners and timers still retained
+  -> scene/GPU/post resources still retained
+  -> globalThis.CozyIsland still exposes references
+  -> no pageshow handler restores or rebuilds a coherent session
 ```
 
-Cause:
+## Session authority gaps
 
 ```txt
-renderer.setPixelRatio(...) executes only when level > 0
+runtime session ID: absent
+session generation: absent
+lifecycle state machine: absent
+lifecycle command sequence: absent
+exclusive animation-loop lease: absent
+stop result: absent
+dispose result: absent
+restart result: absent
+bounded lifecycle journal: absent
 ```
 
-## Policy gaps
+## Browser callback gaps
 
 ```txt
-versioned quality policy: absent
-immutable level-0 applied baseline: absent
-elapsed-time degrade threshold: absent
-elapsed-time recovery threshold: absent
-visibility sample policy: absent
-long-stall policy: absent
-cadence parity proof: absent
-backend-specific mutable capability set: absent
-startup-fixed versus runtime-mutable declaration: absent
-```
-
-## Transition gaps
-
-```txt
-transition command: absent
-transition ID: absent
-quality revision: absent
-candidate plan: absent
-admission result: absent
-consumer command/result contract: absent
-atomic commit: absent
-rollback: absent
-stale-result rejection: absent
-idempotent duplicate handling: absent
-partial-failure classification: absent
-```
-
-## Consumer gaps
-
-```txt
-cloud steps typed acknowledgement: absent
-fog steps typed acknowledgement: absent
-fog resolution typed acknowledgement: absent
-pixel ratio typed acknowledgement: absent
-actual pixel-ratio readback: absent
-actual fog-resolution readback: absent
-consumer clamp observation: absent
-rebuild-required classification: absent
-consumer failure injection: absent
-```
-
-## Render and observation gaps
-
-```txt
-quality revision in render state: absent
-quality fingerprint in frame state: absent
-first visible frame for revision: absent
-committed versus pending transition projection: absent
-actual renderer pixel ratio in debug state: absent
-actual fog resolution in debug state: absent
-per-consumer result in diagnostics: absent
-bounded transition journal: absent
-```
-
-## Lifecycle gaps
-
-```txt
-runtime session identity: absent
-animation-loop lease: absent
-visibility baseline reset: absent
-quality work cancellation on stop: absent
-quality revision reset on restart: absent
+listener registry: absent
+listener removal receipts: absent
+timeout registry: absent
+timeout cancellation: absent
+pointer-capture retirement: absent
+held-input retirement: partial, blur-only
+resize admission: absent
 stale callback fencing: absent
+pagehide persisted policy: absent
+pageshow handler: absent
+visibility lifecycle policy: absent
 ```
 
-## Retained upstream gaps
+## Render-resource gaps
 
 ```txt
-browser startup admission and rollback
-runtime session lifecycle
-Core World reset and re-prepare
-focus transaction authority
-materialization generation and readiness
-renderer cell commit and disposal
-camera baseline authority
-dynamic environment frame authority
-committed visible-frame acknowledgement
+post-pipeline disposal contract: absent
+pass/render-target retirement: absent
+cloud/fog volume texture retirement: absent
+scene resource inventory: absent
+shared-resource deduplication: absent
+world-renderer dispose: absent
+ocean-renderer dispose: absent
+foam-renderer dispose: absent
+cloud-renderer dispose: absent
+fog-renderer dispose: absent
+renderer.dispose() from route: absent
+backend retirement receipt: absent
+resource fingerprint: absent
+```
+
+## World and gameplay gaps
+
+```txt
+Core World retirement result: absent
+provider-store retirement receipt: absent
+materializer in-flight work fence: absent
+scenario stop/reset ownership: absent
+camera/input lifecycle result: absent
+environment clock suspend/resume policy: absent
+world/scenario/render session parity: absent
+```
+
+## Global readback gaps
+
+```txt
+raw renderer exposure: present
+raw scene/camera exposure: present
+raw world runtime exposure: present
+raw renderer component exposure: present
+global revocation after dispose: absent
+clone-safe lifecycle observation: absent
+first resumed/restarted frame receipt: absent
+```
+
+## bfcache and restart gaps
+
+```txt
+persisted pagehide classification: absent
+same-session suspend/resume contract: absent
+full dispose/restart contract: absent
+frame-time baseline reset: absent
+resource readiness revalidation: absent
+new generation on restart: absent
+old generation callback rejection: absent
+first restarted frame acknowledgement: absent
+```
+
+## Retained upstream and downstream gaps
+
+```txt
+P0 browser startup admission and rollback
+P0 runtime session lifecycle
+P1 Core World reset/re-prepare
+P1 focus transaction authority
+P1 materialization generation/readiness
+P1 renderer cell commit/disposal
+P1 camera baseline authority
+P1 dynamic environment frame authority
+P1 adaptive quality transaction authority
 ```
 
 ## Missing fixtures
 
 ```txt
-30/60/120 Hz cadence parity
-level 0 -> 1 -> 0 full recovery
-level 0 -> 1 -> 2 -> 1 -> 0 full recovery
-pixel-ratio baseline restoration
-partial consumer failure rollback
-consumer clamp result
-hidden-tab sampling
-long-stall sampling
-resize during transition
-stale revision rejection
-WebGPU/WebGL2 capability parity
-visible-frame quality revision parity
-Pages quality smoke
+lifecycle state transition table
+animation-loop stop
+listener install/remove parity
+timeout cancellation
+stale callback rejection
+persisted pagehide/pageshow
+non-persisted pagehide
+scene/post/volume/renderer retirement
+shared resource exactly-once disposal
+Core World/materializer retirement
+duplicate stop/dispose
+restart generation monotonicity
+first resumed/restarted frame parity
+WebGPU/WebGL2 lifecycle parity
+Pages lifecycle smoke
 ```
 
 ## Risk ranking
 
 ```txt
-P0  startup failure and resource rollback authority
-P0  runtime session ownership and stale callback fencing
-P1  Core World lifecycle and render commit authority
-P1  dynamic environment coherence
-P1  adaptive quality false-recovery and partial-commit risk
-P2  detached diagnostic completeness
+P0  startup failure leaves partial resource graph
+P0  page lifecycle can create mixed reset/live runtime state
+P0  stale callbacks can outlive world or future session generation
+P0  final disposal does not retire browser and GPU ownership
+P1  bfcache resume and restart behavior are undefined
+P1  global raw references preserve disposed authority
+P1  downstream world/render/quality work lacks session fencing
+P2  detached diagnostics do not expose lifecycle truth
 ```
 
 ## Non-goals of this documentation run
 
 ```txt
 no runtime code changed
-no performance thresholds changed
 no renderer behavior changed
 no package scripts changed
 no dependencies changed
 no workflow or deployment changed
+no lifecycle correctness claim made
 ```

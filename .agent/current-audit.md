@@ -1,25 +1,28 @@
-# Current Audit: MyCozyIsland Browser Runtime Session Lifecycle
+# Current Audit: MyCozyIsland Adaptive Quality Transaction Authority
 
-Last updated: `2026-07-11T11-19-10-04-00`
+Last updated: `2026-07-11T12-50-35-04-00`
 
 ## Summary
 
-The product route owns startup and live browser state directly inside `main()`. It creates the renderer, Core World wrapper, compatibility render graph, volumetric resources, post pipeline, performance/debug services, browser listeners, loader timers, animation loop, and global host without one runtime-session authority.
+The product has two quality systems:
 
-The preceding reset audit remains valid: Core World reset clears the world definition without re-registration. This pass identifies the parent boundary required to make any recovery safe. The live animation callback has no phase or generation admission, the raw global host exposes mutable runtime and render objects, and `pagehide` disposes only the world wrapper.
+1. `chooseRenderQuality()` selects an immutable startup tier from backend, memory, viewport, DPR, reduced-motion preference or URL override.
+2. `createPerformanceBudget()` samples one value per rendered frame and invokes direct callbacks for adaptive levels 0, 1 and 2.
+
+The adaptive path is not an authoritative transaction. It has no session or renderer generation fence, transition command, consumer plan, prepare/commit/rollback, effective-state fingerprint, typed result or committed-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** define one browser-session authority that owns acquisition, callback admission, reset quiescence, startup rollback, complete resource retirement, idempotent disposal, and restart proof.
+**Goal:** define cadence-independent adaptive-quality authority with full consumer recovery and visible-frame proof.
 
-- [x] Reconcile the full Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` because current repo-local state was centrally stale.
-- [x] Read the production route, Core World wrapper, latest reset audit, and live render path.
-- [x] Identify the interaction loop, domains, kits, and services.
-- [x] Inventory listeners, timers, animation-loop work, public-host references, and render resources.
-- [x] Verify pagehide calls only world-wrapper disposal.
-- [x] Verify reset/dispose remain callable through the raw global host while the loop stays active.
-- [x] Define session phases, generation fences, lease ownership, rollback, quiescence, and disposal results.
+- [x] Reconcile the complete Publish inventory with central tracking.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` as the oldest eligible current entry.
+- [x] Read the production route, quality descriptor, performance budget, atmosphere renderers and post pipeline.
+- [x] Identify the interaction loop, domains, kits and services.
+- [x] Trace every adaptive consumer mutation.
+- [x] Verify dwell thresholds are frame-count based.
+- [x] Verify recovery to level 0 skips pixel-ratio restoration.
+- [x] Define a composed authority domain and fixture matrix.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
@@ -30,7 +33,6 @@ Three.js:            0.185.0
 NexusEngine commit:  38229f59c22cb40024ffd13a9f48040de759f5d7
 world id:            world:cozy-island-webgpu-v3
 world seed:          cozy-island-webgpu-v2
-partition:           48 m uniform grid, radius 3
 initial active cells:49
 provider count:      7
 local kit count:     50
@@ -41,100 +43,63 @@ package version:     0.3.1
 
 ```txt
 startup
-  -> validate kit catalog
-  -> create and initialize WebGPURenderer
-  -> choose backend and quality
-  -> create Core World runtime
-  -> prepare world at origin
-  -> snapshot compatibility world
-  -> create scene, camera, sky and lights
-  -> create world/ocean/foam/cloud/fog/post render resources
-  -> create performance and debug services
-  -> attach browser listeners
-  -> schedule loader timeout chain
-  -> install renderer.setAnimationLoop
-  -> publish globalThis.CozyIsland
+  -> validate 50 kits
+  -> initialize renderer and backend
+  -> choose startup quality tier
+  -> set pixel ratio, shadows and render-resource dimensions
+  -> create Core World and compatibility snapshot
+  -> construct world/ocean/foam/cloud/fog/post consumers
+  -> create performance budget
+  -> install browser callbacks and animation loop
 
 frame
-  -> scenario.tick(dt)
-  -> read scenario render snapshot
-  -> mutate camera
-  -> updateWorldFocus
-  -> update compatibility world and foam
-  -> sample adaptive performance
-  -> postPipeline.render
-  -> processMaterializationFrame
-  -> update debug/global observations
-
-page exit
-  -> pagehide callback
-  -> domains.dispose only
+  -> calculate frameMs
+  -> tick scenario and project camera
+  -> update Core World focus
+  -> update compatibility render animation
+  -> performanceBudget.sample(frameMs)
+  -> maybe increment/decrement internal adaptive level
+  -> directly mutate cloud steps, fog steps, fog resolution and pixel ratio
+  -> render post pipeline
+  -> process materialization
+  -> publish debug/global observations
 ```
-
-## Main findings
-
-### No authoritative session phase
-
-The route has no `booting`, `running`, `quiescing`, `resetting`, `stopping`, `disposing`, `blocked`, or `disposed` state. Every callback assumes the complete object graph is live.
-
-### Animation callback is not leased
-
-`renderer.setAnimationLoop()` is installed without a session generation check. The route never calls `renderer.setAnimationLoop(null)` during reset, pagehide, failure, or disposal.
-
-### Reset can occur under a live frame
-
-`globalThis.CozyIsland.worldRuntime` exposes the raw wrapper. A same-page caller can invoke `reset()` or `dispose()` while the animation callback continues scenario, camera, render, performance, materialization, and debug work.
-
-After world reset:
-
-```txt
-scenario and camera: continue advancing
-Core World definition and cells: cleared
-prepared flag: false
-materializer: cleared
-compatibility renderer: still displays startup snapshot
-post pipeline: continues submitting
-input listeners: remain active
-public host: remains mutable
-```
-
-### Pagehide is incomplete teardown
-
-`pagehide` calls `domains.dispose()` only. It does not retire:
-
-```txt
-renderer animation loop
-wheel/pointer/keyboard/blur/resize listeners
-loader timeout handles
-drag and held input state
-scene geometries/materials/textures
-world/ocean/foam/cloud/fog renderer resources
-cloud and fog volume textures
-post-processing pipeline and targets
-performance/debug callbacks
-renderer and canvas ownership
-globalThis.CozyIsland
-```
-
-### Startup has no rollback ledger
-
-If startup fails after the renderer, world, volume textures, or listeners are acquired, `main().catch(fail)` projects an error but does not unwind prior acquisitions.
 
 ## Domain map
 
-### Platform and route host
+```txt
+platform and route host
+  module admission, loader, renderer backend, listeners, timers, loop, pagehide and global host
 
-Module admission, catalog validation, loader/error DOM, renderer backend selection, quality selection, browser input, resize, animation loop, pagehide, global host, and fatal projection.
+startup quality
+  backend, memory, viewport, DPR, reduced-motion and URL override policy
 
-### Core World coordination
+adaptive performance
+  frame sample, EMA, threshold counters, levels and degrade/recover callbacks
 
-World registration, partition, surface, focus, active-cell lifecycle, ordered providers, effects, snapshots, reset, and domain disposal.
+Core World
+  registration, grid partition, providers, focus, effects, active cells, snapshots and reset
 
-### Product world wrapper
+product world
+  prepare, focus throttling, lazy materialization, query facade and compatibility bridge
 
-Legacy composition, provider construction, prepare, focus throttling, lazy materialization, query facade, compatibility snapshot bridge, reset, disposal, and state projection.
+semantic world
+  terrain, clearing, biome, shoreline, paths, placement, ocean, weather, illumination, clouds, fog and campfire
 
-### Provider domains
+scenario
+  camera rail, drag, wheel, first-person input, clock, reset and render snapshot
+
+rendering
+  world, ocean, foam, cloud, fog, post, cell cache, resource disposal and disconnected cell-aware renderer
+
+quality authority
+  sample admission, elapsed windows, decisions, transition transaction, effective state, rollback, journal and frame proof
+
+validation and deployment
+  static checks, semantic/world/provider/materialization/renderer tests and Pages deployment
+```
+
+## Provider domains
 
 ```txt
 FOUNDATION
@@ -150,48 +115,32 @@ PRESENTATION
   cell-presentation-provider
 ```
 
-### Semantic world and gameplay
-
-Deterministic seed/time, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
-
-### Rendering
-
-Compatibility snapshot rendering, whole-island stylized renderer, ocean/foam, volumetric cloud/fog, post-processing, performance adaptation, debug projection, cell-cache utilities, disposal utilities, and disconnected cell-aware rendering.
-
-### Lifecycle and recovery
-
-Startup acquisition, session phase, callback generation, listener/timer/animation leases, reset quiescence, world recovery, renderer retirement, host revocation, stop/dispose idempotency, rollback, and restart proof are currently implicit or absent.
-
-### Validation and deployment
-
-Static catalog checks, deterministic domain smoke, Core World/provider/query/population/snapshot/cell tests, lazy materialization, renderer utilities, and GitHub Pages deployment.
-
 ## Services offered by the 50 local kits
 
 ```txt
 determinism and time
-  stable seeds, scoped RNG, identities, deterministic environment clock
+  stable seeds, scoped RNG, identities and deterministic environment time
 
-terrain and population
-  height/normal/slope/curvature/moisture/exposure fields
-  plateau, biome, shoreline, LOD, ground contact, paths
-  vegetation, rock, prop and campfire placement
+terrain and placement
+  height, normal, slope, curvature, moisture, exposure, plateau, biome, shoreline, LOD, contact and paths
+
+population
+  vegetation, rocks, props, grass and campfire placement/archetypes
 
 ocean and atmosphere
-  floor, waves, optics, underwater, caustics, glitter and foam
-  wind, weather, illumination, clouds, fog and aerial perspective
+  floor, waves, optics, underwater, caustics, glitter, foam, wind, weather, illumination, clouds, fog and aerial perspective
 
 render descriptors and adapters
-  quality, materials, archetypes and immutable snapshots
-  WebGPU/WebGL2 world, ocean, foam, atmosphere, cloud, fog and post
-  performance budgeting and debug projection
+  startup quality, materials, archetypes, immutable snapshots, WebGPU/WebGL2 renderers, post processing and debug
 
 scenario
-  camera rail, first-person movement, tick, reset and snapshot
+  camera rail, movement input, tick, reset and render snapshots
 
 Core World integration
-  grid focus, provider order, cell lifecycle and portable snapshots
-  lazy row materialization, query facade and compatibility bridge
+  grid focus, provider ordering, cell lifecycle, portable snapshots, lazy materialization, query and legacy bridge
+
+adaptive performance
+  EMA frame sampling, level transitions, cloud/fog step scaling, fog-resolution scaling and pixel-ratio degradation
 ```
 
 ## Complete local kit inventory
@@ -249,46 +198,93 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
+## Current adaptive policy
+
+```txt
+target: quality.targetFrameMs
+sample clamp: 1..100 ms
+EMA: 0.93 previous + 0.07 current
+degrade: EMA > target * 1.26 for 90 samples
+recover: EMA < target * 0.86 for 360 samples
+levels: 0, 1, 2
+```
+
+### Effective consumer targets
+
+```txt
+level 0
+  step scale 1.00
+  fog resolution scale 1.00 * startup value
+  pixel ratio startup value, but only at initial startup
+
+level 1
+  step scale 0.78
+  fog resolution scale 0.82 * startup value
+  pixel ratio cap 0.88 * startup cap
+
+level 2
+  step scale 0.62
+  fog resolution scale 0.68 * startup value
+  pixel ratio cap 0.76 * startup cap
+```
+
+## Main findings
+
+### Refresh-rate-dependent dwell
+
+The threshold counters advance once per rendered frame. Equivalent elapsed conditions produce different transition times:
+
+```txt
+90 samples: 3.00 s at 30 Hz, 0.75 s at 120 Hz
+360 samples: 12.00 s at 30 Hz, 3.00 s at 120 Hz
+```
+
+### Level-zero recovery is incomplete
+
+`applyPerformanceLevel(0)` restores cloud and fog step scales and fog resolution, but the pixel-ratio mutation is guarded by `if (level > 0)`. Once degraded, level 0 does not restore the startup pixel ratio.
+
+### Transition is not atomic
+
+Consumers mutate sequentially and return no prepare or commit receipts. If a later consumer fails, earlier consumers remain changed.
+
+### Observations are incomplete
+
+`performanceBudget.getState()` exposes only level, moving average, FPS and target. The global host adds cloud/fog steps and `activeScale`, but omits effective fog resolution, pixel ratio, quality revision, fingerprint and frame acknowledgement.
+
+### Lifecycle admission is absent
+
+Performance callbacks can still mutate renderer state during reset, quiescence, stop or disposal because the parent runtime-session authority does not yet exist.
+
 ## Required parent domain
 
 ```txt
-cozy-island-runtime-session-lifecycle-domain
+cozy-island-adaptive-quality-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-runtime-session-authority-kit
-runtime-session-phase-kit
-runtime-session-generation-kit
-startup-acquisition-ledger-kit
-startup-rollback-kit
-animation-loop-lease-kit
-listener-lease-kit
-timer-lease-kit
-reset-quiescence-kit
-input-retirement-kit
-world-session-adapter-kit
-renderer-resource-inventory-kit
-renderer-retirement-kit
-global-host-revocation-kit
-idempotent-session-stop-kit
-session-disposal-result-kit
-session-lifecycle-journal-kit
-browser-single-session-fixture-kit
-browser-restart-smoke-kit
-```
-
-## Required phase flow
-
-```txt
-created -> booting -> running
-booting -> failed -> disposing -> disposed
-running -> quiescing -> resetting -> repreparing -> running
-running -> stopping -> disposing -> disposed
-recovery failure -> blocked or rollback -> running
+quality-policy-schema-kit
+performance-sample-envelope-kit
+performance-window-timebase-kit
+quality-level-decision-kit
+quality-transition-command-kit
+quality-transition-admission-kit
+quality-session-fence-kit
+quality-consumer-plan-kit
+quality-consumer-prepare-kit
+quality-consumer-commit-kit
+quality-consumer-rollback-kit
+effective-quality-state-kit
+pixel-ratio-restore-kit
+quality-transition-result-kit
+quality-transition-journal-kit
+quality-frame-ack-kit
+quality-cadence-parity-fixture-kit
+quality-full-recovery-fixture-kit
+quality-partial-failure-fixture-kit
 ```
 
 ## Acceptance boundary
 
-A browser session is complete only when one owner accounts for all callbacks and resources, reset retires live work before Core World recovery, a new world/renderer generation is visibly acknowledged before resume, partial startup unwinds, old callback and host references are inert, repeated disposal is idempotent, and terminal results remain readable after all live objects are released.
+Adaptive quality is authoritative only when transition timing is elapsed-time based, every consumer prepares and commits one shared revision, failures restore the previous state, level-zero recovery restores every original value, session/reset/stop phases fence callbacks, effective state is fingerprinted, and one visible frame acknowledges the committed revision.

@@ -1,42 +1,36 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T06-50-30-04-00`
+Last aligned: `2026-07-11T07-01-49-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: establish contract parity between the pinned NexusEngine Core World runtime used by the browser and the local fake runtime used by Node tests, then make focus and active-cell transitions return a typed, failure-visible result.
+Current focus: establish one route-session owner for startup, frame admission, input, timers, Core World focus work, global exposure, WebGPU resources, stop, disposal and restart before making provider cells visually authoritative.
 
 ## Plan ledger
 
-**Goal:** prove that the test harness exercises the same provider lifecycle and failure semantics as the pinned production runtime, and define the transaction boundary required before Core World cells can become visible render authority.
+**Goal:** make every browser-side resource and asynchronous callback belong to one identified runtime session, then prove that stopping or failing that session releases exactly what it acquired and rejects all stale work before another session can start.
 
 - [x] Compare the complete accessible `LuminaryLabs-Publish` inventory with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories remain tracked and have root `.agent` state.
-- [x] Select only `MyCozyIsland` as the oldest eligible documented repository.
-- [x] Read the production host, world wrapper, provider stores, provider implementations, local fake runtime, Node fixtures, and pinned Core World implementation.
-- [x] Identify the interaction loop, active domains, services, complete 50-kit catalog, imported Core World services, providers, adapters, and validation surfaces.
-- [x] Compare production cell-selection, capability, rollback, failure, diagnostic, and release behavior with the local test double.
-- [x] Add timestamped architecture, render, gameplay, interaction, world-provider, and deploy audits.
-- [x] Refresh the required root `.agent` documents.
-- [x] Change no runtime source, package scripts, rendering, or deployment configuration.
-- [x] Create no branch or pull request.
+- [x] Prioritize `MyCozyIsland` because its `2026-07-11T06-50-30-04-00` repo-local audit was newer than the central `2026-07-11T05-10-36-04-00` record.
+- [x] Read the route host, Core World wrapper, renderer constructors, renderer-disposal utility, input registration, loader timers, animation loop and global host exposure.
+- [x] Identify the interaction loop, domains, all 50 local kits, imported Core World services, runtime-implied hosts and lifecycle-owned resources.
+- [x] Trace startup success, startup failure, pagehide, frame execution and the absent restart path.
+- [x] Add timestamped architecture, render, gameplay, interaction, lifecycle and deploy audits.
+- [x] Refresh all required root `.agent` documents.
+- [x] Change no runtime source, package scripts, rendering or deployment configuration.
+- [x] Push only to `main` and create no branch or pull request.
 
 ## Selection result
 
-All nine eligible non-Cavalry repositories were already documented. Central timestamps placed `MyCozyIsland` at `2026-07-11T05-10-36-04-00`, earlier than every other eligible repository, so the oldest-documented fallback selected it.
+The accessible Publish inventory contains ten repositories. Nine are eligible after excluding `TheCavalryOfRome`. Every eligible repository is centrally tracked and has root `.agent` documentation, but `MyCozyIsland` had a newer repo-local breakdown that was not yet represented by the central ledger. That documentation drift takes priority over the oldest-documented fallback.
 
 ```txt
-MyCozyIsland       2026-07-11T05-10-36-04-00  selected
-TheOpenAbove       2026-07-11T05-25-29-04-00
-HorrorCorridor     2026-07-11T05-28-29-04-00
-PrehistoricRush    2026-07-11T05-39-11-04-00
-PhantomCommand     2026-07-11T05-50-43-04-00
-ZombieOrchard      2026-07-11T06-02-00-04-00
-TheUnmappedHouse   2026-07-11T06-21-57-04-00
-AetherVale         2026-07-11T06-29-11-04-00
-IntoTheMeadow      2026-07-11T06-38-59-04-00
-TheCavalryOfRome   excluded
+MyCozyIsland repo-local audit:  2026-07-11T06-50-30-04-00
+MyCozyIsland central ledger:    2026-07-11T05-10-36-04-00
+selected:                       MyCozyIsland
+excluded:                       TheCavalryOfRome
 ```
 
 Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization during this pass.
@@ -45,56 +39,59 @@ Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization 
 
 ```txt
 index.html
-  -> pinned Three.js and NexusEngine imports
+  -> pinned Three.js 0.185.0 and NexusEngine commit imports
   -> validate 50 local kit descriptors
-  -> initialize WebGPU/WebGL2 backend and quality
-  -> create legacy semantic composition
-  -> create Core World wrapper and seven providers
-  -> prepare 49 active cells
-  -> bridge provider rows into one startup render snapshot
-  -> construct the whole-island Three/WebGPU graph
-  -> sample wheel, pointer, keyboard, blur, resize and time
-  -> tick scenario and camera
-  -> submit focus to Core World
-  -> production Core World releases, updates and prepares cells
-  -> wrapper returns only true/false
-  -> visible renderer continues from the startup snapshot
-  -> post render and diagnostics
+  -> construct and initialize one WebGPURenderer
+  -> choose backend and startup quality
+  -> create Core World wrapper and prepare 49 active cells
+  -> flatten providers into one compatibility render snapshot
+  -> construct scene, camera, sky, lights, world, ocean, foam,
+     atmosphere textures, cloud, fog, post, performance and debug resources
+  -> register canvas and window listeners
+  -> schedule two nested loader timers
+  -> install one renderer animation loop
+  -> each frame:
+       scenario tick
+       camera projection
+       Core World focus update
+       world and foam presentation update
+       performance sampling
+       post render
+       debug projection
+  -> publish live resources through globalThis.CozyIsland
+  -> pagehide calls only domains.dispose()
 ```
 
 ## Newly documented finding
 
-The browser uses pinned NexusEngine commit `38229f59c22cb40024ffd13a9f48040de759f5d7`, but the Node world fixtures inject `tests/helpers/fake-nexus-world.mjs`.
+The route has no session object or acquisition ledger. `main()` creates resources in sequence and publishes them only after the animation loop is active. A failure at any earlier await or constructor reaches `main().catch(fail)` without rolling back resources already acquired.
 
-The fake does not model the production contract:
+The current page-exit path is also partial:
 
 ```txt
-production Core World
-  partition result: required / retained / released / updated
-  provider matching and capability requirements
-  critical-provider failure states
-  per-cell rollback and diagnostics
-  release-before-prepare world transitions
-  failed cell records committed into the world snapshot
+pagehide
+  -> domains.dispose()
+  -> Core World reset
 
-local fake
-  partition result: bare cell array
-  unconditional provider execution
-  no capability admission
-  no critical failure or diagnostics
-  no rollback behavior
-  always-active cell rows
+not released:
+  renderer animation loop
+  wheel/pointer/keyboard/blur/resize listeners
+  loader timers
+  scene geometries, materials and textures
+  ocean, foam, cloud and fog resources
+  atmosphere volume textures
+  post pipeline
+  renderer/backend
+  globalThis.CozyIsland
 ```
 
-There is also a wrapper retry defect: `prepare()` sets `prepared = true` before `commitFocus()`. If the pinned runtime throws, later `prepare()` calls return the still-null snapshot instead of retrying.
+The repository contains `disposeRendererObject()`, but the live whole-island host does not call it. Most renderer factories expose only live objects and update methods, not a common idempotent disposal result. There is no `stop()`, `restart()`, session epoch, stale-frame fence or previous-global restoration policy.
 
-The current compatibility renderer masks most provider failures because it was built from the initial global snapshot. A future cell-aware renderer would expose missing or failed cells unless focus transitions become typed, staged, correlated, and failure-visible first.
-
-## Ordered safe ledges
+## Priority order
 
 ```txt
 1. Runtime Session Lifecycle Authority
-   + WebGPU Resource Disposal and Restart Fixture Gate
+   + Startup Rollback / Stop / Dispose / Restart Fixture Gate
 
 2. Pinned Core World Contract Parity and Focus Transaction Authority
    + Production-Runtime Failure Parity Fixture Gate
@@ -112,19 +109,19 @@ The current compatibility renderer masks most provider failures because it was b
    + Full-Recovery Fixture Gate
 ```
 
-Lifecycle remains first. Contract parity is now second because render commits cannot safely consume a world revision whose provider failures and active-cell completeness were never proven against the shipped runtime.
+Lifecycle remains first because every later focus, provider and render transaction requires a live session epoch, resource ownership and stale-work rejection boundary.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T06-50-30-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T06-50-30-04-00.md
-.agent/architecture-audit/2026-07-11T06-50-30-04-00-pinned-core-world-contract-dsk-map.md
-.agent/render-audit/2026-07-11T06-50-30-04-00-provider-failure-render-consumption-gap.md
-.agent/gameplay-audit/2026-07-11T06-50-30-04-00-focus-cell-transition-loop.md
-.agent/interaction-audit/2026-07-11T06-50-30-04-00-focus-command-result-map.md
-.agent/world-provider-audit/2026-07-11T06-50-30-04-00-production-runtime-test-double-parity-contract.md
-.agent/deploy-audit/2026-07-11T06-50-30-04-00-pinned-runtime-failure-parity-fixture-gate.md
+.agent/trackers/2026-07-11T07-01-49-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T07-01-49-04-00.md
+.agent/architecture-audit/2026-07-11T07-01-49-04-00-runtime-session-lifecycle-dsk-map.md
+.agent/render-audit/2026-07-11T07-01-49-04-00-webgpu-resource-ownership-disposal-gap.md
+.agent/gameplay-audit/2026-07-11T07-01-49-04-00-startup-run-stop-restart-loop.md
+.agent/interaction-audit/2026-07-11T07-01-49-04-00-listener-timer-animation-command-map.md
+.agent/lifecycle-audit/2026-07-11T07-01-49-04-00-session-epoch-resource-lease-contract.md
+.agent/deploy-audit/2026-07-11T07-01-49-04-00-lifecycle-restart-fixture-gate.md
 ```
 
 ## Do not start next with
@@ -134,5 +131,5 @@ Lifecycle remains first. Contract parity is now second because render commits ca
 - removal of `?world=legacy`
 - new world content or visual systems
 - additional persistent GPU resources
-- changes to terrain, biome, vegetation, grass, rocks, ocean, cloud, fog, lighting, or quality algorithms
-- treating the current fake-runtime fixtures as production Core World proof
+- terrain, biome, vegetation, grass, rocks, ocean, cloud, fog, lighting or quality changes
+- treating `pagehide -> domains.dispose()` as complete route disposal

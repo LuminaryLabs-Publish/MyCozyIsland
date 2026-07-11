@@ -1,97 +1,199 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T14-41-28-04-00`
+Last aligned: `2026-07-11T16-10-58-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: define one browser-startup admission transaction that owns module-source identity, renderer-backend selection, staged resource allocation, failure rollback, loader projection, retry and first-frame readiness.
+Current focus: make adaptive quality a revisioned, reversible and observable transaction across volumetric steps, fog resolution, pixel ratio and the visible frame.
 
 ## Summary
 
-The route is WebGPU-first and pins Three.js plus NexusEngine through an import map. Those module imports execute before `main()` and therefore before the route's `main().catch(fail)` error projection exists. A CDN or module-graph failure can leave the page on its initial loader without a classified startup result.
+`MyCozyIsland` chooses one immutable startup quality descriptor and then runs a frame-sampled performance budget. The budget can lower and recover its numeric level, but the host applies quality changes through four independent setters with no transaction identity, no rollback and no visible-frame acknowledgement.
 
-After imports succeed, `main()` allocates the renderer, Core World runtime, scene graph, atmosphere textures and render consumers in sequence. Any later exception is displayed by `fail(error)`, but already-created GPU, world and DOM resources are not retired because cleanup ownership and the `pagehide` handler are installed only after startup has completed.
+The concrete recovery bug is in `applyPerformanceLevel()`: pixel ratio is changed only when `level > 0`. A transition from level 1 back to level 0 restores cloud steps, fog steps and fog resolution, but leaves the renderer at the degraded pixel ratio. The performance state can therefore report full recovery while the visible resolution remains reduced.
 
 ## Plan ledger
 
-**Goal:** make browser startup an explicit, observable and retriable transaction before runtime-session, world, render and environment authority are allowed to begin.
+**Goal:** preserve adaptive performance while ensuring each quality transition is complete, reversible, stale-safe and correlated with the rendered frame.
 
-- [x] Compare all ten accessible Publish repositories with central tracking.
-- [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` as the oldest eligible central entry.
-- [x] Trace import-map admission, `main()`, renderer initialization, world preparation, render-resource creation, loader completion, listeners, animation loop and pagehide cleanup.
-- [x] Identify the interaction loop, domains, all 50 local kits, imported NexusEngine services and seven ordered providers.
-- [x] Define startup identity, staged results, resource ownership, rollback, retry and first-frame readiness proof.
-- [x] Add timestamped architecture, render, gameplay, interaction, startup and deploy audits.
-- [x] Change no runtime or deployment behavior.
-- [x] Push directly to `main`; create no branch or pull request.
+- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
+- [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
+- [x] Select only `MyCozyIsland` as the oldest eligible aligned repository.
+- [x] Trace startup quality selection, frame sampling, degrade/recover thresholds and every runtime quality setter.
+- [x] Identify the level-0 pixel-ratio recovery defect.
+- [x] Identify frame-count cadence dependence and partial-application risk.
+- [x] Inventory all active domains, kits and kit services.
+- [x] Define the adaptive-quality transaction DSK and fixture gate.
+- [x] Change no runtime source, dependency, workflow or deployment configuration.
+- [x] Push directly to `main` without a branch or pull request.
+- [ ] Implement startup and runtime-session prerequisites.
+- [ ] Implement adaptive-quality transaction authority and executable fixtures.
 
-## Current interaction loop
+## Read this first
 
 ```txt
-HTML parse
-  -> install import map
-  -> fetch Three.js and route module graph
-  -> evaluate static imports
-  -> call main()
-  -> validate 50 kits
-  -> initialize WebGPURenderer
-  -> infer WebGPU or WebGL2 backend
-  -> choose startup quality
-  -> create and prepare Core World runtime
-  -> create scene, camera, lights and static snapshot consumers
-  -> create atmosphere textures and cloud/fog/ocean/post resources
-  -> install input and resize listeners
-  -> schedule loader completion timers
-  -> start renderer animation loop
-  -> install pagehide callback
-  -> expose CozyIsland global host
+.agent/trackers/2026-07-11T16-10-58-04-00/project-breakdown.md
+.agent/current-audit.md
+.agent/next-steps.md
+.agent/known-gaps.md
+.agent/validation.md
+.agent/architecture-audit/2026-07-11T16-10-58-04-00-adaptive-quality-transaction-dsk-map.md
+.agent/render-audit/2026-07-11T16-10-58-04-00-level-recovery-visible-resolution-gap.md
+.agent/gameplay-audit/2026-07-11T16-10-58-04-00-frame-budget-quality-transition-loop.md
+.agent/interaction-audit/2026-07-11T16-10-58-04-00-quality-command-admission-result-map.md
+.agent/quality-system-audit/2026-07-11T16-10-58-04-00-quality-revision-recovery-contract.md
+.agent/deploy-audit/2026-07-11T16-10-58-04-00-adaptive-quality-fixture-gate.md
+.agent/turn-ledger/2026-07-11T16-10-58-04-00.md
+.agent/kit-registry.json
+```
+
+## Product interaction loop
+
+```txt
+startup
+  -> detect renderer backend
+  -> choose immutable startup quality tier
+  -> configure pixel ratio, shadows, geometry and atmosphere
+  -> create performance budget at level 0
+
+one rendered frame
+  -> sample RAF interval in milliseconds
+  -> update exponential moving average
+  -> count consecutive over-budget or under-budget frames
+  -> after 90 slow frames, increase level
+  -> after 360 fast frames, decrease level
+  -> callback applies cloud steps
+  -> callback applies fog steps
+  -> callback applies fog render-target scale
+  -> callback may apply renderer pixel ratio
+  -> render post pipeline
+  -> publish detached diagnostics later
 ```
 
 ## Main finding
 
 ```txt
-module-graph admission result: absent
-startup transaction id/revision: absent
-stage result journal: absent
-backend candidate/admission result: absent
-resource ledger and cleanup stack: absent
-rollback after partial allocation: absent
-retry command/result: absent
-first-frame readiness receipt: absent
-module-fetch failure projection: absent
+level 0 startup
+  pixel ratio = quality.pixelRatioCap
+
+level 0 -> level 1
+  cloud/fog/fog-resolution reduced
+  pixel ratio reduced to 0.88 of cap
+
+level 1 -> level 0
+  cloud/fog/fog-resolution restored
+  pixel-ratio setter skipped because level is 0
+  performance level reports 0
+  renderer remains at degraded pixel ratio
 ```
 
-The static `three/webgpu` import can fail before `main()` runs. Later failures are caught, but `fail()` only updates the error panel and loader text. It does not stop a partial animation loop, dispose renderer resources, reset Core World, remove listeners, cancel loader timers or revoke the global host.
-
-## Required authority flow
+Additional authority gaps:
 
 ```txt
-StartupCommand
-  -> resolve immutable ModuleSourceManifest
-  -> admit required module capabilities
-  -> allocate startup transaction and generation
-  -> execute ordered StartupStagePlan
-  -> register every acquired resource in reverse cleanup order
-  -> classify renderer backend and quality candidate
-  -> prepare Core World and render consumers
-  -> commit listeners, loop, loader state and public host
-  -> render first frame
-  -> publish StartupReadyReceipt
-
-on any failure
-  -> classify failed stage
-  -> fence callbacks
-  -> rollback acquired resources in reverse order
-  -> project stable failure state
-  -> admit explicit retry or terminal stop
+quality transition ID: absent
+quality revision: absent
+candidate plan: absent
+consumer acknowledgements: absent
+rollback: absent
+stale transition rejection: absent
+actual renderer pixel-ratio observation: absent
+visible-frame acknowledgement: absent
+background/visibility sampling barrier: absent
+elapsed-time threshold policy: absent
 ```
 
-## Priority order
+## Domains in use
 
 ```txt
-1. Browser Startup Admission + Failure Rollback Authority
+browser module and startup admission
+renderer backend and startup quality selection
+runtime session and animation-loop ownership
+frame-time sampling and adaptive budget policy
+quality transition planning and admission
+cloud and fog raymarch quality consumers
+fog render-target quality consumer
+renderer pixel-ratio consumer
+static shadow, terrain, ocean and vegetation quality consumers
+Core World, providers and materialization
+camera rail and first-person scenario
+semantic terrain, ocean and atmosphere
+WebGPU/WebGL2 rendering and post processing
+diagnostics, validation and Pages deployment
+```
+
+## Implemented kits
+
+The source-backed catalog remains exactly 50 local kits. The performance-critical set is:
+
+```txt
+render-quality-domain-kit
+webgpu-performance-budget-kit
+webgpu-volumetric-cloud-renderer-kit
+webgpu-rolling-fog-renderer-kit
+webgpu-post-processing-renderer-kit
+webgpu-stylized-material-renderer-kit
+webgpu-ocean-renderer-kit
+webgpu-foam-renderer-kit
+webgl2-fallback-renderer-kit
+debug-overlay-host-kit
+```
+
+The complete 50-kit inventory and provider/service map are in `.agent/current-audit.md` and `.agent/kit-registry.json`.
+
+## Kit services
+
+```txt
+render-quality-domain-kit
+  startup tier selection, capability policy and immutable quality descriptor
+
+webgpu-performance-budget-kit
+  frame sampling, moving average, FPS estimate, degrade/recover level and callbacks
+
+cloud/fog renderers
+  mutable raymarch step scales and current-step observation
+
+post-processing renderer
+  mutable fog render-target resolution scale
+
+browser quality host
+  renderer pixel ratio mutation, callback orchestration and public diagnostics
+
+remaining render/domain kits
+  startup-fixed shadow, geometry, population, texture and post parameters
+```
+
+## Required quality domain
+
+```txt
+cozy-island-adaptive-quality-transaction-authority-domain
+  -> quality-policy-descriptor-kit
+  -> quality-sample-command-kit
+  -> visibility-sample-barrier-kit
+  -> quality-transition-id-kit
+  -> quality-revision-kit
+  -> quality-transition-admission-kit
+  -> quality-candidate-plan-kit
+  -> quality-consumer-capability-kit
+  -> quality-consumer-command-kit
+  -> quality-consumer-result-kit
+  -> quality-transition-commit-kit
+  -> quality-transition-rollback-kit
+  -> full-recovery-policy-kit
+  -> stale-quality-result-rejection-kit
+  -> quality-visible-frame-ack-kit
+  -> quality-observation-kit
+  -> quality-journal-kit
+  -> cadence-parity-fixture-kit
+  -> full-recovery-fixture-kit
+  -> partial-failure-rollback-fixture-kit
+  -> browser-quality-frame-smoke-kit
+```
+
+## Ordered implementation queue
+
+```txt
+1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
 3. Core World Reset / Re-prepare Authority
 4. Pinned Core World Focus Transaction Authority
@@ -102,24 +204,11 @@ on any failure
 9. Adaptive Quality Transaction Authority
 ```
 
-## Read this pass first
+## Next safe ledge
 
 ```txt
-.agent/trackers/2026-07-11T14-41-28-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T14-41-28-04-00.md
-.agent/architecture-audit/2026-07-11T14-41-28-04-00-browser-startup-admission-dsk-map.md
-.agent/render-audit/2026-07-11T14-41-28-04-00-renderer-init-first-frame-readiness-gap.md
-.agent/gameplay-audit/2026-07-11T14-41-28-04-00-loader-startup-interaction-loop.md
-.agent/interaction-audit/2026-07-11T14-41-28-04-00-module-startup-retry-admission-map.md
-.agent/startup-audit/2026-07-11T14-41-28-04-00-module-backend-rollback-contract.md
-.agent/deploy-audit/2026-07-11T14-41-28-04-00-startup-failure-fixture-gate.md
+MyCozyIsland Adaptive Quality Transaction Authority
++ Cadence Parity / Full Recovery / Partial Failure / Visible-Frame Fixture Gate
 ```
 
-## Do not start next with
-
-- adding a second ad-hoc renderer constructor;
-- hiding module failures behind a longer loader timeout;
-- treating `renderer.init()` success as complete application readiness;
-- retrying without a new startup generation and old-resource rollback;
-- adding more globals before startup commit;
-- claiming WebGL2 fallback without an executable backend-admission fixture.
+This remains ninth in implementation order, but it is now fully specified. It must consume startup generation, runtime session identity and committed-frame acknowledgement rather than creating parallel identity models.

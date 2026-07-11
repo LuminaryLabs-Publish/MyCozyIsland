@@ -1,107 +1,99 @@
-# Current Audit: MyCozyIsland Dynamic Environment Frame Authority
+# Current Audit: MyCozyIsland Browser Startup Admission Authority
 
-Last updated: `2026-07-11T12-58-06-04-00`
+Last updated: `2026-07-11T14-41-28-04-00`
 
 ## Summary
 
-MyCozyIsland has live clock, wind and illumination services, but the production render graph does not consume one live environment frame. `createLegacyWorldComposition()` samples illumination and wind-dependent descriptors during startup, freezes one render snapshot, and passes that snapshot into the scenario and renderer constructors.
+`MyCozyIsland` has a clear successful startup path, but no authoritative startup transaction. Static CDN imports are evaluated before `main()` and are outside `main().catch(fail)`. Once `main()` begins, renderer, Core World and GPU resources are allocated incrementally, but failures only update DOM text and do not roll back already-acquired resources.
 
-`createCozyIslandScenario().getRenderSnapshot()` refreshes only `clock` and `camera`. World sway, campfire pulse, ocean and foam use elapsed seconds, while sun/sky/exposure, vegetation wind, campfire smoke wind, cloud weather/lighting/shadow and fog advection remain tied to startup values.
+The result is a split contract: module-graph failures can strand the initial loader with no application error state, while later startup failures can display an error but leave partial renderer/world resources alive. No startup ID, generation, stage journal, resource ledger, retry policy or first-frame receipt proves that the page became ready exactly once.
 
 ## Plan ledger
 
-**Goal:** define one deterministic, session-fenced environment-frame transaction with reset and visible-frame proof.
+**Goal:** define one ordered browser-startup transaction with module admission, backend classification, rollback, retry and first-visible-frame proof.
 
 - [x] Reconcile the complete Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` because repo-local documentation was newer than central tracking.
-- [x] Read the production route, world composition, environment services, scenario and renderer updates.
-- [x] Identify the interaction loop, domains, kits and services.
-- [x] Trace every live and startup-frozen environment consumer.
-- [x] Define a composed authority domain and fixture matrix.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` as the oldest eligible repository.
+- [x] Read `index.html`, `src/main-cloudform.js`, Core World runtime, renderer factories and the test entrypoint.
+- [x] Identify the interaction loop, domains, implemented kits and services.
+- [x] Trace every startup stage and the point at which its cleanup becomes reachable.
+- [x] Define a composed startup authority domain and fixture matrix.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
 
 ```txt
-route:               src/main-cloudform.js?v=core-world-1
-Three.js:            0.185.0
-NexusEngine commit:  38229f59c22cb40024ffd13a9f48040de759f5d7
-world id:            world:cozy-island-webgpu-v3
-world seed:          cozy-island-webgpu-v2
-initial active cells:49
-provider count:      7
-local kit count:     50
-package version:     0.3.1
+route script:         src/main-cloudform.js?v=core-world-3
+Three.js import:      0.185.0 three.webgpu.js
+NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
+package version:      0.3.1
+world id:             world:cozy-island-webgpu-v3
+world seed:           cozy-island-webgpu-v2
+default world mode:   core
+rollback query mode:  ?world=legacy
+local kit count:      50
+Core World providers: 7
 ```
 
-## Interaction loop
+## Startup interaction loop
 
 ```txt
-startup
-  -> validate 50 kits
-  -> initialize WebGPU/WebGL2 renderer
-  -> create deterministic seed and environment clock
-  -> create wind, weather and illumination services
-  -> sample illumination once
-  -> sample vegetation/campfire wind once
-  -> derive cloud and fog descriptors once
-  -> freeze render snapshot
-  -> construct world/ocean/foam/cloud/fog/post consumers
-  -> install callbacks and animation loop
-
-frame
-  -> calculate frameMs and dt
-  -> tick clock and camera
-  -> scenario returns static snapshot + current clock/camera
-  -> update Core World focus
-  -> update world and foam from elapsedSeconds
-  -> sample adaptive performance
-  -> render
-  -> process materialization
-  -> publish debug/global observations
-
-reset
-  -> reset clock and camera
-  -> no environment frame revision
-  -> no consumer reset transaction
-  -> no visible baseline-frame acknowledgement
+browser parses index.html
+  -> import map pins Three.js and NexusEngine URLs
+  -> browser fetches and evaluates main-cloudform.js graph
+  -> static Three.js imports resolve before main()
+  -> main() validates kit catalog
+  -> construct WebGPURenderer
+  -> await renderer.init()
+  -> inspect renderer backend
+  -> choose quality and mutate renderer settings
+  -> create Core World or legacy runtime
+  -> await domains.prepare()
+  -> create compatibility render snapshot
+  -> create scene, camera, sky and lights
+  -> allocate world, ocean and foam renderers
+  -> allocate or compute cloud/fog volume textures
+  -> allocate cloud, fog and post-processing renderers
+  -> create performance and debug services
+  -> install input and resize listeners
+  -> schedule loader completion timers
+  -> start renderer animation loop
+  -> install pagehide handler
+  -> publish global CozyIsland host
 ```
 
 ## Domain map
 
 ```txt
-platform and route host
-  module admission, loader, renderer backend, listeners, timers, loop, pagehide and global host
+browser module admission
+  import map, CDN source identity, static module graph and route evaluation
+
+startup authority
+  command, transaction, generation, stage plan, results, rollback, retry and readiness
+
+renderer backend admission
+  WebGPURenderer initialization, backend detection, startup quality and fallback claims
 
 runtime lifecycle
-  session ownership, callback admission, reset, stop, disposal and restart gaps
+  renderer/world/session ownership, callbacks, stop, dispose and restart
 
 Core World
-  registration, grid partition, providers, focus, effects, active cells, snapshots and reset
+  engine, domain, partition, surface, provider registration, focus, effects and snapshots
 
 semantic world
   terrain, clearing, biome, shoreline, paths, population, ocean and atmosphere
 
-environment source
-  deterministic seed, clock, wind, weather, illumination and aerial perspective
+environment
+  deterministic seed, clock, wind, weather, illumination, clouds, fog and aerial perspective
 
-environment derivatives
-  cloud weather/density/lighting/LOD/shadow/horizon, fog density/advection/placement, vegetation wind and campfire smoke
-
-scenario
-  camera rail, first-person input, clock tick, reset and render snapshot
+scenario and interaction
+  camera rail, wheel, drag, keys, blur reset, resize and frame tick
 
 rendering
-  sky, lights, exposure, world, ocean, foam, cloud, fog, post, cell cache and disposal
-
-dynamic environment authority
-  frame derivation, identity, consumer plan, prepare/commit/rollback, reset baseline, journal and frame proof
-
-adaptive quality
-  performance sampling and direct cloud/fog/post/pixel-ratio mutation
+  sky, lights, world, ocean, foam, cloud, fog, post processing and debug projection
 
 validation and deployment
-  static tests, semantic/world/provider/materialization/renderer tests and Pages deployment
+  static Node checks, domain/world/provider/materialization/render utility tests and Pages
 ```
 
 ## Provider domains
@@ -124,28 +116,28 @@ PRESENTATION
 
 ```txt
 determinism and time
-  stable seeds, scoped RNG, mutable environment clock and reset
+  stable seeds, scoped RNG, environment clock, wind, weather and illumination
 
-terrain and placement
+terrain and classification
   height, normal, slope, curvature, moisture, exposure, plateau, biome, shoreline, LOD, contact and paths
 
 population
   vegetation, rocks, props, grass and campfire placement/archetypes
 
 ocean and atmosphere
-  floor, waves, optics, underwater, caustics, glitter, foam, wind, weather, illumination, clouds, fog and aerial perspective
+  floor, waves, optics, underwater, caustics, glitter, foam, clouds, fog and aerial perspective
 
 render descriptors and adapters
-  startup quality, materials, archetypes, immutable snapshots, WebGPU/WebGL2 renderers, post processing and debug
+  quality selection, material/archetype descriptors, snapshots, WebGPU/WebGL2 adapters, post processing and debug
 
 scenario
-  camera rail, movement input, tick, reset and render snapshots
+  camera rail, first-person movement, input state, tick, reset and render snapshots
 
 Core World integration
-  grid focus, provider ordering, cell lifecycle, portable snapshots, lazy materialization, query and legacy bridge
+  grid partition, focus, provider order, cell lifecycle, portable snapshots, lazy materialization, query and legacy bridge
 
-adaptive performance
-  EMA frame sampling, level transitions, cloud/fog step scaling, fog-resolution scaling and pixel-ratio degradation
+performance
+  frame sampling, degrade/recover decisions, volumetric step scaling, fog-resolution scaling and pixel-ratio scaling
 ```
 
 ## Complete local kit inventory
@@ -203,86 +195,100 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Live versus frozen consumers
+## Imported NexusEngine services
 
 ```txt
-live:
-  clock elapsedSeconds
-  camera descriptor
-  generic world sway
-  campfire flame/light pulse
-  ocean animation
-  foam animation
-
-startup-frozen:
-  sky gradient
-  hemisphere intensity
-  sun direction/color/intensity
-  renderer exposure
-  scene fog descriptor
-  vegetation wind descriptor
-  campfire smoke wind direction/response
-  cloud weather, lighting, shadow and horizon
-  fog density, advection and placement
+createEngine
+createCoreWorldDomain
+createUniformGridPartition
+createFlatWorldSurface
+createTerrainProviderAdapter
+defineWorldEffectProvider
 ```
 
 ## Main findings
 
-### Scenario projection is incomplete
+### Static module failures bypass the route error handler
 
-The scenario spreads the startup snapshot and replaces only `clock` and `camera`. It does not derive a new wind, illumination, cloud, fog or ocean frame.
+`three/webgpu`, `three/tsl` and renderer modules are static imports. If the CDN module graph fails to fetch, parse or evaluate, `main()` is never entered and `main().catch(fail)` cannot update the error panel.
 
-### Dynamic services are sampled once
+### Startup has no transaction identity
 
-`createIlluminationState()` and `createWindField()` can produce time-dependent values, but world composition consumes them during startup and freezes dependent descriptors.
+There is no `startupId`, generation, expected stage, monotonic revision or typed result. The loader percentage is a presentation side effect, not an authoritative stage record.
 
-### Render consumers have no shared identity
+### Partial allocation has no rollback
 
-There is no `environmentFrameId`, revision, fingerprint, consumer acknowledgement set or visible-frame receipt.
+The renderer is initialized before Core World and all render consumers. A failure during world preparation, volume-texture creation or later renderer construction leaves earlier resources without a registered reverse cleanup stack.
 
-### Reset is not an environment transaction
+### Cleanup becomes reachable too late
 
-Clock and camera reset independently. Render consumers do not prepare or acknowledge a canonical baseline environment frame.
+The `pagehide` callback is installed after the animation loop begins, and it calls only `domains.dispose()`. It does not stop the renderer loop, cancel loader timers, remove input/resize listeners, dispose the renderer or retire cloud/fog/ocean/post resources.
 
-### Observations are incomplete
+### Backend readiness is inferred, not admitted
 
-The public host exposes clock and performance state, but no canonical live environment state or consumer parity evidence.
+The route reads `renderer.backend?.isWebGPUBackend` after `renderer.init()` and labels the other case `webgl2`. There is no candidate record, capability negotiation result, fallback reason or proof that all selected consumers support the effective backend.
+
+### First frame is not part of startup commit
+
+The loader is hidden by timers before any structured first-frame acknowledgement. No frame ID ties startup configuration, backend, world snapshot and render output to one ready receipt.
 
 ## Required parent domain
 
 ```txt
-cozy-island-dynamic-environment-frame-authority-domain
+cozy-island-browser-startup-admission-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-environment-frame-schema-kit
-environment-frame-id-kit
-environment-clock-sample-kit
-environment-frame-admission-kit
-wind-frame-kit
-weather-frame-kit
-illumination-frame-kit
-cloud-environment-frame-kit
-fog-environment-frame-kit
-ocean-environment-frame-kit
-vegetation-wind-frame-kit
-campfire-smoke-frame-kit
-environment-consumer-plan-kit
-environment-consumer-prepare-kit
-environment-consumer-commit-kit
-environment-consumer-rollback-kit
-environment-frame-result-kit
-environment-frame-fingerprint-kit
-environment-frame-ack-kit
-environment-reset-baseline-kit
-environment-frame-journal-kit
-environment-consumer-coherence-fixture-kit
-environment-reset-replay-fixture-kit
-browser-environment-frame-smoke-kit
+module-source-manifest-kit
+module-graph-admission-kit
+startup-command-kit
+startup-transaction-id-kit
+startup-generation-kit
+startup-stage-plan-kit
+startup-stage-result-kit
+renderer-backend-candidate-kit
+renderer-backend-admission-kit
+startup-quality-admission-kit
+startup-resource-ledger-kit
+startup-cleanup-stack-kit
+startup-rollback-kit
+startup-failure-classification-kit
+loader-state-projection-kit
+startup-retry-kit
+first-frame-readiness-kit
+startup-result-kit
+startup-journal-kit
+startup-observation-kit
+module-fetch-failure-fixture-kit
+renderer-backend-fallback-fixture-kit
+partial-startup-rollback-fixture-kit
+browser-startup-smoke-kit
 ```
 
-## Acceptance boundary
+## Required result shape
 
-Dynamic environment behavior is authoritative only when one admitted clock sample produces one immutable environment frame, every consumer commits the same revision or rolls back, reset reproduces the canonical baseline, stale frames reject without mutation, observations expose the effective state, and one visible frame acknowledges the environment fingerprint.
+```txt
+StartupResult {
+  startupId
+  generation
+  status
+  failedStage
+  moduleManifestFingerprint
+  backendCandidate
+  admittedBackend
+  qualityFingerprint
+  acquiredResources[]
+  rollbackReceipts[]
+  worldRevision
+  firstFrameId
+  startedAt
+  committedAt
+  failureCode
+}
+```
+
+## Existing proof surface
+
+`npm test` checks kit metadata, source tokens, pinned import strings, world/provider behavior, lazy materialization, cell caching and renderer utility disposal. It does not execute the browser module graph, simulate CDN failure, inject renderer initialization failure, prove backend fallback, verify partial-startup rollback or capture a first-frame readiness receipt.

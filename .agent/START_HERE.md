@@ -1,16 +1,43 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T00-10-28-04-00`
+Last aligned: `2026-07-11T01-50-30-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: preserve runtime-session lifecycle authority first, then make camera-rail reset deterministic before adaptive-quality transaction work.
+Current focus: establish route lifecycle and deterministic camera reset first, then add one authoritative dynamic-environment frame before adaptive-quality transaction work.
+
+## Plan ledger
+
+**Goal:** keep the 50-kit WebGPU route visually unchanged while documenting the missing temporal contract between the live environment clock, clock-derived domains, render consumers, reset, and diagnostics.
+
+- [x] Compare the full accessible `LuminaryLabs-Publish` inventory against the central ledger.
+- [x] Exclude `TheCavalryOfRome`.
+- [x] Confirm all nine eligible repositories are tracked and have root `.agent` state.
+- [x] Select only `MyCozyIsland` under the oldest documented-selection rule.
+- [x] Re-read route composition, environment services, scenario projection, render consumers, and tests.
+- [x] Reconfirm the interaction loop, domains, services, and all 50 implemented kits.
+- [x] Add a timestamped tracker, turn ledger, DSK audit, render audit, gameplay audit, interaction audit, environment-state audit, and deploy audit.
+- [x] Refresh the required root `.agent` files.
+- [x] Change no runtime source, dependencies, package scripts, route behavior, or deployment configuration.
+- [x] Create no branch or pull request.
 
 ## Selection result
 
-The complete accessible `LuminaryLabs-Publish` inventory contains ten repositories. `TheCavalryOfRome` remains excluded. All nine eligible repositories are centrally tracked and have root `.agent` state, so the oldest documented-selection rule applied. `MyCozyIsland` had the oldest central ledger timestamp at selection: `2026-07-10T22-29-21-04-00`.
+The accessible Publish inventory contains ten repositories. `TheCavalryOfRome` remains excluded. All nine eligible repositories are centrally tracked and have root `.agent` state, so the oldest documented-selection rule applies.
 
-Only `LuminaryLabs-Publish/MyCozyIsland` was changed in the Publish organization during this pass.
+```txt
+MyCozyIsland    2026-07-11T00-10-28-04-00
+AetherVale      2026-07-11T00-18-24-04-00
+IntoTheMeadow   2026-07-11T00-30-48-04-00
+PrehistoricRush 2026-07-11T00-39-25-04-00
+TheOpenAbove    2026-07-11T00-49-45-04-00
+HorrorCorridor  2026-07-11T01-10-28-04-00
+PhantomCommand  2026-07-11T01-20-51-04-00
+ZombieOrchard   2026-07-11T01-31-15-04-00
+TheUnmappedHouse 2026-07-11T01-38-28-04-00
+```
+
+Only `LuminaryLabs-Publish/MyCozyIsland` is changed in the Publish organization during this pass.
 
 ## Current route
 
@@ -18,35 +45,51 @@ Only `LuminaryLabs-Publish/MyCozyIsland` was changed in the Publish organization
 index.html
   -> Three/WebGPU 0.185.0 import map
   -> src/main-cloudform.js?v=webgpu-volumetric-2
-  -> validate 50 DomainServiceKit descriptors
+  -> validate exactly 50 DomainServiceKit descriptors
   -> initialize renderer and startup quality
-  -> compose deterministic world snapshot
-  -> create world/ocean/foam/cloud/fog/post consumers
-  -> install wheel, pointer, keyboard, blur, and resize listeners
+  -> create clock, wind, weather, illumination, terrain, ocean, vegetation, cloud, fog, material, and render descriptors
+  -> freeze one semantic render snapshot
+  -> create scenario, camera sequence, world, ocean, foam, cloud, fog, and post consumers
+  -> install browser input and resize listeners
   -> renderer.setAnimationLoop
-  -> scenario.tick(dt)
-  -> camera-sequence descriptor
-  -> render consumers and adaptive-quality sample
-  -> post render and host diagnostics
+  -> scenario.tick(dt) advances clock and camera
+  -> scenario render snapshot replaces only clock and camera
+  -> render consumers animate from elapsed or shader time
+  -> adaptive performance sample
+  -> host/debug projection
 ```
 
 ## Newly documented finding
 
-`camera-rail-sequence-kit` declares an authored deterministic reveal and an explicit reset policy, but its pre-first-person drag handler mutates the authored `railPositions` array in place.
+The environment clock advances every scenario tick, and `windField.sample()` plus `illuminationService.getState()` can compute current values from that clock. However, the route samples most semantic environment descriptors once during startup and freezes them inside the render snapshot:
 
 ```txt
-pointer drag while progress < 0.985
-  -> input.drag(deltaX, deltaY)
-  -> every rail control point x value is changed
+startup clock sample
+  -> illumination
+  -> vegetation wind
+  -> campfire wind/smoke
+  -> cloud weather and drift
+  -> cloud lighting
+  -> cloud shadow motion intent
+  -> fog advection
+  -> sky colors, scene fog, exposure, sun, and hemisphere light
+  -> frozen render snapshot and constructed consumers
 
-scenario.reset()
-  -> clock.reset()
-  -> cameraSequence.reset()
-  -> progress/yaw/pitch/pressed/player reset
-  -> rail control points are not restored
+later scenario ticks
+  -> clock advances
+  -> camera advances
+  -> frozen semantic environment descriptors remain unchanged
+  -> shader time and local sine functions animate presentation independently
 ```
 
-A reset after any rail drag therefore does not return the camera sequence to its original authored path. Repeated drag/reset cycles can accumulate path drift. The current descriptor exposes no baseline fingerprint, path revision, orbit offset, input result, or reset result, and the Node smoke test never performs drag followed by reset.
+This creates two different notions of environment time:
+
+```txt
+authoritative semantic time: mostly startup state
+presentation time: current shader or elapsed time
+```
+
+The route therefore cannot prove that sky, direct light, cloud lighting, cloud drift, fog advection, vegetation wind, campfire smoke, exposure, and diagnostics consumed one coherent environment state for the same clock sample. Reset also rewinds the clock without returning an environment-frame reset/application result.
 
 ## Ordered safe ledges
 
@@ -57,28 +100,32 @@ A reset after any rail drag therefore does not return the camera sequence to its
 2. MyCozyIsland Camera Rail Baseline Authority
    + Drag/Reset Fidelity Fixture Gate
 
-3. MyCozyIsland Adaptive Quality Transaction Authority
+3. MyCozyIsland Dynamic Environment Frame Authority
+   + Clock/Wind/Illumination Consumer Coherence Fixture Gate
+
+4. MyCozyIsland Adaptive Quality Transaction Authority
    + Full-Recovery Fixture Gate
 ```
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T00-10-28-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T00-10-28-04-00.md
-.agent/architecture-audit/2026-07-11T00-10-28-04-00-camera-rail-baseline-authority-dsk-map.md
-.agent/render-audit/2026-07-11T00-10-28-04-00-camera-projection-reset-drift-gap.md
-.agent/gameplay-audit/2026-07-11T00-10-28-04-00-reveal-drag-reset-exploration-loop.md
-.agent/interaction-audit/2026-07-11T00-10-28-04-00-wheel-drag-reset-result-map.md
-.agent/sequence-authority-audit/2026-07-11T00-10-28-04-00-authored-rail-baseline-reset-contract.md
-.agent/deploy-audit/2026-07-11T00-10-28-04-00-camera-rail-reset-fixture-gate.md
+.agent/trackers/2026-07-11T01-50-30-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T01-50-30-04-00.md
+.agent/architecture-audit/2026-07-11T01-50-30-04-00-dynamic-environment-frame-authority-dsk-map.md
+.agent/render-audit/2026-07-11T01-50-30-04-00-clock-environment-consumer-staleness-gap.md
+.agent/gameplay-audit/2026-07-11T01-50-30-04-00-reveal-clock-environment-coherence-loop.md
+.agent/interaction-audit/2026-07-11T01-50-30-04-00-reset-time-environment-result-map.md
+.agent/environment-state-audit/2026-07-11T01-50-30-04-00-clock-wind-illumination-projection-contract.md
+.agent/deploy-audit/2026-07-11T01-50-30-04-00-environment-frame-coherence-fixture-gate.md
 ```
 
 ## Do not start next with
 
 - cloud, fog, ocean, terrain, grass, camera feel, or lighting retuning
 - renderer replacement
-- additional camera rail points
+- more shader-time animation without semantic state provenance
+- new weather presets before one dynamic environment frame exists
 - new quality tiers
 - route-token churn
 - new island content

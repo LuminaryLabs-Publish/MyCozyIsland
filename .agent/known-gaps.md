@@ -1,169 +1,144 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T08-41-02-04-00`
+Last updated: `2026-07-11T08-58-02-04-00`
 
 ## Summary
 
-The immediate new gap is focus transaction integrity. The wrapper, production Core World and provider stores do not share one accepted revision, and current tests cannot reproduce the production failure modes because they inject a simplified fake runtime.
+The new lazy scheduler exists and has an isolated deterministic fixture, but the live browser route never steps it. Core World cells can therefore be active at the descriptor level while terrain, biome, shoreline, presentation, and visible rendering remain at different readiness states with no shared revision.
 
-## Critical focus gaps
+## Critical integration gaps
 
-1. `prepare()` sets `prepared = true` before initial focus and cell preparation succeed.
-2. A failed initial prepare can poison later `prepare()` calls into returning `null` or stale state without retry.
-3. `commitFocus()` changes wrapper `lastFocus` before production Core World work completes.
-4. Production `setFocus()` commits independently before `updateWorld()`.
-5. No wrapper transaction restores the previous focus after an update failure.
-6. Provider runtime stores mutate during release/update/prepare without a wrapper-level checkpoint.
-7. `updateWorldFocus()` returns Boolean and loses complete, degraded, rejected, rolled-back and partial outcomes.
-8. No monotonic product `worldRevision` exists.
-9. No provider revision set or provider transition journal exists.
-10. No focus command carries expected session, epoch or world revision.
-11. No repeat-command idempotency policy exists.
-12. The visible renderer cannot identify which accepted world revision it represents.
+1. `src/main-cloudform.js` never calls `domains.processMaterializationFrame()`.
+2. No explicit first-frame acknowledgement starts materialization.
+3. The design document describes host startup behavior that the host does not implement.
+4. The isolated fixture bypasses the route and wrapper animation loop.
+5. No browser proof shows materialization progress above zero.
+6. `getState().providerCellCounts` counts queued records, not ready provider outputs.
+7. Core World active-cell status does not imply heavy provider data is ready.
+8. The compatibility renderer cannot identify materialized or ready cells.
 
-## Production/fake parity gaps
-
-- production partition selection uses `required`, `updated`, `retained` and `released`; the fake returns one flat array;
-- production validates selections; the fake does not;
-- production evaluates provider `matches()`; the fake invokes every provider;
-- production checks required capabilities; the fake does not;
-- production records provider statuses and diagnostics; the fake does not;
-- production can mark cells failed; the fake always stores active rows;
-- production rolls back prepared providers for failed new cells; fake rollback is absent;
-- production rejects async provider methods; parity is untested;
-- production commits `focusChanged` and `cellsChanged` separately; the fake mutates direct maps;
-- production provider release/update failure semantics are not represented;
-- all current world-runtime tests inject the fake rather than the pinned modules.
-
-## Focus failure splits
-
-### Failure after `setFocus()`
+## Authority gaps
 
 ```txt
-Core World focus: target
-wrapper lastFocus: target
-wrapper worldSnapshot: previous or null
-wrapper lastCellKey: previous
-focus accumulator: previous value
-provider stores: possibly changed
-visible renderer: startup snapshot
+session identity and epoch: absent
+accepted world revision: absent
+materialization command identity: absent
+cell work generation: absent
+provider version fence: absent
+first-frame admission: absent
+elapsed-time work budget: absent
+failure result: absent
+retry/backoff policy: absent
+stale completion rejection: absent
+cell readiness revision: absent
+provider readiness set: absent
+bounded journal: absent
+render handoff result: absent
 ```
 
-### Failure during provider work
+## Scheduler gaps
 
-```txt
-some releases may have run
-some prepares/updates may have run
-Core World state commit may not have run
-provider runtime stores can differ from last accepted worldSnapshot
-wrapper exposes no residual or rollback result
-```
+- the scheduler limits candidate count, not actual elapsed work time;
+- one stage call can have different computational cost by provider and resolution;
+- provider exceptions propagate through `processFrame()` without a classified result;
+- no per-cell attempt count, retry delay, terminal failure, or quarantine state exists;
+- `sync()` removes released scheduler state but publishes no cancellation result;
+- a released cell can lose partial job state without an explicit retirement record;
+- focus/world revision changes are not attached to queued work;
+- no re-entry policy distinguishes resumed work from a new cell generation;
+- completed cell state is Boolean rather than revisioned;
+- progress counts completed cells only and does not aggregate partial row progress.
 
-### Failure during initial prepare
+## Provider readiness gaps
 
-```txt
-prepared: true
-worldSnapshot: null or partial/stale
-second prepare: early return
-recovery command: absent
-```
+- terrain, biome, and shoreline descriptors become active before their heavy data is ready;
+- provider descriptor versions increment during registration and readiness refresh without a shared cell revision;
+- presentation readiness checks provider stores but records no provider version set;
+- vegetation, rock, and prop data follow the existing eager provider path while terrain classifications are lazy;
+- there is no canonical required-provider readiness policy for a render cell;
+- a presentation descriptor can be rebuilt without a transaction joining its source versions;
+- provider runtime stores expose mutable implementation records rather than clone-safe readiness results.
 
-## Missing focus authority types
+## Focus and release gaps
 
-```txt
-FocusCommand
-FocusAdmissionResult
-FocusCheckpoint
-ProviderStoreCheckpoint
-FocusSelectionPlan
-ProviderTransitionResult
-FocusTransactionResult
-FocusRollbackResult
-WorldRevision
-ProviderRevisionSet
-FocusJournalEntry
-FocusObservation
-```
+- lazy work is not fenced to the focus transaction that selected the cell;
+- focus updates can change active cells while work is partially complete;
+- released work has no cancellation sequence or stale-result rejection token;
+- `updateWorldFocus()` still returns Boolean and exposes no accepted world revision;
+- failed focus updates can split wrapper/Core World/provider state before lazy scheduling is considered;
+- reset and disposal clear state but have no in-flight materialization admission fence.
+
+## Render gaps
+
+- the whole-island compatibility graph remains the only live visual source;
+- materialized provider fields are not consumed by visible resources;
+- no detached render plan cites `cellReadinessRevision`;
+- no atomic cell prepare/update/release render transaction exists;
+- no compatibility-to-cell-render handoff or rollback policy exists;
+- no first visible frame acknowledges the provider versions it consumed;
+- existing cell cache/controller/disposal helpers remain disconnected from the host.
 
 ## Lifecycle gaps retained
 
 - no route-level runtime-session owner;
-- no `sessionId`, `sessionEpoch` or lifecycle state machine;
-- no startup rollback stack;
-- no listener, timer, animation-loop or global-host lease registry;
-- `pagehide` resets only the world wrapper;
-- no complete render/GPU teardown;
-- no restart or stale-callback rejection proof.
+- no startup acquisition and rollback stack;
+- no listener, timer, animation-loop, resource, or global-host leases;
+- `pagehide` disposes only the world wrapper;
+- no complete renderer/GPU teardown;
+- no restart and stale-callback fixture.
 
-Focus authority must consume lifecycle identity when implemented.
-
-## Render-consumer gaps
-
-- the whole-island renderer is built once from the startup compatibility snapshot;
-- later provider transitions are not applied to visible resources;
-- focus failure can be visually masked because the global graph keeps rendering;
-- no render admission policy exists for incomplete or degraded world revisions;
-- no cell prepare/update/release render transaction is wired into the route;
-- no world revision to render commit mapping exists;
-- no visible provider-cell fingerprint or readback exists;
-- the implemented renderer-cell controller remains disconnected from the live host.
-
-## Scenario and environment gaps retained
-
-- pointer drag during rail mode mutates authored rail points and reset does not restore the baseline;
-- environment time advances while multiple render descriptors remain startup-frozen;
-- adaptive quality can report recovery while renderer DPR remains degraded;
-- performance sampling is not tied to a render-submit result.
-
-## Missing proof matrix
+## Missing fixture matrix
 
 ```txt
-exact pinned Core World Node import
-production/fake contract matrix
-initial prepare failure and retry
-failure after focusChanged commit
-partition selection failure
-provider capability-block failure
-critical provider prepare rollback
-noncritical provider degraded commit
-provider release failure
-provider-store checkpoint and restore
-wrapper/Core World focus parity
-active-cell/provider-store parity
-world revision monotonicity
-stale session/epoch/revision rejection
-repeat command idempotency
-focus result snapshot portability
-focus-to-render revision correlation
+live host invokes materialization after first frame
+no materialization before first frame
+session/world revision admission
+row and elapsed-time budgets
+priority stability across identical runs
+focus reprioritization
+release during terrain stage
+release during biome stage
+release during shoreline stage
+reset/dispose during work
+terrain provider exception
+classification provider exception
+presentation refresh exception
+bounded retries and terminal failure
+provider readiness version parity
+stale completion rejection
+compatibility rendering during partial work
+cell readiness to visible render correlation
+WebGPU and WebGL2 browser smoke
 ```
 
 ## Deployment blockers
 
 ```txt
-fake-runtime success is treated as production proof
-failed initial prepare cannot be retried
-focusChanged can commit without a classified cellsChanged outcome
-provider stores can diverge from wrapper snapshot without readback
-Boolean focus result hides degraded or partial state
-rendering consumes no accepted world revision
-focus parity fixtures are absent from npm test
-browser smoke does not inject production provider failure
+production queue is never stepped
+isolated fixture is not route proof
+no browser progress readback
+no failure containment around animation-loop materialization
+no cell readiness revision
+no render consumer for ready cells
+focus transaction and lifecycle prerequisites remain absent
 ```
 
 ## Secondary risks
 
-- central-clearing movement bounds make cross-cell failures rare in manual testing;
-- the static whole-island graph makes world-streaming divergence visually subtle;
-- future live cell rendering will amplify provider-store and resource ownership mismatches;
-- a NexusEngine upgrade can change provider behavior without a pinned parity fixture;
-- lifecycle restart without focus revision identity can replay stale world work into a new session.
+- static whole-island rendering hides the dead integration path;
+- small clearing movement makes cell turnover uncommon in manual testing;
+- increasing active radius or resolution magnifies unbounded stage cost;
+- provider version increments can appear healthy while runtime data remains queued;
+- future cell rendering can expose stale or partially materialized records if readiness remains Boolean.
 
 ## Not currently blocked by
 
-- repository identity;
-- pinned dependency coordinates;
-- local 50-kit catalog count;
-- deterministic normal-path generation;
-- seven provider definitions;
-- static Pages deployment configuration;
-- availability of a legacy rollback mode.
+- repository identity or main-branch policy;
+- pinned Three.js and NexusEngine coordinates;
+- 50 local kit descriptors;
+- seven registered provider definitions;
+- deterministic scheduler priority;
+- row-based terrain, biome, and shoreline implementations;
+- isolated lazy materialization fixture;
+- static compatibility render fallback;
+- GitHub Pages configuration.

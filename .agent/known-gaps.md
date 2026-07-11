@@ -1,64 +1,71 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-10T20-48-55-04-00`
+Last updated: `2026-07-10T22-29-21-04-00`
 
-## Highest-priority gap
+## Priority 1: runtime-session lifecycle
 
-The active route has no authoritative runtime-session owner. `main()` creates the renderer, scene, listeners, animation loop, render resources, and host exposure, but no object owns the complete stop/dispose/restart transaction.
-
-## Lifecycle gaps
+The route still has no authoritative runtime-session owner.
 
 - no session ID or lifecycle state machine
-- no retained stop or dispose controller
+- no retained stop/dispose/restart controller
 - no coordinated listener removal
-- no animation-loop cancellation contract
-- no startup rollback after partial allocation
+- no explicit animation-loop cancellation surface
+- no partial-start rollback
+- no route-wide GPU/Three resource ledger
 - no idempotent disposal result
-- no restart or hot-reload proof
+- no restart or remount proof
 - no lifecycle state in host readback
+
+## Priority 2: adaptive-quality transaction authority
+
+The adaptive quality controller has split declared and applied state.
+
+- recovery to level 0 skips `renderer.setPixelRatio()`
+- `performance.level` can be 0 while renderer pixel ratio remains degraded
+- no canonical applied-quality descriptor exists
+- no atomic transition result exists
+- no rollback exists if a control application throws
+- no transition sequence, timestamp, source frame, or reason row exists
+- no policy defines whether `?quality=` locks, caps, floors, or initializes adaptation
+- debug overlay displays startup tier rather than complete applied controls
+- host readback omits actual pixel ratio and fog-resolution scale
+- no deterministic full-degrade/full-recovery fixture exists
 
 ## Resource ownership gaps
 
-- sky `CanvasTexture`, material, and sphere geometry are not retained by a route resource owner
-- atmosphere storage/data textures and compute nodes expose no disposal contract
-- cloud renderer shares geometry and materials without explicit reference ownership
-- fog geometry/material ownership is implicit
-- ocean geometry/material ownership is implicit
-- foam geometry/material ownership is implicit
-- post-processing targets/nodes are not represented in a route resource ledger
-- base world and layered grass resources do not compose one disposal boundary
+- sky texture/material/geometry have no route owner
+- atmosphere storage/data textures and compute nodes have no disposal contract
+- cloud, fog, ocean, foam, post, world, and layered-grass resources do not compose one disposal boundary
+- shared geometry/material/texture ownership is implicit
 - renderer disposal is not coordinated with child resources
 
 ## Interaction and frame gaps
 
-- listener registrations have no typed IDs or session association
 - input calls return no accepted/rejected/no-op result rows
-- frame IDs are absent
-- input sequences are not correlated with committed frames
-- performance degrade/recover decisions are not journaled
+- frame IDs and committed-frame rows are absent
+- input sequences are not correlated with render commits
+- performance transitions are not correlated with source frames
 - diagnostic drawing is periodic latest-state only
 
 ## Host proof gaps
 
-`globalThis.CozyIsland` exposes live renderer objects and a latest aggregate snapshot. It does not expose:
+`globalThis.CozyIsland` exposes live Three objects plus an aggregate snapshot but not:
 
 ```txt
 sessionId
 lifecycleState
-start/stop/dispose results
-listener counts
-animation-loop ownership
-resource family counts
-resource release counts
-partial-start rollback results
-bounded lifecycle journal
-JSON-safe source/consumer proof rows
+resource counts
+dispose results
+frameId
+appliedQuality
+actualPixelRatio
+fogResolutionScale
+qualityTransitionId
+qualityTransitionResult
+qualityTransitionJournal
+qualityOverridePolicy
 ```
 
 ## Validation gaps
 
-The current `npm test` gate validates the 50-kit catalog, deterministic-source restrictions, renderer feature tokens, import map, route script, and alert markup. It does not instantiate or dispose the browser route and cannot detect duplicate loops, listeners, or leaked GPU resources.
-
-## Preserved prior gap
-
-The layered-grass consumer ledger and resource-owner fixture remain required. They should be implemented as the first child owner beneath the route session instead of as an isolated lifecycle system.
+The current `npm test` gate validates catalog, source, deterministic-domain, and route tokens. It does not instantiate the browser renderer and cannot prove lifecycle disposal or adaptive-quality application fidelity.

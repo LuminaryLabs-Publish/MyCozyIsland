@@ -1,50 +1,49 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T16-10-58-04-00`
+Last aligned: `2026-07-11T17-50-37-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make adaptive quality a revisioned, reversible and observable transaction across volumetric steps, fog resolution, pixel ratio and the visible frame.
+Current focus: give the browser route one runtime session identity and one complete stop, dispose and restart transaction across the animation loop, page lifecycle, browser callbacks, Core World, scenario, GPU resources and global readback.
 
 ## Summary
 
-`MyCozyIsland` chooses one immutable startup quality descriptor and then runs a frame-sampled performance budget. The budget can lower and recover its numeric level, but the host applies quality changes through four independent setters with no transaction identity, no rollback and no visible-frame acknowledgement.
+`MyCozyIsland` creates one long-lived runtime graph inside `main()`. It installs anonymous input and resize listeners, schedules loader timers, starts `renderer.setAnimationLoop(...)`, prepares Core World, allocates scene and post resources, and publishes raw references through `globalThis.CozyIsland`.
 
-The concrete recovery bug is in `applyPerformanceLevel()`: pixel ratio is changed only when `level > 0`. A transition from level 1 back to level 0 restores cloud steps, fog steps and fog resolution, but leaves the renderer at the degraded pixel ratio. The performance state can therefore report full recovery while the visible resolution remains reduced.
+The only exit handling is a once-only `pagehide` listener that calls `domains.dispose()`. It does not stop the animation loop, remove listeners, cancel timers, dispose scene/post/volume/renderer resources, clear input or revoke global references. Because `pagehide` can preserve a page in bfcache, a later resume can continue callbacks against a world runtime that was reset during the hide event.
 
 ## Plan ledger
 
-**Goal:** preserve adaptive performance while ensuring each quality transition is complete, reversible, stale-safe and correlated with the rendered frame.
+**Goal:** document the exact lifecycle boundary needed so every live object and callback belongs to one session generation and is stopped, retired or restarted as one observable transaction.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` as the oldest eligible aligned repository.
-- [x] Trace startup quality selection, frame sampling, degrade/recover thresholds and every runtime quality setter.
-- [x] Identify the level-0 pixel-ratio recovery defect.
-- [x] Identify frame-count cadence dependence and partial-application risk.
-- [x] Inventory all active domains, kits and kit services.
-- [x] Define the adaptive-quality transaction DSK and fixture gate.
-- [x] Change no runtime source, dependency, workflow or deployment configuration.
+- [x] Select only `MyCozyIsland` as the oldest eligible repository.
+- [x] Trace startup, animation, input, resize, timers, pagehide and potential pageshow behavior.
+- [x] Trace Core World reset and renderer resource ownership.
+- [x] Inventory all active domains, 50 kits and offered services.
+- [x] Define the runtime-session lifecycle authority domain.
+- [x] Define stop, dispose, restart, stale-callback and first-frame fixture gates.
+- [x] Change documentation only.
 - [x] Push directly to `main` without a branch or pull request.
-- [ ] Implement startup and runtime-session prerequisites.
-- [ ] Implement adaptive-quality transaction authority and executable fixtures.
+- [ ] Implement the lifecycle state machine, ownership registries and browser fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T16-10-58-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T17-50-37-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T16-10-58-04-00-adaptive-quality-transaction-dsk-map.md
-.agent/render-audit/2026-07-11T16-10-58-04-00-level-recovery-visible-resolution-gap.md
-.agent/gameplay-audit/2026-07-11T16-10-58-04-00-frame-budget-quality-transition-loop.md
-.agent/interaction-audit/2026-07-11T16-10-58-04-00-quality-command-admission-result-map.md
-.agent/quality-system-audit/2026-07-11T16-10-58-04-00-quality-revision-recovery-contract.md
-.agent/deploy-audit/2026-07-11T16-10-58-04-00-adaptive-quality-fixture-gate.md
-.agent/turn-ledger/2026-07-11T16-10-58-04-00.md
+.agent/architecture-audit/2026-07-11T17-50-37-04-00-runtime-session-lifecycle-authority-dsk-map.md
+.agent/render-audit/2026-07-11T17-50-37-04-00-pagehide-gpu-resource-retirement-gap.md
+.agent/gameplay-audit/2026-07-11T17-50-37-04-00-pagehide-pageshow-world-session-loop.md
+.agent/interaction-audit/2026-07-11T17-50-37-04-00-page-lifecycle-command-admission-map.md
+.agent/runtime-lifecycle-audit/2026-07-11T17-50-37-04-00-stop-dispose-restart-ownership-contract.md
+.agent/deploy-audit/2026-07-11T17-50-37-04-00-runtime-lifecycle-browser-fixture-gate.md
+.agent/turn-ledger/2026-07-11T17-50-37-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -52,142 +51,152 @@ The concrete recovery bug is in `applyPerformanceLevel()`: pixel ratio is change
 
 ```txt
 startup
-  -> detect renderer backend
-  -> choose immutable startup quality tier
-  -> configure pixel ratio, shadows, geometry and atmosphere
-  -> create performance budget at level 0
+  -> validate kit catalog
+  -> create WebGPU/WebGL2 renderer
+  -> choose startup quality
+  -> create and prepare Core World
+  -> create scene, camera, sky and lights
+  -> create world, ocean, foam, cloud, fog and post resources
+  -> install input, resize and page listeners
+  -> schedule loader timers
+  -> start renderer animation loop
+  -> publish global readback
 
-one rendered frame
-  -> sample RAF interval in milliseconds
-  -> update exponential moving average
-  -> count consecutive over-budget or under-budget frames
-  -> after 90 slow frames, increase level
-  -> after 360 fast frames, decrease level
-  -> callback applies cloud steps
-  -> callback applies fog steps
-  -> callback applies fog render-target scale
-  -> callback may apply renderer pixel ratio
+frame
+  -> derive dt
+  -> tick camera/scenario
+  -> update world focus
+  -> update presentation
+  -> sample performance
   -> render post pipeline
-  -> publish detached diagnostics later
+  -> process materialization
+  -> project diagnostics
+
+pagehide today
+  -> reset/dispose only the world runtime
+  -> leave animation, listeners, timers, render resources and globals alive
 ```
 
 ## Main finding
 
 ```txt
-level 0 startup
-  pixel ratio = quality.pixelRatioCap
-
-level 0 -> level 1
-  cloud/fog/fog-resolution reduced
-  pixel ratio reduced to 0.88 of cap
-
-level 1 -> level 0
-  cloud/fog/fog-resolution restored
-  pixel-ratio setter skipped because level is 0
-  performance level reports 0
-  renderer remains at degraded pixel ratio
+runtime session ID: absent
+session generation: absent
+lifecycle state machine: absent
+animation-loop lease: absent
+renderer.setAnimationLoop(null): absent
+pagehide persisted policy: absent
+pageshow resume/restart policy: absent
+listener registry/removal: absent
+timeout registry/cancellation: absent
+GPU/scene/post retirement: absent
+global readback revocation: absent
+stale callback fencing: absent
+restart transaction: absent
+first restarted frame receipt: absent
 ```
 
-Additional authority gaps:
+Concrete mixed-state path:
 
 ```txt
-quality transition ID: absent
-quality revision: absent
-candidate plan: absent
-consumer acknowledgements: absent
-rollback: absent
-stale transition rejection: absent
-actual renderer pixel-ratio observation: absent
-visible-frame acknowledgement: absent
-background/visibility sampling barrier: absent
-elapsed-time threshold policy: absent
+running page
+  -> pagehide calls domains.dispose()
+  -> Core World and materializer reset
+  -> renderer callback and scenario remain retained
+  -> page resumes from bfcache
+  -> scenario and renderer can continue against prepared=false world state
+  -> once-only pagehide handler is no longer available for a second hide
 ```
 
 ## Domains in use
 
 ```txt
 browser module and startup admission
-renderer backend and startup quality selection
-runtime session and animation-loop ownership
-frame-time sampling and adaptive budget policy
-quality transition planning and admission
-cloud and fog raymarch quality consumers
-fog render-target quality consumer
-renderer pixel-ratio consumer
-static shadow, terrain, ocean and vegetation quality consumers
-Core World, providers and materialization
+renderer backend and startup quality
+runtime session and page lifecycle
+animation-loop and frame ownership
+input, resize and loader timer adapters
+Core World, providers, focus, reset and diagnostics
+lazy materialization
 camera rail and first-person scenario
-semantic terrain, ocean and atmosphere
-WebGPU/WebGL2 rendering and post processing
+terrain, biome, shoreline and population
+ocean, foam, clouds, fog, weather and illumination
+scene graph, GPU resources and post processing
+adaptive performance and quality callbacks
 diagnostics, validation and Pages deployment
 ```
 
 ## Implemented kits
 
-The source-backed catalog remains exactly 50 local kits. The performance-critical set is:
+The source-backed catalog remains exactly 50 local kits. The lifecycle-critical surfaces are:
 
 ```txt
-render-quality-domain-kit
-webgpu-performance-budget-kit
-webgpu-volumetric-cloud-renderer-kit
-webgpu-rolling-fog-renderer-kit
-webgpu-post-processing-renderer-kit
-webgpu-stylized-material-renderer-kit
-webgpu-ocean-renderer-kit
-webgpu-foam-renderer-kit
-webgl2-fallback-renderer-kit
 debug-overlay-host-kit
+webgl2-fallback-renderer-kit
+webgpu-compute-atmosphere-renderer-kit
+webgpu-foam-renderer-kit
+webgpu-ocean-renderer-kit
+webgpu-performance-budget-kit
+webgpu-post-processing-renderer-kit
+webgpu-rolling-fog-renderer-kit
+webgpu-stylized-material-renderer-kit
+webgpu-volumetric-cloud-renderer-kit
+camera-rail-sequence-kit
+cozy-island-scenario-kit
 ```
 
-The complete 50-kit inventory and provider/service map are in `.agent/current-audit.md` and `.agent/kit-registry.json`.
+The complete 50-kit inventory and per-kit service map are in `.agent/current-audit.md` and `.agent/kit-registry.json`.
 
 ## Kit services
 
 ```txt
-render-quality-domain-kit
-  startup tier selection, capability policy and immutable quality descriptor
+render adapters
+  backend fallback, atmosphere textures, ocean/foam/world/cloud/fog rendering, post processing and diagnostics
 
-webgpu-performance-budget-kit
-  frame sampling, moving average, FPS estimate, degrade/recover level and callbacks
+scenario
+  camera rail, input, deterministic tick, reset and render snapshots
 
-cloud/fog renderers
-  mutable raymarch step scales and current-step observation
+world generation
+  terrain fields, classification, population, contact and LOD
 
-post-processing renderer
-  mutable fog render-target resolution scale
+environment
+  deterministic clock, wind, weather, illumination, ocean and atmosphere
 
-browser quality host
-  renderer pixel ratio mutation, callback orchestration and public diagnostics
+Core World
+  grid partition, provider ordering, focus, cell lifecycle, snapshots, materialization and query
 
-remaining render/domain kits
-  startup-fixed shadow, geometry, population, texture and post parameters
+lifecycle gap
+  no kit currently owns the complete browser session, loop, listener, timer, resource and restart transaction
 ```
 
-## Required quality domain
+## Required lifecycle domain
 
 ```txt
-cozy-island-adaptive-quality-transaction-authority-domain
-  -> quality-policy-descriptor-kit
-  -> quality-sample-command-kit
-  -> visibility-sample-barrier-kit
-  -> quality-transition-id-kit
-  -> quality-revision-kit
-  -> quality-transition-admission-kit
-  -> quality-candidate-plan-kit
-  -> quality-consumer-capability-kit
-  -> quality-consumer-command-kit
-  -> quality-consumer-result-kit
-  -> quality-transition-commit-kit
-  -> quality-transition-rollback-kit
-  -> full-recovery-policy-kit
-  -> stale-quality-result-rejection-kit
-  -> quality-visible-frame-ack-kit
-  -> quality-observation-kit
-  -> quality-journal-kit
-  -> cadence-parity-fixture-kit
-  -> full-recovery-fixture-kit
-  -> partial-failure-rollback-fixture-kit
-  -> browser-quality-frame-smoke-kit
+cozy-island-runtime-session-lifecycle-authority-domain
+  -> runtime-session-id-kit
+  -> runtime-session-generation-kit
+  -> runtime-lifecycle-state-kit
+  -> lifecycle-command-envelope-kit
+  -> lifecycle-command-admission-kit
+  -> animation-loop-lease-kit
+  -> page-lifecycle-adapter-kit
+  -> bfcache-policy-kit
+  -> event-listener-registry-kit
+  -> timeout-registry-kit
+  -> renderer-resource-registry-kit
+  -> scene-resource-inventory-kit
+  -> stale-callback-fence-kit
+  -> runtime-stop-transaction-kit
+  -> runtime-dispose-transaction-kit
+  -> core-world-retirement-adapter-kit
+  -> gpu-resource-retirement-kit
+  -> global-readback-revocation-kit
+  -> runtime-restart-transaction-kit
+  -> lifecycle-result-kit
+  -> lifecycle-journal-kit
+  -> first-restarted-frame-ack-kit
+  -> runtime-lifecycle-fixture-kit
+  -> browser-pagehide-pageshow-smoke-kit
 ```
 
 ## Ordered implementation queue
@@ -207,8 +216,8 @@ cozy-island-adaptive-quality-transaction-authority-domain
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Adaptive Quality Transaction Authority
-+ Cadence Parity / Full Recovery / Partial Failure / Visible-Frame Fixture Gate
+MyCozyIsland Runtime Session Lifecycle Authority
++ Stop / Dispose / Pagehide / Pageshow / Restart / Resource-Retirement Fixture Gate
 ```
 
-This remains ninth in implementation order, but it is now fully specified. It must consume startup generation, runtime session identity and committed-frame acknowledgement rather than creating parallel identity models.
+This is the second implementation slice. It must consume the admitted startup graph and then provide session identity, generation, lifecycle state and first-frame evidence to every downstream world, render, environment and quality authority.

@@ -1,152 +1,149 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T14-41-28-04-00`
+Last updated: `2026-07-11T16-10-58-04-00`
 
 ## Summary
 
-Browser startup is not an authoritative transaction. Static CDN imports can fail before the route error handler exists, and later failures can leave partially allocated renderer, world and DOM resources alive without rollback, retry or a first-frame readiness receipt.
+Adaptive quality can degrade and recover its numeric level, but it does not own a complete quality transaction. Recovery to level 0 fails to restore renderer pixel ratio, transition timing depends on qualifying frame counts, and four render consumers are mutated sequentially without rollback or a committed-frame receipt.
 
-The earlier runtime-session, Core World, render-commit, environment and adaptive-quality gaps remain dependent work.
+Startup, runtime-session, Core World, render-commit and environment authority gaps remain prerequisites.
 
-## Module admission gaps
-
-```txt
-immutable ModuleSourceManifest: absent
-module graph fingerprint: absent
-module fetch/parse/evaluation result: absent
-source integrity metadata: absent
-capability declaration per module: absent
-module failure projection before main(): absent
-alternate source policy: absent
-```
-
-## Startup transaction gaps
+## Concrete adaptive-quality defect
 
 ```txt
-startupId: absent
-startup generation: absent
-ordered stage plan: implicit only
-typed stage results: absent
-expected-stage admission: absent
-startup journal: absent
-single commit point: absent
+level 1 -> level 0
+cloud step scale: restored
+fog step scale: restored
+fog resolution scale: restored
+renderer pixel ratio: not restored
+reported performance level: 0
+visible resolution: still degraded
 ```
 
-## Renderer backend gaps
+Cause:
 
 ```txt
-backend candidate record: absent
-capability negotiation: absent
-admitted backend result: absent
-fallback reason: absent
-consumer/backend compatibility proof: absent
-quality fingerprint tied to backend: absent
-WebGPU/WebGL2 parity fixture: absent
+renderer.setPixelRatio(...) executes only when level > 0
 ```
 
-## Partial allocation and rollback gaps
+## Policy gaps
 
 ```txt
-resource ledger: absent
-reverse cleanup stack: absent
-renderer-init rollback: absent
-Core World prepare rollback: absent
-volume texture rollback: absent
-cloud/fog/ocean/post rollback: absent
-listener and timer rollback: absent
-startup host revocation: absent
+versioned quality policy: absent
+immutable level-0 applied baseline: absent
+elapsed-time degrade threshold: absent
+elapsed-time recovery threshold: absent
+visibility sample policy: absent
+long-stall policy: absent
+cadence parity proof: absent
+backend-specific mutable capability set: absent
+startup-fixed versus runtime-mutable declaration: absent
 ```
 
-## Loader and interaction gaps
+## Transition gaps
 
 ```txt
-loader state is authoritative: no
-loader stage revision: absent
-loader failure code: absent
-retry control: absent
-retry generation: absent
-first user-input admission result: absent
-loader completion tied to first frame: no
+transition command: absent
+transition ID: absent
+quality revision: absent
+candidate plan: absent
+admission result: absent
+consumer command/result contract: absent
+atomic commit: absent
+rollback: absent
+stale-result rejection: absent
+idempotent duplicate handling: absent
+partial-failure classification: absent
 ```
 
-## First-frame readiness gaps
+## Consumer gaps
 
 ```txt
-firstFrameId: absent
-startup configuration fingerprint: absent
-world revision on ready receipt: absent
-backend/quality revision on ready receipt: absent
-consumer readiness set: absent
-visible frame acknowledgement: absent
+cloud steps typed acknowledgement: absent
+fog steps typed acknowledgement: absent
+fog resolution typed acknowledgement: absent
+pixel ratio typed acknowledgement: absent
+actual pixel-ratio readback: absent
+actual fog-resolution readback: absent
+consumer clamp observation: absent
+rebuild-required classification: absent
+consumer failure injection: absent
 ```
 
-## Lifecycle interactions retained
-
-- `pagehide` is installed only after startup completes.
-- `pagehide` calls `domains.dispose()` but does not stop the renderer animation loop.
-- Loader timers are not retained or cancelled.
-- Input and resize listeners have no removal leases.
-- The global host exposes raw mutable renderer, scene, camera and runtime objects.
-- Renderer and atmosphere resources lack one ordered session-owned disposal result.
-
-## Core World and render gaps retained
-
-- Reset clears world definitions without a complete re-registration transaction.
-- Focus updates return Boolean rather than a typed world revision.
-- Materialization lacks session/world/focus generation fencing.
-- Provider readiness is not represented by a canonical version set.
-- Cell render resources have no prepare/commit/rollback transaction.
-- No committed frame correlates startup, world, environment, quality and render revisions.
-
-## Dynamic environment gaps retained
-
-- The environment clock advances while most dependent descriptors remain startup-frozen.
-- There is no shared EnvironmentFrame, revision, fingerprint or consumer receipt set.
-- Reset does not commit a canonical baseline environment frame.
-
-## Adaptive quality gaps retained
-
-- Dwell thresholds are frame-count based.
-- Quality consumer mutations are not atomic.
-- Recovery to level zero does not restore pixel ratio.
-- Effective quality state and frame acknowledgement are absent.
-
-## Validation gaps
+## Render and observation gaps
 
 ```txt
-module fetch failure before main()
-module parse/evaluation failure
-renderer.init rejection
-backend capability rejection
-Core World prepare rejection
-cloud/fog volume creation rejection
-post-pipeline construction rejection
-partial allocation rollback order
-loader failure and retry generation
-stale prior-generation callback rejection
-first-frame readiness receipt
-WebGPU/WebGL2 startup parity
-Pages cold-load browser smoke
+quality revision in render state: absent
+quality fingerprint in frame state: absent
+first visible frame for revision: absent
+committed versus pending transition projection: absent
+actual renderer pixel ratio in debug state: absent
+actual fog resolution in debug state: absent
+per-consumer result in diagnostics: absent
+bounded transition journal: absent
 ```
 
-## Deployment blockers
+## Lifecycle gaps
 
 ```txt
-no source-manifest or module-graph proof
-no startup stage journal
-no backend admission result
-no rollback after partial allocation
-no explicit retry contract
-no first-frame readiness receipt
-no executable startup failure fixtures
+runtime session identity: absent
+animation-loop lease: absent
+visibility baseline reset: absent
+quality work cancellation on stop: absent
+quality revision reset on restart: absent
+stale callback fencing: absent
 ```
 
-## Not currently blocked by
+## Retained upstream gaps
 
-- a pinned Three.js version and NexusEngine commit;
-- a valid 50-kit catalog;
-- existing WebGPU/WebGL2 renderer policies;
-- deterministic world descriptors;
-- existing Core World providers;
-- the current static test suite;
-- GitHub Pages configuration.
+```txt
+browser startup admission and rollback
+runtime session lifecycle
+Core World reset and re-prepare
+focus transaction authority
+materialization generation and readiness
+renderer cell commit and disposal
+camera baseline authority
+dynamic environment frame authority
+committed visible-frame acknowledgement
+```
+
+## Missing fixtures
+
+```txt
+30/60/120 Hz cadence parity
+level 0 -> 1 -> 0 full recovery
+level 0 -> 1 -> 2 -> 1 -> 0 full recovery
+pixel-ratio baseline restoration
+partial consumer failure rollback
+consumer clamp result
+hidden-tab sampling
+long-stall sampling
+resize during transition
+stale revision rejection
+WebGPU/WebGL2 capability parity
+visible-frame quality revision parity
+Pages quality smoke
+```
+
+## Risk ranking
+
+```txt
+P0  startup failure and resource rollback authority
+P0  runtime session ownership and stale callback fencing
+P1  Core World lifecycle and render commit authority
+P1  dynamic environment coherence
+P1  adaptive quality false-recovery and partial-commit risk
+P2  detached diagnostic completeness
+```
+
+## Non-goals of this documentation run
+
+```txt
+no runtime code changed
+no performance thresholds changed
+no renderer behavior changed
+no package scripts changed
+no dependencies changed
+no workflow or deployment changed
+```

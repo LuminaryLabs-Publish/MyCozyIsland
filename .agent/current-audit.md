@@ -1,27 +1,22 @@
-# Current Audit: MyCozyIsland Adaptive Quality Transaction Authority
+# Current Audit: MyCozyIsland Dynamic Environment Frame Authority
 
-Last updated: `2026-07-11T12-50-35-04-00`
+Last updated: `2026-07-11T12-58-06-04-00`
 
 ## Summary
 
-The product has two quality systems:
+MyCozyIsland has live clock, wind and illumination services, but the production render graph does not consume one live environment frame. `createLegacyWorldComposition()` samples illumination and wind-dependent descriptors during startup, freezes one render snapshot, and passes that snapshot into the scenario and renderer constructors.
 
-1. `chooseRenderQuality()` selects an immutable startup tier from backend, memory, viewport, DPR, reduced-motion preference or URL override.
-2. `createPerformanceBudget()` samples one value per rendered frame and invokes direct callbacks for adaptive levels 0, 1 and 2.
-
-The adaptive path is not an authoritative transaction. It has no session or renderer generation fence, transition command, consumer plan, prepare/commit/rollback, effective-state fingerprint, typed result or committed-frame acknowledgement.
+`createCozyIslandScenario().getRenderSnapshot()` refreshes only `clock` and `camera`. World sway, campfire pulse, ocean and foam use elapsed seconds, while sun/sky/exposure, vegetation wind, campfire smoke wind, cloud weather/lighting/shadow and fog advection remain tied to startup values.
 
 ## Plan ledger
 
-**Goal:** define cadence-independent adaptive-quality authority with full consumer recovery and visible-frame proof.
+**Goal:** define one deterministic, session-fenced environment-frame transaction with reset and visible-frame proof.
 
 - [x] Reconcile the complete Publish inventory with central tracking.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` as the oldest eligible current entry.
-- [x] Read the production route, quality descriptor, performance budget, atmosphere renderers and post pipeline.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` because repo-local documentation was newer than central tracking.
+- [x] Read the production route, world composition, environment services, scenario and renderer updates.
 - [x] Identify the interaction loop, domains, kits and services.
-- [x] Trace every adaptive consumer mutation.
-- [x] Verify dwell thresholds are frame-count based.
-- [x] Verify recovery to level 0 skips pixel-ratio restoration.
+- [x] Trace every live and startup-frozen environment consumer.
 - [x] Define a composed authority domain and fixture matrix.
 - [x] Change no runtime behavior.
 
@@ -44,25 +39,32 @@ package version:     0.3.1
 ```txt
 startup
   -> validate 50 kits
-  -> initialize renderer and backend
-  -> choose startup quality tier
-  -> set pixel ratio, shadows and render-resource dimensions
-  -> create Core World and compatibility snapshot
+  -> initialize WebGPU/WebGL2 renderer
+  -> create deterministic seed and environment clock
+  -> create wind, weather and illumination services
+  -> sample illumination once
+  -> sample vegetation/campfire wind once
+  -> derive cloud and fog descriptors once
+  -> freeze render snapshot
   -> construct world/ocean/foam/cloud/fog/post consumers
-  -> create performance budget
-  -> install browser callbacks and animation loop
+  -> install callbacks and animation loop
 
 frame
-  -> calculate frameMs
-  -> tick scenario and project camera
+  -> calculate frameMs and dt
+  -> tick clock and camera
+  -> scenario returns static snapshot + current clock/camera
   -> update Core World focus
-  -> update compatibility render animation
-  -> performanceBudget.sample(frameMs)
-  -> maybe increment/decrement internal adaptive level
-  -> directly mutate cloud steps, fog steps, fog resolution and pixel ratio
-  -> render post pipeline
+  -> update world and foam from elapsedSeconds
+  -> sample adaptive performance
+  -> render
   -> process materialization
   -> publish debug/global observations
+
+reset
+  -> reset clock and camera
+  -> no environment frame revision
+  -> no consumer reset transaction
+  -> no visible baseline-frame acknowledgement
 ```
 
 ## Domain map
@@ -71,32 +73,35 @@ frame
 platform and route host
   module admission, loader, renderer backend, listeners, timers, loop, pagehide and global host
 
-startup quality
-  backend, memory, viewport, DPR, reduced-motion and URL override policy
-
-adaptive performance
-  frame sample, EMA, threshold counters, levels and degrade/recover callbacks
+runtime lifecycle
+  session ownership, callback admission, reset, stop, disposal and restart gaps
 
 Core World
   registration, grid partition, providers, focus, effects, active cells, snapshots and reset
 
-product world
-  prepare, focus throttling, lazy materialization, query facade and compatibility bridge
-
 semantic world
-  terrain, clearing, biome, shoreline, paths, placement, ocean, weather, illumination, clouds, fog and campfire
+  terrain, clearing, biome, shoreline, paths, population, ocean and atmosphere
+
+environment source
+  deterministic seed, clock, wind, weather, illumination and aerial perspective
+
+environment derivatives
+  cloud weather/density/lighting/LOD/shadow/horizon, fog density/advection/placement, vegetation wind and campfire smoke
 
 scenario
-  camera rail, drag, wheel, first-person input, clock, reset and render snapshot
+  camera rail, first-person input, clock tick, reset and render snapshot
 
 rendering
-  world, ocean, foam, cloud, fog, post, cell cache, resource disposal and disconnected cell-aware renderer
+  sky, lights, exposure, world, ocean, foam, cloud, fog, post, cell cache and disposal
 
-quality authority
-  sample admission, elapsed windows, decisions, transition transaction, effective state, rollback, journal and frame proof
+dynamic environment authority
+  frame derivation, identity, consumer plan, prepare/commit/rollback, reset baseline, journal and frame proof
+
+adaptive quality
+  performance sampling and direct cloud/fog/post/pixel-ratio mutation
 
 validation and deployment
-  static checks, semantic/world/provider/materialization/renderer tests and Pages deployment
+  static tests, semantic/world/provider/materialization/renderer tests and Pages deployment
 ```
 
 ## Provider domains
@@ -119,7 +124,7 @@ PRESENTATION
 
 ```txt
 determinism and time
-  stable seeds, scoped RNG, identities and deterministic environment time
+  stable seeds, scoped RNG, mutable environment clock and reset
 
 terrain and placement
   height, normal, slope, curvature, moisture, exposure, plateau, biome, shoreline, LOD, contact and paths
@@ -198,93 +203,86 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Current adaptive policy
+## Live versus frozen consumers
 
 ```txt
-target: quality.targetFrameMs
-sample clamp: 1..100 ms
-EMA: 0.93 previous + 0.07 current
-degrade: EMA > target * 1.26 for 90 samples
-recover: EMA < target * 0.86 for 360 samples
-levels: 0, 1, 2
-```
+live:
+  clock elapsedSeconds
+  camera descriptor
+  generic world sway
+  campfire flame/light pulse
+  ocean animation
+  foam animation
 
-### Effective consumer targets
-
-```txt
-level 0
-  step scale 1.00
-  fog resolution scale 1.00 * startup value
-  pixel ratio startup value, but only at initial startup
-
-level 1
-  step scale 0.78
-  fog resolution scale 0.82 * startup value
-  pixel ratio cap 0.88 * startup cap
-
-level 2
-  step scale 0.62
-  fog resolution scale 0.68 * startup value
-  pixel ratio cap 0.76 * startup cap
+startup-frozen:
+  sky gradient
+  hemisphere intensity
+  sun direction/color/intensity
+  renderer exposure
+  scene fog descriptor
+  vegetation wind descriptor
+  campfire smoke wind direction/response
+  cloud weather, lighting, shadow and horizon
+  fog density, advection and placement
 ```
 
 ## Main findings
 
-### Refresh-rate-dependent dwell
+### Scenario projection is incomplete
 
-The threshold counters advance once per rendered frame. Equivalent elapsed conditions produce different transition times:
+The scenario spreads the startup snapshot and replaces only `clock` and `camera`. It does not derive a new wind, illumination, cloud, fog or ocean frame.
 
-```txt
-90 samples: 3.00 s at 30 Hz, 0.75 s at 120 Hz
-360 samples: 12.00 s at 30 Hz, 3.00 s at 120 Hz
-```
+### Dynamic services are sampled once
 
-### Level-zero recovery is incomplete
+`createIlluminationState()` and `createWindField()` can produce time-dependent values, but world composition consumes them during startup and freezes dependent descriptors.
 
-`applyPerformanceLevel(0)` restores cloud and fog step scales and fog resolution, but the pixel-ratio mutation is guarded by `if (level > 0)`. Once degraded, level 0 does not restore the startup pixel ratio.
+### Render consumers have no shared identity
 
-### Transition is not atomic
+There is no `environmentFrameId`, revision, fingerprint, consumer acknowledgement set or visible-frame receipt.
 
-Consumers mutate sequentially and return no prepare or commit receipts. If a later consumer fails, earlier consumers remain changed.
+### Reset is not an environment transaction
+
+Clock and camera reset independently. Render consumers do not prepare or acknowledge a canonical baseline environment frame.
 
 ### Observations are incomplete
 
-`performanceBudget.getState()` exposes only level, moving average, FPS and target. The global host adds cloud/fog steps and `activeScale`, but omits effective fog resolution, pixel ratio, quality revision, fingerprint and frame acknowledgement.
-
-### Lifecycle admission is absent
-
-Performance callbacks can still mutate renderer state during reset, quiescence, stop or disposal because the parent runtime-session authority does not yet exist.
+The public host exposes clock and performance state, but no canonical live environment state or consumer parity evidence.
 
 ## Required parent domain
 
 ```txt
-cozy-island-adaptive-quality-authority-domain
+cozy-island-dynamic-environment-frame-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-quality-policy-schema-kit
-performance-sample-envelope-kit
-performance-window-timebase-kit
-quality-level-decision-kit
-quality-transition-command-kit
-quality-transition-admission-kit
-quality-session-fence-kit
-quality-consumer-plan-kit
-quality-consumer-prepare-kit
-quality-consumer-commit-kit
-quality-consumer-rollback-kit
-effective-quality-state-kit
-pixel-ratio-restore-kit
-quality-transition-result-kit
-quality-transition-journal-kit
-quality-frame-ack-kit
-quality-cadence-parity-fixture-kit
-quality-full-recovery-fixture-kit
-quality-partial-failure-fixture-kit
+environment-frame-schema-kit
+environment-frame-id-kit
+environment-clock-sample-kit
+environment-frame-admission-kit
+wind-frame-kit
+weather-frame-kit
+illumination-frame-kit
+cloud-environment-frame-kit
+fog-environment-frame-kit
+ocean-environment-frame-kit
+vegetation-wind-frame-kit
+campfire-smoke-frame-kit
+environment-consumer-plan-kit
+environment-consumer-prepare-kit
+environment-consumer-commit-kit
+environment-consumer-rollback-kit
+environment-frame-result-kit
+environment-frame-fingerprint-kit
+environment-frame-ack-kit
+environment-reset-baseline-kit
+environment-frame-journal-kit
+environment-consumer-coherence-fixture-kit
+environment-reset-replay-fixture-kit
+browser-environment-frame-smoke-kit
 ```
 
 ## Acceptance boundary
 
-Adaptive quality is authoritative only when transition timing is elapsed-time based, every consumer prepares and commits one shared revision, failures restore the previous state, level-zero recovery restores every original value, session/reset/stop phases fence callbacks, effective state is fingerprinted, and one visible frame acknowledges the committed revision.
+Dynamic environment behavior is authoritative only when one admitted clock sample produces one immutable environment frame, every consumer commits the same revision or rolls back, reset reproduces the canonical baseline, stale frames reject without mutation, observations expose the effective state, and one visible frame acknowledges the environment fingerprint.

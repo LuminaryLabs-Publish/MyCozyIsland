@@ -157,6 +157,28 @@ for (const point of [{ x: 0, z: 0 }, { x: 42.5, z: -31.25 }, { x: -103, z: 18 }]
 for (const point of [{ x: 101, z: 0 }, { x: 0, z: 104 }, { x: -76, z: 55 }]) {
   assert.deepEqual(first.shoreline.sample(point), second.shoreline.sample(point));
 }
+
+const centerHeight = first.terrain.sampleHeight({ x: 0, z: 0 });
+const clearingSamples = Array.from({ length: 12 }, (_, index) => {
+  const angle = index / 12 * Math.PI * 2;
+  const radius = first.terrain.clearingRadius * 0.68;
+  return first.terrain.sampleHeight({
+    x: Math.cos(angle) * radius,
+    z: Math.sin(angle) * radius
+  });
+});
+const clearingMinimum = Math.min(centerHeight, ...clearingSamples);
+const clearingMaximum = Math.max(centerHeight, ...clearingSamples);
+assert.ok(
+  clearingMaximum - clearingMinimum < 0.5,
+  `Clearing should be flat, received ${clearingMaximum - clearingMinimum} meters of variation.`
+);
+assert.equal(
+  first.terrain.sampleHeight({ x: 0, z: 0 }),
+  second.terrain.sampleHeight({ x: 0, z: 0 }),
+  "Clearing plateau height must remain deterministic."
+);
+
 assert.deepEqual(first.vegetation.instances.slice(0, 30), second.vegetation.instances.slice(0, 30));
 assert.deepEqual(first.rocks.instances.slice(0, 20), second.rocks.instances.slice(0, 20));
 assert.ok(first.vegetation.instances.length > 120);
@@ -173,6 +195,7 @@ assert.ok(state.clock.elapsedSeconds > 48);
 
 console.log(JSON.stringify({
   terrainSamples: 3,
+  clearingVariation: clearingMaximum - clearingMinimum,
   vegetationInstances: first.vegetation.instances.length,
   rockInstances: first.rocks.instances.length,
   foamBands: first.foam.bands.length,

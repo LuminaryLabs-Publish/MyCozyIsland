@@ -1,6 +1,19 @@
-# Current Audit: MyCozyIsland Pinned Core World Contract Parity
+# Current Audit: MyCozyIsland Runtime Session Lifecycle Authority
 
-Last updated: `2026-07-11T06-50-30-04-00`
+Last updated: `2026-07-11T07-01-49-04-00`
+
+## Plan ledger
+
+**Goal:** define one authoritative browser runtime session that owns startup, callbacks, Core World work, render resources, global exposure, stop, exact disposal, failure rollback and restart before any later world or render transaction can be trusted.
+
+- [x] Reconcile the current Publish inventory with central tracking.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland`.
+- [x] Trace the complete route interaction and frame loop.
+- [x] Catalogue all domains, imported services, local kits and runtime-implied hosts.
+- [x] Inventory acquired browser, Core World, Three.js, WebGPU and diagnostic resources.
+- [x] Compare success, startup-failure and pagehide cleanup paths.
+- [x] Define the required session identity, state, resource lease and teardown contract.
+- [x] Change no runtime behavior during this documentation pass.
 
 ## Runtime identity
 
@@ -23,48 +36,68 @@ Core providers:    7
 
 ```txt
 route load
+  -> resolve pinned import map
   -> validate 50 local kit descriptors
-  -> initialize WebGPU/WebGL2 backend and startup quality
-  -> create legacy deterministic semantic composition
-  -> import pinned NexusEngine engine and Core World modules
-  -> register one world, grid, flat surface and seven ordered providers
-  -> prepare 49 island-centered active cells
-  -> create one legacy compatibility render snapshot
-  -> construct sky, lights, world, ocean, foam, cloud, fog and post resources
-  -> register wheel, pointer, keyboard, blur, resize, timers and animation loop
-  -> scenario tick and camera projection
-  -> update Core World focus from camera position
-  -> Core World releases, updates, retains and prepares cells
-  -> wrapper reports only changed=true/false
-  -> existing world and foam renderers advance by elapsed time
-  -> sample performance and render post pipeline
-  -> publish live Core World and host objects through globalThis.CozyIsland
+  -> construct WebGPURenderer
+  -> await renderer.init()
+  -> choose backend and quality
+  -> construct Core World wrapper
+  -> await initial 49-cell prepare
+  -> create one legacy compatibility snapshot
+  -> construct scene, camera, sky and lights
+  -> construct whole-island world renderer
+  -> construct ocean and foam
+  -> await atmosphere volume textures
+  -> construct cloud, fog and post resources
+  -> construct performance and debug services
+  -> register wheel, pointer, keyboard, blur and resize listeners
+  -> schedule loader completion and hide timers
+  -> start renderer.setAnimationLoop
+  -> each frame:
+       scenario tick
+       camera projection
+       Core World focus update
+       world and foam update
+       performance sample
+       post render
+       periodic debug projection
+  -> register pagehide callback
+  -> publish globalThis.CozyIsland
 ```
 
-Player interaction remains scroll-to-descend, pointer-drag orbit/look, WASD movement inside the central clearing, H diagnostics, blur key clearing, and viewport resize.
+Player interaction remains scroll-to-descend, pointer-drag orbit/look, WASD movement inside the clearing, H diagnostics, blur key clearing and viewport resize.
 
 ## Domain map
 
 ### Platform and route host
 
-- static HTML shell, loader, error projection, import map and route startup
-- local kit-catalog validation
+- static HTML shell, loader, error panel, import map and route startup
+- pinned module admission
+- kit-catalog validation
 - WebGPU/WebGL2 backend and startup-quality admission
-- wheel, pointer, keyboard, blur and resize input
-- loader timers, animation loop, performance sampling and global host projection
-- missing route-session transaction, rollback, stop, exact disposal, restart and stale-epoch admission
+- startup sequencing and fatal projection
+- loader timers, animation loop and global host projection
+- missing startup transaction, session identity, rollback, stop, restart and stale-epoch admission
+
+### Browser interaction
+
+- canvas wheel input
+- pointer capture, drag, release and cancellation
+- window keydown, keyup, blur and resize
+- loader timeout callbacks
+- pagehide callback
+- no listener or timer lease registry
+- no single remove/cancel result
 
 ### Imported NexusEngine Core World
 
 - world registration and identity
 - uniform-grid partitioning and active-cell selection
 - flat world surface coordination
-- focus state and cell lifecycle
-- ordered provider phases
-- capability dependencies and critical-provider admission
+- focus and cell lifecycle
+- provider ordering and capability admission
 - portable effects, snapshots and diagnostics
-- rollback of providers prepared earlier in one failed cell
-- best-effort release and domain reset
+- provider rollback, release and reset
 
 Imported services:
 
@@ -79,16 +112,16 @@ defineWorldEffectProvider
 
 ### MyCozyIsland world wrapper
 
-- creates legacy semantic composition
+- creates the deterministic semantic composition
 - resolves the pinned runtime
-- registers Core World and providers
-- owns wrapper-local prepared, worldSnapshot, focus accumulator, last focus and last cell key
-- commits initial and later focus
-- exposes world query, provider stores, presentation descriptors, diagnostics, reset and dispose
-- reduces each later focus operation to a Boolean result
-- does not expose production provider status, failed cells, selection deltas or a typed focus receipt
+- registers one world and seven providers
+- prepares initial cells and updates focus
+- exposes query, provider stores, snapshots, diagnostics, reset and dispose
+- owns wrapper-local prepared state, focus accumulator, last focus and last cell key
+- dispose resets Core World state only
+- no session epoch or stale-command admission
 
-### MyCozyIsland provider domains
+### Provider domains
 
 ```txt
 FOUNDATION
@@ -109,24 +142,19 @@ PRESENTATION
 
 Provider services include deterministic per-cell terrain arrays, classification arrays, population partitioning, prop and campfire rows, portable presentation descriptors, runtime stores, prepare/update/release participation and snapshots.
 
-### World query and compatibility
-
-- `createCozyWorldQuery()` provides height, normal, slope, fields, biome, shoreline, material, surface, water-depth, ground-contact and cell queries
-- `legacy-render-snapshot-bridge` flattens active provider records into the old render snapshot contract
-- global composition fallback preserves current output when provider rows do not equal the complete population graph
-
-### Authored sequence and gameplay
+### Scenario and gameplay
 
 - camera rail reveal
-- first-person central-clearing exploration
+- first-person clearing exploration
 - deterministic environment clock
 - camera and scenario snapshots
-- focus follows first-person camera at cell boundaries or the configured 10 Hz/minimum-movement threshold
+- Core World focus follows the first-person camera at cell boundaries or the configured cadence
+- no explicit pause, stop or session-finalization state
 
-### Terrain, world, ocean and atmosphere
+### Terrain, population, ocean and atmosphere
 
 - deterministic seed and noise
-- island terrain, clearing plateau, terrain fields, biome and shoreline
+- island terrain, clearing plateau, fields, biome and shoreline
 - terrain LOD, ground contact and path network
 - vegetation, rocks, fence, driftwood, props, campfire and layered grass
 - ocean floor, waves, optics, underwater, caustics, glitter and foam
@@ -135,40 +163,55 @@ Provider services include deterministic per-cell terrain arrays, classification 
 
 ### Rendering
 
-- Three/WebGPU renderer, scene, camera, sky, lighting and shadows
-- whole-island stylized world renderer
-- WebGPU ocean and foam
-- compute or CPU atmosphere volumes
-- volumetric clouds, rolling fog and post pipeline
+- Three/WebGPU renderer, scene, camera, sky, lights and shadows
+- whole-island stylized world graph
+- WebGPU ocean and shoreline foam
+- generated cloud and fog volume textures
+- volumetric clouds and rolling fog
+- render pipeline and post composition
 - performance budget and debug overlay
-- isolated renderer-cell cache, disposal helper and world-cell controller utilities
+- isolated renderer-cell cache and disposal helpers
+- no common live-renderer dispose contract
+- no route-level resource registry
+
+### Diagnostics and global exposure
+
+- debug overlay toggled by H
+- live mutable resources exposed through `globalThis.CozyIsland`
+- getState reads Core World, camera, clock, performance and volumetric state
+- no session ID, lifecycle state, ownership counts, disposal result or tombstone
+- global object is never deleted or previous value restored
 
 ### Validation and deployment
 
 - source and catalog checks
 - deterministic domain smoke
-- legacy/Core World baseline and query/population parity fixtures
-- provider order, snapshot portability and cell lifecycle fixtures
+- legacy/Core World baseline, query and population parity fixtures
+- provider order, portability and cell-lifecycle fixtures
 - isolated renderer cache/disposal fixtures
 - static GitHub Pages deployment
+- no executable startup rollback, stop, dispose, restart or stale-callback fixture
 
 ## Services offered by the 50 local kits
 
 ```txt
 determinism and time:
-  stable seed, scoped RNG, hash/noise, deterministic clock
+  stable seed, scoped RNG, hash/noise, deterministic environment clock
 
 terrain and world:
-  terrain sampling, fields, biome, shoreline, LOD, ground contact, path, vegetation, rocks, props, campfire
+  height, normal, slope, fields, biome, shoreline, LOD, ground contact, path,
+  vegetation, rocks, props and campfire descriptors
 
 ocean and atmosphere:
-  floor, waves, optics, underwater, caustics, glitter, foam, wind, weather, illumination, clouds, fog, aerial perspective
+  floor, waves, optics, underwater, caustics, glitter, foam, wind, weather,
+  illumination, clouds, fog and aerial perspective
 
 render descriptors:
-  quality, materials, archetypes, immutable compatibility snapshots, fallback policy
+  quality, materials, archetypes, immutable compatibility snapshots and fallback policy
 
 render adapters:
-  world, ocean, foam, atmosphere volumes, cloud, fog, post, performance and debug
+  world, grass, ocean, foam, atmosphere volume, cloud, fog, post,
+  performance and debug projection
 
 scenario:
   camera rail, first-person movement, input state, tick, reset and snapshot
@@ -229,7 +272,7 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-## Runtime-implied providers, adapters and hosts
+## Runtime-implied kits and hosts
 
 ```txt
 core-world-runtime-adapter
@@ -252,140 +295,197 @@ animation-loop-host
 global-diagnostic-host
 ```
 
-## Production runtime versus test-double contract
+## Acquired-resource inventory
 
-The browser and the Node tests do not currently execute the same Core World semantics.
-
-### Pinned production Core World
+### Browser leases
 
 ```txt
-partition.selectCells returns:
-  required
-  retained
-  released
-  updated
-
-prepare path:
-  validate cell
-  evaluate provider.matches
-  check required capabilities
-  execute ordered phases
-  normalize portable effect references
-  record provider status and diagnostics
-  roll back earlier providers inside a failed cell
-  commit cell state as active or failed
-
-world update order:
-  release removed cells
-  update changed cells
-  prepare required cells
-  retry non-active retained cells
-  commit the resulting world state
+canvas wheel listener
+canvas pointerdown listener
+canvas pointerup listener
+canvas pointercancel listener
+canvas pointermove listener
+window keydown listener
+window keyup listener
+window blur listener
+window resize listener
+window pagehide listener
+loader completion timeout
+loader hide timeout
+renderer animation loop callback
+globalThis.CozyIsland assignment
 ```
 
-### Local fake runtime
+### Semantic and world resources
 
 ```txt
-partition.selectCells returns:
-  one bare cell array
-
-update path:
-  derive active/released cells inside the fake
-  release every provider for removed cells
-  update every retained cell
-  prepare every new cell
-  record every row as active
-
-missing:
-  provider.matches
-  requires/provides capability admission
-  critical-provider semantics
-  portable descriptor validation
-  provider statuses
-  diagnostics
-  failed-cell records
-  provider-chain rollback
-  production selection shape
-  snapshot-load reconciliation
+legacy semantic composition
+pinned NexusEngine instance
+Core World registration
+uniform-grid partition
+flat world surface
+seven provider registrations
+seven provider runtime stores
+world query and compatibility bridge
+scenario and environment clock
 ```
 
-The existing tests therefore prove the wrapper and providers against a simplified local model, not against the exact runtime shipped through the browser import map.
-
-## Focus transition authority gap
-
-`commitFocus()` performs two separate mutations:
+### Render and GPU resources
 
 ```txt
-setFocus()
-  -> commits the new focus
-
-updateWorld()
-  -> releases old cells first
-  -> updates/prepares the next set
-  -> may commit failed cell records
+WebGPURenderer and backend
+scene and perspective camera
+CanvasTexture sky and sphere geometry
+hemisphere and directional lights
+whole-island world graph
+layered-grass atlas, geometry, material and instanced mesh
+ocean geometry and node material
+foam geometries and materials
+cloud and fog volume textures
+cloud group and material
+fog group, material and render layer
+RenderPipeline and pass graph
+performance budget and debug overlay
 ```
 
-The wrapper then stores the returned snapshot and `updateWorldFocus()` returns only `true`. It does not distinguish:
+## Main lifecycle finding
+
+There is no object that owns the full resource inventory.
+
+`main()` acquires resources in sequence. The only top-level failure path is `main().catch(fail)`, which projects an error but does not cancel callbacks or dispose already-created resources. The global host is published only after the animation loop starts, so a partially constructed session can be live without any public controller capable of stopping it.
+
+The page-exit path is partial:
 
 ```txt
-accepted-complete
-accepted-degraded
-unchanged
-rejected-stale
-failed-before-commit
-failed-after-partial-provider-effects
+pagehide
+  -> domains.dispose()
+  -> reset Core World state
+
+still live or not explicitly retired:
+  renderer animation loop
+  input and resize listeners
+  loader timers
+  scene graph resources
+  generated textures
+  post pipeline
+  renderer/backend
+  global host
 ```
 
-There is no wrapper-level active-cell-set transaction, provider-store checkpoint, rollback receipt, focus revision, failure policy or bounded result journal.
+`disposeRendererObject()` can traverse a graph and dispose geometry, materials and textures, but the live route never invokes it. The ocean, foam, cloud, fog, post and world renderer factories do not share one idempotent `dispose()` result. No resource identity ledger prevents duplicate release or proves zero residual resources.
 
-## Initial preparation retry defect
-
-`prepare()` sets `prepared = true` before calling `commitFocus()`.
+## Failure windows
 
 ```txt
-first prepare
-  -> prepared = true
-  -> commitFocus throws
-  -> worldSnapshot can remain null
-
-second prepare
-  -> sees prepared = true
-  -> returns null
-  -> does not retry
+renderer constructed, renderer.init rejects
+Core World engine/providers created, initial prepare rejects
+world graph created, atmosphere texture generation rejects
+render resources created, later constructor rejects
+listeners installed, setup throws before pagehide registration
+animation loop starts, global host publication throws
+pagehide occurs while a frame or focus update is executing
+future restart starts while old callbacks remain admissible
 ```
 
-The test double never injects this failure, so the existing suite cannot detect the poisoned startup state.
+Each window can leave a different subset of resources active because there is no reverse-order cleanup stack.
 
-## Render consequence
-
-The whole-island renderer still consumes only the startup compatibility snapshot. That masks incomplete later provider transitions because the global visual graph remains present.
-
-A future cell-aware renderer would instead need to decide whether a world revision containing failed or missing cells is admissible. Without a typed focus/world result, it could consume an incomplete revision, release prior visible cells, or create holes while diagnostics still report Core World mode.
-
-## Existing lifecycle gap
-
-`pagehide` calls `domains.dispose()`, which resets Core World state. It does not cancel the animation loop, remove listeners, cancel loader timers, dispose the Three/WebGPU graph or backend, or retire the global host.
-
-## Candidate contract-parity and focus-transaction kits
+## Required runtime session state
 
 ```txt
-core-world-runtime-identity-kit
-core-world-contract-adapter-kit
-focus-command-envelope-kit
-focus-admission-kit
-focus-transition-stage-kit
-active-cell-set-transaction-kit
-provider-failure-policy-kit
-provider-result-journal-kit
-provider-store-checkpoint-kit
-focus-rollback-kit
-focus-result-kit
-world-correlation-kit
-pinned-runtime-test-harness-kit
-fake-runtime-contract-fixture-kit
-production-runtime-failure-fixture-kit
-browser-focus-failure-smoke-kit
+sessionId
+sessionEpoch
+lifecycleState
+startCommandId
+stopCommandId
+startedAt
+stoppedAt
+backend
+quality
+worldMode
+runtimeCommit
+acquisitionSequence
+resourceLeaseCount
+listenerLeaseCount
+timerLeaseCount
+animationLoopActive
+focusWorkActive
+renderSubmitActive
+globalLeaseActive
+lastFrameId
+lastAcceptedFrameId
+stopReason
+disposalStatus
+disposalFailures
+resourceFingerprint
+recentLifecycleResults
 ```
+
+Allowed lifecycle states:
+
+```txt
+idle
+starting
+running
+stopping
+disposing
+stopped
+failed
+```
+
+## Candidate lifecycle kits
+
+```txt
+runtime-session-id-kit
+runtime-session-state-kit
+runtime-session-command-kit
+runtime-session-result-kit
+runtime-session-owner-kit
+startup-acquisition-ledger-kit
+reverse-cleanup-stack-kit
+listener-lease-kit
+timer-lease-kit
+animation-loop-lease-kit
+session-epoch-admission-kit
+frame-generation-fence-kit
+focus-work-generation-fence-kit
+render-resource-registry-kit
+renderer-disposal-adapter-kit
+global-exposure-lease-kit
+startup-rollback-kit
+terminal-disposal-kit
+restart-handoff-kit
+lifecycle-observation-kit
+runtime-lifecycle-journal-kit
+runtime-lifecycle-fixture-kit
+browser-restart-smoke-kit
+```
+
+## Required disposal order
+
+```txt
+close command admission
+  -> advance session epoch
+  -> stop renderer animation loop
+  -> reject old frame/focus/render callbacks
+  -> cancel loader timers
+  -> remove listeners
+  -> retire global host lease
+  -> stop scenario and Core World admission
+  -> dispose post and atmosphere resources
+  -> dispose foam, ocean and world graphs
+  -> dispose generated textures
+  -> dispose renderer/backend
+  -> reset/dispose Core World
+  -> publish structured disposal result
+```
+
+The exact order may change during implementation, but it must be explicit, idempotent and fixture-proven.
+
+## Existing second-order Core World gap
+
+The browser uses the pinned production Core World runtime while Node fixtures inject a simpler fake. The fake omits production selection deltas, capability admission, critical failure, diagnostics, failed-cell states and rollback. `prepare()` can also poison retries by setting `prepared = true` before `commitFocus()` succeeds, while `updateWorldFocus()` collapses all outcomes to Boolean.
+
+This remains the second infrastructure slice after lifecycle authority.
 
 ## Safe implementation boundaries
 
@@ -398,4 +498,4 @@ browser-focus-failure-smoke-kit
 6. Adaptive Quality Transaction Authority
 ```
 
-Do not make provider cells visibly authoritative until the production runtime contract, failure policy, focus result, lifecycle epoch, resource ownership and browser failure behavior are proven.
+Do not make provider cells visibly authoritative until session ownership, exact disposal, production-runtime parity, typed focus results and render admission are proven.

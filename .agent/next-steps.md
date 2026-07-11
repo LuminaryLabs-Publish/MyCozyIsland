@@ -1,30 +1,27 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T12-50-35-04-00`
+Last updated: `2026-07-11T12-58-06-04-00`
 
 ## Summary
 
-Keep adaptive quality behind the existing runtime-session, Core World and render-commit prerequisites. When those exist, replace frame-count callbacks with one elapsed-time quality transaction that can prepare, commit, rollback, recover fully and prove the first visible frame.
+Keep Dynamic Environment Frame Authority behind runtime-session, Core World and render-commit ownership. When those exist, replace startup-frozen environment descriptors with one deterministic frame transaction shared by all gameplay and render consumers.
 
 ## Plan ledger
 
-**Goal:** implement a cadence-independent adaptive-quality authority without allowing presentation changes to bypass session or renderer ownership.
+**Goal:** implement coherent dynamic environment state without allowing independent consumer clocks or partial visual updates.
 
 - [ ] Complete Runtime Session Lifecycle Authority.
 - [ ] Complete Core World Reset / Re-prepare Authority.
-- [ ] Complete pinned Core World focus transaction and materialization readiness.
-- [ ] Complete Core World render commit and visible-frame proof.
-- [ ] Define a versioned `QualityPolicy` with elapsed-time dwell values.
-- [ ] Add monotonic performance samples with session, generation, frame and visibility identity.
-- [ ] Replace 90/360 frame counters with elapsed-time windows.
-- [ ] Add a typed quality transition command and admission result.
-- [ ] Fence transitions during booting, quiescing, reset, stop and disposal.
-- [ ] Build one immutable consumer plan per target level.
-- [ ] Add prepare/commit/rollback adapters for cloud, fog, post and pixel ratio.
-- [ ] Restore the startup pixel ratio when returning to level 0.
-- [ ] Publish canonical effective quality state and fingerprint.
-- [ ] Correlate one visible frame with the committed quality revision.
-- [ ] Add cadence, full-recovery, partial-failure and lifecycle fixtures.
+- [ ] Complete focus, materialization and render commit authority.
+- [ ] Define a versioned `EnvironmentFrame` schema.
+- [ ] Add session, generation, simulation tick and monotonic clock admission.
+- [ ] Derive wind, weather, illumination, cloud, fog, ocean, vegetation and campfire state from one clock sample.
+- [ ] Add immutable frame revision and fingerprint.
+- [ ] Add prepare/commit/rollback adapters for every dynamic consumer.
+- [ ] Publish canonical effective environment state and consumer receipts.
+- [ ] Derive reset from a canonical baseline frame.
+- [ ] Correlate one visible render frame with the committed environment revision.
+- [ ] Add deterministic replay, reset, stale-frame, failure and WebGPU/WebGL2 fixtures.
 
 ## Ordered implementation queue
 
@@ -39,104 +36,113 @@ Keep adaptive quality behind the existing runtime-session, Core World and render
 8. Adaptive Quality Transaction Authority
 ```
 
-## Candidate adaptive-quality kits
+## Candidate environment-frame kits
 
 ```txt
-quality-policy-schema-kit
-performance-sample-envelope-kit
-performance-window-timebase-kit
-quality-level-decision-kit
-quality-transition-command-kit
-quality-transition-admission-kit
-quality-session-fence-kit
-quality-consumer-plan-kit
-quality-consumer-prepare-kit
-quality-consumer-commit-kit
-quality-consumer-rollback-kit
-effective-quality-state-kit
-pixel-ratio-restore-kit
-quality-transition-result-kit
-quality-transition-journal-kit
-quality-frame-ack-kit
-quality-cadence-parity-fixture-kit
-quality-full-recovery-fixture-kit
-quality-partial-failure-fixture-kit
+environment-frame-schema-kit
+environment-frame-id-kit
+environment-clock-sample-kit
+environment-frame-admission-kit
+wind-frame-kit
+weather-frame-kit
+illumination-frame-kit
+cloud-environment-frame-kit
+fog-environment-frame-kit
+ocean-environment-frame-kit
+vegetation-wind-frame-kit
+campfire-smoke-frame-kit
+environment-consumer-plan-kit
+environment-consumer-prepare-kit
+environment-consumer-commit-kit
+environment-consumer-rollback-kit
+environment-frame-result-kit
+environment-frame-fingerprint-kit
+environment-frame-ack-kit
+environment-reset-baseline-kit
+environment-frame-journal-kit
+environment-consumer-coherence-fixture-kit
+environment-reset-replay-fixture-kit
+browser-environment-frame-smoke-kit
 ```
 
-## Required policy shape
+## Required frame shape
 
 ```txt
-QualityPolicy {
+EnvironmentFrame {
   id
   revision
-  targetFrameMs
-  degradeThresholdMs
-  recoverThresholdMs
-  degradeDwellMs
-  recoverDwellMs
-  minimumLevelDwellMs
-  visibilityPolicy
-  levels[]
+  sessionId
+  sessionGeneration
+  simulationTickId
+  elapsedSeconds
+  weather
+  wind
+  illumination
+  clouds
+  fog
+  ocean
+  vegetationWind
+  campfireSmoke
   fingerprint
 }
 ```
 
-## Required transition
+## Required transaction
 
 ```txt
-admit QualityTransitionCommand
-  -> verify session and renderer generations
-  -> verify expected quality revision
-  -> resolve exact target values
+admit ClockSample
+  -> derive candidate EnvironmentFrame
+  -> verify expected revision
+  -> build exact consumer plan
   -> prepare all consumers
   -> commit all consumers
   -> rollback all on any failure
-  -> publish EffectiveQualityState
+  -> publish EffectiveEnvironmentState
   -> render one frame
-  -> publish QualityFrameReceipt
-  -> return detached QualityTransitionResult
+  -> publish EnvironmentFrameReceipt
+  -> return detached EnvironmentFrameResult
 ```
 
-## Consumer plan
+## Consumer set
 
 ```txt
-cloud step scale
-fog step scale
-fog resolution scale
-pixel ratio cap scale
+sky gradient
+hemisphere light
+sun transform/color/intensity
+renderer exposure
+scene fog
+cloud lighting/shadow/horizon
+fog density/advection/placement
+ocean and foam
+vegetation sway
+campfire smoke
+debug and public observations
 ```
-
-Future adaptive dimensions must not be added until they implement the same prepare/commit/rollback contract.
 
 ## Fixture matrix
 
 ```txt
-30/60/90/120 Hz cadence parity
-irregular frame schedule parity
-hidden-tab policy
-stalled-frame policy
-minimum level dwell
-0 -> 1 -> 2 degrade completeness
-2 -> 1 -> 0 full recovery
-pixel ratio returns to startup value
+same seed and tick sequence -> same fingerprints
+clock advance -> all consumers share one revision
+wind parity across vegetation/campfire/cloud/fog
+illumination parity across sky/sun/hemisphere/exposure
+reset -> canonical initial frame
+stale session/generation/tick/revision rejection
+duplicate frame idempotency
 consumer prepare rejection
 consumer commit failure rollback
-stale session/revision rejection
-duplicate transition idempotency
-reset/stop/dispose fencing
-WebGPU/WebGL2 parity
-effective fingerprint stability
+WebGPU/WebGL2 consumer parity
 first visible frame acknowledgement
 ```
 
 ## Acceptance conditions
 
 ```txt
-transition timing is based on elapsed evidence
-all consumers share one quality revision
-no partial quality state survives failure
-level 0 equals original startup effective state
-quality callbacks cannot mutate retired sessions
-observations expose every effective consumer value
+one clock sample produces one environment frame
+all consumers share one revision and fingerprint
+no partial environment state survives failure
+reset reproduces the baseline frame
+retired sessions cannot mutate consumers
+observations expose every effective environment field
 one visible frame acknowledges the committed revision
 ```

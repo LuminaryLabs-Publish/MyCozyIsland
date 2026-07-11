@@ -1,21 +1,22 @@
-# Current Audit: MyCozyIsland Lazy Cell Materialization Authority
+# Current Audit: MyCozyIsland Live Materialization Readiness Commit
 
-Last updated: `2026-07-11T08-58-02-04-00`
+Last updated: `2026-07-11T09-08-59-04-00`
 
 ## Summary
 
-The runtime now separates lightweight Core World registration from heavy terrain, biome, shoreline, and presentation materialization. The staged scheduler is deterministic and row-bounded in isolation, but it is not called by the live browser host. Production therefore registers queued descriptors, builds the compatibility island, and renders forever without advancing the new materialization state.
+The production browser route now advances lazy Core World materialization after rendering the compatibility island. Terrain, biome, shoreline, and presentation stages can therefore complete in the live host. The remaining defect is not scheduler activation; it is missing transactional identity, failure containment, provider-version readiness, and visible render consumption.
 
 ## Plan ledger
 
-**Goal:** document the complete lazy-world path and define the smallest authority boundary required to start it after the first committed frame, fence it to current world state, classify failures, and publish render-consumable readiness.
+**Goal:** reconcile the newly wired production loop and define the authority required to convert synchronous provider progress into a stable `CellReadinessRevision` and then a committed visible frame.
 
-- [x] Reconcile all accessible Publish repositories with the central ledger.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` due to new undocumented runtime commits.
-- [x] Read route, wrapper, scheduler, terrain, biome, shoreline, presentation, configuration, and test sources.
+- [x] Reconcile the full accessible Publish inventory with central tracking.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` due to new undocumented runtime integration.
+- [x] Read the route, world wrapper, materializer, presentation provider, descriptor schema, compatibility bridge, renderer cache, and lazy fixture.
 - [x] Identify the interaction loop, domains, kits, and services.
-- [x] Verify the live route has no materialization-frame call.
-- [x] Define admission, budget, epoch, readiness, failure, observation, and render-handoff boundaries.
+- [x] Verify the host now invokes `processMaterializationFrame()` after the second rendered frame.
+- [x] Verify the live renderer still consumes only the startup compatibility snapshot.
+- [x] Define command, epoch, generation, readiness-set, render-commit, and fixture boundaries.
 - [x] Change no runtime behavior.
 
 ## Runtime identity
@@ -40,102 +41,118 @@ package version:     0.3.1
 ```txt
 route boot
   -> pinned module admission
-  -> kit-catalog validation
-  -> renderer/backend startup
+  -> validate local kit catalog
+  -> initialize WebGPU/WebGL2 renderer
   -> createCozyIslandWorldRuntime()
   -> prepare()
-       Core World registers 49 cells
-       terrain/biome/shoreline descriptors remain queued
+       Core World registers 49 lightweight cells
+       provider stores receive queued descriptors
   -> createLegacyRenderSnapshot()
-  -> build whole-island compatibility render graph
-  -> register input and renderer animation loop
-  -> frame:
-       scenario.tick(dt)
-       camera projection
-       updateWorldFocus(camera, mode, dt)
-       world/foam updates
-       post render
-       diagnostics
-       no lazy materialization step
+  -> construct whole-island compatibility graph
+  -> construct ocean, foam, cloud, fog, post, input, and diagnostics
+  -> start renderer animation loop
+
+frame
+  -> calculate frameMs and dt
+  -> scenario.tick(dt)
+  -> project camera
+  -> updateWorldFocus(camera, mode, dt)
+  -> update compatibility render uniforms
+  -> sample adaptive performance
+  -> render compatibility frame
+  -> increment frame counter
+  -> when frames > 1:
+       processMaterializationFrame(camera, mode)
+       sync active cells
+       select one candidate by LOD, distance, cell ID
+       advance terrain, biome, shoreline, or presentation stage
+  -> periodically project aggregate materialization counters
 ```
 
-## Implemented lazy service path
+## Implemented materialization services
 
 `createLazyCellMaterializer()` provides:
 
 ```txt
-sync active cell identities
-remove released scheduler rows
-prioritize by LOD, focus distance, stable cell ID
-advance at most maxCellsPerFrame candidates
-terrain -> biome -> shoreline -> presentation -> done
-report frames, workSteps, active, completed, pending, progress, per-cell stage
-reset scheduler state
+active-cell synchronization
+released-state removal
+deterministic priority by LOD, focus distance, cell ID
+bounded candidate count per call
+terrain row stepping
+biome row stepping from accepted terrain arrays
+shoreline row stepping from accepted terrain fields
+presentation descriptor refresh
+aggregate frame/work/completion counters
+per-cell stage observation
+reset
 ```
 
-Current budgets:
+Current policy:
 
 ```txt
 maxCellsPerFrame:          1
 terrainRowsPerStep:        1
 classificationRowsPerStep: 4
+stages: terrain -> biome -> shoreline -> presentation -> done
 ```
-
-### Terrain stage
-
-Registers `cozy.terrain-patch.v2` descriptors without allocating fields. Materialization allocates height, normal, slope, curvature, moisture, exposure, rock exposure, shore distance, and clearing arrays, then fills bounded rows. A runtime handle is published only when all rows complete.
-
-### Biome stage
-
-Registers `cozy.biome-field.v2` descriptors and later derives seven normalized weight channels from the completed terrain arrays. It does not resample the terrain source.
-
-### Shoreline stage
-
-Registers `cozy.shoreline-field.v2` descriptors and later reuses terrain shore-distance values while deriving breaker, wetness, and planar normal arrays in bounded rows.
-
-### Presentation stage
-
-Rebuilds `cozy.render-cell.v2` after required fields are ready and changes its materialization marker from `queued` to `ready`.
 
 ## Main finding
 
-The wrapper exports:
+The live integration fixes the previous dead-queue defect, but the helper result is not a durable authority result.
+
+### Identity gap
+
+`processMaterializationFrame()` accepts only position, camera mode, and an optional cell count. It carries no:
 
 ```txt
-processMaterializationFrame()
-getMaterializationState()
+commandId
+sessionId or sessionEpoch
+worldRevision
+focusRevision
+cellGeneration
+provider descriptor version
+frame sequence acknowledgement
 ```
 
-The live host calls neither. Its renderer loop stops at `updateWorldFocus()` before updating compatibility resources and rendering. The new work therefore does not begin after the first frame, despite the new design document describing that behavior.
+### Failure gap
 
-The isolated test directly constructs and steps the materializer. It proves:
+Provider calls are synchronous and unguarded. A terrain, biome, shoreline, or presentation exception can escape through the animation callback. There is no typed failure, retry policy, quarantine state, or terminal blocked result.
+
+### Budget gap
+
+The scheduler limits candidate count and provider rows, not elapsed CPU time. A configured row can become more expensive as resolution or provider complexity grows. Materialization runs after the visible render, and its current cost is not correlated with the frame or readiness result that caused it.
+
+### Readiness gap
+
+The presentation provider sets `materialization` to `ready` when terrain, biome, and shoreline records are present, but it does not publish a canonical required-provider version set or a monotonic `cellReadinessRevision`. Vegetation, rock, and prop handles are included without a joined source fingerprint.
+
+### Render-consumption gap
+
+The host builds `worldRenderer` once from `createLegacyRenderSnapshot()` at startup. It never reads:
 
 ```txt
-registration performs zero terrain samples
-lowest-LOD nearest cell advances first
-one configured terrain row is sampled per step
-partial terrain does not publish a ready handle
-two test cells eventually complete
-biome and shoreline arrays exist
-presentation descriptor becomes ready
-released cells leave scheduler state
+getPresentationDescriptors()
+provider runtime readiness
+renderer-cell-cache
+cell-aware renderer controller
+cell readiness revision
 ```
 
-It does not prove route integration, startup timing, a browser frame budget, session/focus epochs, provider exceptions, retries, stale completion rejection, or visible render handoff.
+Materialization can complete while the visible scene remains unchanged. Debug counters prove scheduler progress, not render consumption.
 
 ## Domain map
 
 ### Platform and route host
 
-Pinned import maps, kit validation, loader/error projection, WebGPU/WebGL2 admission, input listeners, animation loop, page lifecycle, global host, and static compatibility rendering.
+Pinned import maps, catalog validation, loader/error projection, WebGPU/WebGL2 admission, browser input, resize, animation loop, pagehide callback, performance adaptation, and global diagnostic publication.
 
 ### NexusEngine Core World
 
-World identity, uniform-grid partitioning, focus, active-cell selection, provider phases, capability admission, descriptor lifecycle, diagnostics, snapshots, release, rollback, and reset.
+World registration, uniform-grid partition, surface, focus, active-cell selection, ordered providers, capability admission, effect descriptors, snapshots, diagnostics, release, rollback, and reset.
 
 ### Product world wrapper
 
-Composition creation, provider registration, initial prepare, focus throttling, world snapshot/query projection, compatibility bridge, lazy scheduler construction, materialization stepping, state, reset, and disposal.
+Legacy semantic composition, Core World runtime resolution, provider creation, prepare, throttled focus updates, query/state projection, compatibility bridge, materializer construction, frame processing, reset, and disposal.
 
 ### Provider domains
 
@@ -156,21 +173,17 @@ PRESENTATION
   cell-presentation-provider
 ```
 
-### Lazy materialization
-
-Active-cell synchronization, deterministic priority, staged row work, provider runtime stores, readiness state, progress projection, and presentation refresh.
-
 ### Semantic world and gameplay
 
-Deterministic clock, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
+Deterministic seed and clock, terrain, clearing, biome, shoreline, ground contact, paths, vegetation, rocks, props, campfire, camera rail, first-person movement, ocean, foam, wind, weather, illumination, clouds, fog, and aerial perspective.
 
 ### Rendering
 
-Static whole-island compatibility graph, WebGPU/WebGL2 adapters, layered grass, ocean, foam, atmosphere volumes, clouds, fog, post-processing, adaptive performance, diagnostics, disconnected cell-render controller, cache, and disposal helpers.
+Startup render snapshot, whole-island stylized renderer, layered grass, ocean, foam, volume textures, cloud/fog consumers, post-processing, adaptive quality, diagnostics, renderer cell cache, resource disposal helper, and disconnected cell-aware controller.
 
 ### Validation and deployment
 
-Static/catalog checks, semantic fixtures, fake Core World tests, lazy scheduler fixture, renderer cache/disposal fixtures, and GitHub Pages deployment.
+Catalog/static checks, deterministic domain smoke, Core World runtime and provider-order tests, query/population parity, snapshot portability, cell lifecycle, isolated lazy materialization, renderer cache/disposal tests, and GitHub Pages deployment.
 
 ## Services offered by the 50 local kits
 
@@ -179,16 +192,18 @@ determinism and time:
   stable seed, scoped RNG, hash/noise, deterministic environment clock
 
 terrain and population:
-  field sampling, plateau, biome, shoreline, LOD, contact, paths,
-  vegetation, rocks, props, campfire
+  height/normal/slope/curvature/moisture/exposure fields
+  local plateau, biome and shoreline classification, terrain LOD
+  ground contact, paths, vegetation, rocks, props, campfire
 
 ocean and atmosphere:
-  floor, waves, optics, underwater, caustics, glitter, foam,
+  floor, waves, optics, underwater, caustics, glitter, foam
   wind, weather, illumination, clouds, fog, aerial perspective
 
 render descriptors and adapters:
-  quality, materials, archetypes, snapshots, fallback, world, ocean,
-  foam, atmosphere, cloud, fog, post, performance, debug
+  quality, material and archetype descriptors, portable snapshots
+  WebGL2 fallback, WebGPU world/ocean/foam/atmosphere/cloud/fog/post
+  adaptive performance and debug projection
 
 scenario:
   camera rail, first-person input/movement, tick, reset, snapshot
@@ -249,77 +264,90 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
+## Imported NexusEngine services
+
+```txt
+createEngine
+createCoreWorldDomain
+createUniformGridPartition
+createFlatWorldSurface
+createTerrainProviderAdapter
+defineWorldEffectProvider
+```
+
 ## Runtime-implied kits and services
 
 ```txt
-core-world-runtime-adapter        pinned runtime composition
-cozy-world-configuration          world, focus, terrain, budget policy
-island-terrain-provider           descriptor registration and row materialization
-biome-classification-provider     terrain-array classification
-shoreline-classification-provider terrain shore reuse and shoreline arrays
-vegetation/rock/prop providers    population descriptors and stores
-cell-presentation-provider        queued/ready render-cell descriptors
-lazy-cell-materializer            active-cell sync, priority, staged work, progress
-cozy-world-query                  semantic queries
-legacy-render-snapshot-bridge     compatibility snapshot
-renderer-cell-cache               cell resource cache
-renderer-resource-disposal        graph resource cleanup
-cell-aware-renderer-controller    proposed live cell consumer
-browser-input-adapter             wheel, pointer, keyboard, blur, resize
-animation-loop-host               per-frame scenario/render scheduling
-global-diagnostic-host            CozyIsland readback
+core-world-runtime-adapter         pinned runtime composition
+cozy-world-configuration           world/focus/materialization policy
+island-terrain-provider            descriptor and row materialization
+biome-classification-provider      terrain-array classification
+shoreline-classification-provider  shore-distance reuse and shoreline arrays
+vegetation-provider                cell population records
+rock-provider                      cell rock records
+prop-provider                      prop and campfire records
+cell-presentation-provider         queued/ready render-cell descriptors
+lazy-cell-materializer             sync, priority, staged work, counters
+cozy-world-query                   semantic query facade
+legacy-render-snapshot-bridge      startup compatibility snapshot
+renderer-cell-cache                prepare/update/release cache
+renderer-resource-disposal         graph resource cleanup
+cell-aware-world-renderer-controller proposed live cell consumer
+browser-input-adapter              wheel, pointer, keyboard, blur, resize
+animation-loop-host                scenario, render, materialization scheduling
+global-diagnostic-host             CozyIsland readback
 ```
 
-## Missing materialization authority
+## Missing authority
 
 ```txt
-host start admission
-sessionId and sessionEpoch
-focus/world revision fence
-materialization command identity
-cell work epoch
+runtime session and epoch
+accepted world/focus revision
+materialization command/result identity
+cell generation
+provider source-version set
 elapsed-time budget
-provider-stage failure result
-retry/backoff policy
+classified provider failure
+retry/backoff/terminal policy
 stale completion rejection
 cell readiness revision
-provider readiness set
-bounded journal
-first-frame start acknowledgement
-render handoff result
-browser integration fixture
+renderer prepare/update/release transaction
+visible-frame acknowledgement
+bounded journal and browser fixture
 ```
 
 ## Required composed domain
 
 ```txt
-cozy-island-lazy-materialization-authority-domain
+cozy-island-live-materialization-readiness-domain
   -> materialization-frame-command-kit
   -> materialization-admission-kit
+  -> materialization-epoch-kit
+  -> cell-generation-kit
   -> materialization-priority-kit
-  -> provider-stage-plan-kit
   -> row-work-budget-kit
   -> frame-time-budget-kit
-  -> materialization-epoch-kit
-  -> stale-cell-work-rejection-kit
   -> provider-stage-result-kit
-  -> materialization-failure-kit
+  -> provider-failure-classification-kit
   -> materialization-retry-kit
-  -> cell-readiness-revision-kit
+  -> stale-cell-work-rejection-kit
   -> provider-readiness-set-kit
+  -> cell-readiness-revision-kit
   -> presentation-readiness-commit-kit
-  -> compatibility-render-handoff-kit
+  -> renderer-cell-plan-kit
+  -> renderer-cell-commit-result-kit
+  -> visible-frame-acknowledgement-kit
   -> materialization-observation-kit
   -> materialization-journal-kit
-  -> lazy-materialization-fixture-kit
-  -> browser-first-frame-materialization-smoke-kit
+  -> live-materialization-fixture-kit
+  -> browser-ready-cell-render-smoke-kit
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Lazy Cell Materialization Authority
-+ Live Host Admission / Epoch / Readiness Fixture Gate
+MyCozyIsland Live Materialization Readiness Commit Authority
++ Provider-Version / Render-Consumption Fixture Gate
 ```
 
-Implement this in the existing product world wrapper and host. Promote only reusable scheduling and readiness primitives into the existing NexusEngine Core World DSK; do not create a parallel world system.
+Implement the authority inside the existing world wrapper and route. Promote only reusable generation/readiness primitives into the existing NexusEngine Core World DSK. Keep the compatibility renderer until a cell-render commit can prepare, acknowledge, roll back, and dispose resources deterministically.

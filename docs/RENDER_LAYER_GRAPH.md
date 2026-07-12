@@ -2,7 +2,7 @@
 
 ## Ownership boundary
 
-Core World owns semantic state and provider lifecycle. Core Graphics owns portable render-pass contracts. The Three.js WebGPU adapter owns actual layer masks, render passes, depth, blending, and GPU submission.
+Core World owns semantic state and provider lifecycle. Core Graphics owns portable render-pass contracts. The Three.js WebGPU adapter owns actual layer masks, render passes, depth, blending, camera projection, and GPU submission.
 
 ## Semantic terrain providers
 
@@ -40,7 +40,8 @@ Foam is the final authored scene-content pass. Only the technical output transfo
 | Sea-floor terrain | yes | yes | none |
 | Anime water | yes | no | premultiplied alpha |
 | Rolling fog | depth sampled | no | atmosphere composite |
-| Shoreline foam | yes | no | premultiplied alpha |
+| Shoreline foam color | visibility masked | no | premultiplied alpha |
+| Shoreline foam depth prepass | yes | dedicated foam depth only | none |
 
 ## Anime water
 
@@ -48,12 +49,34 @@ The water is one physical mesh. Transmission, depth absorption, Fresnel reflecti
 
 ## Foam boundary
 
-Foam renders in a dedicated scene and pass after the atmosphere composite. It does not enter the water refraction source, write depth, publish terrain state, or modify fog density. Distance haze is represented by foam-side transmittance rather than another fog pass after foam.
+Foam renders after the atmosphere composite. A dedicated depth-only copy of the foam ribbons generates `foamDepth`; the final color composite compares it against the fused base scene's `opaqueSceneDepth`. Terrain, rocks, vegetation, fences, and opaque props therefore reject foam fragments behind them.
+
+The visible foam material still keeps `depthWrite: false`. Foam does not enter the water refraction source, publish terrain state, or modify fog density.
+
+## Camera contract
+
+```txt
+rail start FOV: 55 degrees
+first-person FOV: 80 degrees
+player eye height: terrain height + 2.0 meters
+```
+
+Late rail positions and look targets are terrain-relative. Every interpolated rail sample is clamped above the current procedural terrain, so scrolling into first person cannot enter the clearing mound.
 
 ## Debug surface
 
-`CozyIsland.renderLayerGraph` exposes the validated graph. `CozyIsland.postPipeline.getPassOrder()` returns the renderer order actually used by the host.
+`CozyIsland.renderLayerGraph` exposes the validated graph. `CozyIsland.postPipeline.getPassOrder()` returns the logical order. `CozyIsland.postPipeline.getPhysicalPassOrder()` includes the dedicated foam occlusion depth pass.
 
 ## Adapter pass fusion
 
-The portable graph keeps background, opaque world, and water as separate logical contracts. The Three.js adapter fuses those three into one base scene pass so physical transmission can see the opaque scene and standard opaque/transparent sorting remains correct. The remaining physical passes are atmosphere, foam, and output. `getPassOrder()` reports logical order; `getPhysicalPassOrder()` reports the compiled WebGPU pass order.
+The portable graph keeps background, opaque world, and water as separate logical contracts. The Three.js adapter fuses those three into one base scene pass so physical transmission can see the opaque scene and standard opaque/transparent sorting remains correct.
+
+The physical sequence is:
+
+```txt
+base-scene-fused
+atmosphere-composite
+foam-occlusion-depth
+foam-overlay
+output-transform
+```

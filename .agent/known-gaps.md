@@ -1,92 +1,105 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-12T03-39-52-04-00`
+Last updated: `2026-07-12T05-00-19-04-00`
 
 ## Summary
 
-The visible environment does not have one authoritative time or frame revision. World animation and foam use the scenario clock, ocean/cloud/fog shaders use Three TSL global time, and several environment descriptors remain frozen at startup. Reset restarts only part of the visible environment.
+Adaptive quality has no authoritative active descriptor or transition revision. It samples RAF spacing, accepts transitions after refresh-rate-dependent frame counts, changes only part of the renderer, and does not restore base pixel ratio when recovery reaches level zero.
 
-## Clock and frame gaps
+## Policy and identity gaps
 
 ```txt
-canonical environment clock source: absent
-clock source ID: absent
-clock revision: absent
-environment frame ID: absent
-environment frame revision: absent
-reset generation: absent
-frame fingerprint: absent
-bounded environment journal: absent
+quality policy ID: absent
+fixed versus adaptive mode: absent
+base quality revision: absent
+active quality descriptor: absent
+quality transition ID: absent
+quality transition revision: absent
+expected predecessor revision: absent
+URL override semantics: ambiguous
 ```
 
-## Dynamic descriptor gaps
+## Measurement gaps
 
 ```txt
-illumination evaluated per frame: no
-wind descriptor evaluated per frame: no
-vegetation wind updated per frame: no
-campfire wind updated per frame: no
-cloud weather and lighting updated per frame: no
-fog advection updated per frame: no
-sky and light state updated from current clock: no
-explicit immutable-policy classification: absent
+RAF callback spacing sampled: yes
+CPU frame timing identified: no
+GPU timing identified: no
+presentation latency identified: no
+visibility state admitted: no
+first-frame/discontinuity rejection: no
+sample ID and validity result: absent
+time-based observation window: absent
 ```
 
-## Render consumer gaps
+## Transition gaps
 
 ```txt
-world and foam use scenario elapsed time: yes
-ocean uses renderer-global TSL time: yes
-clouds use renderer-global TSL time: yes
-fog uses renderer-global TSL time: yes
-canonical TSL time uniform: absent
-environment render plan: absent
+degrade threshold: 90 qualifying frames
+recover threshold: 360 qualifying frames
+refresh-rate-independent dwell: no
+transactional consumer plan: absent
+partial-application rollback: absent
+stale transition rejection: absent
+transition reason/result: absent
+bounded transition journal: absent
+```
+
+## Consumer gaps
+
+```txt
+cloud steps adapt: yes
+fog steps adapt: yes
+fog resolution adapts: yes
+DPR degrades above level zero: yes
+DPR restores at level zero: no
+shadow map adapts: no
+volume texture size adapts: no
+ocean geometry adapts: no
+terrain resolution adapts: no
+vegetation density adapts: no
+mutable versus immutable classification: absent
 consumer receipts: absent
-partial consumer rejection: absent
-stale generation rejection: absent
-visible environment-frame acknowledgement: absent
 ```
 
-## Reset gaps
+## Resize and lifecycle gaps
 
 ```txt
-scenario clock resets to 48 seconds: yes
-camera resets: yes
-TSL time resets: no
-static environment descriptors rebuild: no
-ocean phase restarts: no
-cloud phase restarts: no
-fog phase restarts: no
-foam phase restarts: yes
-world sway and campfire phase restart: yes
-all-consumer reset parity proof: absent
+resize updates renderer size: yes
+resize updates camera aspect: yes
+resize re-evaluates base quality: no
+resize creates quality revision: no
+page visibility suspends samples: no
+pagehide disposes domains only: yes
+performance budget reset/disposal result: absent
+new runtime generation fencing: absent
 ```
 
-## Public readback gaps
+## Diagnostics and frame gaps
 
 ```txt
-static startup snapshot exposed: yes
-dynamic clock exposed separately: yes
-environment frame provenance: absent
-clock source and revision: absent
-reset generation: absent
+debug base tier: present
+debug active level: indirect through FPS only
+active DPR: not projected
+quality transition revision: absent
+transition reason: absent
 consumer receipt set: absent
-last committed environment frame: absent
-visible output acknowledgement: absent
+public active-quality descriptor: absent
+first visible quality-frame acknowledgement: absent
 ```
 
-## Current test gaps
+## Test gaps
 
 ```txt
-deterministic domain construction: present
-scenario clock advances: present
-CPU versus TSL clock parity fixture: absent
-reset phase parity fixture: absent
-dynamic descriptor revision fixture: absent
-consumer receipt fixture: absent
-WebGPU/WebGL2 environment parity fixture: absent
-visible environment frame fixture: absent
-Pages reset parity smoke: absent
+performance-budget unit fixture: absent
+30/60/120 Hz cadence parity fixture: absent
+pixel-ratio recovery fixture: absent
+override-policy fixture: absent
+hidden-tab sample fixture: absent
+resize transaction fixture: absent
+partial consumer failure fixture: absent
+WebGPU/WebGL2 transition parity fixture: absent
+visible quality-frame smoke: absent
 ```
 
 ## Related retained gaps
@@ -102,28 +115,29 @@ focus transaction authority
 materialization generation/readiness
 renderer cell commit/disposal
 camera rail baseline fidelity
-adaptive quality transaction
+dynamic environment frame coherence
 ```
 
 ## Risk ranking
 
 ```txt
-P0 reset can restart foam, vegetation and campfire while ocean, clouds and fog continue
-P1 one visible frame can combine unrelated scenario and renderer-global times
-P1 startup illumination and wind-derived descriptors can become stale against the clock
-P1 diagnostics cannot identify which time and descriptor revision produced a frame
-P1 no consumer receipt proves all required environment systems committed together
-P2 WebGPU and WebGL2 can drift without a shared environment-frame fixture
+P0 recovery to level zero can retain reduced DPR indefinitely
+P1 transition dwell changes materially with display refresh rate
+P1 hidden-tab or callback discontinuity samples can influence quality
+P1 forced quality override has no explicit lock/adaptive contract
+P1 diagnostics can label base tier while active renderer settings differ
+P1 partial consumer mutation has no rollback or receipt proof
+P2 resize does not reconsider capability policy
+P2 startup-only quality resources are not explicitly classified
 ```
 
 ## Non-goals of this documentation run
 
 ```txt
-no environment implementation changed
-no shader time source changed
-no reset behavior changed
-no render output changed
-no package scripts or dependencies changed
+no quality implementation changed
+no renderer settings changed
+no tests or package scripts changed
+no dependencies changed
 no deployment configuration changed
 no runtime correctness claim made
 ```

@@ -1,29 +1,28 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-12T00-20-01-04-00`
+Last updated: `2026-07-12T02-10-14-04-00`
 
 ## Summary
 
-Keep the new depth-aware foam mask, then replace its construction-time proxy snapshot with an admitted proxy topology and resource lifecycle. The next safe implementation must also finish the broader render-graph binding work so the physical depth pass, remaining foam inputs, backend execution, diagnostics, and visible-frame evidence come from one authority.
+Replace mutable authored rail points with an immutable baseline plus separate session camera state. Every wheel, drag, key, reset, transition, descriptor, and visible frame should carry a revisioned result so reset can prove exact baseline restoration and repeated input cannot accumulate hidden path drift.
 
 ## Plan ledger
 
-**Goal:** make foam depth proxy membership, resources, opaque-depth binding, frame synchronization, topology replacement, and disposal deterministic and observable.
+**Goal:** make camera rail construction, orbit, progress, first-person handoff, reset, replay, diagnostics, and visible-frame acknowledgement deterministic.
 
-- [ ] Add `cozy-ocean-composition-kit` to the canonical kit catalog or explicitly classify it.
-- [ ] Represent `foam-occlusion-depth` in the admitted physical plan.
-- [ ] Assign stable source mesh, proxy mesh, proxy scene, material, pass, graph and topology IDs.
-- [ ] Build source/proxy membership from canonical mesh identities.
-- [ ] Publish a monotonic source and proxy topology revision.
-- [ ] Reconcile added, retained and removed foam meshes atomically.
-- [ ] Classify source geometry as shared and the proxy material/pass as owned.
-- [ ] Add an idempotent `postPipeline.dispose()` and integrate it with session teardown.
-- [ ] Stop the animation loop and callbacks before proxy/resource disposal.
-- [ ] Bind the exact current opaque-depth producer through a typed result.
-- [ ] Bind water-mask, water-surface-depth and fog-transmittance or revise the logical contract.
-- [ ] Derive logical and physical pass readback from the admitted plan and execution receipts.
-- [ ] Add topology mutation, disposal, WebGPU/WebGL2 parity, and visible-pixel fixtures.
-- [ ] Keep startup, session, world lifecycle, reset, focus, materialization, camera and adaptive-quality gaps visible.
+- [ ] Freeze or deep-clone the authored rail positions and look targets.
+- [ ] Assign a stable baseline ID and deterministic baseline fingerprint.
+- [ ] Separate authored baseline data from mutable session orbit/progress state.
+- [ ] Replace in-place point mutation with a derived orbit transform or candidate path.
+- [ ] Add monotonic camera state, path, reset-generation, and command revisions.
+- [ ] Add typed wheel, drag, key, clear, and reset commands.
+- [ ] Add typed accepted, duplicate, stale, clamped, ignored, and rejected results.
+- [ ] Bind one pointer identity to one drag lease until release or cancellation.
+- [ ] Make reset reconstruct the exact initial state from the admitted baseline.
+- [ ] Publish baseline and path provenance in camera descriptors and public readback.
+- [ ] Correlate the committed camera revision with the first rendered frame.
+- [ ] Add reset-fidelity, repeated-drift, threshold-handoff, multi-pointer, and browser fixtures.
+- [ ] Keep startup, session, world lifecycle, render graph, foam proxy, materialization, environment, and adaptive-quality gaps visible.
 
 ## Ordered implementation queue
 
@@ -45,58 +44,94 @@ Keep the new depth-aware foam mask, then replace its construction-time proxy sna
 ## Candidate kits
 
 ```txt
-foam-depth-proxy-plan-kit
-foam-depth-proxy-identity-kit
-foam-depth-proxy-membership-kit
-foam-depth-proxy-topology-revision-kit
-foam-depth-proxy-transform-sync-kit
-foam-depth-proxy-resource-lease-kit
-foam-depth-proxy-disposal-kit
-foam-depth-binding-result-kit
-logical-physical-pass-adapter-kit
-foam-depth-pass-observation-kit
-foam-occlusion-frame-receipt-kit
-foam-proxy-topology-fixture-kit
-foam-proxy-disposal-fixture-kit
-webgpu-webgl2-foam-depth-parity-fixture-kit
+camera-rail-baseline-descriptor-kit
+camera-rail-baseline-fingerprint-kit
+camera-rail-path-revision-kit
+camera-state-revision-kit
+camera-input-command-kit
+camera-input-admission-kit
+camera-progress-command-kit
+rail-orbit-command-kit
+first-person-look-command-kit
+camera-reset-command-kit
+camera-reset-result-kit
+camera-transition-result-kit
+stale-camera-command-rejection-kit
+camera-descriptor-provenance-kit
+camera-input-journal-kit
+first-visible-camera-frame-ack-kit
+rail-reset-fidelity-fixture-kit
+repeated-drag-drift-fixture-kit
+browser-pointer-wheel-parity-smoke-kit
 ```
 
 ## Required data contracts
 
 ```txt
-FoamDepthProxyPlan {
-  sessionId
-  runtimeGeneration
-  graphRevision
-  sourceTopologyRevision
-  proxyTopologyRevision
-  sourceMeshIds[]
-  proxyMeshIds[]
-  sharedGeometryIds[]
-  ownedResourceIds[]
-  membership[]
+CameraRailBaseline {
+  baselineId
+  baselineVersion
+  terrainRevision
+  positionPoints[]
+  lookPoints[]
+  firstPersonThreshold
+  railFov
+  firstPersonFov
+  playerEyeHeight
+  fingerprint
 }
 
-FoamDepthBindingResult {
-  frameId
-  producerPassId
-  producerAttachmentId
-  consumerPassId
-  proxyTopologyRevision
-  backend
+CameraInputCommand {
+  commandId
+  sessionId
+  runtimeGeneration
+  resetGeneration
+  expectedCameraRevision
+  sequence
+  source
+  pointerId
+  kind
+  payload
+}
+
+CameraTransitionResult {
+  commandId
   accepted
+  classification
+  previousCameraRevision
+  nextCameraRevision
+  baselineId
+  pathRevision
+  resetGeneration
+  modeBefore
+  modeAfter
+  progressBefore
+  progressAfter
   rejectionReason
 }
 
-FoamOcclusionFrameReceipt {
+CameraResetResult {
+  commandId
+  accepted
+  previousCameraRevision
+  nextCameraRevision
+  previousResetGeneration
+  nextResetGeneration
+  restoredBaselineId
+  restoredBaselineFingerprint
+  descriptorFingerprint
+}
+
+VisibleCameraFrameAck {
   frameId
-  graphRevision
-  physicalPlanRevision
-  sourceTopologyRevision
-  proxyTopologyRevision
-  resourceRevision
-  bindingResult
-  passResults[]
+  cameraRevision
+  pathRevision
+  baselineId
+  resetGeneration
+  mode
+  position
+  lookAt
+  fov
   visibleOutputId
 }
 ```
@@ -104,41 +139,43 @@ FoamOcclusionFrameReceipt {
 ## Minimum fixture matrix
 
 ```txt
-static graph
-  -> logical/physical adapter includes the depth pass
+initial baseline
+  -> descriptor is deterministic for the same terrain revision
 
-topology add/remove
-  -> exact proxy membership after rebuild
+single rail drag
+  -> derived orbit changes the candidate camera without changing baseline points
 
-transform sync
-  -> source and proxy world transforms match for one frame
+reset fidelity
+  -> initial and post-reset descriptor fingerprints are identical
 
-resource ownership
-  -> shared geometry survives proxy disposal
-  -> proxy material and pass retire exactly once
+repeated drag/reset
+  -> 100 cycles produce zero cumulative path drift
 
-opaque occlusion
-  -> terrain, rock, prop and vegetation hide foam correctly
+threshold handoff
+  -> one admitted transition owns rail-to-first-person mode, FOV, yaw and pitch
 
-water/fog contract
-  -> remaining logical inputs are bound or removed explicitly
+stale command
+  -> an old reset-generation or camera-revision command is rejected
 
-backend parity
-  -> WebGPU and WebGL2 expose the same result schema
+multi-pointer
+  -> unrelated pointer events cannot replace or terminate the active drag lease
+
+browser parity
+  -> wheel and pointer adapters produce the same typed commands as headless fixtures
 
 visible frame
-  -> capture cites graph, plan, topology, binding, backend and frame revisions
+  -> first frame after reset cites the restored baseline and committed camera revision
 ```
 
 ## Acceptance conditions
 
 ```txt
-no construction-time ambient proxy membership
-no mixed source/proxy topology in a frame
-no leaked proxy material, scene or pass
-no double disposal of shared geometry
-physical pass identity comes from the admitted plan
-all declared foam inputs are bound or removed
-public readback derives from execution receipts
-browser evidence proves depth-aware foam on both backends
+no authored rail point is mutated after baseline admission
+reset reconstructs exact initial camera state
+repeated input and reset cannot accumulate drift
+one camera command produces one typed transition result
+stale old-generation commands cannot mutate current state
+camera descriptors expose baseline, path and state revisions
+browser input and headless commands share one admission path
+first visible reset frame cites the committed camera revision
 ```

@@ -1,29 +1,30 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-12T03-39-52-04-00`
+Last updated: `2026-07-12T05-00-19-04-00`
 
 ## Summary
 
-Replace mixed scenario, renderer-global, and startup-snapshot time with one immutable `EnvironmentFrameSnapshot`. Every dynamic environment consumer should use the same canonical time and revision, and reset should restart every CPU and GPU phase under one new reset generation.
+Replace the ambient level callback with one active-quality transaction. The transaction must use valid time-based measurements, preserve explicit override policy, apply every mutable consumer symmetrically, restore exact base settings, and acknowledge the first visible frame using the committed quality revision.
 
 ## Plan ledger
 
-**Goal:** make wind, illumination, ocean, foam, clouds, fog, vegetation, campfire, sky, diagnostics, reset, and visible-frame acknowledgement deterministic and coherent.
+**Goal:** make adaptive quality stable across refresh rates, resize, visibility changes, degradation, recovery, diagnostics, and WebGPU/WebGL2 rendering.
 
-- [ ] Assign a stable environment clock source ID.
-- [ ] Add monotonic clock and environment frame revisions.
-- [ ] Add a reset generation shared by scenario and rendering.
-- [ ] Evaluate wind and illumination once per admitted environment frame.
-- [ ] Regenerate or update cloud, fog, campfire, and vegetation descriptors from that frame.
-- [ ] Replace direct TSL global `time` use with a canonical render-time uniform.
-- [ ] Bind ocean, cloud, and fog shaders to the same time used by world and foam updates.
-- [ ] Update sky, scene fog, exposure, hemisphere light, and sun from the committed frame.
-- [ ] Collect typed receipts from every environment render consumer.
-- [ ] Reject stale or partial environment consumer generations.
-- [ ] Publish one environment frame revision through diagnostics and public readback.
-- [ ] Acknowledge the first visible frame after reset.
-- [ ] Add clock-divergence, reset-parity, backend-parity, consumer-receipt, and visible-frame fixtures.
-- [ ] Keep startup, lifecycle, world, render graph, foam proxy, materialization, camera, and adaptive-quality gaps visible.
+- [ ] Define `QualityPolicyDescriptor` with fixed/adaptive mode and base tier.
+- [ ] Identify timing source as CPU, GPU, presentation, or callback spacing.
+- [ ] Reject hidden-tab, suspended, invalid, first-frame, and discontinuity samples.
+- [ ] Replace frame-count thresholds with elapsed-time dwell windows.
+- [ ] Add monotonic quality transition IDs and revisions.
+- [ ] Stage a complete mutable-consumer plan before applying changes.
+- [ ] Restore exact base DPR when level returns to zero.
+- [ ] Make resize either recompute base policy or preserve it explicitly.
+- [ ] Classify startup-only resources separately from mutable consumers.
+- [ ] Collect receipts from DPR, cloud, fog, post, and diagnostics adapters.
+- [ ] Publish one active-quality descriptor through `CozyIsland.getState()`.
+- [ ] Update debug projection to show base tier, active level, revision, DPR, and transition reason.
+- [ ] Acknowledge the first visible frame after each accepted transition.
+- [ ] Add cadence, recovery, override, visibility, resize, backend, and frame-proof fixtures.
+- [ ] Keep earlier startup, lifecycle, world, render, camera, and environment authority gaps visible.
 
 ## Ordered implementation queue
 
@@ -42,118 +43,93 @@ Replace mixed scenario, renderer-global, and startup-snapshot time with one immu
 11. Adaptive Quality Transaction Authority
 ```
 
-## Candidate kits
-
-```txt
-environment-frame-command-kit
-environment-frame-id-kit
-environment-frame-revision-kit
-environment-clock-source-kit
-environment-clock-revision-kit
-environment-reset-generation-kit
-environment-frame-snapshot-kit
-dynamic-wind-evaluation-kit
-dynamic-illumination-evaluation-kit
-dynamic-atmosphere-evaluation-kit
-dynamic-campfire-environment-kit
-canonical-render-time-uniform-kit
-environment-render-plan-kit
-environment-consumer-receipt-kit
-environment-frame-commit-kit
-stale-environment-frame-rejection-kit
-environment-frame-observation-kit
-environment-frame-journal-kit
-environment-clock-source-divergence-fixture-kit
-environment-reset-phase-parity-fixture-kit
-environment-visible-frame-parity-smoke-kit
-```
-
 ## Required data contracts
 
 ```txt
-EnvironmentFrameCommand {
-  commandId
-  sessionId
-  runtimeGeneration
-  resetGeneration
-  expectedEnvironmentRevision
-  deltaSeconds
+QualityPolicyDescriptor {
+  policyId
+  mode
+  baseTier
+  backend
   source
+  pixelRatioCap
+  targetFrameMs
+  mutableConsumers[]
+  immutableConsumers[]
 }
 
-EnvironmentFrameSnapshot {
-  environmentFrameId
-  environmentRevision
-  clockSourceId
-  clockRevision
-  resetGeneration
-  elapsedSeconds
-  wind
-  illumination
-  cloud
-  fog
-  ocean
-  vegetation
-  campfire
-  fingerprint
+FrameCostSample {
+  sampleId
+  source
+  startTime
+  endTime
+  durationMs
+  visibilityState
+  valid
+  rejectionReason
 }
 
-EnvironmentConsumerReceipt {
-  consumerId
-  environmentFrameId
-  environmentRevision
-  resetGeneration
-  canonicalTime
-  resourceGeneration
+QualityTransitionResult {
+  transitionId
+  previousRevision
+  committedRevision
+  previousLevel
+  committedLevel
+  reason
+  dwellMs
+  receipts[]
   accepted
-  classification
 }
 
-VisibleEnvironmentFrameAck {
+VisibleQualityFrameAck {
   frameId
-  environmentFrameId
-  environmentRevision
-  resetGeneration
-  canonicalTime
-  consumerReceipts[]
-  visibleOutputId
+  qualityRevision
+  level
+  pixelRatio
+  cloudSteps
+  fogSteps
+  fogResolutionScale
+  outputId
 }
 ```
 
 ## Minimum fixture matrix
 
 ```txt
-clock source
-  -> all CPU and GPU consumers receive the same canonical time
+cadence parity
+  -> 30/60/120 Hz accept transitions after equivalent elapsed time
 
-normal frame
-  -> wind, illumination, foam, ocean, cloud, fog, vegetation and campfire cite one revision
+pixel-ratio recovery
+  -> level 2 -> 1 -> 0 restores exact base DPR
 
-reset
-  -> all phases restart under one new reset generation
+override policy
+  -> forced tier behaves according to explicit fixed/adaptive contract
 
-stale render callback
-  -> old environment revisions cannot update current uniforms or objects
+visibility
+  -> hidden-tab and discontinuity samples do not alter quality
 
-static descriptor migration
-  -> startup descriptors become dynamic evaluations or explicit immutable policy
+resize
+  -> viewport/DPR changes commit one coherent policy revision
+
+partial failure
+  -> consumer failure prevents quality revision commit
 
 backend parity
-  -> WebGPU and WebGL2 consume equivalent EnvironmentFrameSnapshot values
+  -> WebGPU and WebGL2 expose equivalent transition semantics
 
 visible frame
-  -> first frame after reset cites the committed environment revision and every required receipt
+  -> first rendered frame cites the committed quality revision and all receipts
 ```
 
 ## Acceptance conditions
 
 ```txt
-one canonical clock owns every dynamic environment consumer
-scenario reset restarts CPU and GPU phases together
-no renderer-global ambient time bypasses the environment frame
-wind and illumination are evaluated from the committed clock revision
-all required consumers publish receipts for one revision
-stale generations cannot mutate current environment state
-public readback exposes environment frame provenance
-first visible reset frame cites the new reset generation
+no frame-count-dependent dwell
+no sticky reduced DPR after recovery
+no ambiguous URL override behavior
+no partial consumer transition
+no stale callback can mutate current quality
+base and active quality are separately identified
+public readback and diagnostics cite one quality revision
+first visible transition frame is acknowledged
 ```

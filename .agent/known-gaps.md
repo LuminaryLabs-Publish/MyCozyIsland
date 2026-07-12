@@ -1,97 +1,96 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-11T22-20-00-04-00`
+Last updated: `2026-07-12T00-20-01-04-00`
 
 ## Summary
 
-The repository now exposes a valid logical ocean render graph but does not prove that the physical WebGPU/WebGL2 pipeline binds the resources declared by that graph. The new `cozy-ocean-composition-kit` is also outside the canonical 50-kit catalog, so runtime, documentation, and diagnostics disagree about the complete kit surface.
+The runtime now includes an opaque-depth foam visibility mask, but the new physical depth proxy is still manual, construction-time, unversioned, and undisposed. The logical graph and public readback do not own that pass, and three declared foam inputs remain unbound.
 
-## Catalog gaps
+## Resolved since the prior audit
 
 ```txt
-cataloged DomainKit entries: 50
-active source-backed composition kits: 51
-cozy-ocean-composition-kit in catalog: no
-public KIT_CATALOG entry: no
-catalog capability for render graph compilation/binding: no
-diagnostic kitCount includes composition kit: no
+final foam has a physical depth texture
+final foam compares against fused scene depth
+opaque geometry can mask foam color and alpha
+physical pass order includes foam-occlusion-depth
 ```
 
-## Logical/physical graph gaps
+## Remaining graph gaps
 
 ```txt
-logical graph revision admission: absent
-compiled physical plan: absent
-logical-to-physical pass identity map: absent
-fused-pass result: hard-coded
-resource producer identity: absent
-resource consumer binding identity: absent
-attachment format/size revision: absent
+composition kit in canonical catalog: no
+logical graph declares foam-occlusion-depth: no
+compiled physical plan: no
+logical/physical pass identity map: no
+resource producer/consumer binding table: no
+execution receipts: no
+first visible layered-frame receipt: no
+pass-order readback derived from receipts: no
+```
+
+## Proxy topology gaps
+
+```txt
+source mesh identity contract: absent
+source topology revision: absent
+proxy topology revision: absent
+membership prepare result: absent
+added/removed mesh reconciliation: absent
+stale source rejection: absent
+frame-correlated transform sync result: absent
+```
+
+## Proxy lifecycle gaps
+
+```txt
+proxy scene lease: absent
+proxy mesh lease: absent
+proxy material lease: absent
+postPipeline.dispose(): absent
+idempotent proxy disposal result: absent
+shared geometry ownership classification: absent
+pagehide stops animation loop/listeners: no
+pagehide retires renderer/post/proxy resources: no
+```
+
+## Remaining binding gaps
+
+```txt
+opaque depth physical sample: present
+opaque depth typed binding identity: absent
+water-mask physical binding: absent
+water-surface-depth physical binding: absent
+fog-transmittance physical binding: absent
 backend support result: absent
-pass execution receipt: absent
-visible-frame graph acknowledgement: absent
-```
-
-## Foam binding gaps
-
-```txt
-logical opaque-depth read: declared
-physical shared depth binding: absent
-physical foam pass depthBuffer: false
-foam material depthTest: true
-
-logical water-mask read: declared
-physical water-mask binding: absent
-
-logical water-surface-depth read: declared
-physical water-surface-depth binding: absent
-
-logical fog-transmittance read: declared
-physical rolling-fog transmittance binding: absent
 ```
 
 ## Validation gaps
 
 ```txt
-descriptor pass-order validation: present
-transparent depth-write validation: present
-terrain handoff metadata validation: present
-source-token post-pipeline checks: present
-physical pass inspection: absent
-physical attachment inspection: absent
-logical resource binding parity: absent
-browser foam occlusion fixture: absent
+foam-depth source-token test: present
+actual GPU attachment inspection: absent
+proxy topology mutation fixture: absent
+proxy disposal fixture: absent
+browser pixel occlusion fixture: absent
+water-region admission fixture: absent
 rolling-fog/foam fixture: absent
-WebGPU/WebGL2 layered parity fixture: absent
-first layered-frame receipt: absent
+WebGPU/WebGL2 parity fixture: absent
+visible-frame revision fixture: absent
 ```
 
-## Readback gaps
+## Public readback gaps
 
 ```txt
-renderPassOrder: manually returned strings
-physicalRenderPassOrder: manually returned strings
-graph revision in readback: absent
-compiled plan revision: absent
-resource binding table: absent
-pass success/failure results: absent
-last executed physical pass: absent
-visible output resource identity: absent
-frame-to-world/materialization revision: absent
+graph revision: absent
+physical plan revision: absent
+proxy topology revision: absent
+proxy membership result: absent
+depth attachment identity: absent
+pass success/failure result: absent
+resource disposal state: absent
+visible output identity: absent
+raw renderer, scene, camera, world and postPipeline exposed: yes
 ```
-
-## Potential visual consequences
-
-```txt
-foam can lack opaque-scene occlusion proof
-foam can lack water-region admission proof
-foam can lack rolling-fog transmittance proof
-logical graph can report valid while physical resources are missing
-backend implementations can diverge without typed parity evidence
-resize or quality changes can replace attachments without binding revisions
-```
-
-These are contract and proof gaps. This documentation pass did not execute browser captures and does not claim a specific visible artifact was reproduced.
 
 ## Retained higher-level gaps
 
@@ -102,8 +101,8 @@ legacy/Core world lifecycle parity
 Core World reset/reprepare
 focus transaction authority
 materialization generation/readiness
-renderer cell commit and disposal
-camera baseline
+renderer cell commit/disposal
+camera baseline and committed-frame correlation
 dynamic environment frame coherence
 adaptive quality transaction
 ```
@@ -111,39 +110,22 @@ adaptive quality transaction
 ## Risk ranking
 
 ```txt
+P0 startup/session teardown does not own the complete render graph
 P0 logical graph can validate without physical resource parity
-P0 depth-tested foam has no declared shared depth attachment in its physical pass
-P1 runtime composition kit is omitted from the canonical catalog
-P1 manual logical and physical order strings can drift from execution
-P1 backend and resize resource changes have no binding revision
-P1 no first layered-frame proof exists
-P2 diagnostics cannot identify the actual resource graph used for a frame
-```
-
-## Ordered gaps
-
-```txt
-P0 browser startup admission and rollback
-P0 runtime session lifecycle
-P0 world lifecycle contract and mode parity
-P0 render-layer graph admission and physical resource binding
-P1 Core World reset/reprepare
-P1 focus transaction authority
-P1 materialization generation/readiness
-P1 renderer cell commit/disposal
-P1 camera baseline authority
-P1 dynamic environment frame authority
-P1 adaptive quality transaction authority
+P1 foam proxy topology is fixed at construction with no revision
+P1 proxy material/pass resources have no disposal result
+P1 water-mask, water-depth and fog-transmittance remain unbound
+P1 pass readback remains hand-authored
+P1 no browser/GPU proof exists for either backend
+P2 diagnostics cannot identify the resources that produced a frame
 ```
 
 ## Non-goals of this documentation run
 
 ```txt
 no runtime code changed
-no shaders or materials changed
-no pass construction changed
-no package scripts changed
-no dependencies changed
+no shaders, materials or pass construction changed
+no package scripts or dependencies changed
 no deployment configuration changed
 no browser visual-correctness claim made
 ```

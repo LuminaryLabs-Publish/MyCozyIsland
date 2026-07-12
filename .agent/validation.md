@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T20-51-14-04-00`
+Last updated: `2026-07-11T22-20-00-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest stable eligible entry after full Publish/ledger comparison; active PrehistoricRush runtime work skipped
+selection reason: oldest eligible central entry with a new layered-world/render commit series after its prior audit
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -19,123 +19,150 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** separate source-backed lifecycle-contract findings from executable proof and define the exact legacy/Core parity, reset/reprepare, terminal-disposal and frame-correlation gate.
+**Goal:** separate source-backed render-binding findings from executable proof and define the exact catalog, compile, resource, occlusion, backend, and visible-frame gate.
 
-- [x] Inspect active route and world-mode selection.
-- [x] Inspect both `world-runtime.js` branches.
-- [x] Inspect prepare, reset, dispose, query and state semantics.
-- [x] Inspect pagehide and global host exposure.
-- [x] Inspect package test chain and Core World runtime test.
-- [x] Confirm lifecycle phase and generation are absent.
-- [x] Confirm legacy/Core disposal semantics diverge.
-- [x] Confirm post-dispose admission is undefined.
-- [x] Document commands, results, leases and fixture contracts.
+- [x] Inspect the active route, import map, package test chain, and current runtime identity.
+- [x] Inspect catalog declaration and validation.
+- [x] Inspect logical ocean graph construction and validation.
+- [x] Inspect render-layer masks and assignment.
+- [x] Inspect ocean and foam material/pass construction.
+- [x] Inspect the physical post pipeline and public readback.
+- [x] Inspect current render-layer and terrain-separation tests.
+- [x] Confirm the composition kit is active but omitted from the catalog.
+- [x] Confirm the foam logical reads are not represented as physical bindings.
+- [x] Confirm the physical foam pass disables its depth buffer while materials request depth testing.
+- [x] Document compile, binding, result, and fixture contracts.
 - [x] Change documentation only.
-- [ ] Implement and run lifecycle parity fixtures.
-- [ ] Run browser replacement-frame and pagehide fixtures.
+- [ ] Implement and run physical resource-binding fixtures.
+- [ ] Run WebGPU/WebGL2 browser parity and capture fixtures.
 
 ## Source-backed checks
 
 ```txt
-same wrapper method names in legacy/core: yes
-legacy reset/dispose only clear prepared: yes
-legacy prepare after dispose structurally allowed: yes
-core reset calls resetWorlds: yes
-core dispose calls reset then Core World domain reset: yes
-core wrapper has disposed flag: no
-world lifecycle phase exists: no
-world generation exists: no
-typed reset/dispose results exist: no
-use-after-dispose rejection exists: no
-query lease/revocation exists: no
-```
-
-## Render and host checks
-
-```txt
-compatibility snapshot created once at startup: yes
-animation loop lifecycle-bound to world generation: no
-pagehide calls domains.dispose: yes
-pagehide revokes globalThis.CozyIsland: no
-pagehide stops renderer loop in route: no
-frame receipt includes world phase/generation: no
+catalog validates 50 entries: yes
+cozy-ocean-composition-kit instantiated by host: yes
+cozy-ocean-composition-kit in kitCatalog: no
+logical graph has six ordered passes: yes
+logical foam depth source is opaque-depth: yes
+logical foam reads water-mask: yes
+logical foam reads water-surface-depth: yes
+logical foam reads fog-transmittance: yes
+physical foam pass uses separate scene: yes
+physical foam pass depthBuffer is false: yes
+foam material depthTest is true: yes
+shared opaque depth is bound to foam pass: no
+water mask is bound to foam pass: no
+rolling-fog transmittance is bound to foam pass: no
+physical pipeline is compiled from graph: no
+pass-order readback is derived from execution receipts: no
 ```
 
 ## Existing validation surface
 
 ```txt
+npm test chain: present
 static architecture checks: present
 semantic domain tests: present
-Core World initial preparation test: present
-provider ordering/lifecycle tests: present
-lazy materialization tests: present
-renderer disposal utility tests: present
-legacy/core lifecycle parity fixture: absent
-reset/reprepare fixture: absent
-use-after-dispose fixture: absent
-query lease fixture: absent
-first replacement-frame fixture: absent
-browser pagehide lifecycle fixture: absent
+Core World provider/order/lifecycle tests: present
+lazy island and sea-floor materialization tests: present
+logical render-layer graph test: present
+terrain/provider separation token test: present
+renderer cache/disposal tests: present
+physical attachment test: absent
+logical-to-physical binding parity test: absent
+browser foam occlusion test: absent
+rolling-fog/foam integration test: absent
+WebGPU/WebGL2 layered-frame parity: absent
+first layered-frame receipt: absent
+```
+
+## Current tests prove
+
+```txt
+logical pass order is background -> opaque -> water -> atmosphere -> foam -> output
+foam is declared final scene content
+water and foam are declared depthWrite=false
+terrain handoff metadata has an admitted vertical gap
+source contains a separate final foam scene
+source contains the expected alpha composition expression
+foam is not added to the main scene
+```
+
+## Current tests do not prove
+
+```txt
+which physical attachment satisfies opaque-depth
+whether depth-tested foam receives the base scene depth
+whether foam is occluded by island, rocks, props, or vegetation
+whether water-mask and water-surface-depth exist physically
+whether rolling fog exports transmittance to foam
+whether hard-coded pass-order strings match submitted GPU work
+whether WebGPU and WebGL2 bind equivalent resources
+whether resize/quality changes retire stale bindings
+which graph/resource revisions produced the visible frame
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. legacy lifecycle
-   prepare, duplicate prepare, reset, prepare, duplicate dispose
+1. catalog completeness
+   enumerate active source-backed kit IDs and compare with catalog classifications
 
-2. Core lifecycle
-   prepare 49 cells, reset, retain/re-register definition, prepare new generation
+2. graph compile
+   compile six logical passes into the admitted fused physical plan
 
-3. terminal disposal
-   duplicate dispose and deterministic rejection of later mutations
+3. resource resolution
+   resolve every read to one producer or external input
 
-4. read models
-   stale query, diagnostics and snapshot lease rejection
+4. missing binding
+   remove opaque depth or water mask and require deterministic rejection
 
-5. retirement
-   exact provider/materializer release counts and unresolved ownership reporting
+5. foam occlusion
+   place shoreline foam behind island, prop, rock, and vegetation occluders
 
-6. generation
-   stale focus/materialization result rejection
+6. fog integration
+   compare foam through zero, medium, and dense rolling fog
 
-7. rendering
-   no DISPOSED world frame and first READY replacement-frame receipt
+7. backend parity
+   WebGPU and WebGL2 publish the same logical plan/result schema
 
-8. browser lifecycle
-   pagehide disposal, loop stop and global readback revocation
+8. resize and quality
+   attachment revisions advance and stale bindings reject
 
-9. parity
-   legacy/Core/WebGPU/WebGL2 result-schema parity
+9. execution readback
+   pass receipts match the compiled order and final output identity
+
+10. visible frame
+    first layered frame cites graph, physical plan, resource, world, and backend revisions
 ```
 
 ## Commands not run
 
 ```txt
 npm test
-browser/WebGPU lifecycle smoke
-browser/WebGL2 lifecycle smoke
-reset/reprepare fixture
-use-after-dispose fixture
-query lease fixture
-first replacement-frame capture
+browser WebGPU layered-render smoke
+browser WebGL2 layered-render smoke
+foam occlusion capture
+fog/foam capture
+resize/quality resource-revision fixture
+physical pass instrumentation
 Pages live smoke
 ```
 
 ## Reason executable validation was not claimed
 
-This run used source inspection and GitHub documentation writes. The runtime does not yet expose lifecycle phases, generations, typed commands/results, query leases or injectable reset/dispose adapters required to execute the proposed parity and terminal-state fixtures.
+This run used source inspection and GitHub documentation writes. The runtime does not expose a compiled physical plan, named attachment bindings, pass execution receipts, or first-layered-frame acknowledgement. The existing Node tests inspect logical descriptors and source tokens rather than submitted browser/GPU resources.
 
 ## Acceptance gate
 
 ```txt
-READY always has a committed snapshot
-RESET is reusable in both modes
-DISPOSED is terminal in both modes
-legacy and core return the same lifecycle result classes
-successful reprepare advances generation
-stale generation work cannot commit
-query/diagnostic leases are revoked on reset/dispose
-pagehide retires the runtime and public readback
-first replacement frame identifies the new generation
+all active runtime kits are cataloged or explicitly classified
+one admitted graph revision produces one physical plan revision
+every logical read resolves to one current resource binding
+depth-tested foam uses the current opaque depth attachment
+foam/water/fog semantics match the declared contract
+reported order derives from the compiled and executed plan
+WebGPU/WebGL2 use the same result schema
+stale bindings reject after resize or quality changes
+first layered frame identifies its graph, plan, resources, world, and backend
 ```

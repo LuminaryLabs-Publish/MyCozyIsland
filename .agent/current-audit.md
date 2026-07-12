@@ -1,28 +1,32 @@
-# Current Audit: MyCozyIsland Camera Rail Baseline Authority
+# Current Audit: MyCozyIsland Dynamic Environment Frame Authority
 
-Last updated: `2026-07-12T02-10-14-04-00`
+Last updated: `2026-07-12T03-39-52-04-00`
 
 ## Summary
 
-The active camera rail is not an immutable authored path. `createCameraRailSequence()` creates mutable `railPositions` point objects once, and rail-mode drag directly increments every point's `x` coordinate. The same sequence's `reset()` restores progress, yaw, pitch, pressed keys, and player position, but leaves the mutated rail points unchanged.
+MyCozyIsland does not have one authoritative environment time. `scenario.tick(dt)` advances the repository-owned environment clock, and the host passes that clock's `elapsedSeconds` to the world renderer and shoreline foam. Ocean waves, volumetric cloud detail, and rolling fog instead use Three TSL's renderer-global `time` node.
 
-This means reset does not reproduce the initial camera path. Repeated rail drags can accumulate hidden path drift for the lifetime of the sequence. The camera descriptor exposes mode, progress, FOV, position, and look target, but no baseline identity, path revision, reset generation, command result, or visible-frame receipt.
+Environment descriptors are also split between dynamic services and startup snapshots. Wind and illumination can be sampled from the environment clock, but vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadows, fog advection, and the initial illumination are evaluated once in `createLegacyWorldComposition()` and frozen into the render snapshot.
+
+`scenario.reset()` resets the repository clock to 48 seconds. It does not reset TSL time, rebuild the static descriptors, or publish a new environment generation. The first frame after reset can therefore combine restarted foam, vegetation, and campfire phases with continuing ocean, cloud, and fog phases.
 
 ## Plan ledger
 
-**Goal:** document one authoritative path from immutable authored camera data through browser input, rail sampling, first-person handoff, reset, replay, diagnostics, and the first visible camera frame.
+**Goal:** document one authoritative path from a committed environment clock through descriptor evaluation, renderer uniforms, reset, diagnostics, and the first visible frame.
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `MyCozyIsland` as the oldest fully synchronized eligible repository.
-- [x] Inspect browser event adapters, camera sequence source, scenario tick/reset, public host readback, package tests, and retained audits.
+- [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
+- [x] Inspect startup composition, scenario tick/reset, environment clock, wind, illumination, atmosphere descriptors, renderer update methods, TSL time use, public host, and tests.
 - [x] Identify the complete interaction loop, active domains, 50 cataloged kits, one extra runtime kit, nine providers, and five imported services.
-- [x] Confirm pre-threshold drag mutates rail point coordinates in place.
-- [x] Confirm sequence reset does not restore or rebuild the rail point array.
-- [x] Confirm current tests omit reset fidelity, repeated-drift, command admission, and visible-frame proof.
-- [x] Define camera baseline, command, result, revision, journal, and fixture contracts.
+- [x] Confirm world and foam update from scenario elapsed time.
+- [x] Confirm ocean, cloud, and fog use renderer-global TSL time.
+- [x] Confirm environment descriptors are evaluated once during composition.
+- [x] Confirm reset changes only repository clock and camera state.
+- [x] Confirm public readback exposes a static `snapshot` beside a dynamic `clock` without one frame identity.
+- [x] Define environment frame, clock source, reset, consumer receipt, journal, fixture, and visible-frame contracts.
 - [x] Change documentation only.
-- [ ] Implement and run the camera fidelity fixtures.
+- [ ] Implement and run the environment frame fixtures.
 
 ## Runtime identity
 
@@ -40,118 +44,130 @@ providers:             9
 ## Interaction loop
 
 ```txt
-startup
-  -> create terrain-dependent railPositions and railLooks
-  -> initialize progress = 0.14
-  -> initialize yaw = 0 and pitch = -0.05
-  -> initialize player at the clearing
-  -> install wheel, pointer, keyboard and blur adapters
+startup composition
+  -> environment clock starts at 48 seconds
+  -> wind field references the clock
+  -> illumination service references the clock
+  -> illumination is sampled once
+  -> vegetation wind is sampled once
+  -> campfire wind is sampled once
+  -> cloud weather, lighting, shadow, and horizon are sampled once
+  -> fog advection is sampled once
+  -> render snapshot freezes those values
 
-wheel
-  -> browser deltaY enters input.wheel
-  -> progress changes immediately
-  -> no command ID, sequence, result, or stale rejection
-
-pointer drag
-  -> browser pointer delta enters input.drag
-  -> yaw and pitch change immediately
-  -> while progress < 0.985, each rail position x changes in place
-  -> no admitted orbit plan or path revision is published
+renderer startup
+  -> sky texture, scene fog, exposure, hemisphere, and sun use startup illumination
+  -> ocean shader binds Three TSL global time
+  -> cloud shader binds Three TSL global time
+  -> fog shader binds Three TSL global time
 
 frame
-  -> scenario.tick advances clock and first-person movement
-  -> scenario.getRenderSnapshot reads cameraSequence.descriptor
-  -> host copies descriptor position, lookAt, and FOV to Three.js camera
-  -> frame renders without camera-state or baseline identity
+  -> scenario.tick(dt) advances environment clock
+  -> scenario snapshot replaces only clock and camera
+  -> worldRenderer.update(clock.elapsedSeconds)
+  -> foamRenderer.update(clock.elapsedSeconds)
+  -> ocean, cloud, and fog evaluate renderer-global time
+  -> static sky, lights, and environment descriptors remain unchanged
+  -> one post-composited frame mixes these authorities
 
 reset
-  -> scenario.reset calls clock.reset and cameraSequence.reset
-  -> progress, yaw, pitch, keys, and player position reset
-  -> railPositions and railLooks are not reconstructed
-  -> next frame can show reset progress on a previously mutated rail
+  -> clock.reset() returns elapsedSeconds to 48
+  -> camera reset executes
+  -> TSL time continues from renderer lifetime
+  -> static descriptor snapshot remains the original object
 ```
 
-## Source-backed camera state
+## Source-backed time authorities
 
 ```txt
-initial progress:                0.14
-first-person threshold:          0.985
-rail FOV:                        55 -> 80
-first-person FOV:                80
-player eye height:               2
-rail position count:             8
-rail look-target count:          8
-rail point mutation during drag: yes
-rail look-target mutation:       no
-reset restores rail points:      no
-reset returns a typed result:    no
+repository environment clock
+  source: createEnvironmentClock
+  initial time: 48 seconds
+  advance: scenario.tick(dt)
+  resettable: yes
+  consumers: world sway, campfire animation phase, shoreline foam, public clock readback
+
+renderer-global TSL time
+  source: three/tsl time
+  start: renderer/page lifetime
+  advance: renderer internals
+  resettable through scenario: no
+  consumers: ocean wave displacement and normals, cloud detail drift, fog advection
+
+startup descriptor time
+  source: one-time clock and wind sampling during composition
+  revision: none
+  consumers: illumination, vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadow, fog advection
 ```
 
 ## Main source-backed finding
 
-During rail mode, drag computes:
+`createLegacyWorldComposition()` builds the environment clock and wind field, then immediately samples and freezes:
 
 ```txt
-orbitInfluence = clamp(deltaX * 0.00008, -0.035, 0.035)
-point.x += orbitInfluence * abs(point.z) * 0.02
+illumination
+vegetationWind
+campfire
+cloudWeather
+cloudDensity
+cloudLighting
+cloudShadow
+cloudHorizon
+fogDensity
+fogAdvection
 ```
 
-The authored points are therefore permanently changed inside the sequence. The furthest point receives the largest displacement because the mutation is weighted by `abs(z)`. The mutation is cumulative across pointer events and survives `reset()`.
+`createCozyIslandScenario().getRenderSnapshot()` spreads that frozen startup snapshot and replaces only `clock` and `camera`.
 
-The sequence resets only:
+The host then calls:
 
 ```txt
-progress
-yaw
-pitch
-pressed keys
-player position
+worldRenderer.update(renderState.clock.elapsedSeconds)
+foamRenderer.update(renderState.clock.elapsedSeconds)
 ```
 
-It does not reset:
+But the render shaders use Three TSL global `time` for:
 
 ```txt
-railPositions
-railLooks
-rail baseline identity
-rail path revision
-input sequence
-reset generation
+ocean wave phase
+cloud detail coordinates
+fog advection offsets
 ```
 
-## Current camera descriptor
+The resulting frame has no single environment time or revision.
+
+## Reset divergence
 
 ```txt
-rail mode
-  id
-  mode
-  progress
-  fov
-  position
-  lookAt
+before reset
+  repository clock = 48 + runtime elapsed
+  TSL time = renderer lifetime
 
-first-person mode
-  id
-  mode
-  progress
-  fov
-  eyeHeight
-  position
-  lookAt
+scenario.reset()
+  repository clock = 48
+  TSL time = unchanged
+  static descriptors = unchanged
+
+first frame after reset
+  vegetation/campfire/foam = restarted phase
+  ocean/cloud/fog = continuing phase
+  sky/lights/fog parameters = original startup values
 ```
 
-Missing descriptor provenance:
+## Public readback gap
+
+`globalThis.CozyIsland` exposes live renderer objects, the static startup `snapshot`, the scenario, and `getState()` with a dynamic clock. It does not expose:
 
 ```txt
-cameraStateRevision
-railBaselineId
-railBaselineFingerprint
-railPathRevision
-terrainRevision
+environmentFrameId
+environmentFrameRevision
+clockSourceId
+clockRevision
 resetGeneration
-lastInputCommandId
-lastTransitionResult
-committedFrameId
+descriptorRevision
+consumer receipt set
+last committed environment frame
+first visible frame acknowledgement
 ```
 
 ## Domains in use
@@ -164,15 +180,17 @@ physical render pass and proxy-resource construction
 WebGPU/WebGL2 backend and quality policy
 legacy/Core world mode and lifecycle
 Core World grid, focus, providers and materialization
-camera rail authored baseline and interpolation
-camera progress, orbit, look and first-person movement
-browser wheel, pointer, keyboard, blur and pointer capture
+camera rail, first-person input, movement, reset and frame projection
 scenario clock, tick, reset and render snapshots
-camera descriptor projection into Three.js
-island, sea floor, biome, shoreline and ground contact
-vegetation, rocks, props, grass, paths and campfire
+deterministic seed and environment clock
+wind, weather, illumination and aerial perspective
+vegetation wind and campfire atmosphere
+cloud weather, density, lighting, shadow, horizon and LOD
+fog density, advection, placement and depth composition
 ocean waves, optics, caustics, foam and underwater atmosphere
-clouds, fog, weather, wind, illumination and sky
+Three TSL ocean, cloud and fog time evaluation
+island, sea floor, biome, shoreline and ground contact
+vegetation, rocks, props, grass and paths
 render layers, depth, blend and output transform
 adaptive performance and resolution
 public host, diagnostics, tests and Pages deployment
@@ -186,26 +204,26 @@ public host, diagnostics, tests and Pages deployment
 debug-overlay-host-kit                     diagnostics projection
 webgl2-fallback-renderer-kit                fallback rendering policy
 webgpu-compute-atmosphere-renderer-kit      atmosphere texture generation
-webgpu-foam-renderer-kit                    foam meshes, material and animation
-webgpu-ocean-renderer-kit                   water displacement and optics
+webgpu-foam-renderer-kit                    shoreline foam rendering and animation
+webgpu-ocean-renderer-kit                   ocean displacement, normals and optics
 webgpu-performance-budget-kit               adaptive frame budget
 webgpu-post-processing-renderer-kit         depth, fog, foam and output composition
-webgpu-rolling-fog-renderer-kit              fog raymarch and clipping
-webgpu-stylized-material-renderer-kit       world materials
+webgpu-rolling-fog-renderer-kit              volume fog and advection
+webgpu-stylized-material-renderer-kit       world materials and animation
 webgpu-volumetric-cloud-renderer-kit        cloud volume rendering
 camera-rail-sequence-kit                    rail, orbit, landing, reset and FPS input
-cozy-island-scenario-kit                    scenario tick, reset and camera snapshots
+cozy-island-scenario-kit                    clock tick, camera tick, reset and snapshots
 terrain-surface-domain-kit                  island surface
 vegetation-placement-domain-kit             deterministic placement graph
 aerial-perspective-domain-kit               haze and exposure
-campfire-atmosphere-domain-kit               fire, light, embers and smoke
+campfire-atmosphere-domain-kit               fire, light, embers, smoke and wind descriptor
 cloud-density-field-domain-kit              cloud density recipe
 cloud-horizon-band-domain-kit               horizon continuation
 cloud-lighting-domain-kit                   cloud lighting and extinction
 cloud-lod-domain-kit                        texture and ray-step policy
 cloud-shadow-domain-kit                     projected shadow policy
 cloud-weather-domain-kit                    weather-to-cloud mapping
-fog-advection-domain-kit                    fog offset and dissipation
+fog-advection-domain-kit                    wind-derived fog direction and speed
 fog-field-domain-kit                        terrain-aware fog density
 fog-volume-placement-domain-kit             fog bounds
 ground-contact-domain-kit                   terrain seating and rejection
@@ -220,7 +238,7 @@ render-quality-domain-kit                   backend and DPR quality selection
 render-snapshot-domain-kit                  immutable render aggregation
 rock-archetype-domain-kit                   rock graph
 shoreline-field-domain-kit                  signed coast field
-shoreline-foam-domain-kit                   foam contours and decay
+shoreline-foam-domain-kit                   foam contours and animation parameters
 stylized-material-descriptor-domain-kit     palettes and surface parameters
 sun-glitter-domain-kit                      glitter lobe
 terrain-biome-field-domain-kit              biome weights
@@ -230,9 +248,9 @@ vegetation-archetype-domain-kit             vegetation catalog
 vegetation-lod-domain-kit                   plant LOD
 vegetation-wind-domain-kit                  bend and gust descriptors
 weather-state-domain-kit                    stable weather intent
-wind-field-domain-kit                       deterministic wind
+wind-field-domain-kit                       deterministic clock-driven wind
 deterministic-seed-domain-kit               scoped random streams
-environment-clock-domain-kit                deterministic time
+environment-clock-domain-kit                elapsed time, scale, pause and reset
 ```
 
 ### Source-backed runtime kit outside catalog
@@ -270,92 +288,83 @@ createFlatWorldSurface
 defineWorldEffectProvider
 ```
 
-## Existing camera tests
-
-```txt
-camera-rail-ground-clearance.mjs
-  -> samples several rail progress values
-  -> proves camera and look target remain above terrain
-  -> proves FOV remains finite and within 55..80
-
-camera-first-person-contract.mjs
-  -> forces first-person mode
-  -> proves 80-degree FOV
-  -> proves two-meter eye height
-  -> proves forward movement remains terrain-relative
-```
-
-Not proved:
-
-```txt
-initial descriptor equals post-reset descriptor
-rail point coordinates return to authored values
-repeated drag/reset cycles have zero cumulative drift
-wheel and drag commands are ordered and idempotently classified
-multi-pointer browser input does not replace another pointer's drag state
-reset is acknowledged before the next visible frame
-public readback identifies the baseline and path revision
-```
-
 ## Required parent domain
 
 ```txt
-cozy-island-camera-rail-baseline-authority-domain
+cozy-island-dynamic-environment-frame-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-camera-rail-baseline-descriptor-kit
-camera-rail-baseline-fingerprint-kit
-camera-rail-path-revision-kit
-camera-state-revision-kit
-camera-input-command-kit
-camera-input-admission-kit
-camera-progress-command-kit
-rail-orbit-command-kit
-first-person-look-command-kit
-camera-reset-command-kit
-camera-reset-result-kit
-camera-transition-result-kit
-stale-camera-command-rejection-kit
-camera-descriptor-provenance-kit
-camera-input-journal-kit
-first-visible-camera-frame-ack-kit
-rail-reset-fidelity-fixture-kit
-repeated-drag-drift-fixture-kit
-browser-pointer-wheel-parity-smoke-kit
+environment-frame-command-kit
+environment-frame-id-kit
+environment-frame-revision-kit
+environment-clock-source-kit
+environment-clock-revision-kit
+environment-reset-generation-kit
+environment-frame-snapshot-kit
+dynamic-wind-evaluation-kit
+dynamic-illumination-evaluation-kit
+dynamic-atmosphere-evaluation-kit
+dynamic-campfire-environment-kit
+canonical-render-time-uniform-kit
+environment-render-plan-kit
+environment-consumer-receipt-kit
+environment-frame-commit-kit
+stale-environment-frame-rejection-kit
+environment-frame-observation-kit
+environment-frame-journal-kit
+environment-clock-source-divergence-fixture-kit
+environment-reset-phase-parity-fixture-kit
+environment-visible-frame-parity-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-admit immutable rail baseline and terrain revision
-  -> compute baseline fingerprint and path revision
-  -> admit one ordered camera input command
-  -> derive a candidate progress, orbit, look, or movement result
-  -> mutate session camera state without mutating the baseline
-  -> publish one camera state revision and typed result
-  -> on reset, reconstruct state from the admitted baseline
-  -> reject stale old-generation commands
-  -> render one frame from the committed camera revision
-  -> publish first-visible-camera-frame acknowledgement
+admit frame command and predecessor environment revision
+  -> advance one canonical environment clock
+  -> evaluate wind, illumination, weather-derived and campfire descriptors
+  -> create one immutable EnvironmentFrameSnapshot
+  -> bind the same canonical time to CPU updates and TSL uniforms
+  -> collect ocean, foam, cloud, fog, vegetation, campfire, light and sky receipts
+  -> reject stale or partial consumer generations
+  -> atomically commit one environment frame revision
+  -> submit one visible frame carrying that revision
+  -> publish first-visible-environment-frame acknowledgement
+```
+
+## Existing tests
+
+The current suite constructs deterministic domains and confirms the scenario clock advances. It does not execute or compare renderer-global TSL time against scenario time.
+
+Not proved:
+
+```txt
+all environment consumers use one canonical time
+reset restarts every environment phase
+static descriptors are regenerated or revisioned
+WebGPU and WebGL2 use equivalent environment frame inputs
+consumer receipts all cite one environment revision
+public readback identifies the committed environment frame
+first visible frame after reset cites the new reset generation
 ```
 
 ## Validation boundary
 
 ```txt
 runtime source changed: no
-camera implementation changed: no
+environment implementation changed: no
 render output changed: no
 package scripts changed: no
 dependencies changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-camera source inspected: yes
-existing camera tests inspected: yes
+environment source inspected: yes
+existing domain smoke inspected: yes
 npm test run: no
-new camera fixtures implemented: no
-browser camera smoke run: no
+new environment fixtures implemented: no
+browser environment smoke run: no
 ```

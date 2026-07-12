@@ -1,31 +1,30 @@
-# START HERE: MyCozyIsland Adventure Persistence Authority
+# START HERE: MyCozyIsland Multi-Domain Transaction Commit Authority
 
-Last updated: `2026-07-12T08:00:16-04:00`
+Last updated: `2026-07-12T10-20-02-04-00`
 
 ## Summary
 
-`MyCozyIsland` has completed a major route cutover from the earlier camera-rail showcase to a NexusEngine-composed farming and foraging adventure. The new runtime installs world, input, scenario, inventory, farming, foraging, player, interaction, camera, save, and render-snapshot domains, then projects them through the existing WebGPU/WebGL2 island renderer.
+`MyCozyIsland` is a NexusEngine-composed farming and foraging adventure with deterministic island generation, normalized input, first-person movement, inventory, farm plots, coconut nodes, save/restore and WebGPU/WebGL2 presentation.
 
-The highest-priority gap is persistence truth. Idle frames continuously advance `player.revision`, the auto-save fingerprint includes that revision, and the host therefore writes localStorage every five seconds even when no durable gameplay value changed. Capture status is committed before the storage adapter succeeds, restore mutates domains sequentially without rollback, and the transaction ledger is restored while input frame identity is not.
+The highest-priority gap is now multi-domain transaction truth. The core ledger records a parent operation only after the product callback returns, while farming and foraging execute nested inventory operations inside that callback. A failure between child mutation and parent recording can leave inventory, plot/node state, ledger history, save projection and visible rendering on different commit boundaries.
 
 ## Plan ledger
 
-**Goal:** make the new farming-adventure cutover persist only meaningful durable changes, commit storage truth only after the host write succeeds, restore atomically, preserve operation identity across reloads, and prove the first restored visible frame.
+**Goal:** make every farm and forage action one atomic transaction across inventory, plot/node state, parent/child ledger records, save revision and the first visible frame.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
-- [x] Prioritize only `MyCozyIsland` because 27 newer commits replaced the active route with a NexusEngine farming adventure after its previous audit.
+- [x] Select only `MyCozyIsland`, the oldest central entry with a newer post-audit transaction-ledger smoke commit.
 - [x] Identify the complete interaction loop.
 - [x] Identify all active domains.
-- [x] Reconcile all engine-installed, world-generation, rendering, host, and retained legacy kits and their services.
-- [x] Trace input, farming, foraging, transaction IDs, auto-save, localStorage, restore, reset, HUD projection, tests, and deployment.
+- [x] Reconcile all 64 source-backed kit surfaces and offered services.
+- [x] Trace interaction identity, parent/child ledger calls, inventory, farming, foraging, save and render snapshots.
 - [x] Add timestamped architecture and system-specific audits.
 - [x] Refresh all required root `.agent` files and machine registry.
-- [x] Push `LuminaryLabs-Publish/MyCozyIsland` directly to `main`.
-- [x] Synchronize `LuminaryLabs-Dev/LuminaryLabs` on `main`.
+- [x] Push only to `main`.
 - [x] Create no branch or pull request.
-- [ ] Runtime fixes and executable persistence fixtures remain future work.
+- [ ] Runtime fixes and executable transaction-failure fixtures remain future work.
 
 ## Active route
 
@@ -33,45 +32,82 @@ The highest-priority gap is persistence truth. Idle frames continuously advance 
 index.html
   -> src/main-adventure.js?v=cozy-adventure-cutover-1
   -> src/adventure/composition-runtime.js
-  -> NexusEngine domains
-  -> existing procedural world and WebGPU/WebGL2 render services
+  -> 13 engine-installed core/adventure kits
+  -> procedural world and WebGPU/WebGL2 render services
 ```
 
 ## Read order
 
 1. `current-audit.md`
 2. `known-gaps.md`
-3. `architecture-audit/2026-07-12T08-00-16-04-00-adventure-persistence-authority-dsk-map.md`
-4. `persistence-audit/2026-07-12T08-00-16-04-00-autosave-restore-operation-continuity-contract.md`
-5. `next-steps.md`
-6. `validation.md`
+3. `architecture-audit/2026-07-12T10-20-02-04-00-multi-domain-transaction-commit-dsk-map.md`
+4. `transaction-audit/2026-07-12T10-20-02-04-00-nested-ledger-atomicity-contract.md`
+5. `gameplay-audit/2026-07-12T10-20-02-04-00-farm-forage-nested-transaction-loop.md`
+6. `render-audit/2026-07-12T10-20-02-04-00-split-commit-visible-state-gap.md`
+7. `next-steps.md`
+8. `validation.md`
+
+## Current transaction path
+
+```txt
+interaction
+  -> operation ID from input frame and target
+  -> parent farming or foraging applyOnce
+  -> nested inventory applyOnce operations
+  -> plot or node mutation
+  -> parent callback returns
+  -> parent ledger record is written
+```
 
 ## Main findings
 
 ```txt
-idle simulation
-  -> cozy-player revision increments every tick
-  -> save fingerprint changes
-  -> five-second host check writes localStorage indefinitely
+core applyOnce
+  -> checks for an existing record
+  -> executes live product mutation
+  -> records only after callback success
 
-save capture
-  -> domain status becomes captured
-  -> host attempts localStorage.setItem
-  -> storage failure leaves domain status captured
-  -> later HUD can still say Saved
+plant
+  -> seed removal can commit before plot planting and parent record
 
-restore
-  -> world, ledger, scenario, inventory, farming, foraging and player mutate in sequence
-  -> any late failure leaves a partially restored graph
-  -> no candidate graph, rollback or replacement-session commit exists
+harvest
+  -> reward can commit before plot reset and parent record
 
-reload continuity
-  -> transaction ledger is restored
-  -> cozy input state is not restored
-  -> interaction operation IDs reuse input frame indices from zero
-  -> old ledger entries can collide with new-session commands
+forage
+  -> coconut/sprout rewards can commit before node depletion and parent record
+
+save/render
+  -> no shared transaction revision
+  -> can observe a mixed participant graph
+
+proof
+  -> standalone ledger smoke proves duplicate reuse only
+  -> adventure smoke proves happy path only
+  -> neither is wired into npm test
 ```
+
+## Domains and kits
+
+```txt
+engine-installed core/adventure kits: 13
+cataloged world/render/host kits: 50
+additional composition kit: 1
+source-backed kit surfaces: 64
+active route kit surfaces: 62
+retained inactive legacy kits: 2
+Core World providers retained in source: 9
+```
+
+The active domains cover browser hosting, rendering, NexusEngine runtime/ECS, core object and ledger services, seeded world generation, input, scenario, inventory, farming, foraging, player, interaction, camera, save, render snapshots, terrain, vegetation, props, ocean, foam, atmosphere, weather, diagnostics, tests and deployment.
+
+## Required authority
+
+```txt
+cozy-island-multi-domain-transaction-commit-authority-domain
+```
+
+It must own transaction identity and generation, participant resolution, predecessor revisions, immutable mutation plans, candidate states, invariant validation, atomic participant/ledger commit, rollback, retry policy, save/render revision admission, observations, journals, failure fixtures and first-visible-frame acknowledgement.
 
 ## Next safe ledge
 
-Implement `cozy-island-adventure-persistence-authority-domain` before expanding save slots or long-form progression. It must own semantic dirty detection, adapter-backed commit results, atomic candidate restore, input/transaction continuity, and restored-frame acknowledgement.
+Implement candidate-based farm/forage action planning before adding more crops, tools, crafting or multiplayer. Keep game-specific rules in inventory/farming/foraging domains, keep portable idempotency in `core-transaction-ledger-kit`, and place atomic multi-owner coordination in the new product authority domain.

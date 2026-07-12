@@ -1,4 +1,4 @@
-export const NEXUS_ENGINE_COMMIT = "38229f59c22cb40024ffd13a9f48040de759f5d7";
+export const NEXUS_ENGINE_COMMIT = "481cbf6df742e81279bd42245c4238c6a1fc69f2";
 
 export const COZY_WORLD_CONFIG = Object.freeze({
   id: "world:cozy-island-webgpu-v4",

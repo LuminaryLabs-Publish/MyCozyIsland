@@ -1,12 +1,14 @@
 # START HERE: MyCozyIsland Agriculture Cutover Recovery Authority
 
-Last updated: `2026-07-12T12-50-46-04-00`
+Last updated: `2026-07-12T12-58-08-04-00`
 
 ## Summary
 
 MyCozyIsland now uses the official pinned `n:production:agriculture` DSK. The product-specific farming kit is no longer installed. Tropical crop content, Inventory settlement, wild coconut Foraging, save migration and rendering remain in product-owned adapters.
 
 The highest-priority gap is recovery truth. Product settlement snapshots Inventory, Agriculture and ledger owners and reloads them on exception, but it cannot retract Agriculture events or ECS journal rows already emitted. The partial-history recovery shortcut also accepts an Agriculture child record without proving the paired Inventory child record and resource delta. Save-v1 migration converts farming state but does not reconcile old `cozy-farming` transaction history with the new ledger family.
+
+The `2026-07-12T12-58-08-04-00` reconciliation confirms the full Publish inventory, records the 13 installed kits and 64 source-backed kit surfaces, and synchronizes this repo-local authority with `LuminaryLabs-Dev/LuminaryLabs`.
 
 ## Plan ledger
 
@@ -20,7 +22,8 @@ The highest-priority gap is recovery truth. Product settlement snapshots Invento
 - [x] Inspect the pinned Agriculture provider and pinned core transaction ledger.
 - [x] Audit settlement, rollback, recovery, migration, render projection and tests.
 - [x] Add timestamped architecture and system audits.
-- [x] Refresh required root `.agent` files and registry.
+- [x] Add a timestamped central-reconciliation tracker and audit set.
+- [x] Refresh the root `.agent` routing entrypoint.
 - [x] Push only to `main`; create no branch or pull request.
 - [ ] Runtime recovery and executable failure fixtures remain future work.
 
@@ -40,13 +43,16 @@ index.html
 
 1. `current-audit.md`
 2. `known-gaps.md`
-3. `architecture-audit/2026-07-12T12-50-46-04-00-agriculture-cutover-recovery-dsk-map.md`
-4. `agriculture-cutover-audit/2026-07-12T12-50-46-04-00-state-ledger-event-migration-contract.md`
-5. `gameplay-audit/2026-07-12T12-50-46-04-00-agriculture-settlement-recovery-loop.md`
-6. `render-audit/2026-07-12T12-50-46-04-00-agriculture-transaction-frame-provenance-gap.md`
-7. `interaction-audit/2026-07-12T12-50-46-04-00-agriculture-recovery-admission-map.md`
-8. `next-steps.md`
-9. `validation.md`
+3. `trackers/2026-07-12T12-58-08-04-00/project-breakdown.md`
+4. `architecture-audit/2026-07-12T12-58-08-04-00-agriculture-cutover-central-reconciliation-dsk-map.md`
+5. `agriculture-cutover-audit/2026-07-12T12-58-08-04-00-central-ledger-reconciliation.md`
+6. `render-audit/2026-07-12T12-58-08-04-00-agriculture-recovery-frame-provenance-reconciliation.md`
+7. `architecture-audit/2026-07-12T12-50-46-04-00-agriculture-cutover-recovery-dsk-map.md`
+8. `agriculture-cutover-audit/2026-07-12T12-50-46-04-00-state-ledger-event-migration-contract.md`
+9. `gameplay-audit/2026-07-12T12-50-46-04-00-agriculture-settlement-recovery-loop.md`
+10. `interaction-audit/2026-07-12T12-50-46-04-00-agriculture-recovery-admission-map.md`
+11. `next-steps.md`
+12. `validation.md`
 
 ## Current settlement path
 

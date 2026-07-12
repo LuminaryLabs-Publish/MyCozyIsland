@@ -1,50 +1,68 @@
-# Known Gaps: MyCozyIsland Agriculture Cutover
+# Known Gaps: MyCozyIsland Host Save Persistence
 
-Last updated: `2026-07-12T12-50-46-04-00`
+Last updated: `2026-07-12T14-51-49-04-00`
 
 ## Critical
 
-1. **Rollback does not retract events:** Agriculture events queued before a later failure remain outside snapshot restoration.
-2. **Rollback does not retract ECS journal rows:** candidate state writes and restoration writes remain in the same world journal without transaction classification.
-3. **Recovery can accept incomplete child history:** an Agriculture child record can recreate the product parent without paired Inventory record or resource-delta proof.
-4. **Legacy ledgers are not migrated:** save-v1 converts farming state but carries old `cozy-farming` transaction history unchanged.
-5. **No save/frame transaction barrier:** save and render snapshots expose participant revisions but no committed Agriculture transaction or recovery revision.
+1. **Capture is not durable commit:** `cozySave.capture()` marks SaveState captured before localStorage success is known.
+2. **HUD can falsely say Saved:** storage failure leaves `status: captured`, and HUD derives its label from that state.
+3. **Rollback failure is misreported:** restore returns `rolledBack: true` even when rollback throws.
+4. **No predecessor-preserving commit:** one localStorage key is replaced without staging, readback verification, active pointer or verified backup.
+5. **No cross-tab conflict authority:** multiple tabs can silently overwrite from stale predecessors.
+6. **Reset is not immediately durable:** a crash before later autosave/pagehide can resurrect the old record.
+7. **No restore-to-frame proof:** the visible world does not cite storage or restore generation.
 
 ## High
 
-- Inventory snapshot loading increments revision during rollback rather than restoring the exact predecessor observation.
-- Core Transaction Ledger snapshot loading increments capability sequence and emits `snapshotLoaded`.
-- Agriculture snapshot loading emits `SnapshotLoaded` during rollback.
-- No outcome type distinguishes rejected, rolled-back, reconciled, quarantined or indeterminate history.
-- No event-publication barrier exists after aggregate commit.
-- No child-record and state-parity validator exists.
-- Operation identity still includes input frame index rather than durable session and command sequence.
-- The hidden `cozyFarming` alias preserves a name but not the removed API contract.
-- Global `CozyIsland` diagnostics expose live owners outside a product transaction admission boundary.
+- Corrupt JSON, checksum failures and unsupported schemas remain at the active key and are retried on every reload.
+- The key `my-cozy-island.adventure-save.v1` stores current `/2` envelopes without an explicit key migration contract.
+- No save session ID, command ID, storage generation or dirty revision exists.
+- No expected predecessor checksum or compare-and-swap admission exists.
+- No browser storage capability, quota or security-error classification exists.
+- No tab identity, writer lease or storage-event reconciliation exists.
+- SaveState `saveCount` counts captures, including host write failures.
+- SaveState `lastHash` can identify a snapshot that was never persisted.
+- Autosave cadence advances using clamped simulation dt rather than explicit monotonic wall time.
+- The pagehide listener is once-only and no pageshow/bfcache rearm exists.
+- Visibility changes clear input but do not trigger a persistence policy.
+- No dirty-state status remains visible after write failure or conflict.
+- Public `captureSave()` captures only in memory and has no durable-result distinction.
 
 ## Medium
 
-- Save-v1 migration test is synthetic and reuses current Agriculture plot structures.
-- No authentic pre-cutover save and ledger fixture is retained.
-- Render snapshots do not cite Agriculture plan ID, resource-delta fingerprint or record IDs.
-- HUD lastAction does not include a recovery or first-frame receipt.
-- No bounded reconciliation journal exists.
-- No policy defines page termination during an indeterminate Agriculture action.
-- Continuous growth advances plot revisions independently of product transactions, but snapshots expose no source classification for revision changes.
-- Compatibility alias retirement and deprecation policy are undocumented.
+- No producer build, dependency, world or source fingerprint is stored in a host envelope.
+- No saved-at timestamp or storage commit timestamp exists.
+- No bounded backup retention or recovery-slot policy exists.
+- No corrupt-record quarantine journal exists.
+- No conflict, retry, replacement or fork policy exists.
+- No lifecycle flush deadline or result exists.
+- No reset tombstone/baseline generation exists.
+- No migration receipt identifies legacy key, source schema and target storage generation.
+- No first saved, restored or reset frame receipt exists.
+- WebGPU and WebGL2 do not receive save provenance beyond engine SaveState.
+
+## Existing Agriculture recovery gaps
+
+- Agriculture events queued before a later failure are not retracted.
+- ECS journal rows from candidate/restoration writes are not transaction-classified.
+- Parent recovery can accept Agriculture child history without paired Inventory proof.
+- Save-v1 migration does not reconcile legacy `cozy-farming` ledger records.
+- Portable saves and render snapshots have no Agriculture transaction/recovery revision.
 
 ## Proof gaps
 
-- No failure injection after Inventory settlement.
-- No failure injection after Agriculture state mutation.
-- No failure injection after Agriculture event enqueue.
-- No event-queue rollback fixture.
-- No ECS-journal rollback fixture.
-- No recovery fixture with missing Inventory child history.
-- No conflicting resource-delta recovery fixture.
-- No authentic legacy-ledger migration fixture.
-- No post-migration retry exactly-once fixture.
-- No save-during-indeterminate fixture.
-- No transaction-to-first-visible-frame fixture.
-- No WebGPU/WebGL2 recovery-revision parity smoke.
-- No Pages restored-save smoke.
+- No localStorage quota/security failure fixture.
+- No serialization or readback corruption fixture.
+- No corrupt-active/valid-backup recovery fixture.
+- No unsupported-schema quarantine fixture.
+- No two-tab stale-predecessor fixture.
+- No writer-lease expiry fixture.
+- No storage-event conflict fixture.
+- No visibility/pagehide flush fixture.
+- No bfcache pageshow and second-pagehide fixture.
+- No reset-crash-reload fixture.
+- No restore rollback-failure fixture.
+- No durable save-status HUD fixture.
+- No restore-to-first-visible-frame fixture.
+- No WebGPU/WebGL2 save-status parity smoke.
+- No deployed Pages save round-trip/recovery smoke.

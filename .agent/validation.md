@@ -1,10 +1,44 @@
-# Validation: MyCozyIsland Browser Input Ownership Audit
+# Validation: MyCozyIsland browser-input final-head reconciliation
 
-Last updated: `2026-07-12T17-01-09-04-00`
+**Timestamp:** `2026-07-12T19-00-22-04-00`
 
 ## Summary
 
-This run changes documentation only. It records the current browser input ownership and gesture-admission gaps without changing runtime, gameplay, rendering, dependencies or deployment.
+This run changes documentation only. It reconciles the final repo-local browser-input audit state with central tracking and does not change runtime, input, gameplay, Agriculture, Inventory, saves, rendering, dependencies or deployment.
+
+## Plan ledger
+
+**Goal:** record exactly what was reviewed and avoid executable claims not supported by browser or Pages fixtures.
+
+- [x] Compare all ten accessible Publish repositories.
+- [x] Exclude TheCavalryOfRome.
+- [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
+- [x] Detect the repo-local head newer than the central recorded completion head.
+- [x] Preserve the interaction loop, domain map, 64-kit census and service inventory.
+- [x] Add the `19-00-22` tracker and audit family.
+- [x] Push documentation directly to `main`.
+- [x] Create no branch or pull request.
+- [ ] Implement and execute browser-input fixtures.
+
+## Evidence retained
+
+```txt
+browser keyboard listeners: global
+canvas focus required for keyboard: no
+editable-target exclusion: no
+pointer ID stored: yes
+pointer move requires matching ID: no
+pointer up requires matching ID: no
+primary pointer/button policy: no
+lost pointer capture handler: no
+input generation: 1
+clear closes generation: no
+duplicate command rejection: no
+rejected-command counter active: no
+typed admission result: no
+consumer receipts: no
+first visible input-frame acknowledgement: no
+```
 
 ## Change boundary
 
@@ -22,82 +56,23 @@ branch created: no
 pull request created: no
 ```
 
-## Plan ledger
-
-**Goal:** state exactly what source was reviewed and avoid claiming executable browser proof that was not run.
-
-- [x] Compare the full accessible Publish inventory.
-- [x] Compare central ledger timestamps.
-- [x] Select only `MyCozyIsland`.
-- [x] Review browser input handlers in `src/main-adventure.js`.
-- [x] Review input queue and frame admission in `src/adventure/runtime-domains.js`.
-- [x] Review input consumers in player, interaction and camera domains.
-- [x] Review active composition in `src/adventure/composition-runtime.js`.
-- [x] Preserve the complete kit and service census.
-- [x] Add the timestamped input audit family.
-- [x] Refresh required root `.agent` files.
-- [x] Push only to `main` and create no branch or pull request.
-- [ ] Execute browser input fixtures after implementation.
-
-## Source review
-
-```txt
-index.html
-src/main-adventure.js
-src/adventure/composition-runtime.js
-src/adventure/runtime-domains.js
-package.json
-README.md
-.agent/kit-registry.json
-```
-
-## Source-backed checks
-
-```txt
-window keydown and keyup listeners exist
-canvas pointerdown, pointermove, pointerup and pointercancel listeners exist
-drag stores pointerId
-pointermove does not compare event.pointerId with drag.pointerId
-pointerup clears drag without a pointerId match
-pointerdown has no primary-button or isPrimary check
-lostpointercapture handler is absent
-input commands use generation 1
-input frame processes later commands after clear
-duplicate command IDs are not rejected
-rejectedCommands is not incremented
-player and interaction consume the admitted frame
-camera derives from player state
-```
-
-## Commands and executable tests
+## Commands and fixtures
 
 ```txt
 npm test: not run
-browser keyboard smoke: not run
-browser pointer smoke: not run
-multi-pointer smoke: not run
-blur/visibility smoke: not run
-WebGPU smoke: not run
-WebGL2 smoke: not run
-Pages smoke: not run
+browser keyboard fixture: unavailable / not run
+editable-control fixture: unavailable / not run
+primary-button fixture: unavailable / not run
+multi-pointer fixture: unavailable / not run
+lost-capture fixture: unavailable / not run
+clear-generation fixture: unavailable / not run
+duplicate-command fixture: unavailable / not run
+consumer-receipt fixture: unavailable / not run
+WebGPU input smoke: unavailable / not run
+WebGL2 input smoke: unavailable / not run
+Pages input smoke: unavailable / not run
 ```
 
-The GitHub connector provided repository reads and writes but no runnable browser checkout. No command success is claimed.
+## Result
 
-## Missing proof
-
-```txt
-focus ownership fixture
-editable-control exclusion fixture
-primary button and primary pointer fixture
-pointer-ID isolation fixture
-lost-capture cleanup fixture
-clear-generation fence fixture
-duplicate-command fixture
-input-to-player consumer receipt fixture
-input-to-visible-frame acknowledgement fixture
-```
-
-## Conclusion
-
-The source proves that normalized input exists, but browser ownership and gesture admission are not authoritative. This audit does not claim focus safety, pointer isolation, stale-command rejection, duplicate suppression, lifecycle fencing or visible-frame provenance is implemented.
+Documentation and central synchronization are the only intended changes. No claim is made that browser input ownership, focus safety, pointer isolation, stale-command rejection, duplicate suppression, clear fencing, consumer receipts or visible-frame provenance is implemented.

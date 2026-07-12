@@ -1,6 +1,6 @@
 # Validation: MyCozyIsland Agriculture Cutover Recovery Audit
 
-Last updated: `2026-07-12T12-50-46-04-00`
+Last updated: `2026-07-12T12-58-08-04-00`
 
 ## Change boundary
 
@@ -22,6 +22,7 @@ pull request created: no
 - [x] Full accessible Publish organization repository inventory.
 - [x] Central ledger state and prior MyCozyIsland audit boundary.
 - [x] Post-audit Agriculture cutover commit and changed-file set.
+- [x] Complete `2026-07-12T12-50-46-04-00` repo-local audit family.
 - [x] Pinned NexusEngine and NexusEngine-Kits dependency references.
 - [x] Active composition and domain paths.
 - [x] Tropical Agriculture configuration and legacy-state migration.
@@ -32,6 +33,8 @@ pull request created: no
 - [x] Save-v2 capture, save-v1 migration and restore rollback.
 - [x] Renderer-neutral Agriculture descriptors and frame snapshot.
 - [x] Agriculture smoke test and package scripts.
+- [x] New `2026-07-12T12-58-08-04-00` tracker, architecture, render, Agriculture and deployment reconciliation entries.
+- [x] Central ledger and internal change-log synchronization planned for the same run.
 
 ## Existing source proof
 
@@ -81,4 +84,4 @@ Pages restored-save smoke: not run
 
 ## Current conclusion
 
-The official Agriculture DSK cutover is source-backed and the domain ownership split is materially better than the removed product farming authority. This audit does not claim complete transaction atomicity, effect rollback, partial-history recovery, legacy-ledger reconciliation or first-visible-frame provenance.
+The official Agriculture DSK cutover is source-backed and the domain ownership split is materially better than the removed product farming authority. Repo-local documentation now includes a new reconciliation timestamp and is ready for central ledger synchronization. This audit does not claim complete transaction atomicity, effect rollback, partial-history recovery, legacy-ledger reconciliation or first-visible-frame provenance.

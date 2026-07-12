@@ -1,17 +1,17 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T22-20-00-04-00`
+Last updated: `2026-07-12T00-20-01-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible central entry with a new layered-world/render commit series after its prior audit
+selection reason: oldest eligible central entry with a newer foam-depth and camera runtime series
 runtime source changed by this pass: no
-rendering output changed by this pass: no
+render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
-deployment configuration changed by this pass: no
+deployment changed by this pass: no
 branch created: no
 pull request created: no
 repo-local documentation pushed to main: yes
@@ -19,150 +19,139 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** separate source-backed render-binding findings from executable proof and define the exact catalog, compile, resource, occlusion, backend, and visible-frame gate.
+**Goal:** distinguish source-backed improvements from executable proof and define the exact graph, topology, binding, lifecycle, backend, and visible-frame gate.
 
-- [x] Inspect the active route, import map, package test chain, and current runtime identity.
-- [x] Inspect catalog declaration and validation.
-- [x] Inspect logical ocean graph construction and validation.
-- [x] Inspect render-layer masks and assignment.
-- [x] Inspect ocean and foam material/pass construction.
-- [x] Inspect the physical post pipeline and public readback.
-- [x] Inspect current render-layer and terrain-separation tests.
-- [x] Confirm the composition kit is active but omitted from the catalog.
-- [x] Confirm the foam logical reads are not represented as physical bindings.
-- [x] Confirm the physical foam pass disables its depth buffer while materials request depth testing.
-- [x] Document compile, binding, result, and fixture contracts.
+- [x] Inspect the active route and package version.
+- [x] Inspect the full test chain.
+- [x] Inspect logical graph construction and validation.
+- [x] Inspect the source foam renderer interface used by the post pipeline.
+- [x] Inspect physical proxy scene, proxy meshes, depth material, depth comparison, and pass-order readback.
+- [x] Inspect browser animation, pagehide, public host, and readback paths.
+- [x] Confirm the previous unconditional foam composition was removed.
+- [x] Confirm physical opaque-depth comparison exists.
+- [x] Confirm the physical depth pass is absent from the logical graph.
+- [x] Confirm proxy membership is captured once and only transforms are synchronized.
+- [x] Confirm proxy resources have no dedicated disposal path.
+- [x] Confirm remaining logical foam inputs are unbound.
+- [x] Document topology, lifecycle, parity, and browser fixture contracts.
 - [x] Change documentation only.
-- [ ] Implement and run physical resource-binding fixtures.
-- [ ] Run WebGPU/WebGL2 browser parity and capture fixtures.
+- [ ] Implement and run the new executable fixtures.
 
 ## Source-backed checks
 
 ```txt
-catalog validates 50 entries: yes
-cozy-ocean-composition-kit instantiated by host: yes
-cozy-ocean-composition-kit in kitCatalog: no
-logical graph has six ordered passes: yes
-logical foam depth source is opaque-depth: yes
-logical foam reads water-mask: yes
-logical foam reads water-surface-depth: yes
-logical foam reads fog-transmittance: yes
-physical foam pass uses separate scene: yes
-physical foam pass depthBuffer is false: yes
-foam material depthTest is true: yes
-shared opaque depth is bound to foam pass: no
-water mask is bound to foam pass: no
-rolling-fog transmittance is bound to foam pass: no
-physical pipeline is compiled from graph: no
-pass-order readback is derived from execution receipts: no
+package version: 0.4.1
+route cache key: foam-depth-camera-1
+logical graph pass count: 6
+physical readback includes foam-occlusion-depth: yes
+foam proxy scene exists: yes
+proxy MeshDepthMaterial exists: yes
+proxy meshes share source geometry: yes
+proxy membership captured from foamRenderer.meshes at construction: yes
+proxy transforms synchronized every frame: yes
+foam depth sampled against scene depth: yes
+unmasked old composition expression removed: yes
+logical graph declares foam-occlusion-depth: no
+logical/physical compile result exists: no
+source/proxy topology revision exists: no
+proxy disposal method/result exists: no
+water-mask physical binding exists: no
+water-surface-depth physical binding exists: no
+fog-transmittance physical binding exists: no
+visible-frame receipt exists: no
 ```
 
-## Existing validation surface
+## Existing test surface
 
 ```txt
 npm test chain: present
 static architecture checks: present
-semantic domain tests: present
-Core World provider/order/lifecycle tests: present
-lazy island and sea-floor materialization tests: present
-logical render-layer graph test: present
-terrain/provider separation token test: present
-renderer cache/disposal tests: present
-physical attachment test: absent
-logical-to-physical binding parity test: absent
-browser foam occlusion test: absent
-rolling-fog/foam integration test: absent
-WebGPU/WebGL2 layered-frame parity: absent
-first layered-frame receipt: absent
+domain and Core World tests: present
+camera ground-clearance test: present
+camera first-person contract test: present
+foam-depth-occlusion source-token test: present
+renderer cell-cache/disposal tests: present
 ```
 
-## Current tests prove
+## Current foam test proves
 
 ```txt
-logical pass order is background -> opaque -> water -> atmosphere -> foam -> output
-foam is declared final scene content
-water and foam are declared depthWrite=false
-terrain handoff metadata has an admitted vertical gap
-source contains a separate final foam scene
-source contains the expected alpha composition expression
-foam is not added to the main scene
+renderer-post.js contains the expected depth-scene and comparison tokens
+old unmasked final composition string is absent
+logical source-order strings remain water -> atmosphere -> foam -> output
 ```
 
-## Current tests do not prove
+## Current foam test does not prove
 
 ```txt
-which physical attachment satisfies opaque-depth
-whether depth-tested foam receives the base scene depth
-whether foam is occluded by island, rocks, props, or vegetation
-whether water-mask and water-surface-depth exist physically
-whether rolling fog exports transmittance to foam
-whether hard-coded pass-order strings match submitted GPU work
-whether WebGPU and WebGL2 bind equivalent resources
-whether resize/quality changes retire stale bindings
-which graph/resource revisions produced the visible frame
+that Three.js accepted and executed the intended GPU passes
+which physical attachment produced scene depth
+that source/proxy mesh membership is exact
+that topology changes reconcile
+that proxy resources dispose
+that opaque terrain/props actually hide foam pixels
+that water-mask and fog semantics match the graph
+that WebGPU and WebGL2 produce equivalent results
+which graph, topology and resource revisions produced a visible frame
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. catalog completeness
-   enumerate active source-backed kit IDs and compare with catalog classifications
+1. graph/plan adapter
+   logical foam depth policy maps to one physical depth pass
 
-2. graph compile
-   compile six logical passes into the admitted fused physical plan
+2. topology prepare
+   exact source/proxy membership with stable identities
 
-3. resource resolution
-   resolve every read to one producer or external input
+3. topology mutation
+   added and removed foam meshes reconcile atomically
 
-4. missing binding
-   remove opaque depth or water mask and require deterministic rejection
+4. transform sync
+   source and proxy world transforms match under one frame revision
 
-5. foam occlusion
-   place shoreline foam behind island, prop, rock, and vegetation occluders
+5. resource ownership
+   shared geometry survives; proxy material/pass retire exactly once
 
-6. fog integration
-   compare foam through zero, medium, and dense rolling fog
+6. binding
+   exact current opaque-depth producer is identified and admitted
 
-7. backend parity
-   WebGPU and WebGL2 publish the same logical plan/result schema
+7. visible occlusion
+   terrain, rocks, props and vegetation hide foam pixels
 
-8. resize and quality
-   attachment revisions advance and stale bindings reject
+8. water/fog semantics
+   remaining declared inputs are bound or removed explicitly
 
-9. execution readback
-   pass receipts match the compiled order and final output identity
+9. backend parity
+   WebGPU and WebGL2 publish the same result schema
 
-10. visible frame
-    first layered frame cites graph, physical plan, resource, world, and backend revisions
+10. frame proof
+    capture cites graph, plan, topology, resource, backend and frame revisions
 ```
 
 ## Commands not run
 
 ```txt
 npm test
-browser WebGPU layered-render smoke
-browser WebGL2 layered-render smoke
-foam occlusion capture
-fog/foam capture
-resize/quality resource-revision fixture
-physical pass instrumentation
+browser WebGPU smoke
+browser WebGL2 smoke
+proxy topology mutation fixture
+proxy disposal fixture
+foam pixel capture
+water/fog integration capture
 Pages live smoke
 ```
-
-## Reason executable validation was not claimed
-
-This run used source inspection and GitHub documentation writes. The runtime does not expose a compiled physical plan, named attachment bindings, pass execution receipts, or first-layered-frame acknowledgement. The existing Node tests inspect logical descriptors and source tokens rather than submitted browser/GPU resources.
 
 ## Acceptance gate
 
 ```txt
-all active runtime kits are cataloged or explicitly classified
-one admitted graph revision produces one physical plan revision
-every logical read resolves to one current resource binding
-depth-tested foam uses the current opaque depth attachment
-foam/water/fog semantics match the declared contract
-reported order derives from the compiled and executed plan
-WebGPU/WebGL2 use the same result schema
-stale bindings reject after resize or quality changes
-first layered frame identifies its graph, plan, resources, world, and backend
+one admitted graph revision owns one physical plan revision
+one source topology revision owns one proxy topology revision
+all source/proxy membership is exact
+no shared geometry is double-disposed
+all owned proxy resources retire exactly once
+all declared foam inputs are bound or removed
+physical order comes from execution receipts
+both backends pass visible occlusion and lifecycle fixtures
+first visible foam frame identifies graph, topology, binding and resources
 ```

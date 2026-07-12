@@ -1,157 +1,141 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T19-20-22-04-00`
+Last updated: `2026-07-11T20-51-14-04-00`
 
 ## Summary
 
-Browser Startup Admission and Failure Rollback Authority is the first implementation slice. It must produce the session, generation, world baseline, capability identities and first-frame evidence consumed by Runtime Session Lifecycle Authority and every downstream world/render authority.
+World lifecycle parity is the next documentation-defined contract beneath startup and runtime-session ownership. The wrapper must stop treating `prepared` as lifecycle authority and must expose one typed phase/generation/result model across legacy and Core modes.
 
 ## Plan ledger
 
-**Goal:** replace procedural `main()` construction with a staged commit-or-rollback startup transaction without duplicating renderer, world, resource or frame identities.
+**Goal:** make prepare, reusable reset, terminal disposal and read-model validity explicit before restart, recovery, focus, materialization or render cutover depend on the wrapper.
 
-- [ ] Introduce `startupTransactionId`, startup phase and command sequence.
-- [ ] Validate catalog, DOM, query mode and pinned import capabilities before acquisition.
-- [ ] Add a capability acquisition ledger with dependency and disposal metadata.
-- [ ] Return typed renderer/backend initialization results.
-- [ ] Make Core World prepare atomic: commit `prepared` only with a valid snapshot.
-- [ ] Add provider/materializer rollback for prepare failures.
-- [ ] Return typed capability descriptors from render factories.
-- [ ] Register browser listeners, timers and loop as startup leases.
-- [ ] Add a first-frame readiness and commit gate.
-- [ ] Publish clone-safe startup observations only after commit.
-- [ ] Generate reverse-order rollback from the acquisition ledger.
-- [ ] Dispose partial scene, volume, post, renderer and backend resources.
-- [ ] Restore a clean retry baseline and classify retryable versus terminal failures.
-- [ ] Prevent duplicate Start/Retry attempts while ownership remains active.
-- [ ] Add phase failure injection and clean-retry fixtures.
-- [ ] Add WebGPU/WebGL2 browser startup parity smokes.
+- [ ] Add `WorldLifecycleState` with phase, mode, generation and revisions.
+- [ ] Make `prepared` a derived compatibility field.
+- [ ] Add command IDs, sequence and expected phase/generation.
+- [ ] Normalize legacy/Core result schemas.
+- [ ] Separate reusable reset from terminal disposal.
+- [ ] Retain or re-register the Core World definition during reusable reset.
+- [ ] Add provider/materializer retirement receipts.
+- [ ] Make terminal disposal idempotent.
+- [ ] Reject prepare, focus, materialization and query acquisition after disposal.
+- [ ] Bind queries and diagnostics to generation leases.
+- [ ] Reject stale generation callbacks and results.
+- [ ] Correlate first READY frame after reset with the new generation.
+- [ ] Revoke global world/query readback on terminal page lifecycle.
+- [ ] Add legacy/Core parity, reset/reprepare and use-after-dispose fixtures.
 
 ## Ordered implementation queue
 
 ```txt
-1. Browser Startup Admission + Failure Rollback Authority
+1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
-3. Core World Reset / Re-prepare Authority
-4. Pinned Core World Focus Transaction Authority
-5. Live Materialization Readiness Commit Authority
-6. Core World Render Commit Authority
-7. Camera Rail Baseline Authority
-8. Dynamic Environment Frame Authority
-9. Adaptive Quality Transaction Authority
+3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
+4. Core World Reset / Re-prepare Authority
+5. Pinned Core World Focus Transaction Authority
+6. Live Materialization Readiness Commit Authority
+7. Core World Render Commit Authority
+8. Camera Rail Baseline Authority
+9. Dynamic Environment Frame Authority
+10. Adaptive Quality Transaction Authority
 ```
 
-## Candidate startup kits
+## Candidate lifecycle kits
 
 ```txt
-startup-transaction-id-kit
-startup-phase-kit
-startup-config-admission-kit
-pinned-import-admission-kit
-backend-init-result-kit
-startup-acquisition-ledger-kit
-startup-capability-lease-kit
-world-prepare-transaction-kit
-startup-resource-descriptor-kit
-startup-callback-lease-kit
-first-frame-readiness-kit
-startup-commit-result-kit
-startup-failure-result-kit
-startup-rollback-plan-kit
-reverse-order-retirement-kit
-retry-baseline-kit
-startup-observation-kit
-startup-journal-kit
-startup-failure-injection-fixture-kit
-browser-backend-startup-smoke-kit
+world-lifecycle-phase-kit
+world-runtime-generation-kit
+world-mode-contract-kit
+world-lifecycle-command-kit
+world-lifecycle-admission-kit
+world-prepare-result-kit
+world-reset-policy-kit
+world-reset-result-kit
+world-dispose-result-kit
+world-definition-lease-kit
+world-query-lease-kit
+world-diagnostics-lease-kit
+provider-materializer-retirement-kit
+stale-world-generation-rejection-kit
+terminal-use-after-dispose-rejection-kit
+legacy-core-lifecycle-adapter-kit
+world-lifecycle-observation-kit
+world-lifecycle-journal-kit
+world-mode-parity-fixture-kit
+world-use-after-dispose-fixture-kit
+browser-world-lifecycle-smoke-kit
 ```
 
-## Required startup state
+## Required state
 
 ```txt
-StartupTransaction
-  transactionId
+WorldLifecycleState {
+  sessionId
+  worldId
+  mode
   phase
-  admittedConfig
-  catalogFingerprint
-  backend
-  worldMode
-  acquisitionLedger
-  callbackLeases
-  rollbackPlan
-  worldPrepareResult
-  firstFrameId
-  commitResult
-  failureResult
-  retryClass
+  generation
+  definitionRevision
+  snapshotRevision
+  providerStateRevision
+  materializerRevision
+  activeCellCount
+  queryLeaseCount
+  lastResult
+}
 ```
 
-## Required start transaction
+## Required transaction rules
 
 ```txt
-StartCommand
-  -> admit configuration and imports
-  -> enter STARTING
-  -> acquire renderer/backend
-  -> acquire and atomically prepare Core World
-  -> acquire scene and render capabilities
-  -> install callback/timer/loop leases
-  -> render first frame
-  -> publish StartupCommitResult
-  -> hand session ownership to Runtime Session Lifecycle
-```
+Prepare
+  NEW or RESET -> READY
+  duplicate READY -> typed idempotent result
 
-## Required rollback transaction
+Reset
+  READY or recoverable FAILED -> RESET
+  retire current generation
+  preserve/recreate reusable definition policy
 
-```txt
-startup failure
-  -> freeze acquisition
-  -> stop loop and callbacks when present
-  -> retire recorded capabilities in reverse dependency order
-  -> reset world/provider/materializer candidate state
-  -> remove partial public projection
-  -> verify baseline fingerprint
-  -> publish StartupFailureResult
-  -> allow Retry only when rollback is complete
+Dispose
+  any non-DISPOSED phase -> DISPOSED
+  duplicate DISPOSED -> typed idempotent result
+
+After DISPOSED
+  reject all mutations and new read-model leases
 ```
 
 ## Minimum fixture matrix
 
 ```txt
-catalog failure
-renderer constructor/init failure
-pinned import/capability failure
-provider registration failure
-initial focus/update failure
-materializer sync failure
-world/ocean/foam failure
-volume/cloud/fog/post failure
-callback/timer/loop failure
-first-frame failure
-rollback order and exact retirement counts
-duplicate Start and premature Retry rejection
-prepare failure followed by successful retry
-no global host before commit
-WebGPU/WebGL2 parity
-first-frame transaction parity
+legacy prepare/reset/prepare
+core prepare/reset/re-register/prepare
+duplicate prepare
+duplicate dispose
+prepare/update/materialize after dispose
+stale query lease
+provider/materializer exact retirement counts
+first replacement frame generation parity
+pagehide readback revocation
+WebGPU/WebGL2 lifecycle-result parity
 ```
 
 ## Acceptance conditions
 
 ```txt
-prepared=true always implies a valid committed world snapshot
-every acquired capability has identity and retirement behavior
-failed startup leaves zero mandatory callback/loop/resource leases
-rollback reports unresolved capabilities instead of hiding them
-retry begins from a verified baseline under a new transaction ID
-only one startup transaction can acquire at a time
-running is published only after first-frame acknowledgement
-Runtime Session Lifecycle consumes the committed startup result
+READY always has a valid committed snapshot
+RESET is reusable in both modes
+DISPOSED is terminal in both modes
+legacy/Core methods return the same result classes
+world generation advances on successful reprepare
+stale generation work cannot commit
+query/diagnostic leases are revoked on reset/dispose
+first replacement frame identifies the committed generation
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland Browser Startup Admission and Failure Rollback Authority
-+ Phase Failure Injection / Reverse Retirement / Clean Retry / First-Frame Commit Fixture Gate
+MyCozyIsland World Lifecycle Contract and Legacy/Core Mode Parity Authority
++ Reset/Re-prepare / Terminal-Dispose / Query-Lease / First-Replacement-Frame Fixture Gate
 ```

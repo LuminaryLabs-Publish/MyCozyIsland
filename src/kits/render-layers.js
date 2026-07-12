@@ -7,6 +7,10 @@ export const COZY_RENDER_LAYERS = Object.freeze({
   DEBUG: 30
 });
 
+export function createLayerMask(...layers) {
+  return Object.freeze([...new Set(layers.flat().map(value => Number(value)))].filter(Number.isInteger));
+}
+
 export function assignRenderLayer(object, layer, recursive = true) {
   if (!object?.layers) return object;
   const apply = target => {

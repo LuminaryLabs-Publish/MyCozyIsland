@@ -1,6 +1,6 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-12T03-39-52-04-00`
+Last updated: `2026-07-12T05-00-19-04-00`
 
 ## Documentation pass result
 
@@ -8,7 +8,7 @@ Last updated: `2026-07-12T03-39-52-04-00`
 selected repository: LuminaryLabs-Publish/MyCozyIsland
 selection reason: oldest eligible synchronized central entry
 runtime source changed by this pass: no
-environment behavior changed by this pass: no
+quality behavior changed by this pass: no
 render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
@@ -20,21 +20,18 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** distinguish source-backed environment timing defects from executable proof and define the exact clock, frame, reset, consumer, backend, and visible-output gate.
+**Goal:** distinguish source-backed adaptive-quality defects from executable proof and define the exact policy, timing, transition, recovery, resize, consumer, backend, and visible-output gate.
 
-- [x] Inspect the active route and package version.
-- [x] Inspect environment clock construction, tick, pause and reset.
-- [x] Inspect wind and illumination services.
-- [x] Inspect one-time environment descriptor construction.
-- [x] Inspect scenario render snapshot construction.
-- [x] Inspect world and shoreline foam updates.
-- [x] Inspect ocean, cloud and fog TSL time use.
-- [x] Inspect sky, scene fog, exposure and light initialization.
-- [x] Inspect public host readback.
-- [x] Inspect the current test chain and domain smoke.
-- [x] Confirm multiple visible time authorities exist.
-- [x] Confirm reset does not restart renderer-global TSL time.
-- [x] Document environment frame, receipt, reset, backend and visible-frame fixture contracts.
+- [x] Inspect the active route, package version, and quality catalog entries.
+- [x] Inspect startup tier selection and URL override behavior.
+- [x] Inspect performance-budget moving average and hysteresis.
+- [x] Inspect every renderer mutation in `applyPerformanceLevel()`.
+- [x] Inspect resize, visibility, page lifecycle, diagnostics, and public readback.
+- [x] Inspect the current test chain.
+- [x] Confirm level-zero recovery does not restore base DPR.
+- [x] Confirm dwell thresholds count frames rather than elapsed time.
+- [x] Confirm no quality revision or receipt proves one coherent transition.
+- [x] Document policy, timing, recovery, resize, backend, and visible-frame fixtures.
 - [x] Change documentation only.
 - [ ] Implement and run the new executable fixtures.
 
@@ -43,117 +40,114 @@ repo-local documentation pushed to main: yes
 ```txt
 package version: 0.4.1
 route cache key: foam-depth-camera-1
-environment clock initial seconds: 48
-environment clock resettable: yes
-scenario advances environment clock: yes
-world renderer uses scenario elapsedSeconds: yes
-shoreline foam uses scenario elapsedSeconds: yes
-ocean shader uses TSL global time: yes
-cloud shader uses TSL global time: yes
-fog shader uses TSL global time: yes
-illumination sampled once at startup: yes
-vegetation wind sampled once at startup: yes
-campfire wind sampled once at startup: yes
-cloud weather/lighting sampled once at startup: yes
-fog advection sampled once at startup: yes
-scenario reset resets TSL time: no
-environment frame revision exists: no
+base quality tiers: low, medium, high, ultra
+URL override accepted: yes
+explicit fixed/adaptive override mode: no
+performance levels: 0, 1, 2
+moving average alpha: 0.07
+degrade condition: movingAverage > target * 1.26
+degrade dwell: 90 qualifying frames
+recover condition: movingAverage < target * 0.86
+recover dwell: 360 qualifying frames
+cloud and fog step scale mutate: yes
+fog resolution scale mutates: yes
+DPR reduces above level zero: yes
+DPR restores at level zero: no
+resize re-evaluates quality: no
+visibility gates timing samples: no
+quality transition revision exists: no
 consumer receipt exists: no
-visible environment frame acknowledgement exists: no
+visible quality-frame acknowledgement exists: no
 ```
 
 ## Existing test surface
 
 ```txt
 npm test chain: present
-domain-smoke.mjs: present
-world/runtime tests: present
+static/domain/world tests: present
 render graph and terrain tests: present
 camera tests: present
 foam and renderer resource tests: present
-```
-
-## Existing tests prove
-
-```txt
-domain construction is deterministic for matching seeds
-terrain and shoreline samples are stable
-vegetation and rock placement are deterministic
-cloud and fog texture sizes follow quality
-scenario tick advances the repository environment clock
-camera state is projected into the render snapshot
+performance-budget test: absent
+adaptive-quality browser fixture: absent
 ```
 
 ## Existing tests do not prove
 
 ```txt
-CPU and GPU environment consumers use one canonical time
-TSL time can be reset with the scenario
-wind and illumination descriptors match the current clock
-all required consumers cite one environment revision
-stale old-generation environment updates are rejected
-WebGPU and WebGL2 receive equivalent environment snapshots
-public readback identifies the committed environment frame
-first visible frame after reset uses one reset generation
+30/60/120 Hz transition timing parity
+exact DPR restoration after full recovery
+hidden-tab timing rejection
+URL override policy semantics
+resize transaction coherence
+partial consumer rollback
+base/active quality diagnostic parity
+WebGPU/WebGL2 transition parity
+first visible quality-frame acknowledgement
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. clock source identity
-   every environment consumer receives the same clock source ID and time
+1. cadence parity
+   equivalent elapsed over/under budget at 30, 60 and 120 Hz produces equivalent transition timing
 
-2. normal frame parity
-   world, foam, ocean, clouds, fog, vegetation, campfire, sky and lights cite one revision
+2. full recovery
+   level 2 -> level 1 -> level 0 restores exact base DPR and every mutable consumer
 
-3. reset phase parity
-   all CPU and GPU animation phases restart under one reset generation
+3. override policy
+   URL override is explicitly fixed, bounded-adaptive or starting-tier adaptive
 
-4. dynamic descriptor revision
-   wind, illumination, cloud, fog and campfire descriptors match committed clock state
+4. invalid timing
+   first frame, hidden tab, suspension and large discontinuities are rejected or classified
 
-5. stale frame rejection
-   an old environment revision cannot mutate current uniforms or objects
+5. resize
+   viewport and device-DPR change commit one coherent policy revision
 
 6. partial consumer failure
-   a frame without all required receipts does not become the committed visible environment frame
+   one failed adapter prevents active-quality revision commit or triggers rollback
 
-7. backend parity
-   WebGPU and WebGL2 consume equivalent canonical environment time and descriptors
+7. stale transition
+   predecessor-generation callback cannot mutate replacement renderer state
 
-8. public observation
-   readback exposes clock, reset, environment and frame revisions without live mutable authority
+8. backend parity
+   WebGPU and WebGL2 expose equivalent policy and result semantics
 
-9. visible frame
-   first frame after reset cites the new reset generation and all required receipts
+9. diagnostics
+   base tier, active level, DPR, reason and revision agree across debug and public readback
 
-10. deployed route
-    Pages reproduces the same environment reset and clock parity
+10. visible frame
+    first rendered frame after transition cites the accepted quality revision and receipts
+
+11. deployed route
+    Pages reproduces cadence, recovery and visible-frame proof
 ```
 
 ## Commands not run
 
 ```txt
 npm test
-environment clock source divergence fixture
-environment reset phase parity fixture
-dynamic descriptor revision fixture
-consumer receipt fixture
+adaptive quality cadence fixture
+pixel-ratio recovery fixture
+override policy fixture
+visibility/discontinuity fixture
+resize transaction fixture
+partial consumer failure fixture
 WebGPU browser smoke
 WebGL2 browser smoke
-Pages environment smoke
+Pages adaptive-quality smoke
 ```
 
 ## Acceptance gate
 
 ```txt
-one canonical clock source owns every dynamic environment consumer
-scenario reset restarts CPU and GPU phases together
-no direct renderer-global time bypass remains
-one immutable EnvironmentFrameSnapshot owns one revision
-all required render consumers publish accepted receipts
-stale generations cannot update current environment state
-backend adapters consume equivalent frame data
-public readback exposes environment frame provenance
-first visible reset frame cites the committed reset generation
+quality policy is explicit and revisioned
+dwell is elapsed-time based rather than refresh-rate based
+invalid timing samples cannot trigger transitions
+level-zero recovery restores exact base DPR
+all mutable consumers commit or roll back together
+immutable resources are explicitly classified
+resize and replacement runtime generations fence stale work
+diagnostics and public readback cite one active-quality revision
+first visible transition frame carries the committed receipts
 ```

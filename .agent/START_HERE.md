@@ -1,34 +1,33 @@
-# START HERE: MyCozyIsland Browser Input Ownership and Gesture Admission
+# START HERE: MyCozyIsland Browser Input Ownership Central Reconciliation
 
-Last updated: `2026-07-12T17-01-09-04-00`
+Last updated: `2026-07-12T17-10-31-04-00`
 
 ## Summary
 
 MyCozyIsland is a NexusEngine-composed island adventure with official Agriculture, Inventory, wild Foraging, deterministic world generation, first-person movement, portable saves and WebGPU/WebGL2 presentation.
 
-The current audit isolates browser input ownership. Keyboard listeners are attached to `window` and admit gameplay commands regardless of canvas focus. Pointer drag state records one pointer ID, but move and release handlers do not require that ID, primary-pointer status or a primary button. The input DSK also uses a permanent generation value of `1`, has no gesture/focus epoch, does not reject duplicate command IDs and allows commands queued after a blur/visibility clear to reactivate input in the same frame.
+The current audit remains browser input ownership. Keyboard listeners are attached globally, pointer move and release do not enforce the stored pointer ID, no primary pointer/button or lost-capture policy exists, input generation is permanently `1`, duplicate command IDs are accepted, clear does not fence later commands, and no consumer or first-visible-frame receipt exists.
 
-The prior Agriculture recovery, host-save persistence and adaptive-quality audits remain valid upstream dependencies.
+This run reconciles the complete repo-local audit family, which finished landing after the previous central ledger write, into a fresh root `.agent` route and central record.
 
 ## Plan ledger
 
-**Goal:** make every gameplay input command prove current canvas ownership, focus, pointer gesture, command identity and input generation before it can affect player, interaction, camera or the visible frame.
+**Goal:** synchronize the final browser-input audit while preserving the exact runtime boundary required for surface, focus, gesture, generation, consumption and visible-frame authority.
 
-- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` as the oldest eligible central entry.
-- [x] Inspect browser keyboard, pointer, wheel, focus, blur and visibility handlers.
-- [x] Inspect `cozy-input-domain-kit` queue normalization and frame admission.
-- [x] Trace admitted input into player movement, camera and contextual interaction.
-- [x] Preserve the complete 64-surface kit and service census.
-- [x] Add timestamped architecture, render, gameplay, interaction, input and deployment audits.
-- [x] Refresh all required root `.agent` documents and the machine registry.
-- [x] Push `LuminaryLabs-Publish/MyCozyIsland` only to `main`.
+- [x] Detect MyCozyIsland repo-local audit files newer than the prior central write.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland`.
+- [x] Re-read the browser adapters and `cozy-input-domain-kit`.
+- [x] Preserve the complete interaction loop, domains, 64-kit census and services.
+- [x] Add a fresh tracker, turn ledger and system audit family.
+- [x] Refresh this entrypoint and the machine registry.
+- [x] Synchronize the central ledger and internal change log on `main`.
 - [x] Create no branch or pull request.
-- [ ] Runtime input authority and executable browser fixtures remain future work.
+- [ ] Runtime implementation and executable browser fixtures remain future work.
 
-## Selection comparison
+## Selection
 
 ```txt
 accessible Publish repositories: 10
@@ -37,16 +36,11 @@ new eligible repositories: 0
 central-ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
 
-MyCozyIsland       2026-07-12T14-59-01-04-00 selected
-TheUnmappedHouse   2026-07-12T15-08-07-04-00
-AetherVale         2026-07-12T15-18-50-04-00
-TheOpenAbove       2026-07-12T15-31-24-04-00
-IntoTheMeadow      2026-07-12T15-49-09-04-00
-PhantomCommand     2026-07-12T16-00-03-04-00
-PrehistoricRush    2026-07-12T16-20-55-04-00
-HorrorCorridor     2026-07-12T16-39-35-04-00
-ZombieOrchard      2026-07-12T16-51-47-04-00
-TheCavalryOfRome   excluded
+selected: LuminaryLabs-Publish/MyCozyIsland
+reason: completed repo-local input audit family was newer than the prior central write
+prior repo-local audit timestamp: 2026-07-12T17-01-09-04-00
+prior repo-local audit completion head: e33098b1d2b7a5de4cb015df5662f134561b03e7
+excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
 ## Active route
@@ -63,18 +57,19 @@ index.html
 
 ## Read order
 
-1. `trackers/2026-07-12T17-01-09-04-00/project-breakdown.md`
-2. `turn-ledger/2026-07-12T17-01-09-04-00.md`
-3. `architecture-audit/2026-07-12T17-01-09-04-00-browser-input-ownership-authority-dsk-map.md`
-4. `input-system-audit/2026-07-12T17-01-09-04-00-focus-pointer-command-generation-contract.md`
-5. `interaction-audit/2026-07-12T17-01-09-04-00-browser-event-input-command-result-map.md`
-6. `gameplay-audit/2026-07-12T17-01-09-04-00-global-input-player-interaction-loop.md`
-7. `render-audit/2026-07-12T17-01-09-04-00-input-camera-visible-frame-provenance-gap.md`
-8. `deploy-audit/2026-07-12T17-01-09-04-00-browser-input-fixture-gate.md`
-9. `current-audit.md`
-10. `known-gaps.md`
-11. `next-steps.md`
-12. `validation.md`
+1. `trackers/2026-07-12T17-10-31-04-00/project-breakdown.md`
+2. `turn-ledger/2026-07-12T17-10-31-04-00.md`
+3. `architecture-audit/2026-07-12T17-10-31-04-00-browser-input-ownership-central-reconciliation-dsk-map.md`
+4. `input-system-audit/2026-07-12T17-10-31-04-00-focus-pointer-generation-central-reconciliation-contract.md`
+5. `interaction-audit/2026-07-12T17-10-31-04-00-browser-event-admission-central-reconciliation-map.md`
+6. `gameplay-audit/2026-07-12T17-10-31-04-00-global-input-consumption-central-reconciliation.md`
+7. `render-audit/2026-07-12T17-10-31-04-00-input-visible-frame-central-reconciliation-gap.md`
+8. `central-sync-audit/2026-07-12T17-10-31-04-00-browser-input-local-central-reconciliation.md`
+9. `deploy-audit/2026-07-12T17-10-31-04-00-browser-input-central-fixture-gate.md`
+10. `current-audit.md`
+11. `known-gaps.md`
+12. `next-steps.md`
+13. `validation.md`
 
 ## Interaction loop
 
@@ -82,53 +77,45 @@ index.html
 browser event
   -> global key listener or canvas pointer/wheel listener
   -> enqueue command with permanent generation 1
-  -> input phase sorts by sequence and admits every generation-1 command
+  -> input phase sorts by sequence and accepts generation-1 commands
   -> held keys and one-shot actions become one InputFrame
-  -> player consumes movement/look/intro input
-  -> interaction consumes seed/action input
+  -> player consumes movement, look and intro input
+  -> interaction consumes seed and context actions
   -> camera derives from player state
   -> render snapshot and visible frame
 
 focus loss
   -> enqueue clear command
-  -> later same-frame commands can still be admitted
-  -> no focus generation fences the successor commands
+  -> later same-frame commands remain admissible
+  -> no focus generation fences predecessor work
 ```
 
 ## Main findings
 
 ```txt
-keyboard ownership
-  window listeners accept gameplay keys when the canvas is not focused
-  preventDefault can affect unrelated future controls
-
-pointer ownership
-  pointerdown accepts any button and pointer
-  pointermove does not match drag.pointerId
-  pointerup from any pointer clears the active drag
-  lostpointercapture has no recovery handler
-
-command admission
-  generation is always 1
-  duplicate command IDs are not rejected
-  rejectedCommands is never advanced
-  clear does not close the queue generation
-
-proof
-  no focus, gesture, command-result or visible-frame acknowledgement
-  Node smoke does not dispatch real browser input
+keyboard ownership: global, no canvas-focus or editable-target admission
+pointer ownership: stored ID is not enforced by move or release
+primary input policy: absent
+lost capture recovery: absent
+command generation: permanently 1
+duplicate command rejection: absent
+rejection diagnostics: inert
+clear generation fence: absent
+consumer receipts: absent
+first visible input-frame acknowledgement: absent
+browser fixture harness: absent
 ```
 
 ## Kit census
 
 ```txt
 engine-installed core/adventure kits: 13
-cataloged world/render/host kits:     50
-additional runtime composition kit:    1
-source-backed kit surfaces:            64
-active route kit surfaces:             62
-retained inactive catalog entries:      2
-ordered Core World providers:           9
+cataloged world/render/host kits: 50
+additional runtime composition kit: 1
+source-backed kit surfaces: 64
+active route kit surfaces: 62
+retained inactive catalog entries: 2
+ordered Core World providers: 9
 ```
 
 ## Required authority
@@ -137,7 +124,7 @@ ordered Core World providers:           9
 cozy-island-browser-input-ownership-authority-domain
 ```
 
-It must own input-session and surface identity, focus generations, primary pointer/button policy, gesture and pointer-capture lifecycle, command IDs and duplicate rejection, clear/fence generations, typed admission results, consumer receipts, stale-command rejection and first-visible-input-frame acknowledgement.
+It owns input-session and surface identity, focus generations, primary pointer/button policy, gesture and pointer-capture lifecycle, command IDs and duplicate rejection, clear/fence generations, typed admission results, consumer receipts, stale-command rejection and first-visible-input-frame acknowledgement.
 
 ## Ownership boundary
 

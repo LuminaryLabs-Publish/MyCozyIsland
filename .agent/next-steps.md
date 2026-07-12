@@ -1,29 +1,29 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T22-20-00-04-00`
+Last updated: `2026-07-12T00-20-01-04-00`
 
 ## Summary
 
-The layered ocean pipeline needs one authority between the logical graph and the physical renderer. The next implementation slice should register the composition kit, compile one physical execution plan, bind each declared resource explicitly, and prove foam occlusion and backend parity in a browser.
+Keep the new depth-aware foam mask, then replace its construction-time proxy snapshot with an admitted proxy topology and resource lifecycle. The next safe implementation must also finish the broader render-graph binding work so the physical depth pass, remaining foam inputs, backend execution, diagnostics, and visible-frame evidence come from one authority.
 
 ## Plan ledger
 
-**Goal:** make the logical render graph executable and observable instead of maintaining a valid descriptor beside a separately hard-coded pipeline.
+**Goal:** make foam depth proxy membership, resources, opaque-depth binding, frame synchronization, topology replacement, and disposal deterministic and observable.
 
-- [ ] Add `cozy-ocean-composition-kit` to the canonical kit catalog or explicitly classify it outside the catalog.
-- [ ] Update catalog count, capabilities, public kit catalog, and diagnostics from one source.
-- [ ] Assign stable logical pass, physical pass, graph revision, and resource IDs.
-- [ ] Compile fused physical passes from the admitted logical graph.
-- [ ] Resolve every declared read against one producer or admitted external input.
-- [ ] Add typed missing-binding, stale-binding, unsupported-backend, and cycle results.
-- [ ] Bind the final foam pass to the exact opaque depth attachment it tests against.
-- [ ] Either bind water-mask/water-surface-depth/fog-transmittance or revise the logical foam contract to match the physical algorithm.
-- [ ] Derive reported logical and physical pass order from the compiled plan.
-- [ ] Publish pass execution receipts and one first-layered-frame acknowledgement.
-- [ ] Add WebGPU and WebGL2 physical resource-binding parity fixtures.
-- [ ] Add browser captures proving foam does not render through island, sea floor, props, or vegetation.
-- [ ] Add rolling-fog/foam integration fixtures at near, mid, and far camera positions.
-- [ ] Keep all prior startup, session, lifecycle, focus, materialization, and disposal gaps visible.
+- [ ] Add `cozy-ocean-composition-kit` to the canonical kit catalog or explicitly classify it.
+- [ ] Represent `foam-occlusion-depth` in the admitted physical plan.
+- [ ] Assign stable source mesh, proxy mesh, proxy scene, material, pass, graph and topology IDs.
+- [ ] Build source/proxy membership from canonical mesh identities.
+- [ ] Publish a monotonic source and proxy topology revision.
+- [ ] Reconcile added, retained and removed foam meshes atomically.
+- [ ] Classify source geometry as shared and the proxy material/pass as owned.
+- [ ] Add an idempotent `postPipeline.dispose()` and integrate it with session teardown.
+- [ ] Stop the animation loop and callbacks before proxy/resource disposal.
+- [ ] Bind the exact current opaque-depth producer through a typed result.
+- [ ] Bind water-mask, water-surface-depth and fog-transmittance or revise the logical contract.
+- [ ] Derive logical and physical pass readback from the admitted plan and execution receipts.
+- [ ] Add topology mutation, disposal, WebGPU/WebGL2 parity, and visible-pixel fixtures.
+- [ ] Keep startup, session, world lifecycle, reset, focus, materialization, camera and adaptive-quality gaps visible.
 
 ## Ordered implementation queue
 
@@ -32,6 +32,7 @@ The layered ocean pipeline needs one authority between the logical graph and the
 2. Runtime Session Lifecycle Authority
 3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
 4. Render Layer Graph Admission and Physical Resource Binding Authority
+4a. Foam Depth Proxy Topology and Lifecycle Authority
 5. Core World Reset / Re-prepare Authority
 6. Pinned Core World Focus Transaction Authority
 7. Live Materialization Readiness Commit Authority
@@ -41,127 +42,103 @@ The layered ocean pipeline needs one authority between the logical graph and the
 11. Adaptive Quality Transaction Authority
 ```
 
-## Candidate render-binding kits
+## Candidate kits
 
 ```txt
-kit-catalog-completeness-kit
-render-composition-admission-kit
-logical-pass-identity-kit
-physical-pass-identity-kit
-render-resource-identity-kit
-render-resource-production-kit
-render-resource-binding-kit
-fused-pass-plan-kit
-pass-admission-result-kit
-depth-provenance-kit
-water-mask-provenance-kit
-fog-transmittance-provenance-kit
-foam-occlusion-policy-kit
-render-graph-compile-result-kit
-logical-physical-parity-result-kit
-render-pass-observation-kit
-first-layered-frame-receipt-kit
-browser-foam-occlusion-fixture-kit
-webgpu-webgl2-layer-parity-fixture-kit
+foam-depth-proxy-plan-kit
+foam-depth-proxy-identity-kit
+foam-depth-proxy-membership-kit
+foam-depth-proxy-topology-revision-kit
+foam-depth-proxy-transform-sync-kit
+foam-depth-proxy-resource-lease-kit
+foam-depth-proxy-disposal-kit
+foam-depth-binding-result-kit
+logical-physical-pass-adapter-kit
+foam-depth-pass-observation-kit
+foam-occlusion-frame-receipt-kit
+foam-proxy-topology-fixture-kit
+foam-proxy-disposal-fixture-kit
+webgpu-webgl2-foam-depth-parity-fixture-kit
 ```
 
-## Required compiled plan
+## Required data contracts
 
 ```txt
-CompiledRenderPlan {
-  graphId
+FoamDepthProxyPlan {
+  sessionId
+  runtimeGeneration
   graphRevision
-  backend
-  logicalPasses[]
-  physicalPasses[]
-  fusionGroups[]
-  resources[]
-  bindings[]
-  externalInputs[]
-  outputResourceId
-  validation
+  sourceTopologyRevision
+  proxyTopologyRevision
+  sourceMeshIds[]
+  proxyMeshIds[]
+  sharedGeometryIds[]
+  ownedResourceIds[]
+  membership[]
 }
-```
 
-## Required resource binding
-
-```txt
-RenderResourceBinding {
-  bindingId
-  resourceId
-  producerPassId
-  consumerPassId
-  attachmentKind
-  backendHandleClass
-  format
-  sizeRevision
-  worldRevision
+FoamDepthBindingResult {
   frameId
+  producerPassId
+  producerAttachmentId
+  consumerPassId
+  proxyTopologyRevision
+  backend
   accepted
   rejectionReason
 }
-```
 
-## Required foam contract
-
-```txt
-foam pass
-  receives one current scene color input
-  receives one current opaque depth input when depth testing is declared
-  receives or explicitly does not require water mask and water-surface depth
-  receives or explicitly does not require rolling-fog transmittance
-  cannot write depth
-  cannot mutate terrain, physics, or fog state
-  remains the final authored scene-content pass
+FoamOcclusionFrameReceipt {
+  frameId
+  graphRevision
+  physicalPlanRevision
+  sourceTopologyRevision
+  proxyTopologyRevision
+  resourceRevision
+  bindingResult
+  passResults[]
+  visibleOutputId
+}
 ```
 
 ## Minimum fixture matrix
 
 ```txt
-catalog completeness
-  all source-backed kit IDs accounted for exactly once
+static graph
+  -> logical/physical adapter includes the depth pass
 
-logical/physical compile
-  six logical passes -> admitted fused physical plan
+topology add/remove
+  -> exact proxy membership after rebuild
 
-missing resource
-  declared read without producer -> deterministic rejection
+transform sync
+  -> source and proxy world transforms match for one frame
 
-foam depth
-  opaque island and prop occlude shoreline foam
+resource ownership
+  -> shared geometry survives proxy disposal
+  -> proxy material and pass retire exactly once
 
-foam/water
-  foam appears only on admitted shoreline/water regions
+opaque occlusion
+  -> terrain, rock, prop and vegetation hide foam correctly
 
-foam/fog
-  rolling fog and distance treatment match the declared contract
+water/fog contract
+  -> remaining logical inputs are bound or removed explicitly
 
 backend parity
-  WebGPU and WebGL2 expose the same plan/result schema
-
-resize/quality
-  resource revisions advance and stale bindings reject
+  -> WebGPU and WebGL2 expose the same result schema
 
 visible frame
-  first layered frame cites graph, plan, resource, world, and backend revisions
+  -> capture cites graph, plan, topology, binding, backend and frame revisions
 ```
 
 ## Acceptance conditions
 
 ```txt
-catalog and runtime kit counts agree
-physical passes are derived from one admitted graph revision
-every logical read has one explicit binding or admitted external source
-depth-tested foam identifies and samples the current opaque depth attachment
-hard-coded pass-order strings are removed or derived
-WebGPU/WebGL2 return the same compile and execution result classes
-browser evidence proves opaque occlusion and final-pass ordering
-public readback cites the current graph and physical plan revisions
-```
-
-## Next safe ledge
-
-```txt
-MyCozyIsland Render Layer Graph Admission and Physical Resource Binding Authority
-+ Catalog Completeness / Foam Depth / Fog Integration / Backend Parity / First-Layered-Frame Fixture Gate
+no construction-time ambient proxy membership
+no mixed source/proxy topology in a frame
+no leaked proxy material, scene or pass
+no double disposal of shared geometry
+physical pass identity comes from the admitted plan
+all declared foam inputs are bound or removed
+public readback derives from execution receipts
+browser evidence proves depth-aware foam on both backends
 ```

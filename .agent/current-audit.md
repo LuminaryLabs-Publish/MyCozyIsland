@@ -1,32 +1,29 @@
-# Current Audit: MyCozyIsland Host Save Persistence Authority
+# Current Audit: MyCozyIsland Browser Input Ownership and Gesture Admission
 
-Last updated: `2026-07-12T14-51-49-04-00`
+Last updated: `2026-07-12T17-01-09-04-00`
 
 ## Summary
 
-The active route is a NexusEngine island-adventure loop with deterministic world generation, normalized input, first-person movement, official Agriculture services, product Inventory settlement, wild coconut Foraging, portable save-v2 capture, save-v1 migration, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
+The active route is a NexusEngine island adventure with deterministic world generation, official Agriculture, Inventory, wild Foraging, first-person player movement, contextual interaction, portable saves and WebGPU/WebGL2 presentation.
 
-The current gap is the boundary between portable snapshot capture and browser durability. `cozy-save-domain-kit` updates SaveState to `captured` before `src/main-adventure.js` proves that localStorage accepted and can read back the record. A failed host write can therefore leave engine diagnostics and the HUD claiming `Saved` without a durable commit.
-
-The prior Agriculture cutover recovery authority remains required for gameplay transaction truth. The new host-save authority composes after it and owns only browser persistence, restore admission, lifecycle and durable status.
+The current gap is the boundary between browser events and `cozy-input-domain-kit`. The browser host does not establish one authoritative input surface, focus generation or pointer gesture before enqueueing commands. The input DSK normalizes events, but its generation is permanently `1`, duplicate IDs are not rejected, clear commands do not fence later commands and no typed admission result links a browser event to the committed player/camera frame.
 
 ## Plan ledger
 
-**Goal:** make save capture, browser commit, restore, reset, conflict handling and visible save status one truthful generation-bound transaction.
+**Goal:** require current surface, focus, gesture and command evidence before browser input can mutate player, interaction, camera or the visible frame.
 
-- [x] Compare all ten accessible Publish repositories.
+- [x] Compare the complete Publish inventory and central ledgers.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
-- [x] Select only `MyCozyIsland` as the oldest eligible central entry.
-- [x] Identify the complete startup, frame, autosave, restore, pagehide and reset loops.
+- [x] Select only `MyCozyIsland` by the oldest eligible timestamp.
+- [x] Inspect `index.html`, `src/main-adventure.js`, `src/adventure/composition-runtime.js` and `src/adventure/runtime-domains.js`.
+- [x] Trace keyboard, pointer, wheel, blur and visibility events into input frames.
+- [x] Trace input frames into player, interaction and camera consumers.
 - [x] Identify every active domain.
-- [x] Preserve all 13 engine-installed kits and their services.
-- [x] Preserve all 50 cataloged world/render/host kits and the additional composition kit.
-- [x] Audit capture/commit truth, rollback reporting, key migration, quarantine, writer conflicts and lifecycle generations.
-- [x] Add timestamped architecture and system-specific audits.
-- [x] Refresh root `.agent` files and machine registry.
+- [x] Preserve all 13 installed kits, 50 cataloged kits and the render-composition kit.
+- [x] Add a timestamped tracker and architecture/system audit family.
+- [x] Refresh the root `.agent` route, gaps, next steps, validation and registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime persistence implementation and browser fixtures remain future work.
+- [ ] Runtime implementation and executable browser input fixtures remain future work.
 
 ## Selection evidence
 
@@ -36,10 +33,8 @@ eligible non-Cavalry repositories: 9
 new eligible repositories: 0
 central-ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-
 selected: MyCozyIsland
-reason: oldest eligible central entry
-selected timestamp: 2026-07-12T12-58-08-04-00
+selected timestamp: 2026-07-12T14-59-01-04-00
 excluded: TheCavalryOfRome
 ```
 
@@ -47,162 +42,146 @@ excluded: TheCavalryOfRome
 
 ```txt
 startup
-  -> create WebGPU/WebGL2 renderer and quality policy
-  -> install Core Object and Core Transaction Ledger
-  -> install World, Input, Inventory and official Agriculture
-  -> install Foraging, Player, Scenario, Interaction, Camera, Save and Render Snapshot
-  -> read my-cozy-island.adventure-save.v1 from localStorage
-  -> parse JSON and call cozySave.restore
-  -> build static and first frame snapshots
-  -> construct world and presentation resources
-  -> bind input, resize, visibility and pagehide listeners
+  -> create renderer and quality policy
+  -> install 13 engine kits
+  -> restore save when available
+  -> construct world and presentation
+  -> attach global keyboard listeners
+  -> attach canvas wheel and pointer listeners
   -> start renderer animation loop
 
-frame
-  -> admit normalized input frame
-  -> advance Agriculture growth and Foraging respawn
-  -> advance scenario and player
-  -> resolve and settle contextual interaction
-  -> build renderer-neutral frame snapshot
-  -> update world, gameplay, ocean, HUD and diagnostics
-  -> render post-processing pipeline
-  -> accumulate clamped simulation dt for autosave
-  -> compare durableFingerprint with last successful host fingerprint
+keyboard
+  -> window keydown/keyup regardless of canvas focus
+  -> H toggles debug outside the input DSK
+  -> gameplay keys enqueue key commands
+  -> selected keys call preventDefault globally
 
-host autosave
-  -> cozySave.capture builds portable v2 snapshot
-  -> SaveState becomes captured and saveCount increments
-  -> JSON.stringify
-  -> localStorage.setItem on one fixed key
-  -> update lastSaveFingerprint only when setItem returns
+pointer
+  -> any pointerdown and button creates drag state
+  -> setPointerCapture for that pointer
+  -> any pointermove while drag exists enqueues look delta
+  -> any pointerup clears drag
+  -> pointercancel clears drag
+  -> no lostpointercapture recovery
 
-restore
-  -> clone predecessor snapshots
-  -> validate checksum and schema
-  -> migrate v1 farming state when required
-  -> sequentially load world, ledger, scenario, inventory, agriculture, foraging and player
-  -> reset interaction
-  -> on failure sequentially reload predecessor snapshots
-  -> log rollback failure but still return rolledBack true
+input phase
+  -> sort queue by sequence
+  -> silently ignore non-generation-1 commands
+  -> accept every generation-1 command ID
+  -> update held keys and one-shot actions
+  -> clear queue
+  -> publish one frame
 
-page lifecycle
-  -> visibilitychange clears input only
-  -> pagehide once calls storeSave
-  -> pagehide disposes gameplayRenderer only
-  -> no pageshow/bfcache persistence generation
+consumers
+  -> player applies look, movement, sprint and intro skip
+  -> interaction applies seed selection and contextual action
+  -> camera derives from committed player state
+  -> render snapshot projects player/camera/HUD
+  -> Three.js renders the visible frame
 
-reset
-  -> public resetAdventure calls cozySave.resetAll
-  -> engine owners reset
-  -> durable record is replaced only by a later autosave or pagehide
+focus loss
+  -> blur or hidden enqueues clear
+  -> clear releases held keys when processed
+  -> commands after clear in the same queue can reactivate input
 ```
 
 ## Source-backed strengths
 
-- Dependencies and browser imports are pinned to immutable commits.
-- Official Agriculture remains the correct reusable crop authority.
-- Portable save payloads include world, ledger, scenario, inventory, Agriculture, Foraging and player snapshots.
-- Payload checksum validation exists.
-- Save-v1 farming state can migrate into Agriculture schema.
-- The host retries autosave when a storage write fails because it does not advance `lastSaveFingerprint`.
-- The engine save domain remains host-agnostic through adapter-owned persistence metadata.
-- Node smoke proves engine-level v2 round trip and synthetic v1 migration.
+- Browser events are converted into renderer-neutral commands before gameplay consumption.
+- Commands have deterministic sequence numbers.
+- Pointer deltas and wheel input are clamped per frame.
+- One-shot actions reject native key-repeat.
+- Blur and hidden-page paths attempt to release held keys.
+- Player, interaction and camera remain renderer-agnostic DSK consumers.
+- The engine and official Agriculture imports are commit-pinned.
 
 ## Source-backed gaps
 
-### Capture is reported before durable commit
+### Keyboard ownership is global
 
-`cozySave.capture()` sets `status: captured`, increments `saveCount`, stores `lastHash` and increments SaveState revision before the host calls localStorage. A quota, security or serialization failure therefore leaves capture diagnostics that look like durable success.
+`keydown` and `keyup` listeners are registered on `window`. Gameplay commands are admitted even when the canvas is not the active surface. The selected key list also calls `preventDefault()` globally, which can interfere with future menus, text fields or accessibility controls.
 
-### HUD save status is not durable truth
+### Pointer identity is recorded but not enforced
 
-`updateHud()` displays `Saved` whenever `frame.save.status === "captured"`. It has no host commit result, storage generation, dirty revision or failure state. The next frame can display `Saved` after `localStorage.setItem` failed.
+The drag record stores `pointerId`, but `pointermove` checks only whether any drag exists. A second pointer can therefore rotate the camera. `pointerup` clears the drag regardless of which pointer ended.
 
-### Restore rollback result can lie
+### Primary-button policy is absent
 
-The restore catch block attempts participant rollback. If rollback throws, it logs the error, then still returns `{ ok: false, rolledBack: true }`. No `rollback-failed` or `indeterminate` state exists.
+`pointerdown` does not require `event.isPrimary`, `button === 0` or a supported pointer type. Secondary mouse buttons and additional touches can start or disturb look gestures.
 
-### Corrupt records are not quarantined
+### Capture loss is not a lifecycle result
 
-JSON parse, checksum and schema failures leave the same localStorage record in place. Every reload retries the same record. No verified backup, quarantine row, fallback generation or repair receipt exists.
+There is no `lostpointercapture` handler. If capture is revoked outside the expected up/cancel path, drag ownership can remain stale until another event clears it.
 
-### Key identity is ambiguous
+### Input generation never changes
 
-The browser key is `my-cozy-island.adventure-save.v1`, while the current payload schema is `cozy-island-adventure-save/2`. The old key may preserve continuity, but no canonical key registry, key migration policy or migration receipt makes that intent explicit.
+Every command is normalized with `generation: 1`. Blur, visibility change, restore, reset and bfcache resume do not allocate a successor generation. Stale commands cannot be distinguished from current commands.
 
-### Storage has no staged commit
+### Duplicate IDs are not rejected
 
-The host overwrites one key directly. It has no staging generation, readback verification, active pointer, predecessor backup, storage commit ID or bounded retention policy.
+Callers may supply command IDs. The queue accepts repeated IDs, and the input frame can list them multiple times. One-shot commands can therefore be replayed without a typed duplicate result.
 
-### Multi-tab writes are uncoordinated
+### Rejection diagnostics are inert
 
-Multiple tabs can load one predecessor and later replace each other using last-writer-wins localStorage. No tab identity, writer lease, storage event admission, expected predecessor checksum or conflict result exists.
+`rejectedCommands` exists in InputState, but the frame system does not increment it when a command has a wrong generation or invalid shape.
 
-### Autosave cadence uses simulation time
+### Clear does not fence later commands
 
-The five-second accumulator advances by clamped frame `dt`, not monotonic wall time. Background throttling and long callback gaps can delay autosave. Normal movement and scenario time continuously change the durable fingerprint.
+A clear command zeros held keys and frame deltas at its sequence position. Commands with a later sequence in the same queue are still processed and can reactivate input after blur or visibility loss.
 
-### Page lifecycle is not bfcache-safe
+### Host-only debug input is outside command proof
 
-The pagehide listener uses `{ once: true }`. After a bfcache restore, no pageshow handler allocates a new lifecycle generation or rearms the save handler. Visibility changes clear input but do not trigger a persistence policy.
+`KeyH` mutates the debug overlay directly and does not produce an input command, result or frame receipt.
 
-### Reset is not immediately durable
+### Visible-frame provenance is absent
 
-`resetAdventure()` resets in-memory owners but does not immediately clear or replace the durable record. A process termination before the next autosave/pagehide can resurrect the predecessor save.
+The camera frame contains player-derived pose but no input session, focus generation, gesture ID, command ID set or consumer receipt. No acknowledgement proves which admitted input produced the first visible frame.
 
-### Restore has no first-frame proof
+### Executable browser proof is absent
 
-No storage generation, restore command ID or migration receipt is carried into the render snapshot. No acknowledgement proves that the first visible island frame matches the restored durable record.
-
-### Browser persistence proof is absent
-
-The Node smoke calls `cozySave.capture()` and `restore()` directly. It does not instantiate localStorage, page lifecycle, quota failures, corrupt records, multiple tabs, WebGPU/WebGL2 status projection or Pages persistence.
+The current Node test exercises adventure domains directly. It does not dispatch real KeyboardEvent, PointerEvent, pointer-capture, blur, visibility or multi-pointer sequences.
 
 ## Domains in use
 
 ```txt
-browser shell, loader, controls, HUD, hotbar and diagnostics
-browser localStorage adapter and page lifecycle
-WebGPU/WebGL2 rendering, quality, adaptive performance, resize and post-processing
-NexusEngine runtime, ECS phases, resources, events and service installation
+browser document shell, canvas focus and DOM event adapters
+browser keyboard, pointer, wheel, blur and visibility lifecycle
+input surface ownership and focus generation
+pointer gesture, capture and cancellation
+NexusEngine runtime, ECS phases and service installation
+normalized input queue, held state and frame admission
 core object registration
-core transaction ledger, repeat detection, snapshot and reset
+core transaction ledger and repeat detection
 seeded island world, terrain and surface queries
-farm plots and wild-resource layout
-normalized input queue and frame admission
-scenario clock, day, phase and objective
-Inventory balances, seed selection and batch settlement
-production catalog family
-official Agriculture land, soil, cultivation, watering, growth, harvest and perennials
-tropical Agriculture configuration and product transaction coordination
-wild coconut collection and respawn
-player movement, grounding, view and stamina
+Inventory balances, seed selection and settlement
+official Agriculture land, soil, cultivation, water, growth, harvest and perennials
+wild coconut Foraging and respawn
+player movement, terrain grounding, view and stamina
+scenario time and objective
 nearest-target contextual interaction
 camera intro and first-person projection
-portable save capture, checksum, schema migration, restore, rollback and reset
-host save dirty tracking, storage commit, conflict, quarantine and lifecycle policy
-renderer-neutral static/frame/HUD/debug snapshots
-terrain, biome, shoreline, ocean floor, vegetation, rocks, props and campfire
-ocean, foam, cloud, fog, weather, wind, illumination and sky
-render graph, depth, blend, output and backend parity
-tests, CI, Pages deployment and audit tracking
+portable save and browser durability boundary
+renderer-neutral static, frame, HUD and debug snapshots
+WebGPU/WebGL2 world, atmosphere, water, fog, foam and post-processing
+adaptive quality, resize and backend parity
+validation, CI and Pages deployment
 ```
 
 ## Engine-installed kits and services
 
-- `core-object-kit`: stable object registration, lookup and listing.
-- `core-transaction-ledger-kit`: ledger creation, record, apply-once, duplicate readback, snapshot and reset.
-- `cozy-world-domain-kit`: seeded model, surface queries, plot and forage layouts, render base, snapshot and reset.
-- `cozy-input-domain-kit`: normalized command queue, held state, frame admission, clear, snapshot and reset.
-- `cozy-inventory-domain-kit`: items, seed selection, single and batch transactions, snapshot and reset.
-- `agriculture-domain-kit`: land, soil, cultivation, water, continuous/daily growth, harvest, perennials, descriptors, events, snapshot and reset.
+- `core-object-kit`: registration, lookup and listing.
+- `core-transaction-ledger-kit`: ledger creation, idempotency, record, apply-once, snapshot and reset.
+- `cozy-world-domain-kit`: seeded world, surface queries, plot layout, forage layout, render base, snapshot and reset.
+- `cozy-input-domain-kit`: normalization, command queue, frame admission, held actions, clear, snapshot and reset.
+- `cozy-inventory-domain-kit`: item definitions, seed selection, single and batch settlement, snapshot and reset.
+- `agriculture-domain-kit`: land, soil, cultivation, water, growth, harvest, perennials, descriptors, events, snapshot and reset.
 - `cozy-foraging-domain-kit`: wild coconut nodes, collection, respawn, snapshot and reset.
-- `cozy-player-domain-kit`: movement, terrain grounding, view, stamina, snapshot and reset.
-- `cozy-scenario-domain-kit`: clock, day, phase, objective, snapshot and reset.
-- `cozy-interaction-domain-kit`: targeting, Agriculture settlement, wild-forage action, prompt, result, snapshot and reset.
+- `cozy-player-domain-kit`: movement, grounding, view, stamina, snapshot and reset.
+- `cozy-scenario-domain-kit`: time, objective, snapshot and reset.
+- `cozy-interaction-domain-kit`: targeting, contextual action, Agriculture settlement, wild-forage action, prompt, result, snapshot and reset.
 - `cozy-camera-domain-kit`: aerial intro, first-person view, terrain clearance and descriptor.
-- `cozy-save-domain-kit`: capture, checksum, v1 migration, restore, rollback, reset and diagnostics.
-- `cozy-render-snapshot-domain-kit`: static world, Agriculture descriptors, frame snapshot, HUD and debug descriptors.
+- `cozy-save-domain-kit`: capture, checksum validation, migration, restore, rollback, reset and diagnostics.
+- `cozy-render-snapshot-domain-kit`: static world, Agriculture descriptors, frame, HUD and debug snapshots.
 
 ## Cataloged world/render/host kits
 
@@ -261,7 +240,7 @@ environment-clock-domain-kit
 
 Additional source-backed kit:
 
-- `cozy-ocean-composition-kit`: render-layer graph, dependency validation, transparent-depth validation, terrain handoff and per-layer depth/blend contracts.
+- `cozy-ocean-composition-kit`: render-layer graph, pass-order validation, transparent-depth validation, terrain handoff and per-layer depth/blend contracts.
 
 ## Kit census
 
@@ -278,92 +257,79 @@ ordered Core World providers retained in source: 9
 ## Required parent domain
 
 ```txt
-cozy-island-host-save-persistence-authority-domain
+cozy-island-browser-input-ownership-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-save-session-id-kit
-save-command-id-kit
-save-storage-generation-kit
-save-dirty-revision-kit
-save-envelope-v3-kit
-save-source-fingerprint-kit
-save-storage-capability-kit
-save-key-registry-kit
-save-key-migration-kit
-save-writer-lease-kit
-save-predecessor-checksum-kit
-save-capture-candidate-kit
-save-stage-write-kit
-save-readback-verification-kit
-save-pointer-commit-kit
-save-backup-retention-kit
-corrupt-save-quarantine-kit
-save-conflict-result-kit
-save-commit-result-kit
-save-restore-admission-kit
-save-rollback-result-kit
-save-reset-commit-kit
-save-autosave-policy-kit
-page-lifecycle-save-flush-kit
-bfcache-save-resume-kit
-save-status-projection-kit
-save-observation-journal-kit
-save-frame-ack-kit
-storage-quota-failure-fixture-kit
-corrupt-save-quarantine-fixture-kit
-multi-tab-write-conflict-fixture-kit
-pagehide-bfcache-cycle-fixture-kit
-reset-crash-reload-fixture-kit
-restore-rollback-failure-fixture-kit
-browser-storage-roundtrip-smoke-kit
-pages-storage-roundtrip-smoke-kit
+input-session-id-kit
+input-surface-id-kit
+input-surface-revision-kit
+input-focus-generation-kit
+input-focus-admission-kit
+pointer-gesture-id-kit
+pointer-primary-policy-kit
+pointer-button-policy-kit
+pointer-capture-lifecycle-kit
+pointer-sample-kit
+keyboard-sample-kit
+wheel-sample-kit
+input-command-id-kit
+input-command-envelope-kit
+input-command-deduplication-kit
+input-generation-fence-kit
+input-clear-result-kit
+input-admission-result-kit
+input-rejection-reason-kit
+input-consumer-receipt-kit
+input-observation-journal-kit
+input-visible-frame-ack-kit
+keyboard-focus-fixture-kit
+multi-pointer-isolation-fixture-kit
+lost-pointer-capture-fixture-kit
+blur-clear-fence-fixture-kit
+duplicate-command-fixture-kit
+browser-input-smoke-kit
+pages-input-smoke-kit
 ```
 
-## Required save transaction
+## Required transaction
 
 ```txt
-dirty gameplay state
-  -> increment dirty revision
-  -> admit SaveCommand against session, writer lease and predecessor
-  -> capture immutable portable candidate without marking durable success
-  -> serialize and write staging generation
-  -> read back and verify bytes, schema and checksums
-  -> compare active predecessor again
-  -> commit active pointer and retain bounded backup
-  -> publish SaveCommitResult
-  -> clear matching dirty revision
-  -> project Saved with commit and storage generation
-```
+DOM event
+  -> identify current input surface and focus generation
+  -> validate source, primary pointer/button and capture ownership
+  -> allocate sample, gesture and command IDs
+  -> bind command to current input generation
+  -> reject duplicate, stale, unfocused or foreign-pointer evidence
+  -> publish typed InputAdmissionResult
+  -> commit one normalized InputFrame
+  -> collect player, interaction and camera consumer receipts
+  -> project renderer-neutral frame
+  -> acknowledge first visible frame for the accepted command set
 
-## Required restore transaction
-
-```txt
-startup
-  -> resolve canonical key and active pointer
-  -> migrate legacy key with receipt
-  -> parse and verify candidate
-  -> quarantine invalid active record
-  -> select verified active or backup generation
-  -> prepare participant restore
-  -> commit all participants or publish truthful rollback failure
-  -> publish RestoreResult
-  -> acknowledge first visible frame from restored generation
-```
-
-## Required reset transaction
-
-```txt
-ResetCommand
-  -> reset engine participants
-  -> create baseline or tombstone candidate
-  -> commit it immediately
-  -> retire predecessor storage generation
-  -> publish ResetCommitResult and first reset frame receipt
+blur / hidden / capture loss / bfcache transition
+  -> close current input generation
+  -> emit one typed clear result
+  -> reject all predecessor-generation commands
+  -> allocate a successor generation only after valid reacquisition
 ```
 
 ## Validation boundary
 
-Documentation changed only. Runtime, save behavior, gameplay, rendering, dependencies and deployment were not modified in this audit run.
+```txt
+runtime source changed: no
+input behavior changed: no
+gameplay changed: no
+rendering changed: no
+package scripts or dependencies changed: no
+deployment changed: no
+branch created: no
+pull request created: no
+npm test: not run
+browser input smoke: not run
+Pages input smoke: not run
+```
+
+This audit documents the defect and target ownership boundary. It does not claim input focus, pointer isolation, duplicate rejection, clear fencing or visible-frame provenance is implemented.

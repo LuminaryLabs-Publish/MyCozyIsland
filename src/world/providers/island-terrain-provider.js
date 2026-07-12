@@ -15,14 +15,13 @@ const FIELD_NAMES = Object.freeze([
 
 export function createIslandTerrainSource({ terrain, config } = {}) {
   if (!terrain || !config) throw new TypeError("createIslandTerrainSource requires terrain and config.");
-
   const store = createProviderRuntimeStore("cozy-island-terrain-provider-runtime");
   const resolution = Number(config.terrain?.resolution ?? 49);
 
   function createDescriptor({ worldId, cell, seed, version, status }) {
     const handleId = `${cell.id}:terrain-patch`;
     return createCellEffectDescriptor({
-      schema: "cozy.terrain-patch.v2",
+      schema: "cozy.island-terrain-patch.v3",
       id: handleId,
       worldId,
       cell,
@@ -36,12 +35,19 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
         "terrain-fields",
         "terrain-surface",
         "terrain-patch",
-        "terrain-descriptor"
+        "terrain-descriptor",
+        "island-height",
+        "island-normal",
+        "island-terrain-patch",
+        "island-terrain-descriptor"
       ],
       data: {
         resolution,
         fieldNames: FIELD_NAMES,
-        materialization: status
+        materialization: status,
+        semanticTerrain: "island",
+        submergedShelfWidth: Number(config.terrain?.submergedShelfWidth ?? 6),
+        submergedShelfDepth: Number(config.terrain?.submergedShelfDepth ?? -5)
       }
     });
   }
@@ -49,8 +55,13 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
   function registerCell({ worldId, cell, seed }) {
     const existing = store.get(cell.id);
     const status = existing?.status ?? "queued";
-    const version = Number(existing?.descriptor?.version ?? 0) + 1;
-    const descriptor = createDescriptor({ worldId, cell, seed, version, status });
+    const descriptor = createDescriptor({
+      worldId,
+      cell,
+      seed,
+      version: Number(existing?.descriptor?.version ?? 0) + 1,
+      status
+    });
     const record = store.set(cell.id, {
       ...(existing ?? {}),
       handleId: `${cell.id}:terrain-patch`,
@@ -60,10 +71,7 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
       cell,
       status
     });
-    return {
-      descriptor,
-      runtimeHandle: record.runtimeHandle ?? null
-    };
+    return { descriptor, runtimeHandle: record.runtimeHandle ?? null };
   }
 
   function createJob() {
@@ -88,13 +96,8 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
     if (record.status === "ready" && record.runtimeHandle) {
       return Object.freeze({ cellId: record.cellId, status: "ready", complete: true, progress: 1, rowsProcessed: 0 });
     }
-
     if (!record.job) {
-      record = store.set(record.cellId, {
-        ...record,
-        status: "materializing",
-        job: createJob()
-      });
+      record = store.set(record.cellId, { ...record, status: "materializing", job: createJob() });
     }
 
     const job = record.job;
@@ -102,7 +105,6 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
     const startRow = job.nextRow;
     const rowEnd = Math.min(resolution, startRow + rows);
     const bounds = record.cell.bounds;
-
     for (let zIndex = startRow; zIndex < rowEnd; zIndex += 1) {
       const z = bounds.minZ + (zIndex / (resolution - 1)) * (bounds.maxZ - bounds.minZ);
       for (let xIndex = 0; xIndex < resolution; xIndex += 1) {
@@ -124,8 +126,7 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
     }
 
     job.nextRow = rowEnd;
-    const complete = rowEnd >= resolution;
-    if (!complete) {
+    if (rowEnd < resolution) {
       return Object.freeze({
         cellId: record.cellId,
         status: "materializing",
@@ -135,12 +136,11 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
       });
     }
 
-    const version = Number(record.descriptor?.version ?? 0) + 1;
     const descriptor = createDescriptor({
       worldId: record.worldId,
       cell: record.cell,
       seed: record.seed,
-      version,
+      version: Number(record.descriptor?.version ?? 0) + 1,
       status: "ready"
     });
     const runtimeHandle = Object.freeze({
@@ -158,15 +158,7 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
       shoreDistanceField: job.shoreDistanceField,
       clearingField: job.clearingField
     });
-
-    store.set(record.cellId, {
-      ...record,
-      descriptor,
-      runtimeHandle,
-      status: "ready",
-      job: null
-    });
-
+    store.set(record.cellId, { ...record, descriptor, runtimeHandle, status: "ready", job: null });
     return Object.freeze({
       cellId: record.cellId,
       status: "ready",
@@ -202,7 +194,66 @@ export function createIslandTerrainSource({ terrain, config } = {}) {
     resetCells() { store.clear(); },
     getCellRecord(cellId) { return store.get(cellId); },
     getRuntimeCell(cellId) { return store.get(cellId)?.runtimeHandle ?? null; },
-    listRuntimeCells() { return store.list().map((entry) => entry.runtimeHandle).filter(Boolean); },
+    listRuntimeCells() { return store.list().map(entry => entry.runtimeHandle).filter(Boolean); },
     runtimeStore: store
+  });
+}
+export function createIslandTerrainProvider({ defineWorldEffectProvider, terrainSource } = {}) {
+  if (!defineWorldEffectProvider || !terrainSource) {
+    throw new TypeError("createIslandTerrainProvider requires defineWorldEffectProvider and terrainSource.");
+  }
+  const capabilities = Object.freeze([
+    "terrain-height",
+    "terrain-normal",
+    "terrain-material",
+    "terrain-descriptor",
+    "island-terrain-height",
+    "island-terrain-normal",
+    "island-terrain-patch",
+    "island-terrain-descriptor"
+  ]);
+
+  const build = command => {
+    const result = terrainSource.prepareCell({
+      worldId: command.world.id,
+      cell: command.cell,
+      surface: command.surface,
+      seed: `${command.cell.seed}:island-terrain`,
+      previous: command.effect ?? null
+    });
+    return {
+      id: `${command.cell.id}:island-terrain`,
+      kind: "island-terrain",
+      capabilities,
+      descriptor: result.descriptor
+    };
+  };
+
+  return defineWorldEffectProvider({
+    id: "cozy-island-terrain-provider",
+    kind: "island-terrain",
+    phase: "foundation",
+    critical: true,
+    provides: capabilities,
+    prepareCell: build,
+    updateCell: build,
+    releaseCell({ cell }) { terrainSource.releaseCell(cell.id); },
+    getEffectDescriptor(cellId, context = {}) {
+      const descriptor = terrainSource.getCellRecord(cellId)?.descriptor;
+      if (!descriptor) return null;
+      return {
+        id: `${cellId}:island-terrain`,
+        providerId: "cozy-island-terrain-provider",
+        worldId: context.world?.id ?? descriptor.worldId,
+        cellId,
+        kind: "island-terrain",
+        version: descriptor.version,
+        capabilities,
+        descriptor
+      };
+    },
+    snapshot() { return terrainSource.runtimeStore.snapshot(); },
+    restoreSnapshot() { terrainSource.resetCells(); },
+    reset() { terrainSource.resetCells(); }
   });
 }

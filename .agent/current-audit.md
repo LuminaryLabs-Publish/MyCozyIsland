@@ -1,27 +1,25 @@
-# Current Audit: MyCozyIsland Browser Startup Admission and Failure Rollback
+# Current Audit: MyCozyIsland World Lifecycle Contract and Mode Parity
 
-Last updated: `2026-07-11T19-20-22-04-00`
+Last updated: `2026-07-11T20-51-14-04-00`
 
 ## Summary
 
-`MyCozyIsland` performs browser startup as one sequential `main()` procedure. It has no startup transaction identity, phase model, acquisition ledger, rollback plan or first-frame commit result. `main().catch(fail)` only reports the exception in the DOM, leaving any renderer, world, scene, volume, post, callback, timer or loop ownership acquired before the failure without an authoritative cleanup path.
-
-The Core World wrapper has a second concrete defect: `prepare()` sets `prepared = true` before `commitFocus()` succeeds. A thrown focus/provider update can leave the runtime reporting prepared while `worldSnapshot` is null, and a retry can immediately return that null state without attempting preparation again.
+`MyCozyIsland` exposes the same public world-runtime shape in legacy and Core modes, but the lifecycle semantics are incompatible. Legacy `reset()` and `dispose()` only clear `prepared` and remain reversible. Core `reset()` clears Core World definitions and provider coordination, while Core `dispose()` also resets the domain. The wrapper still exposes methods, engine, providers and query state without a `DISPOSED` phase or terminal rejection policy.
 
 ## Plan ledger
 
-**Goal:** define one startup authority that admits configuration, records every acquired capability, commits only after a valid first frame, and restores a retryable baseline on failure.
+**Goal:** define one explicit lifecycle contract across both modes, with authoritative phase, generation, reusable reset, terminal disposal, read-model leases and typed operation results.
 
-- [x] Compare the full Publish inventory and exclude `TheCavalryOfRome`.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` through the oldest eligible central rule.
-- [x] Read the active browser route, world runtime, package scripts and retained audits.
-- [x] Trace startup from catalog validation through global-host publication.
-- [x] Identify all active domains, providers, kits and services.
-- [x] Identify partial resource leakage and poisoned world prepare state.
-- [x] Define startup transaction, acquisition ledger, rollback and retry contracts.
-- [x] Define first-frame and phase-failure fixture gates.
+- [x] Compare the full Publish inventory and central ledger.
+- [x] Exclude `TheCavalryOfRome`.
+- [x] Skip actively changing `PrehistoricRush`.
+- [x] Select only `MyCozyIsland` as the oldest stable eligible repository.
+- [x] Read `src/main-cloudform.js`, `src/world/world-runtime.js`, package tests and retained audits.
+- [x] Trace prepare, focus, materialization, reset, dispose, query and global readback.
+- [x] Identify all active domains, 50 local kits, six imported services and seven providers.
+- [x] Define lifecycle commands, results, phases, generations, leases and fixture gates.
 - [x] Change documentation only.
-- [ ] Implement and execute startup authority.
+- [ ] Implement and execute lifecycle parity authority.
 
 ## Runtime identity
 
@@ -33,54 +31,65 @@ NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
 world id:             world:cozy-island-webgpu-v3
 local kits:           50
 providers:            7
-startup owner:        main() procedural control flow
-error owner:          fail(error) DOM projection only
+default world mode:   core
+fallback mode:        legacy
 ```
 
 ## Interaction loop
 
 ```txt
-module boot
-  -> resolve DOM nodes
-  -> validate catalog
-  -> construct/init renderer
-  -> select backend, quality and world mode
-  -> create Core World runtime and providers
-  -> prepare initial world
-  -> create snapshot, scene, camera, sky and lights
-  -> create world/ocean/foam renderers
-  -> create atmosphere textures
-  -> create cloud/fog renderers and post pipeline
-  -> create performance budget
-  -> install listeners and timers
-  -> install animation loop and pagehide callback
-  -> publish CozyIsland host
+startup
+  -> choose mode from URL
+  -> create legacy or Core wrapper
+  -> prepare
+  -> create one compatibility snapshot
+  -> build persistent scene/render resources
+  -> install loop and expose CozyIsland host
 
-startup error
-  -> main rejects
-  -> fail(error) logs and displays text
-  -> no rollback or retry result
+per frame
+  -> scenario tick
+  -> camera projection
+  -> updateWorldFocus
+  -> render compatibility graph
+  -> process materialization
+
+pagehide
+  -> domains.dispose()
+  -> global host and renderer ownership are not revoked by this call
 ```
+
+## Lifecycle comparison
+
+| Operation | Legacy mode | Core mode |
+|---|---|---|
+| `prepare()` | sets `prepared=true`, returns static snapshot | focuses registered world, updates 49 cells |
+| duplicate `prepare()` | returns static snapshot | returns current `worldSnapshot`, including possible null poison state |
+| `reset()` | sets `prepared=false` | calls `resetWorlds()`, resets materializer, clears wrapper fields |
+| `dispose()` | same as reset | reset plus Core World domain reset |
+| prepare after reset/dispose | accepted | definition/domain may be gone; no stable recovery contract |
+| terminal state | absent | absent |
+| generation | absent | absent |
+| typed results | absent | absent |
 
 ## Domains in use
 
 ```txt
-browser startup and DOM projection
-catalog, query-mode and pinned-import admission
-renderer backend initialization and quality selection
-Core World construction, provider registration, focus and prepare
-runtime startup/session lifecycle
-lazy materialization and world query
-camera rail, first-person input and scenario
-terrain, biome, shoreline, ground contact and paths
-vegetation, rock, prop, grass and campfire population
+browser module startup and DOM projection
+world-mode selection and compatibility API
+world lifecycle phase, generation and command admission
+legacy semantic composition and snapshot
+Core World registration, focus, providers and active cells
+provider runtime stores and lazy materialization
+world query, diagnostics and public read models
+camera rail, first-person scenario and environment clock
+terrain, biome, shoreline, contact and paths
+vegetation, rocks, props, grass and campfire
 ocean, foam, caustics and underwater state
-clouds, fog, weather, wind, illumination and aerial perspective
-scene graph, GPU resources and post processing
+clouds, fog, weather, wind and illumination
+scene graph, render resources and post processing
 performance sampling and adaptive quality
-browser listeners, pointer capture, resize and timers
-animation-loop and first-frame ownership
-diagnostics, tests and Pages deployment
+browser listeners, timers, animation loop and page lifecycle
+validation, tests and Pages deployment
 ```
 
 ## Providers
@@ -164,106 +173,80 @@ defineWorldEffectProvider
 ## Main findings
 
 ```txt
-startup transaction ID: absent
-startup lifecycle phase: absent
-config/import admission result: absent
-acquisition ledger: absent
-capability identities and dependency graph: absent
-partial-failure rollback: absent
-reverse-order retirement: absent
-rollback receipts: absent
-retry eligibility/result: absent
-first-frame startup commit: absent
-production startup failure injection: absent
+canonical lifecycle phase: absent
+world generation: absent
+legacy/Core semantic parity: absent
+reusable reset contract: absent
+terminal dispose contract: absent
+prepare/reset/dispose result schema: absent
+use-after-dispose rejection: absent
+query and diagnostics leases: absent
+stale-generation rejection: absent
+world-generation/frame correlation: absent
 ```
 
-### Partial ownership path
+The immediate source-backed contradiction is:
 
 ```txt
-renderer/world/resources acquired
-  -> later constructor or first render throws
-  -> fail(error) changes only DOM text
-  -> acquired browser/GPU/semantic ownership remains unretired
-```
-
-### Poisoned prepare path
-
-```txt
-prepare()
-  -> prepared = true
-  -> commitFocus throws
-  -> worldSnapshot remains null
-  -> later prepare returns null because prepared is already true
+legacy dispose -> reversible prepared flag
+core dispose   -> world/domain teardown
+same API       -> no phase or result explaining the difference
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-browser-startup-authority-domain
+cozy-island-world-lifecycle-contract-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-startup-transaction-id-kit
-startup-phase-kit
-startup-config-admission-kit
-pinned-import-admission-kit
-backend-init-result-kit
-startup-acquisition-ledger-kit
-startup-capability-lease-kit
-world-prepare-transaction-kit
-startup-resource-descriptor-kit
-startup-callback-lease-kit
-first-frame-readiness-kit
-startup-commit-result-kit
-startup-failure-result-kit
-startup-rollback-plan-kit
-reverse-order-retirement-kit
-retry-baseline-kit
-startup-observation-kit
-startup-journal-kit
-startup-failure-injection-fixture-kit
-browser-backend-startup-smoke-kit
+world-lifecycle-phase-kit
+world-runtime-generation-kit
+world-mode-contract-kit
+world-lifecycle-command-kit
+world-lifecycle-admission-kit
+world-prepare-result-kit
+world-reset-policy-kit
+world-reset-result-kit
+world-dispose-result-kit
+world-definition-lease-kit
+world-query-lease-kit
+world-diagnostics-lease-kit
+provider-materializer-retirement-kit
+stale-world-generation-rejection-kit
+terminal-use-after-dispose-rejection-kit
+legacy-core-lifecycle-adapter-kit
+world-lifecycle-observation-kit
+world-lifecycle-journal-kit
+world-mode-parity-fixture-kit
+world-use-after-dispose-fixture-kit
+browser-world-lifecycle-smoke-kit
 ```
 
-## Required startup transaction
+## Required lifecycle
 
 ```txt
-StartCommand
-  -> validate catalog, DOM, query mode and pinned imports
-  -> create transaction and enter STARTING
-  -> acquire capabilities one by one into a ledger
-  -> prepare world through atomic candidate/commit semantics
-  -> install callbacks and loop under recorded leases
-  -> render first valid frame
-  -> publish StartupCommitResult and enter RUNNING
-
-failure
-  -> freeze acquisition
-  -> classify failed phase
-  -> retire acquired capabilities in reverse dependency order
-  -> restore prepared=false and clean public baseline
-  -> publish StartupFailureResult and rollback receipts
-  -> permit retry only after mandatory lease count reaches zero
+NEW -> Prepare -> READY generation N
+READY -> Reset -> RESET
+RESET -> Prepare -> READY generation N+1
+NEW/READY/RESET/FAILED -> Dispose -> DISPOSED
+DISPOSED -> any mutation -> RejectedTerminal
 ```
 
 ## Required fixtures
 
 ```txt
-catalog/backend/import failure
-Core World creation/provider registration failure
-initial focus/world update failure
-materializer sync failure
-world/ocean/foam renderer failure
-volume/cloud/fog/post failure
-callback/timer/loop failure
-first-frame failure
-rollback order and exactly-once retirement
-prepare failure then clean retry
-no global host before commit
-WebGPU/WebGL2 result parity
-first committed frame parity
+legacy/Core result-schema parity
+duplicate prepare idempotency
+reset then prepare generation advance
+duplicate dispose idempotency
+post-dispose command rejection
+stale query lease rejection
+provider/materializer retirement counts
+first READY frame after reusable reset
+pagehide global readback revocation
 ```
 
 ## Ordered queue
@@ -271,13 +254,12 @@ first committed frame parity
 ```txt
 1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
-3. Core World Reset / Re-prepare Authority
-4. Pinned Core World Focus Transaction Authority
-5. Live Materialization Readiness Commit Authority
-6. Core World Render Commit Authority
-7. Camera Rail Baseline Authority
-8. Dynamic Environment Frame Authority
-9. Adaptive Quality Transaction Authority
+3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
+4. Core World Reset / Re-prepare Authority
+5. Pinned Core World Focus Transaction Authority
+6. Live Materialization Readiness Commit Authority
+7. Core World Render Commit Authority
+8. Camera Rail Baseline Authority
+9. Dynamic Environment Frame Authority
+10. Adaptive Quality Transaction Authority
 ```
-
-Startup authority remains first because every runtime session, world revision, callback lease, resource identity and committed frame must originate from a successfully admitted startup transaction.

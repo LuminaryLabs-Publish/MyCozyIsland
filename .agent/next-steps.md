@@ -1,56 +1,64 @@
-# Next Steps: MyCozyIsland Adventure Persistence Authority
+# Next Steps: MyCozyIsland Multi-Domain Transaction Authority
 
-Last updated: `2026-07-12T08:00:16-04:00`
+Last updated: `2026-07-12T10-20-02-04-00`
 
 ## Goal
 
-Implement one session-scoped persistence authority that writes only semantic durable changes, reports storage truth, restores atomically, preserves command identity across runtime generations, and proves the restored frame.
+Implement one session-scoped action transaction authority that stages farm/forage participants, commits product state and ledger records atomically, rolls back completely, and correlates save/render output with the committed revision.
 
 ## Ordered implementation checklist
 
-- [ ] Add `cozy-island-adventure-persistence-authority-domain`.
-- [ ] Define a versioned durable-state schema separate from render and transient state.
-- [ ] Replace revision-number fingerprinting with canonical durable projection fingerprinting.
-- [ ] Add a semantic dirty set updated only by committed durable mutations.
-- [ ] Give every save attempt a save operation ID and observed durable revision.
-- [ ] Move localStorage behind a typed adapter capability.
-- [ ] Commit `Saved` only after an adapter write receipt.
-- [ ] Publish typed quota, privacy, serialization and stale-write failures.
-- [ ] Add slot revision and compare-and-swap semantics.
-- [ ] Stage restore in a candidate graph, or retain complete predecessor snapshots for rollback.
-- [ ] Restore input runtime generation and transaction-ledger continuity as one unit.
-- [ ] Replace frame-index-only interaction IDs with session/generation/sequence-based IDs.
-- [ ] Include `cozyInput.reset()` in reset authority.
-- [ ] Add migration registration and unsupported-version results.
-- [ ] Correlate restored state, camera/HUD snapshot and first rendered frame.
-- [ ] Wire `tests/adventure-domains-smoke.mjs` into `npm test`.
-- [ ] Add idle-write, storage-failure, rollback, collision and browser-reload fixtures.
+- [ ] Add `cozy-island-multi-domain-transaction-commit-authority-domain`.
+- [ ] Define session, generation, command and transaction identity.
+- [ ] Replace input-frame-only operation identity with session/generation/sequence identity.
+- [ ] Add immutable `AdventureActionCommand` and typed admission results.
+- [ ] Resolve and freeze the participant set before mutation.
+- [ ] Capture inventory, plot/node and ledger predecessor revisions.
+- [ ] Split farming and foraging APIs into pure planning and explicit commit operations.
+- [ ] Add inventory, farm and forage candidate-state builders.
+- [ ] Validate balances, target state, yields and cross-participant invariants before commit.
+- [ ] Add one transaction commit barrier for participant state and parent/child ledger records.
+- [ ] Add complete rollback receipts for every participant.
+- [ ] Define `committed`, `rejected`, `rolled-back` and `indeterminate` terminal results.
+- [ ] Block save and render admission while a revision is committing or indeterminate.
+- [ ] Add transaction revision to save and render snapshots.
+- [ ] Reconcile incomplete parent/child transaction families during restore.
+- [ ] Add first-visible-frame acknowledgement for committed and rolled-back transactions.
+- [ ] Keep game-specific validation in inventory/farming/foraging domains.
+- [ ] Keep portable idempotency in `core-transaction-ledger-kit`.
+- [ ] Wire `tests/adventure-domains-smoke.mjs` and `tests/core-transaction-ledger-smoke.mjs` into `npm test`.
+- [ ] Add failure injection after each nested participant operation.
+- [ ] Add save-during-split, restore-reconciliation and retry fixtures.
+- [ ] Add WebGPU/WebGL2 transaction-to-frame parity smoke.
 - [ ] Pin NexusEngine browser imports to one reviewed commit.
-- [ ] Remove or explicitly deprecate the duplicate composition path.
+- [ ] Continue the previously documented persistence authority after transaction commit truth exists.
 
 ## Acceptance criteria
 
 ```txt
-idle for 60 seconds
-  -> zero durable writes after initial synchronization
+plant failure after seed debit
+  -> seed balance restored
+  -> plot unchanged
+  -> no parent or child terminal record remains
+  -> no save or frame exposes the candidate
 
-storage adapter failure
-  -> save result is failed
-  -> HUD never reports Saved
-  -> dirty state remains retryable
+harvest failure after reward
+  -> reward restored
+  -> plot remains predecessor
+  -> retry produces exactly one reward
 
-late restore failure
-  -> every live domain remains on the predecessor revision
+forage failure after coconut reward
+  -> inventory and node both rollback
+  -> node cannot remain harvestable with committed reward
 
-reload
-  -> transaction and input identities never collide
-  -> the same user action executes exactly once
+successful action
+  -> all participant and ledger receipts share one transaction revision
+  -> save snapshot cites that revision
+  -> first visible frame cites that revision
 
-reset
-  -> input, transaction ledger, durable domains and visible frame share one new generation
+restore
+  -> incomplete parent/child transaction family is rejected or deterministically reconciled
 
-successful restore
-  -> candidate graph validates
-  -> authority transfers atomically
-  -> first visible frame cites restore result and save checksum
+indeterminate commit
+  -> input retry, save and rendering are blocked until reconciliation completes
 ```

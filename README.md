@@ -1,6 +1,6 @@
 # My Cozy Island
 
-A standalone **WebGPU-first NexusEngine experiment** focused on a stylized island, separated island and sea-floor terrain, transparent anime water, volumetric clouds, rolling fog, and final-pass shoreline foam.
+A standalone **WebGPU-first NexusEngine experiment** focused on a stylized island, separated island and sea-floor terrain, transparent anime water, volumetric clouds, rolling fog, and depth-correct final-pass shoreline foam.
 
 The live app is a static site. Open `index.html` through GitHub Pages or any local HTTP server.
 
@@ -14,7 +14,8 @@ NexusEngine Core World
 → Three.js WebGPU renderer adapter
 → background + opaque world + transparent anime water
 → rolling-fog composite
-→ final authored foam composite
+→ foam occlusion depth pass
+→ final authored foam color composite
 → technical output transform
 ```
 
@@ -28,6 +29,7 @@ The application contains **50 focused local domain, sequence, host, and renderer
 - One physical transparent ocean mesh with transmission, IOR, clearcoat, Fresnel-compatible reflection, procedural waves, and sun highlights.
 - A validated logical pass graph: background, opaque world, water, atmosphere, foam, output.
 - Shoreline foam as the final authored scene-content layer.
+- A dedicated foam depth prepass compared against opaque scene depth, preventing foam from showing through terrain, fences, rocks, vegetation, and props.
 - WebGPU compute-generated 3D density textures for cloud and fog volumes.
 - Bounded volumetric clouds and reduced-resolution depth-aware rolling fog.
 - Deterministic suitability-based vegetation and rock placement with instancing.
@@ -35,14 +37,20 @@ The application contains **50 focused local domain, sequence, host, and renderer
 - Automatic `ultra`, `high`, `medium`, and `low` quality profiles.
 - WebGL2 fallback through Three.js `WebGPURenderer` with deterministic CPU volume textures.
 
-## Controls
+## Controls and camera contract
 
 ```txt
 Mouse wheel / trackpad   descend from the aerial reveal
 Drag                     orbit during reveal; look in first person
 W A S D                  move inside the central clearing after landing
 H                        toggle renderer diagnostics
+
+Rail start FOV           55 degrees
+First-person FOV         80 degrees
+Player eye height        2.0 m above sampled terrain
 ```
+
+Late rail positions and look targets are terrain-relative. Every interpolated rail sample is clamped above the procedural surface so the final descent cannot enter the clearing mound.
 
 Force a quality tier with `?quality=ultra`, `?quality=high`, `?quality=medium`, or `?quality=low`. The default world path is `?world=core`; use `?world=legacy` for the temporary rollback path.
 
@@ -62,12 +70,13 @@ Then open `http://localhost:8080/`.
 - `docs/KIT_CATALOG.md` — all 50 local kits and dependencies.
 - `docs/WORLD_LAYER_MIGRATION.md` — Core World provider ownership and lifecycle.
 - `docs/LAZY_WORLD_MATERIALIZATION.md` — bounded post-first-frame cell work.
-- `docs/RENDER_LAYER_GRAPH.md` — terrain, water, fog, foam, and output ordering.
+- `docs/RENDER_LAYER_GRAPH.md` — terrain, water, fog, foam depth admission, camera projection, and output ordering.
 
 ## Debug surface
 
 ```js
 CozyIsland.getState()
+CozyIsland.camera.fov
 CozyIsland.worldRuntime.getState()
 CozyIsland.worldQuery.islandSurfaceAt(0, 0)
 CozyIsland.worldQuery.seaFloorSurfaceAt(120, 0)

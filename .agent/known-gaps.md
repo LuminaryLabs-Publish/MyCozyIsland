@@ -1,108 +1,98 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-12T00-20-01-04-00`
+Last updated: `2026-07-12T02-10-14-04-00`
 
 ## Summary
 
-The runtime now includes an opaque-depth foam visibility mask, but the new physical depth proxy is still manual, construction-time, unversioned, and undisposed. The logical graph and public readback do not own that pass, and three declared foam inputs remain unbound.
+The camera rail has no immutable baseline authority. Rail-mode drag mutates authored path points in place, reset does not restore them, and camera descriptors cannot prove which baseline, path revision, reset generation, or input result produced the visible frame.
 
-## Resolved since the prior audit
-
-```txt
-final foam has a physical depth texture
-final foam compares against fused scene depth
-opaque geometry can mask foam color and alpha
-physical pass order includes foam-occlusion-depth
-```
-
-## Remaining graph gaps
+## Camera baseline gaps
 
 ```txt
-composition kit in canonical catalog: no
-logical graph declares foam-occlusion-depth: no
-compiled physical plan: no
-logical/physical pass identity map: no
-resource producer/consumer binding table: no
-execution receipts: no
-first visible layered-frame receipt: no
-pass-order readback derived from receipts: no
+immutable rail baseline: absent
+baseline ID and version: absent
+baseline fingerprint: absent
+terrain revision binding: absent
+path revision: absent
+separate mutable session path: absent
+in-place authored point mutation: present
+reset restores authored points: no
+reset descriptor fidelity proof: absent
 ```
 
-## Proxy topology gaps
+## Camera input gaps
 
 ```txt
-source mesh identity contract: absent
-source topology revision: absent
-proxy topology revision: absent
-membership prepare result: absent
-added/removed mesh reconciliation: absent
-stale source rejection: absent
-frame-correlated transform sync result: absent
+input command envelope: absent
+command ID and sequence: absent
+session/runtime generation admission: absent
+expected camera revision: absent
+pointer drag lease: absent
+multi-pointer isolation: absent
+wheel result: absent
+drag result: absent
+key result: absent
+clear result: absent
+stale command rejection: absent
+duplicate classification: absent
+bounded input journal: absent
 ```
 
-## Proxy lifecycle gaps
+## Camera transition and reset gaps
 
 ```txt
-proxy scene lease: absent
-proxy mesh lease: absent
-proxy material lease: absent
-postPipeline.dispose(): absent
-idempotent proxy disposal result: absent
-shared geometry ownership classification: absent
-pagehide stops animation loop/listeners: no
-pagehide retires renderer/post/proxy resources: no
+rail-to-first-person transition result: absent
+mode transition revision: absent
+reset command: absent
+reset result: absent
+reset generation: absent
+baseline reconstruction: absent
+rollback on invalid candidate: absent
+first visible reset-frame acknowledgement: absent
 ```
 
-## Remaining binding gaps
+## Descriptor and public readback gaps
 
 ```txt
-opaque depth physical sample: present
-opaque depth typed binding identity: absent
-water-mask physical binding: absent
-water-surface-depth physical binding: absent
-fog-transmittance physical binding: absent
-backend support result: absent
+camera state revision: absent
+rail baseline ID: absent
+rail baseline fingerprint: absent
+rail path revision: absent
+terrain revision: absent
+reset generation: absent
+last command ID: absent
+last transition result: absent
+committed frame ID: absent
+raw scenario and world runtime exposed: yes
 ```
 
-## Validation gaps
+## Current test gaps
 
 ```txt
-foam-depth source-token test: present
-actual GPU attachment inspection: absent
-proxy topology mutation fixture: absent
-proxy disposal fixture: absent
-browser pixel occlusion fixture: absent
-water-region admission fixture: absent
-rolling-fog/foam fixture: absent
-WebGPU/WebGL2 parity fixture: absent
-visible-frame revision fixture: absent
+ground-clearance test: present
+first-person eye/FOV test: present
+initial versus post-reset descriptor fixture: absent
+repeated drag/reset drift fixture: absent
+baseline immutability fixture: absent
+threshold transition fixture: absent
+stale command fixture: absent
+multi-pointer browser fixture: absent
+visible reset-frame fixture: absent
+Pages camera smoke: absent
 ```
 
-## Public readback gaps
-
-```txt
-graph revision: absent
-physical plan revision: absent
-proxy topology revision: absent
-proxy membership result: absent
-depth attachment identity: absent
-pass success/failure result: absent
-resource disposal state: absent
-visible output identity: absent
-raw renderer, scene, camera, world and postPipeline exposed: yes
-```
-
-## Retained higher-level gaps
+## Related retained gaps
 
 ```txt
 browser startup transaction and rollback
 runtime session ownership and callback leases
 legacy/Core world lifecycle parity
+render graph and physical resource binding
+foam proxy topology and lifecycle
 Core World reset/reprepare
 focus transaction authority
 materialization generation/readiness
 renderer cell commit/disposal
-camera baseline and committed-frame correlation
 dynamic environment frame coherence
 adaptive quality transaction
 ```
@@ -110,22 +100,22 @@ adaptive quality transaction
 ## Risk ranking
 
 ```txt
-P0 startup/session teardown does not own the complete render graph
-P0 logical graph can validate without physical resource parity
-P1 foam proxy topology is fixed at construction with no revision
-P1 proxy material/pass resources have no disposal result
-P1 water-mask, water-depth and fog-transmittance remain unbound
-P1 pass readback remains hand-authored
-P1 no browser/GPU proof exists for either backend
-P2 diagnostics cannot identify the resources that produced a frame
+P0 reset can report baseline progress while retaining a mutated rail path
+P1 repeated drag/reset cycles can accumulate unbounded path displacement
+P1 authored data and session input state share mutable objects
+P1 browser inputs mutate camera state without command admission or typed results
+P1 no visible-frame proof correlates reset with rendered camera state
+P2 multi-pointer events can overwrite or clear the shared drag state
+P2 diagnostics cannot identify baseline, path, reset, command, or frame revisions
 ```
 
 ## Non-goals of this documentation run
 
 ```txt
-no runtime code changed
-no shaders, materials or pass construction changed
+no camera implementation changed
+no browser event handling changed
+no render output changed
 no package scripts or dependencies changed
 no deployment configuration changed
-no browser visual-correctness claim made
+no runtime correctness claim made
 ```

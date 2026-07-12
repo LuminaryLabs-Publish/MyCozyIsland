@@ -1,5 +1,6 @@
 import * as THREE from "three/webgpu";
 import { createStylizedWorldRenderer as createBaseStylizedWorldRenderer } from "./renderer-world.js";
+import { COZY_RENDER_LAYERS, assignRenderLayer } from "./render-layers.js";
 
 const GRASS_LAYER_COUNT = 3;
 const GRASS_ALPHA_CLIP = 0.52;
@@ -22,17 +23,13 @@ function createGrassAlphaAtlas() {
   const canvas = document.createElement("canvas");
   canvas.width = panelWidth * GRASS_LAYER_COUNT;
   canvas.height = height;
-
   const context = canvas.getContext("2d", { alpha: true });
   if (!context) throw new Error("Could not create the grass alpha-atlas context.");
-
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = "#ffffff";
-
   for (let layer = 0; layer < GRASS_LAYER_COUNT; layer += 1) {
     const panelX = layer * panelWidth;
     const bladeCount = 15 + layer * 2;
-
     for (let blade = 0; blade < bladeCount; blade += 1) {
       const seed = layer * 101 + blade * 17;
       const baseX = panelX + 3 + hash01(seed) * (panelWidth - 6);
@@ -41,7 +38,6 @@ function createGrassAlphaAtlas() {
       const lean = (hash01(seed + 3) - 0.5) * 13;
       const shoulder = height - bladeHeight * (0.45 + hash01(seed + 4) * 0.18);
       const tipY = height - bladeHeight;
-
       context.beginPath();
       context.moveTo(baseX - halfWidth, height);
       context.quadraticCurveTo(baseX - halfWidth * 0.4, shoulder, baseX + lean, tipY);
@@ -50,7 +46,6 @@ function createGrassAlphaAtlas() {
       context.fill();
     }
   }
-
   const texture = new THREE.CanvasTexture(canvas);
   texture.name = "grass-three-layer-alpha-atlas";
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -69,13 +64,11 @@ function createLayeredGrassGeometry() {
   const colors = [];
   const indices = [];
   const panelInset = 1 / (64 * GRASS_LAYER_COUNT);
-
   const layers = [
     { angle: 0, width: 0.82, height: 0.92, offset: -0.025 },
     { angle: Math.PI / 3, width: 0.94, height: 1.08, offset: 0.018 },
     { angle: Math.PI * 2 / 3, width: 0.76, height: 0.84, offset: 0.04 }
   ];
-
   layers.forEach((layer, layerIndex) => {
     const vertexOffset = positions.length / 3;
     const halfWidth = layer.width * 0.5;
@@ -84,30 +77,18 @@ function createLayeredGrassGeometry() {
     const uMin = layerIndex / GRASS_LAYER_COUNT + panelInset;
     const uMax = (layerIndex + 1) / GRASS_LAYER_COUNT - panelInset;
     const color = GRASS_LAYER_COLORS[layerIndex];
-
     for (const [localX, localY, u, v] of [
       [-halfWidth, 0, uMin, 0],
       [halfWidth, 0, uMax, 0],
       [-halfWidth, layer.height, uMin, 1],
       [halfWidth, layer.height, uMax, 1]
     ]) {
-      const x = localX * cosine + layer.offset * sine;
-      const z = -localX * sine + layer.offset * cosine;
-      positions.push(x, localY, z);
+      positions.push(localX * cosine + layer.offset * sine, localY, -localX * sine + layer.offset * cosine);
       uvs.push(u, v);
       colors.push(color.r, color.g, color.b);
     }
-
-    indices.push(
-      vertexOffset,
-      vertexOffset + 1,
-      vertexOffset + 2,
-      vertexOffset + 2,
-      vertexOffset + 1,
-      vertexOffset + 3
-    );
+    indices.push(vertexOffset, vertexOffset + 1, vertexOffset + 2, vertexOffset + 2, vertexOffset + 1, vertexOffset + 3);
   });
-
   const geometry = new THREE.BufferGeometry();
   geometry.name = "grass-three-layer-alpha-cutout-geometry";
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
@@ -126,7 +107,6 @@ function createUnlitGrassMaterial() {
     vertexColors: true,
     side: THREE.DoubleSide
   });
-
   material.name = "unlit-three-layer-alpha-cutout-grass";
   material.transparent = false;
   material.alphaTest = GRASS_ALPHA_CLIP;
@@ -142,22 +122,16 @@ function createLayeredGrassRenderer(snapshot) {
   const instances = snapshot.vegetation.byType["grass-patch"] ?? [];
   const group = new THREE.Group();
   group.name = "unlit-layered-alpha-grass";
-
+  group.renderOrder = 30;
   if (!instances.length) return Object.freeze({ group, update() {} });
-
-  const mesh = new THREE.InstancedMesh(
-    createLayeredGrassGeometry(),
-    createUnlitGrassMaterial(),
-    instances.length
-  );
+  const mesh = new THREE.InstancedMesh(createLayeredGrassGeometry(), createUnlitGrassMaterial(), instances.length);
   const dummy = new THREE.Object3D();
-
   mesh.name = "grass-alpha-cutout-layers";
   mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
   mesh.castShadow = false;
   mesh.receiveShadow = false;
   mesh.frustumCulled = true;
-
+  mesh.renderOrder = 30;
   instances.forEach((instance, index) => {
     const heightVariation = 0.78 + ((instance.phase / (Math.PI * 2)) % 1) * 0.24;
     dummy.position.set(instance.position.x, instance.position.y + 0.012, instance.position.z);
@@ -167,7 +141,6 @@ function createLayeredGrassRenderer(snapshot) {
     mesh.setMatrixAt(index, dummy.matrix);
     mesh.setColorAt(index, new THREE.Color(0xffffff).multiplyScalar(instance.tint ?? 1));
   });
-
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   mesh.userData.grassRenderPolicy = Object.freeze({
@@ -176,10 +149,11 @@ function createLayeredGrassRenderer(snapshot) {
     alphaClip: GRASS_ALPHA_CLIP,
     depthTest: true,
     depthWrite: true,
-    blending: "none"
+    blending: "none",
+    passId: "opaque-world"
   });
   group.add(mesh);
-
+  assignRenderLayer(group, COZY_RENDER_LAYERS.OPAQUE_WORLD, true);
   return Object.freeze({ group, mesh, update() {} });
 }
 
@@ -188,10 +162,7 @@ function createSnapshotWithoutLegacyGrass(snapshot) {
     ...snapshot,
     vegetation: {
       ...snapshot.vegetation,
-      byType: {
-        ...snapshot.vegetation.byType,
-        "grass-patch": []
-      }
+      byType: { ...snapshot.vegetation.byType, "grass-patch": [] }
     }
   };
 }
@@ -200,9 +171,10 @@ export function createStylizedWorldRenderer(snapshot) {
   const baseRenderer = createBaseStylizedWorldRenderer(createSnapshotWithoutLegacyGrass(snapshot));
   const grassRenderer = createLayeredGrassRenderer(snapshot);
   baseRenderer.group.add(grassRenderer.group);
-
   return Object.freeze({
     group: baseRenderer.group,
+    terrainMesh: baseRenderer.terrainMesh,
+    floorMesh: baseRenderer.floorMesh,
     update(elapsedSeconds = 0) {
       baseRenderer.update(elapsedSeconds);
       grassRenderer.update(elapsedSeconds);

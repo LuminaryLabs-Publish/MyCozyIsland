@@ -74,9 +74,7 @@ async function main() {
   if (!canvas) throw new Error("Missing #game canvas.");
 
   const catalogStatus = validateKitCatalog(kitCatalog);
-  if (!catalogStatus.valid) {
-    throw new Error(`Invalid Nexus kit catalog:\n${catalogStatus.errors.join("\n")}`);
-  }
+  if (!catalogStatus.valid) throw new Error(`Invalid Nexus kit catalog:\n${catalogStatus.errors.join("\n")}`);
   const oceanComposition = createCozyOceanCompositionKit();
 
   setLoad(5, "Starting WebGPU host");
@@ -122,9 +120,11 @@ async function main() {
   const skyRenderer = createSky(snapshot.illumination);
   scene.add(skyRenderer.mesh);
   scene.environment = skyRenderer.environmentMap;
+
   const hemisphere = new THREE.HemisphereLight(0xfff1dd, 0x2e6871, snapshot.illumination.ambientIntensity);
   hemisphere.layers.enable(COZY_RENDER_LAYERS.WATER_SURFACE);
   scene.add(hemisphere);
+
   const sun = new THREE.DirectionalLight(snapshot.illumination.sunColor, snapshot.illumination.sunIntensity);
   sun.position.set(-380, 560, 310);
   sun.layers.enable(COZY_RENDER_LAYERS.WATER_SURFACE);
@@ -152,12 +152,7 @@ async function main() {
   scene.add(oceanRenderer.mesh);
   const foamRenderer = createWebGPUFoamRenderer(snapshot.foam);
 
-  setLoad(
-    48,
-    backend === "webgpu"
-      ? "Computing cloud and fog volumes on GPU"
-      : "Baking fallback cloud and fog volumes"
-  );
+  setLoad(48, backend === "webgpu" ? "Computing cloud and fog volumes on GPU" : "Baking fallback cloud and fog volumes");
   const volumeTextures = await createAtmosphereVolumeTextures({
     renderer,
     cloudRecipe: snapshot.cloudDensity,
@@ -202,16 +197,12 @@ async function main() {
     activeScale = level === 0 ? 1 : level === 1 ? 0.78 : 0.62;
     cloudRenderer.setStepScale(activeScale);
     fogRenderer.setStepScale(activeScale);
-    postPipeline.setFogResolutionScale(
-      quality.fogResolutionScale * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68)
-    );
+    postPipeline.setFogResolutionScale(quality.fogResolutionScale * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68));
     if (level > 0) {
-      renderer.setPixelRatio(
-        Math.min(
-          devicePixelRatio || 1,
-          quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)
-        )
-      );
+      renderer.setPixelRatio(Math.min(
+        devicePixelRatio || 1,
+        quality.pixelRatioCap * (level === 1 ? 0.88 : 0.76)
+      ));
     }
   };
 
@@ -256,10 +247,7 @@ async function main() {
   addEventListener("resize", resize);
   resize();
 
-  setLoad(
-    100,
-    `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · layered ${worldMode} world ready`
-  );
+  setLoad(100, `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · layered ${worldMode} world ready`);
   setTimeout(() => {
     if (loader) loader.classList.add("is-complete");
     setTimeout(() => { if (loader) loader.hidden = true; }, 520);
@@ -274,6 +262,11 @@ async function main() {
     last = now;
     domains.scenario.tick(dt);
     const renderState = domains.scenario.getRenderSnapshot();
+    const requestedFov = Number(renderState.camera.fov ?? 55);
+    if (Number.isFinite(requestedFov) && Math.abs(camera.fov - requestedFov) > 0.001) {
+      camera.fov = requestedFov;
+      camera.updateProjectionMatrix();
+    }
     camera.position.set(
       renderState.camera.position.x,
       renderState.camera.position.y,
@@ -303,10 +296,8 @@ async function main() {
       const perf = performanceBudget.getState();
       const baked = `${materializationState.completedCells ?? 0}/${materializationState.activeCells ?? 0}`;
       debugOverlay.draw({
-        backend: backend === "webgpu"
-          ? `WebGPU compute · ${volumeTextures.source}`
-          : `WebGL2 · ${volumeTextures.source}`,
-        quality: `${quality.tier} · ${worldMode} · cells ${baked} · foam final`,
+        backend: backend === "webgpu" ? `WebGPU compute · ${volumeTextures.source}` : `WebGL2 · ${volumeTextures.source}`,
+        quality: `${quality.tier} · ${worldMode} · FOV ${camera.fov.toFixed(0)} · cells ${baked} · foam depth-tested`,
         fps: perf.fps || 60,
         cloudSteps: cloudRenderer.getSteps(),
         fogSteps: fogRenderer.getSteps(),

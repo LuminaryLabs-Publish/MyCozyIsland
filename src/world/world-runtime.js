@@ -2,9 +2,11 @@ import { COZY_WORLD_CONFIG, NEXUS_ENGINE_COMMIT } from "./world-config.js";
 import { createLegacyWorldComposition } from "./legacy-world-composition.js";
 import { createCozyWorldQuery } from "./world-query.js";
 import { createLazyCellMaterializer } from "./lazy-cell-materializer.js";
-import { createIslandTerrainSource } from "./providers/island-terrain-provider.js";
+import { createIslandTerrainProvider, createIslandTerrainSource } from "./providers/island-terrain-provider.js";
+import { createSeaFloorTerrainProvider, createSeaFloorTerrainSource } from "./providers/sea-floor-terrain-provider.js";
 import { createBiomeClassificationProvider } from "./providers/biome-classification-provider.js";
 import { createShorelineClassificationProvider } from "./providers/shoreline-classification-provider.js";
+import { createSeaFloorMaterialProvider } from "./providers/seafloor-material-provider.js";
 import { createVegetationProvider } from "./providers/vegetation-provider.js";
 import { createRockProvider } from "./providers/rock-provider.js";
 import { createPropProvider } from "./providers/prop-provider.js";
@@ -61,17 +63,14 @@ export async function createCozyIslandWorldRuntime({
       getQuery() {
         return createCozyWorldQuery({
           terrain: composition.terrain,
+          oceanFloor: composition.oceanFloor,
           biomeField: composition.biomeField,
           shoreline: composition.shoreline,
           config
         });
       },
       getState() {
-        return Object.freeze({
-          mode: "legacy",
-          prepared,
-          materialization: idleMaterialization
-        });
+        return Object.freeze({ mode: "legacy", prepared, materialization: idleMaterialization });
       },
       reset() { prepared = false; },
       dispose() { prepared = false; }
@@ -84,7 +83,6 @@ export async function createCozyIslandWorldRuntime({
     "createCoreWorldDomain",
     "createUniformGridPartition",
     "createFlatWorldSurface",
-    "createTerrainProviderAdapter",
     "defineWorldEffectProvider"
   ]) {
     if (typeof nexus[name] !== "function") {
@@ -92,14 +90,15 @@ export async function createCozyIslandWorldRuntime({
     }
   }
 
-  const terrainSource = createIslandTerrainSource({
-    terrain: composition.terrain,
-    config
+  const terrainSource = createIslandTerrainSource({ terrain: composition.terrain, config });
+  const seaFloorSource = createSeaFloorTerrainSource({ oceanFloor: composition.oceanFloor, config });
+  const terrainProvider = createIslandTerrainProvider({
+    defineWorldEffectProvider: nexus.defineWorldEffectProvider,
+    terrainSource
   });
-  const terrainProvider = nexus.createTerrainProviderAdapter({
-    terrain: terrainSource,
-    id: "cozy-island-terrain-provider",
-    critical: true
+  const seaFloorProvider = createSeaFloorTerrainProvider({
+    defineWorldEffectProvider: nexus.defineWorldEffectProvider,
+    seaFloorSource
   });
   const biome = createBiomeClassificationProvider({
     defineWorldEffectProvider: nexus.defineWorldEffectProvider,
@@ -110,6 +109,10 @@ export async function createCozyIslandWorldRuntime({
     defineWorldEffectProvider: nexus.defineWorldEffectProvider,
     shoreline: composition.shoreline,
     terrainSource
+  });
+  const seaFloorMaterial = createSeaFloorMaterialProvider({
+    defineWorldEffectProvider: nexus.defineWorldEffectProvider,
+    seaFloorSource
   });
   const vegetation = createVegetationProvider({
     defineWorldEffectProvider: nexus.defineWorldEffectProvider,
@@ -127,8 +130,10 @@ export async function createCozyIslandWorldRuntime({
   const presentation = createCellPresentationProvider({
     defineWorldEffectProvider: nexus.defineWorldEffectProvider,
     terrainSource,
+    seaFloorSource,
     biomeStore: biome.runtimeStore,
     shorelineStore: shoreline.runtimeStore,
+    seaFloorMaterialStore: seaFloorMaterial.runtimeStore,
     vegetationStore: vegetation.runtimeStore,
     rockStore: rocks.runtimeStore,
     propStore: props.runtimeStore
@@ -136,8 +141,10 @@ export async function createCozyIslandWorldRuntime({
 
   const providers = [
     terrainProvider,
+    seaFloorProvider,
     biome.provider,
     shoreline.provider,
+    seaFloorMaterial.provider,
     vegetation.provider,
     rocks.provider,
     props.provider,
@@ -148,12 +155,8 @@ export async function createCozyIslandWorldRuntime({
     cellSize: config.partition.cellSize,
     radius: config.partition.radius
   });
-  const surface = nexus.createFlatWorldSurface({
-    id: "cozy-island-flat-surface"
-  });
-  const engine = nexus.createEngine({
-    kits: [nexus.createCoreWorldDomain()]
-  });
+  const surface = nexus.createFlatWorldSurface({ id: "cozy-island-flat-surface" });
+  const engine = nexus.createEngine({ kits: [nexus.createCoreWorldDomain()] });
   engine.n.coreWorld.registerWorld({
     id: config.id,
     seed: config.seed,
@@ -164,13 +167,16 @@ export async function createCozyIslandWorldRuntime({
 
   const providerRuntime = Object.freeze({
     terrain: terrainSource.runtimeStore,
+    seaFloor: seaFloorSource.runtimeStore,
     biome: biome.runtimeStore,
     shoreline: shoreline.runtimeStore,
+    seaFloorMaterial: seaFloorMaterial.runtimeStore,
     vegetation: vegetation.runtimeStore,
     rocks: rocks.runtimeStore,
     props: props.runtimeStore,
     presentation: presentation.runtimeStore,
-    terrainSource
+    terrainSource,
+    seaFloorSource
   });
 
   let worldSnapshot = null;
@@ -181,6 +187,7 @@ export async function createCozyIslandWorldRuntime({
 
   const query = createCozyWorldQuery({
     terrain: composition.terrain,
+    oceanFloor: composition.oceanFloor,
     biomeField: composition.biomeField,
     shoreline: composition.shoreline,
     config,
@@ -194,8 +201,10 @@ export async function createCozyIslandWorldRuntime({
   const materializer = createLazyCellMaterializer({
     config,
     terrainSource,
+    seaFloorSource,
     biomeProvider: biome,
     shorelineProvider: shoreline,
+    seaFloorMaterialProvider: seaFloorMaterial,
     presentationProvider: presentation,
     getWorldSnapshot: () => worldSnapshot
   });
@@ -223,9 +232,7 @@ export async function createCozyIslandWorldRuntime({
   function updateWorldFocus(position = {}, cameraMode = "rail", deltaSeconds = 0) {
     if (!prepared) return false;
     focusAccumulator += Math.max(0, Number(deltaSeconds) || 0);
-    const target = cameraMode === "first-person"
-      ? position
-      : { x: 0, y: 0, z: 0 };
+    const target = cameraMode === "first-person" ? position : { x: 0, y: 0, z: 0 };
     const nextCellKey = cellKeyFromCoordinates(partition.locateCell(target));
     const moved = Math.hypot(
       Number(target.x ?? 0) - lastFocus.x,
@@ -235,9 +242,7 @@ export async function createCozyIslandWorldRuntime({
     if (
       nextCellKey === lastCellKey
       && !(focusAccumulator >= interval && moved >= Number(config.focus.minimumMovement ?? 4))
-    ) {
-      return false;
-    }
+    ) return false;
     commitFocus(target);
     return true;
   }
@@ -248,11 +253,7 @@ export async function createCozyIslandWorldRuntime({
     maxCells
   } = {}) {
     if (!prepared) return materializer.getState();
-    return materializer.processFrame({
-      focus: position,
-      cameraMode,
-      maxCells
-    });
+    return materializer.processFrame({ focus: position, cameraMode, maxCells });
   }
 
   function reset() {
@@ -282,7 +283,7 @@ export async function createCozyIslandWorldRuntime({
     getMaterializationState: () => materializer.getState(),
     getWorldSnapshot: () => worldSnapshot,
     getActiveCellIds: () => activeCellIdsFromSnapshot(worldSnapshot ?? {}),
-    getPresentationDescriptors: () => presentation.runtimeStore.list().map((entry) => entry.descriptor),
+    getPresentationDescriptors: () => presentation.runtimeStore.list().map(entry => entry.descriptor),
     getDiagnostics: () => engine.n.coreWorld.getDiagnostics?.(config.id) ?? [],
     getQuery: () => query,
     getState() {
@@ -294,8 +295,10 @@ export async function createCozyIslandWorldRuntime({
         activeCellIds: activeCellIdsFromSnapshot(worldSnapshot ?? {}),
         providerCellCounts: Object.freeze({
           terrain: terrainSource.runtimeStore.size,
+          seaFloor: seaFloorSource.runtimeStore.size,
           biome: biome.runtimeStore.size,
           shoreline: shoreline.runtimeStore.size,
+          seaFloorMaterial: seaFloorMaterial.runtimeStore.size,
           vegetation: vegetation.runtimeStore.size,
           rocks: rocks.runtimeStore.size,
           props: props.runtimeStore.size,

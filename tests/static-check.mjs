@@ -47,6 +47,10 @@ for (const token of [
   "coast-clipped-island-terrain-geometry",
   "independent-seafloor-terrain-geometry",
   "Final Foam Overlay Scene",
+  "Foam Occlusion Depth Scene",
+  "foamDepthPass.getTextureNode",
+  "opaqueSceneDepth",
+  "foamVisible",
   "anime-transparent-ocean-surface"
 ]) assert.ok(rendererSource.includes(token), `Layered renderer is missing ${token}.`);
 
@@ -85,19 +89,29 @@ for (const token of ["opaque-world", "water-composite", "atmosphere-composite", 
 }
 assert.match(graphSource, /finalScenePassId: "foam-overlay"/);
 
+const sequenceSource = fs.readFileSync(path.join(root, "src/kits/sequences.js"), "utf8");
+for (const token of [
+  "PLAYER_EYE_HEIGHT",
+  "FIRST_PERSON_FOV",
+  "pointAboveTerrain",
+  "clampPointAboveTerrain"
+]) assert.ok(sequenceSource.includes(token), `Camera sequence is missing ${token}.`);
+
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 assert.match(html, /three@0\.185\.0\/build\/three\.webgpu\.js/);
 assert.match(html, /LuminaryLabs-Dev\/NexusEngine@481cbf6df742e81279bd42245c4238c6a1fc69f2\/src\/engine\.js/);
 assert.match(html, /LuminaryLabs-Dev\/NexusEngine@481cbf6df742e81279bd42245c4238c6a1fc69f2\/src\/core-domains\/core-world-domain\/index\.js/);
 assert.doesNotMatch(html, /NexusEngine@481cbf6df742e81279bd42245c4238c6a1fc69f2\/src\/index\.js/);
-assert.match(html, /src\/main-cloudform\.js\?v=render-layer-graph-2/);
+assert.match(html, /src\/main-cloudform\.js\?v=foam-depth-camera-1/);
 assert.match(html, /role="alert"/);
 
 const main = fs.readFileSync(path.join(root, "src/main-cloudform.js"), "utf8");
 assert.match(main, /createCozyIslandWorldRuntime/);
 assert.match(main, /createCozyOceanCompositionKit/);
+assert.match(main, /requestedFov/);
+assert.match(main, /camera\.updateProjectionMatrix/);
 assert.match(main, /frames > 1/);
 assert.match(main, /processMaterializationFrame/);
 assert.doesNotMatch(main, /scene\.add\(foamRenderer\.group\)/);
 
-console.log(`static-check: ${catalog.kitCount} catalog kits, ${catalog.capabilityCount} capabilities, ${sourceFiles.length} JS files, validated render-layer graph`);
+console.log(`static-check: ${catalog.kitCount} catalog kits, ${catalog.capabilityCount} capabilities, ${sourceFiles.length} JS files, depth-aware foam and terrain-safe camera`);

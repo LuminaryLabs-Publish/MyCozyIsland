@@ -1,4 +1,6 @@
 import * as THREE from "three/webgpu";
+import { clamp01, lerp, smoothstep } from "./determinism.js";
+import { COZY_RENDER_LAYERS, assignRenderLayer } from "./render-layers.js";
 
 function toonMaterial(color, options = {}) {
   const material = new THREE.MeshToonNodeMaterial({
@@ -9,6 +11,7 @@ function toonMaterial(color, options = {}) {
     side: options.side ?? THREE.FrontSide
   });
   material.roughness = options.roughness ?? 0.86;
+  material.depthTest = options.depthTest !== false;
   material.depthWrite = options.depthWrite ?? !options.transparent;
   return material;
 }
@@ -18,68 +21,77 @@ function colorBlend(weights, palette) {
   let total = 0;
   for (const [key, weight] of Object.entries(weights)) {
     const value = Number(weight) || 0;
-    if (value <= 0) continue;
-    const color = palette[key];
-    if (!color) continue;
-    result.r += color.r * value;
-    result.g += color.g * value;
-    result.b += color.b * value;
+    if (value <= 0 || !palette[key]) continue;
+    result.r += palette[key].r * value;
+    result.g += palette[key].g * value;
+    result.b += palette[key].b * value;
     total += value;
   }
   if (total > 0) result.multiplyScalar(1 / total);
   return result;
 }
 
-function createGridGeometry({ resolution, extent, sampleHeight, colorFor }) {
+function createGridGeometry({ resolution, extent, sampleVertex }) {
   const positions = new Float32Array(resolution * resolution * 3);
-  const colors = colorFor ? new Float32Array(resolution * resolution * 3) : null;
-  const indices = new Uint32Array((resolution - 1) * (resolution - 1) * 6);
+  const colors = new Float32Array(resolution * resolution * 3);
+  const active = new Uint8Array(resolution * resolution);
   let vertex = 0;
+
   for (let zIndex = 0; zIndex < resolution; zIndex += 1) {
     const z = (zIndex / (resolution - 1) * 2 - 1) * extent;
     for (let xIndex = 0; xIndex < resolution; xIndex += 1) {
       const x = (xIndex / (resolution - 1) * 2 - 1) * extent;
-      const y = sampleHeight({ x, z });
+      const sample = sampleVertex({ x, z });
+      const color = sample.color ?? new THREE.Color(0xffffff);
       positions[vertex * 3] = x;
-      positions[vertex * 3 + 1] = y;
+      positions[vertex * 3 + 1] = Number(sample.y ?? 0);
       positions[vertex * 3 + 2] = z;
-      if (colors) {
-        const color = colorFor({ x, y, z });
-        colors[vertex * 3] = color.r;
-        colors[vertex * 3 + 1] = color.g;
-        colors[vertex * 3 + 2] = color.b;
-      }
+      colors[vertex * 3] = color.r;
+      colors[vertex * 3 + 1] = color.g;
+      colors[vertex * 3 + 2] = color.b;
+      active[vertex] = sample.active === false ? 0 : 1;
       vertex += 1;
     }
   }
-  let cursor = 0;
+
+  const indices = [];
+  const addTriangle = (a, b, c) => {
+    if (!active[a] && !active[b] && !active[c]) return;
+    indices.push(a, b, c);
+  };
   for (let z = 0; z < resolution - 1; z += 1) {
     for (let x = 0; x < resolution - 1; x += 1) {
       const a = z * resolution + x;
       const b = a + 1;
       const c = a + resolution;
       const d = c + 1;
-      indices[cursor++] = a;
-      indices[cursor++] = c;
-      indices[cursor++] = b;
-      indices[cursor++] = b;
-      indices[cursor++] = c;
-      indices[cursor++] = d;
+      addTriangle(a, c, b);
+      addTriangle(b, c, d);
     }
   }
+
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  if (colors) geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-  geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
   geometry.computeVertexNormals();
   geometry.computeBoundingSphere();
+  geometry.userData.activeVertexCount = active.reduce((sum, value) => sum + value, 0);
+  geometry.userData.totalVertexCount = active.length;
   return geometry;
 }
 
 function createPathGroup(pathNetwork, terrain) {
   const group = new THREE.Group();
   group.name = "cozy-island-paths";
-  const material = toonMaterial(0xb6976f, { roughness: 0.96, transparent: true, opacity: 0.92, depthWrite: false, side: THREE.DoubleSide });
+  group.renderOrder = 20;
+  const material = toonMaterial(0xb6976f, {
+    roughness: 0.96,
+    transparent: true,
+    opacity: 0.92,
+    depthWrite: false,
+    side: THREE.DoubleSide
+  });
   for (const segment of pathNetwork?.segments ?? []) {
     const from = new THREE.Vector3(segment.from.x, terrain.sampleHeight(segment.from) + 0.11, segment.from.z);
     const to = new THREE.Vector3(segment.to.x, terrain.sampleHeight(segment.to) + 0.11, segment.to.z);
@@ -96,6 +108,7 @@ function createPathGroup(pathNetwork, terrain) {
     geometry.computeVertexNormals();
     const mesh = new THREE.Mesh(geometry, material);
     mesh.receiveShadow = true;
+    mesh.renderOrder = 20;
     group.add(mesh);
   }
   return group;
@@ -104,6 +117,7 @@ function createPathGroup(pathNetwork, terrain) {
 function createInstancedVegetation(snapshot) {
   const group = new THREE.Group();
   group.name = "instanced-vegetation";
+  group.renderOrder = 30;
   const archetypes = snapshot.vegetationArchetypes;
   const byType = snapshot.vegetation.byType;
   const dummy = new THREE.Object3D();
@@ -123,6 +137,7 @@ function createInstancedVegetation(snapshot) {
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    mesh.renderOrder = 30;
     return mesh;
   }
 
@@ -185,7 +200,6 @@ function createInstancedVegetation(snapshot) {
     object.scale.set(instance.scale, instance.scale * (0.72 + (instance.phase % 1) * 0.25), instance.scale);
   });
   if (grassMesh) { grassMesh.name = "grass-patches"; grassMesh.castShadow = false; group.add(grassMesh); }
-
   group.userData.swayTargets = [treeCanopies, palmCrowns, shrubMesh].filter(Boolean);
   return group;
 }
@@ -210,12 +224,14 @@ function createRockMeshes(snapshot) {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   mesh.name = "instanced-rocks";
+  mesh.renderOrder = 35;
   return mesh;
 }
 
 function createProps(snapshot) {
   const group = new THREE.Group();
   group.name = "cozy-island-props";
+  group.renderOrder = 40;
   const wood = toonMaterial(0x80583b);
   const posts = snapshot.props.objects.filter(object => object.type === "fence-post");
   const postGeometry = new THREE.CylinderGeometry(0.12, 0.16, 1.5, 7);
@@ -230,31 +246,30 @@ function createProps(snapshot) {
   });
   postMesh.instanceMatrix.needsUpdate = true;
   postMesh.castShadow = true;
+  postMesh.renderOrder = 40;
   group.add(postMesh);
 
   for (let index = 0; index < posts.length; index += 1) {
     const a = posts[index];
     const b = posts[(index + 1) % posts.length];
-    const ax = a.position.x;
-    const az = a.position.z;
-    const bx = b.position.x;
-    const bz = b.position.z;
-    const length = Math.hypot(bx - ax, bz - az) * 0.94;
-    const yaw = Math.atan2(bz - az, bx - ax);
+    const length = Math.hypot(b.position.x - a.position.x, b.position.z - a.position.z) * 0.94;
+    const yaw = Math.atan2(b.position.z - a.position.z, b.position.x - a.position.x);
     for (const height of [0.62, 1.08]) {
       const rail = new THREE.Mesh(new THREE.BoxGeometry(length, 0.09, 0.1), wood);
-      rail.position.set((ax + bx) * 0.5, Math.min(a.position.y, b.position.y) + height, (az + bz) * 0.5);
+      rail.position.set((a.position.x + b.position.x) * 0.5, Math.min(a.position.y, b.position.y) + height, (a.position.z + b.position.z) * 0.5);
       rail.rotation.y = -yaw;
       rail.castShadow = true;
+      rail.renderOrder = 40;
       group.add(rail);
     }
   }
 
   for (const driftwood of snapshot.props.objects.filter(object => object.type === "driftwood")) {
     const log = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 2.7 * driftwood.scale, 8), wood);
-    log.position.set(driftwood.position.x, driftwood.position.y + 0.22, driftwood.position.z);
+    log.position.set(driftwood.position.x, driftwood.position.y + 0.18, driftwood.position.z);
     log.rotation.set(Math.PI / 2, driftwood.rotation, 0.12);
     log.castShadow = true;
+    log.renderOrder = 40;
     group.add(log);
   }
   return group;
@@ -265,6 +280,7 @@ function createCampfire(snapshot) {
   const group = new THREE.Group();
   group.name = "central-campfire";
   group.position.set(descriptor.position.x, descriptor.position.y, descriptor.position.z);
+  group.renderOrder = 45;
   const logMaterial = toonMaterial(0x6f452c);
   for (let index = 0; index < 7; index += 1) {
     const log = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 2.2, 8), logMaterial);
@@ -306,34 +322,69 @@ export function createStylizedWorldRenderer(snapshot) {
     moss: new THREE.Color(0x4f8f58),
     rock: new THREE.Color(snapshot.materials["terrain-rock"].color)
   };
+  const shelfWidth = Number(snapshot.terrainShelf?.width ?? 6);
+  const shelfDepth = Number(snapshot.terrainShelf?.depth ?? -5);
+  const wetSandColor = palette.wetSand;
+  const submergedColor = new THREE.Color(0x6cb8a1);
+
   const terrainGeometry = createGridGeometry({
     resolution: snapshot.terrainLod.resolution,
     extent: snapshot.terrain.radius * 1.18,
-    sampleHeight: point => snapshot.terrain.sampleHeight(point),
-    colorFor: point => colorBlend(snapshot.biomeField.sample(point), palette)
+    sampleVertex: point => {
+      const fields = snapshot.terrain.sampleFields(point);
+      const active = fields.shoreDistance >= -shelfWidth;
+      if (fields.shoreDistance >= 0) {
+        return {
+          y: fields.height,
+          color: colorBlend(snapshot.biomeField.sample(point), palette),
+          active
+        };
+      }
+      const shelf = smoothstep(0, shelfWidth, -fields.shoreDistance);
+      return {
+        y: lerp(snapshot.terrain.seaLevel - 0.08, shelfDepth, shelf),
+        color: wetSandColor.clone().lerp(submergedColor, clamp01(shelf)),
+        active
+      };
+    }
   });
+  terrainGeometry.name = "coast-clipped-island-terrain-geometry";
+  terrainGeometry.userData.semanticTerrain = "island";
+  terrainGeometry.userData.submergedShelfWidth = shelfWidth;
+  terrainGeometry.userData.submergedShelfDepth = shelfDepth;
   const terrainMaterial = toonMaterial(0xffffff, { vertexColors: true, roughness: 0.9 });
   const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
-  terrainMesh.name = "toon-terrain";
+  terrainMesh.name = "toon-island-terrain";
   terrainMesh.castShadow = true;
   terrainMesh.receiveShadow = true;
-  group.add(terrainMesh);
+  terrainMesh.renderOrder = 10;
 
   const floorResolution = Math.max(49, Math.round(snapshot.terrainLod.resolution * 0.34));
   const floorGeometry = createGridGeometry({
     resolution: floorResolution,
     extent: snapshot.oceanFloor.size * 0.5,
-    sampleHeight: point => snapshot.oceanFloor.sampleHeight(point),
-    colorFor: point => {
-      const depth = -snapshot.oceanFloor.sampleHeight(point);
-      return new THREE.Color(depth < 14 ? 0x4e9f8b : depth < 38 ? 0x347f83 : 0x215d70);
+    sampleVertex: point => {
+      const height = snapshot.oceanFloor.sampleHeight(point);
+      const depth = snapshot.oceanFloor.seaLevel - height;
+      const color = new THREE.Color(
+        depth < 12 ? 0x83c9b5
+          : depth < 34 ? 0x47978f
+            : depth < 68 ? 0x2f727d
+              : 0x1d536b
+      );
+      return { y: height, color, active: true };
     }
   });
-  const floorMesh = new THREE.Mesh(floorGeometry, toonMaterial(0xffffff, { vertexColors: true, roughness: 0.95 }));
-  floorMesh.name = "toon-ocean-floor";
+  floorGeometry.name = "independent-seafloor-terrain-geometry";
+  floorGeometry.userData.semanticTerrain = "sea-floor";
+  const floorMaterial = toonMaterial(0xffffff, { vertexColors: true, roughness: 0.95 });
+  const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+  floorMesh.name = "toon-sea-floor-terrain";
   floorMesh.receiveShadow = true;
-  group.add(floorMesh);
+  floorMesh.renderOrder = 0;
 
+  group.add(floorMesh);
+  group.add(terrainMesh);
   group.add(createPathGroup(snapshot.vegetation.pathNetwork, snapshot.terrain));
   const vegetation = createInstancedVegetation(snapshot);
   group.add(vegetation);
@@ -341,6 +392,14 @@ export function createStylizedWorldRenderer(snapshot) {
   group.add(createProps(snapshot));
   const campfire = createCampfire(snapshot);
   group.add(campfire);
+  assignRenderLayer(group, COZY_RENDER_LAYERS.OPAQUE_WORLD, true);
+  group.userData.renderLayerContract = Object.freeze({
+    passId: "opaque-world",
+    islandTerrain: terrainMesh.name,
+    seaFloorTerrain: floorMesh.name,
+    depthWrite: true,
+    separateTerrains: true
+  });
 
   function update(elapsedSeconds = 0) {
     const sway = Math.sin(elapsedSeconds * 0.72) * 0.006 + Math.sin(elapsedSeconds * 1.83) * 0.003;
@@ -364,5 +423,5 @@ export function createStylizedWorldRenderer(snapshot) {
     positions.needsUpdate = true;
   }
 
-  return Object.freeze({ group, update });
+  return Object.freeze({ group, terrainMesh, floorMesh, update });
 }

@@ -1,32 +1,31 @@
-# Current Audit: MyCozyIsland Dynamic Environment Frame Authority
+# Current Audit: MyCozyIsland Adaptive Quality Transaction Authority
 
-Last updated: `2026-07-12T03-39-52-04-00`
+Last updated: `2026-07-12T05-00-19-04-00`
 
 ## Summary
 
-MyCozyIsland does not have one authoritative environment time. `scenario.tick(dt)` advances the repository-owned environment clock, and the host passes that clock's `elapsedSeconds` to the world renderer and shoreline foam. Ocean waves, volumetric cloud detail, and rolling fog instead use Three TSL's renderer-global `time` node.
+MyCozyIsland selects a frozen base quality descriptor at startup, then runs a separate mutable performance budget. The budget samples RAF callback spacing, applies an exponential moving average, and uses frame-count hysteresis to move between levels 0, 1, and 2.
 
-Environment descriptors are also split between dynamic services and startup snapshots. Wind and illumination can be sampled from the environment clock, but vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadows, fog advection, and the initial illumination are evaluated once in `createLegacyWorldComposition()` and frozen into the render snapshot.
+A degradation updates cloud steps, fog steps, fog resolution, and renderer pixel ratio. Recovery is incomplete: `applyPerformanceLevel(0)` restores the volumetric controls but never calls `renderer.setPixelRatio(...)`, so a return to level zero can leave the renderer at a previously reduced DPR.
 
-`scenario.reset()` resets the repository clock to 48 seconds. It does not reset TSL time, rebuild the static descriptors, or publish a new environment generation. The first frame after reset can therefore combine restarted foam, vegetation, and campfire phases with continuing ocean, cloud, and fog phases.
+The current system also lacks one active-quality descriptor, transition revision, timing-source identity, visibility/throttling admission, explicit override policy, consumer receipt set, resize transaction, and visible-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** document one authoritative path from a committed environment clock through descriptor evaluation, renderer uniforms, reset, diagnostics, and the first visible frame.
+**Goal:** document one authoritative path from measured frame cost and quality policy through an accepted transition, symmetric renderer mutation, diagnostics, resize, recovery, and the first visible frame using the new quality revision.
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
-- [x] Inspect startup composition, scenario tick/reset, environment clock, wind, illumination, atmosphere descriptors, renderer update methods, TSL time use, public host, and tests.
+- [x] Inspect quality selection, performance sampling, renderer mutations, resize, diagnostics, host readback, and tests.
 - [x] Identify the complete interaction loop, active domains, 50 cataloged kits, one extra runtime kit, nine providers, and five imported services.
-- [x] Confirm world and foam update from scenario elapsed time.
-- [x] Confirm ocean, cloud, and fog use renderer-global TSL time.
-- [x] Confirm environment descriptors are evaluated once during composition.
-- [x] Confirm reset changes only repository clock and camera state.
-- [x] Confirm public readback exposes a static `snapshot` beside a dynamic `clock` without one frame identity.
-- [x] Define environment frame, clock source, reset, consumer receipt, journal, fixture, and visible-frame contracts.
+- [x] Confirm asymmetric pixel-ratio recovery.
+- [x] Confirm frame-count dwell is refresh-rate dependent.
+- [x] Confirm URL override is not represented as a fixed/adaptive policy.
+- [x] Confirm no quality revision or frame receipt correlates the accepted level with visible output.
+- [x] Define policy, sample, transition, consumer receipt, resize, recovery, journal, fixture, and frame-proof contracts.
 - [x] Change documentation only.
-- [ ] Implement and run the environment frame fixtures.
+- [ ] Implement and run adaptive-quality fixtures.
 
 ## Runtime identity
 
@@ -44,131 +43,86 @@ providers:             9
 ## Interaction loop
 
 ```txt
-startup composition
-  -> environment clock starts at 48 seconds
-  -> wind field references the clock
-  -> illumination service references the clock
-  -> illumination is sampled once
-  -> vegetation wind is sampled once
-  -> campfire wind is sampled once
-  -> cloud weather, lighting, shadow, and horizon are sampled once
-  -> fog advection is sampled once
-  -> render snapshot freezes those values
-
-renderer startup
-  -> sky texture, scene fog, exposure, hemisphere, and sun use startup illumination
-  -> ocean shader binds Three TSL global time
-  -> cloud shader binds Three TSL global time
-  -> fog shader binds Three TSL global time
+startup
+  -> chooseRenderQuality({ backend })
+  -> optional URL tier wins, otherwise capability policy chooses tier
+  -> set renderer DPR to min(device DPR, base cap)
+  -> allocate shadow, terrain, ocean, volume and world resources from base quality
+  -> create performance budget with targetFrameMs
 
 frame
-  -> scenario.tick(dt) advances environment clock
-  -> scenario snapshot replaces only clock and camera
-  -> worldRenderer.update(clock.elapsedSeconds)
-  -> foamRenderer.update(clock.elapsedSeconds)
-  -> ocean, cloud, and fog evaluate renderer-global time
-  -> static sky, lights, and environment descriptors remain unchanged
-  -> one post-composited frame mixes these authorities
+  -> frameMs = clamp(now - last, 0..100)
+  -> scenario/world/foam update
+  -> performanceBudget.sample(frameMs)
+  -> moving average and qualifying frame counters update
+  -> accepted level transition invokes applyPerformanceLevel(level)
+  -> post pipeline renders immediately with the mutated controls
+  -> every 12 frames diagnostics read base quality plus budget state
 
-reset
-  -> clock.reset() returns elapsedSeconds to 48
-  -> camera reset executes
-  -> TSL time continues from renderer lifetime
-  -> static descriptor snapshot remains the original object
+degrade
+  -> average > target * 1.26 for 90 qualifying frames
+  -> increment level, maximum 2
+  -> reduce cloud/fog step scale and fog resolution
+  -> reduce DPR because level > 0
+
+recover
+  -> average < target * 0.86 for 360 qualifying frames
+  -> decrement level
+  -> restore cloud/fog controls toward base
+  -> when level reaches 0, DPR is not restored
 ```
 
-## Source-backed time authorities
+## Concrete defects
+
+### Sticky pixel-ratio degradation
 
 ```txt
-repository environment clock
-  source: createEnvironmentClock
-  initial time: 48 seconds
-  advance: scenario.tick(dt)
-  resettable: yes
-  consumers: world sway, campfire animation phase, shoreline foam, public clock readback
-
-renderer-global TSL time
-  source: three/tsl time
-  start: renderer/page lifetime
-  advance: renderer internals
-  resettable through scenario: no
-  consumers: ocean wave displacement and normals, cloud detail drift, fog advection
-
-startup descriptor time
-  source: one-time clock and wind sampling during composition
-  revision: none
-  consumers: illumination, vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadow, fog advection
+startup high tier at DPR 1.5
+  -> level 1 sets cap to 1.32
+  -> level 2 sets cap to 1.14
+  -> recovery to level 1 sets cap to 1.32
+  -> recovery to level 0 skips renderer.setPixelRatio
+  -> active DPR remains 1.32 instead of returning to 1.5
 ```
 
-## Main source-backed finding
+The exact retained value depends on the preceding level and device DPR, but level zero does not authoritatively restore startup resolution.
 
-`createLegacyWorldComposition()` builds the environment clock and wind field, then immediately samples and freezes:
+### Refresh-rate-dependent dwell
 
 ```txt
-illumination
-vegetationWind
-campfire
-cloudWeather
-cloudDensity
-cloudLighting
-cloudShadow
-cloudHorizon
-fogDensity
-fogAdvection
+90 qualifying frames:
+  30 Hz -> about 3.0 seconds
+  60 Hz -> about 1.5 seconds
+ 120 Hz -> about 0.75 seconds
+
+360 qualifying frames:
+  30 Hz -> about 12 seconds
+  60 Hz -> about 6 seconds
+ 120 Hz -> about 3 seconds
 ```
 
-`createCozyIslandScenario().getRenderSnapshot()` spreads that frozen startup snapshot and replaces only `clock` and `camera`.
+The moving average changes the exact wall time, but the acceptance threshold is still frame-count based rather than elapsed-time based.
 
-The host then calls:
+### Measurement ambiguity
+
+`renderer` is created with timestamp tracking enabled, but the adaptive budget consumes RAF callback spacing. That value may include scheduling, tab throttling, OS stalls, browser pauses, and CPU work. No typed sample distinguishes CPU frame time, GPU time, presentation latency, callback delay, invalid samples, or visibility transitions.
+
+### Override ambiguity
+
+`?quality=low|medium|high|ultra` selects the base tier, but the performance budget remains active. The runtime has no explicit policy saying whether the override is a fixed lock, an upper bound, a lower bound, or an adaptive starting tier.
+
+### Partial consumer coverage
+
+Adaptive transitions currently affect:
 
 ```txt
-worldRenderer.update(renderState.clock.elapsedSeconds)
-foamRenderer.update(renderState.clock.elapsedSeconds)
+cloud ray-step scale
+fog ray-step scale
+fog resolution scale
+renderer pixel ratio on levels above zero
 ```
 
-But the render shaders use Three TSL global `time` for:
-
-```txt
-ocean wave phase
-cloud detail coordinates
-fog advection offsets
-```
-
-The resulting frame has no single environment time or revision.
-
-## Reset divergence
-
-```txt
-before reset
-  repository clock = 48 + runtime elapsed
-  TSL time = renderer lifetime
-
-scenario.reset()
-  repository clock = 48
-  TSL time = unchanged
-  static descriptors = unchanged
-
-first frame after reset
-  vegetation/campfire/foam = restarted phase
-  ocean/cloud/fog = continuing phase
-  sky/lights/fog parameters = original startup values
-```
-
-## Public readback gap
-
-`globalThis.CozyIsland` exposes live renderer objects, the static startup `snapshot`, the scenario, and `getState()` with a dynamic clock. It does not expose:
-
-```txt
-environmentFrameId
-environmentFrameRevision
-clockSourceId
-clockRevision
-resetGeneration
-descriptorRevision
-consumer receipt set
-last committed environment frame
-first visible frame acknowledgement
-```
+They do not transition already-created resources such as shadow-map size, cloud/fog texture dimensions, ocean segments, terrain resolution, vegetation density, or other base-quality allocations. This can be a valid policy, but it is not represented as an explicit mutable/immutable consumer contract.
 
 ## Domains in use
 
@@ -177,23 +131,18 @@ browser startup, loader, error and debug projection
 kit catalog declaration, validation and completeness
 logical render graph declaration and validation
 physical render pass and proxy-resource construction
-WebGPU/WebGL2 backend and quality policy
+WebGPU/WebGL2 backend and base-quality selection
+adaptive performance sampling and quality mutation
 legacy/Core world mode and lifecycle
 Core World grid, focus, providers and materialization
 camera rail, first-person input, movement, reset and frame projection
 scenario clock, tick, reset and render snapshots
-deterministic seed and environment clock
-wind, weather, illumination and aerial perspective
-vegetation wind and campfire atmosphere
-cloud weather, density, lighting, shadow, horizon and LOD
-fog density, advection, placement and depth composition
-ocean waves, optics, caustics, foam and underwater atmosphere
-Three TSL ocean, cloud and fog time evaluation
+deterministic seed, wind, weather, illumination and aerial perspective
+cloud, fog, ocean, foam, vegetation, campfire and terrain presentation
 island, sea floor, biome, shoreline and ground contact
-vegetation, rocks, props, grass and paths
-render layers, depth, blend and output transform
-adaptive performance and resolution
-public host, diagnostics, tests and Pages deployment
+render layers, depth, blend, post and output transform
+browser input, resize, visibility, page lifecycle and public host
+tests and Pages deployment
 ```
 
 ## All implemented kits and offered services
@@ -206,7 +155,7 @@ webgl2-fallback-renderer-kit                fallback rendering policy
 webgpu-compute-atmosphere-renderer-kit      atmosphere texture generation
 webgpu-foam-renderer-kit                    shoreline foam rendering and animation
 webgpu-ocean-renderer-kit                   ocean displacement, normals and optics
-webgpu-performance-budget-kit               adaptive frame budget
+webgpu-performance-budget-kit               moving average, hysteresis and level callbacks
 webgpu-post-processing-renderer-kit         depth, fog, foam and output composition
 webgpu-rolling-fog-renderer-kit              volume fog and advection
 webgpu-stylized-material-renderer-kit       world materials and animation
@@ -234,7 +183,7 @@ ocean-optics-domain-kit                     absorption, Fresnel and refraction
 ocean-wave-domain-kit                       deterministic wave spectrum
 prop-archetype-domain-kit                   fence, path, driftwood and clearing
 render-archetype-domain-kit                 semantic render mapping
-render-quality-domain-kit                   backend and DPR quality selection
+render-quality-domain-kit                   base tier and resource policy
 render-snapshot-domain-kit                  immutable render aggregation
 rock-archetype-domain-kit                   rock graph
 shoreline-field-domain-kit                  signed coast field
@@ -291,80 +240,88 @@ defineWorldEffectProvider
 ## Required parent domain
 
 ```txt
-cozy-island-dynamic-environment-frame-authority-domain
+cozy-island-adaptive-quality-transaction-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-environment-frame-command-kit
-environment-frame-id-kit
-environment-frame-revision-kit
-environment-clock-source-kit
-environment-clock-revision-kit
-environment-reset-generation-kit
-environment-frame-snapshot-kit
-dynamic-wind-evaluation-kit
-dynamic-illumination-evaluation-kit
-dynamic-atmosphere-evaluation-kit
-dynamic-campfire-environment-kit
-canonical-render-time-uniform-kit
-environment-render-plan-kit
-environment-consumer-receipt-kit
-environment-frame-commit-kit
-stale-environment-frame-rejection-kit
-environment-frame-observation-kit
-environment-frame-journal-kit
-environment-clock-source-divergence-fixture-kit
-environment-reset-phase-parity-fixture-kit
-environment-visible-frame-parity-smoke-kit
+quality-policy-id-kit
+quality-policy-descriptor-kit
+quality-override-policy-kit
+frame-cost-sample-kit
+frame-cost-source-kit
+frame-cost-validity-kit
+quality-observation-window-kit
+quality-transition-command-kit
+quality-transition-id-kit
+quality-transition-revision-kit
+quality-transition-admission-kit
+quality-transition-result-kit
+quality-dwell-time-kit
+quality-consumer-plan-kit
+quality-consumer-receipt-kit
+pixel-ratio-quality-adapter-kit
+volumetric-quality-adapter-kit
+immutable-quality-resource-policy-kit
+quality-resize-transaction-kit
+quality-visibility-suspension-kit
+quality-recovery-transaction-kit
+quality-frame-commit-kit
+quality-observation-kit
+quality-transition-journal-kit
+stale-quality-transition-rejection-kit
+adaptive-quality-cadence-fixture-kit
+pixel-ratio-recovery-fixture-kit
+quality-override-policy-fixture-kit
+quality-visible-frame-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-admit frame command and predecessor environment revision
-  -> advance one canonical environment clock
-  -> evaluate wind, illumination, weather-derived and campfire descriptors
-  -> create one immutable EnvironmentFrameSnapshot
-  -> bind the same canonical time to CPU updates and TSL uniforms
-  -> collect ocean, foam, cloud, fog, vegetation, campfire, light and sky receipts
-  -> reject stale or partial consumer generations
-  -> atomically commit one environment frame revision
-  -> submit one visible frame carrying that revision
-  -> publish first-visible-environment-frame acknowledgement
+admit valid frame-cost sample
+  -> identify CPU/GPU/presentation source and visibility state
+  -> update a time-based observation window
+  -> evaluate explicit fixed/adaptive override policy
+  -> propose transition from expected quality revision
+  -> construct complete mutable-consumer plan
+  -> apply DPR, volumetric, and other admitted changes symmetrically
+  -> collect typed consumer receipts
+  -> reject partial or stale transition
+  -> commit active quality descriptor and revision
+  -> render one frame using that revision
+  -> publish visible quality-frame acknowledgement
 ```
 
-## Existing tests
-
-The current suite constructs deterministic domains and confirms the scenario clock advances. It does not execute or compare renderer-global TSL time against scenario time.
-
-Not proved:
+## Required proof
 
 ```txt
-all environment consumers use one canonical time
-reset restarts every environment phase
-static descriptors are regenerated or revisioned
-WebGPU and WebGL2 use equivalent environment frame inputs
-consumer receipts all cite one environment revision
-public readback identifies the committed environment frame
-first visible frame after reset cites the new reset generation
+30/60/120 Hz produce equivalent time-based transition timing
+level 2 -> 1 -> 0 restores exact base DPR
+resize recomputes or explicitly preserves policy under one transaction
+URL override follows a documented fixed/adaptive rule
+hidden-tab and invalid timing samples cannot trigger transitions
+all mutable consumers cite one quality revision
+immutable consumers are explicitly classified
+base tier, active level, DPR and consumer state agree in diagnostics
+first visible frame after transition cites the committed quality revision
 ```
 
 ## Validation boundary
 
 ```txt
 runtime source changed: no
-environment implementation changed: no
+quality implementation changed: no
 render output changed: no
 package scripts changed: no
 dependencies changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-environment source inspected: yes
-existing domain smoke inspected: yes
+quality source inspected: yes
+existing test chain inspected: yes
 npm test run: no
-new environment fixtures implemented: no
-browser environment smoke run: no
+new adaptive-quality fixtures implemented: no
+browser adaptive smoke run: no
 ```

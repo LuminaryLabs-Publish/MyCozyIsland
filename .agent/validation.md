@@ -1,12 +1,12 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-11T19-20-22-04-00`
+Last updated: `2026-07-11T20-51-14-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible central entry after full Publish/ledger comparison
+selection reason: oldest stable eligible entry after full Publish/ledger comparison; active PrehistoricRush runtime work skipped
 runtime source changed by this pass: no
 rendering output changed by this pass: no
 package scripts changed by this pass: no
@@ -19,59 +19,46 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** separate source-backed startup failure findings from executable proof and define the exact acquisition, rollback, retry and first-frame fixture gate.
+**Goal:** separate source-backed lifecycle-contract findings from executable proof and define the exact legacy/Core parity, reset/reprepare, terminal-disposal and frame-correlation gate.
 
-- [x] Inspect module entry and startup acquisition order.
-- [x] Inspect renderer/backend initialization.
-- [x] Inspect Core World construction and prepare semantics.
-- [x] Inspect scene, volume, renderer and post acquisition.
-- [x] Inspect listener, timer and animation-loop installation.
-- [x] Inspect catch/error behavior.
-- [x] Confirm partial startup rollback is absent.
-- [x] Confirm prepare can retain `prepared=true` after a thrown initial commit.
-- [x] Document command, result, acquisition and rollback contracts.
+- [x] Inspect active route and world-mode selection.
+- [x] Inspect both `world-runtime.js` branches.
+- [x] Inspect prepare, reset, dispose, query and state semantics.
+- [x] Inspect pagehide and global host exposure.
+- [x] Inspect package test chain and Core World runtime test.
+- [x] Confirm lifecycle phase and generation are absent.
+- [x] Confirm legacy/Core disposal semantics diverge.
+- [x] Confirm post-dispose admission is undefined.
+- [x] Document commands, results, leases and fixture contracts.
 - [x] Change documentation only.
-- [ ] Implement and run startup failure-injection fixtures.
-- [ ] Run production-route WebGPU/WebGL2 browser fixtures.
-- [ ] Run deployed Pages startup recovery smoke.
+- [ ] Implement and run lifecycle parity fixtures.
+- [ ] Run browser replacement-frame and pagehide fixtures.
 
 ## Source-backed checks
 
 ```txt
-main() sequentially acquires full runtime graph: yes
-main().catch(fail): yes
-fail(error) retires resources: no
-startup transaction ID: no
-startup phase/state: no
-acquisition ledger: no
-rollback plan/result: no
-clean retry result: no
-first-frame commit result: no
-global host published before final route setup: no
+same wrapper method names in legacy/core: yes
+legacy reset/dispose only clear prepared: yes
+legacy prepare after dispose structurally allowed: yes
+core reset calls resetWorlds: yes
+core dispose calls reset then Core World domain reset: yes
+core wrapper has disposed flag: no
+world lifecycle phase exists: no
+world generation exists: no
+typed reset/dispose results exist: no
+use-after-dispose rejection exists: no
+query lease/revocation exists: no
 ```
 
-## Source-backed world prepare checks
+## Render and host checks
 
 ```txt
-prepare short-circuits when prepared=true: yes
-prepare sets prepared=true before commitFocus: yes
-commitFocus can invoke Core World/provider work: yes
-prepare restores prepared=false on rejection: no
-prepare clears candidate provider/materializer state on rejection: no
-prepared=true requires non-null snapshot: no
-retry attempt identity: no
-```
-
-## Source-backed render ownership checks
-
-```txt
-WebGPURenderer created before later failure points: yes
-world/ocean/foam created before volume failure point: yes
-volume textures created before cloud/fog/post failure points: yes
-post pipeline created before callback/first-frame failure points: yes
-partial render acquisition ledger: no
-partial resource rollback: no
-renderer/backend rollback from catch path: no
+compatibility snapshot created once at startup: yes
+animation loop lifecycle-bound to world generation: no
+pagehide calls domains.dispose: yes
+pagehide revokes globalThis.CozyIsland: no
+pagehide stops renderer loop in route: no
+frame receipt includes world phase/generation: no
 ```
 
 ## Existing validation surface
@@ -79,80 +66,76 @@ renderer/backend rollback from catch path: no
 ```txt
 static architecture checks: present
 semantic domain tests: present
-Core World/provider tests: present
-world lifecycle tests: present
-materialization tests: present
-renderer cache/disposal utility tests: present
-production startup harness: absent
-phase failure injection: absent
-rollback-order fixture: absent
-clean retry fixture: absent
-first-frame startup fixture: absent
-Pages startup recovery smoke: absent
+Core World initial preparation test: present
+provider ordering/lifecycle tests: present
+lazy materialization tests: present
+renderer disposal utility tests: present
+legacy/core lifecycle parity fixture: absent
+reset/reprepare fixture: absent
+use-after-dispose fixture: absent
+query lease fixture: absent
+first replacement-frame fixture: absent
+browser pagehide lifecycle fixture: absent
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. admission
-   invalid catalog, DOM, query mode and pinned capability cases
+1. legacy lifecycle
+   prepare, duplicate prepare, reset, prepare, duplicate dispose
 
-2. backend
-   renderer constructor and init failure
+2. Core lifecycle
+   prepare 49 cells, reset, retain/re-register definition, prepare new generation
 
-3. Core World
-   runtime import, registration, focus, provider and materializer failure
+3. terminal disposal
+   duplicate dispose and deterministic rejection of later mutations
 
-4. render acquisition
-   world, ocean, foam, volume, cloud, fog and post failure
+4. read models
+   stale query, diagnostics and snapshot lease rejection
 
-5. browser ownership
-   listener, timer and animation-loop installation failure
+5. retirement
+   exact provider/materializer release counts and unresolved ownership reporting
 
-6. first frame
-   post/render failure before startup commit
+6. generation
+   stale focus/materialization result rejection
 
-7. rollback
-   reverse dependency order, exact counts and unresolved capability reporting
+7. rendering
+   no DISPOSED world frame and first READY replacement-frame receipt
 
-8. retry
-   failed prepare and partial GPU acquisition followed by clean retry
+8. browser lifecycle
+   pagehide disposal, loop stop and global readback revocation
 
-9. public projection
-   no raw global host before commit and clone-safe failure observation
-
-10. backend parity
-    WebGPU and WebGL2 use the same startup result schema
-
-11. deployment
-    Pages captures error state, rollback result and recovered first frame
+9. parity
+   legacy/Core/WebGPU/WebGL2 result-schema parity
 ```
 
 ## Commands not run
 
 ```txt
 npm test
-browser/WebGPU startup smoke
-browser/WebGL2 startup smoke
-startup failure-injection harness
-resource rollback capture
+browser/WebGPU lifecycle smoke
+browser/WebGL2 lifecycle smoke
+reset/reprepare fixture
+use-after-dispose fixture
+query lease fixture
+first replacement-frame capture
 Pages live smoke
 ```
 
 ## Reason executable validation was not claimed
 
-This run used repository-source inspection and GitHub documentation writes. The production route does not yet expose the startup transaction or injectable factories required to prove phase failures, rollback order, clean retry or first-frame commit correctness.
+This run used source inspection and GitHub documentation writes. The runtime does not yet expose lifecycle phases, generations, typed commands/results, query leases or injectable reset/dispose adapters required to execute the proposed parity and terminal-state fixtures.
 
 ## Acceptance gate
 
 ```txt
-prepared=true always has a valid committed world snapshot
-every startup capability is recorded with identity and dependencies
-every failed startup retires or explicitly reports unresolved ownership
-callback, timer and loop lease counts return to zero after rollback
-retry is rejected until rollback completes
-clean retry creates a new transaction from a verified baseline
-no global raw host is exposed before commit
-running is reported only after first-frame acknowledgement
-WebGPU and WebGL2 return the same startup result schema
+READY always has a committed snapshot
+RESET is reusable in both modes
+DISPOSED is terminal in both modes
+legacy and core return the same lifecycle result classes
+successful reprepare advances generation
+stale generation work cannot commit
+query/diagnostic leases are revoked on reset/dispose
+pagehide retires the runtime and public readback
+first replacement frame identifies the new generation
 ```

@@ -1,13 +1,14 @@
 # Validation: MyCozyIsland
 
-Last updated: `2026-07-12T00-20-01-04-00`
+Last updated: `2026-07-12T02-10-14-04-00`
 
 ## Documentation pass result
 
 ```txt
 selected repository: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest eligible central entry with a newer foam-depth and camera runtime series
+selection reason: oldest fully synchronized eligible central entry
 runtime source changed by this pass: no
+camera behavior changed by this pass: no
 render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
@@ -19,21 +20,20 @@ repo-local documentation pushed to main: yes
 
 ## Plan ledger
 
-**Goal:** distinguish source-backed improvements from executable proof and define the exact graph, topology, binding, lifecycle, backend, and visible-frame gate.
+**Goal:** distinguish source-backed camera defects from executable proof and define the exact baseline, command, reset, revision, browser, and visible-frame gate.
 
 - [x] Inspect the active route and package version.
-- [x] Inspect the full test chain.
-- [x] Inspect logical graph construction and validation.
-- [x] Inspect the source foam renderer interface used by the post pipeline.
-- [x] Inspect physical proxy scene, proxy meshes, depth material, depth comparison, and pass-order readback.
-- [x] Inspect browser animation, pagehide, public host, and readback paths.
-- [x] Confirm the previous unconditional foam composition was removed.
-- [x] Confirm physical opaque-depth comparison exists.
-- [x] Confirm the physical depth pass is absent from the logical graph.
-- [x] Confirm proxy membership is captured once and only transforms are synchronized.
-- [x] Confirm proxy resources have no dedicated disposal path.
-- [x] Confirm remaining logical foam inputs are unbound.
-- [x] Document topology, lifecycle, parity, and browser fixture contracts.
+- [x] Inspect browser wheel, pointer, keyboard, blur, resize, and RAF adapters.
+- [x] Inspect camera baseline construction and interpolation.
+- [x] Inspect rail-mode drag mutation.
+- [x] Inspect first-person movement and threshold handoff.
+- [x] Inspect camera and scenario reset.
+- [x] Inspect public camera readback.
+- [x] Inspect both existing camera tests.
+- [x] Confirm rail positions are mutable point objects.
+- [x] Confirm pre-threshold drag mutates every rail point x value.
+- [x] Confirm reset does not restore the rail point array.
+- [x] Document baseline, command, result, revision, and browser fixture contracts.
 - [x] Change documentation only.
 - [ ] Implement and run the new executable fixtures.
 
@@ -42,116 +42,118 @@ repo-local documentation pushed to main: yes
 ```txt
 package version: 0.4.1
 route cache key: foam-depth-camera-1
-logical graph pass count: 6
-physical readback includes foam-occlusion-depth: yes
-foam proxy scene exists: yes
-proxy MeshDepthMaterial exists: yes
-proxy meshes share source geometry: yes
-proxy membership captured from foamRenderer.meshes at construction: yes
-proxy transforms synchronized every frame: yes
-foam depth sampled against scene depth: yes
-unmasked old composition expression removed: yes
-logical graph declares foam-occlusion-depth: no
-logical/physical compile result exists: no
-source/proxy topology revision exists: no
-proxy disposal method/result exists: no
-water-mask physical binding exists: no
-water-surface-depth physical binding exists: no
-fog-transmittance physical binding exists: no
-visible-frame receipt exists: no
+initial progress: 0.14
+first-person threshold: 0.985
+rail point count: 8
+look-target count: 8
+rail drag mutates yaw: yes
+rail drag mutates pitch: yes
+rail drag mutates railPositions x: yes
+rail drag mutates railLooks: no
+mutation is cumulative: yes
+reset restores progress: yes
+reset restores yaw and pitch: yes
+reset clears pressed keys: yes
+reset restores player position: yes
+reset restores railPositions: no
+reset returns typed result: no
+camera descriptor includes baseline/path/reset revisions: no
 ```
 
 ## Existing test surface
 
 ```txt
 npm test chain: present
-static architecture checks: present
-domain and Core World tests: present
-camera ground-clearance test: present
-camera first-person contract test: present
-foam-depth-occlusion source-token test: present
-renderer cell-cache/disposal tests: present
+camera-rail-ground-clearance.mjs: present
+camera-first-person-contract.mjs: present
+static architecture tests: present
+world/runtime tests: present
+render tests: present
 ```
 
-## Current foam test proves
+## Existing camera tests prove
 
 ```txt
-renderer-post.js contains the expected depth-scene and comparison tokens
-old unmasked final composition string is absent
-logical source-order strings remain water -> atmosphere -> foam -> output
+sampled rail camera positions remain above terrain
+sampled rail look targets remain above terrain
+rail FOV remains finite and between 55 and 80
+first-person mode uses 80-degree FOV
+first-person eye remains two meters above terrain
+forward movement updates terrain-relative player height
 ```
 
-## Current foam test does not prove
+## Existing camera tests do not prove
 
 ```txt
-that Three.js accepted and executed the intended GPU passes
-which physical attachment produced scene depth
-that source/proxy mesh membership is exact
-that topology changes reconcile
-that proxy resources dispose
-that opaque terrain/props actually hide foam pixels
-that water-mask and fog semantics match the graph
-that WebGPU and WebGL2 produce equivalent results
-which graph, topology and resource revisions produced a visible frame
+authored rail points remain immutable
+initial and post-reset descriptors are identical
+repeated drag/reset cycles have zero cumulative drift
+wheel and drag commands are admitted in order
+stale commands cannot mutate a later reset generation
+rail-to-first-person transition is exactly once
+multi-pointer browser input is isolated
+public readback identifies baseline and path revisions
+first visible frame after reset uses the restored camera revision
 ```
 
 ## Required fixture matrix
 
 ```txt
-1. graph/plan adapter
-   logical foam depth policy maps to one physical depth pass
+1. baseline determinism
+   same terrain revision produces the same baseline fingerprint
 
-2. topology prepare
-   exact source/proxy membership with stable identities
+2. baseline immutability
+   wheel, drag, key, tick, descriptor and reset do not mutate baseline points
 
-3. topology mutation
-   added and removed foam meshes reconcile atomically
+3. reset fidelity
+   initial and post-reset descriptor fingerprints match exactly
 
-4. transform sync
-   source and proxy world transforms match under one frame revision
+4. repeated drift
+   100 maximum rail drags followed by reset produce zero cumulative displacement
 
-5. resource ownership
-   shared geometry survives; proxy material/pass retire exactly once
+5. transition
+   one command owns the rail-to-first-person mode and FOV handoff
 
-6. binding
-   exact current opaque-depth producer is identified and admitted
+6. stale input
+   old camera revision and reset-generation commands are rejected
 
-7. visible occlusion
-   terrain, rocks, props and vegetation hide foam pixels
+7. multi-pointer
+   unrelated pointer events cannot replace or terminate the active drag lease
 
-8. water/fog semantics
-   remaining declared inputs are bound or removed explicitly
+8. headless/browser parity
+   direct commands and browser adapters produce equivalent typed results
 
-9. backend parity
-   WebGPU and WebGL2 publish the same result schema
+9. visible frame
+   first frame after reset cites baseline, path, reset, camera and frame revisions
 
-10. frame proof
-    capture cites graph, plan, topology, resource, backend and frame revisions
+10. deployed route
+    Pages reproduces reset fidelity on wheel, mouse, pen and touch-capable paths
 ```
 
 ## Commands not run
 
 ```txt
 npm test
-browser WebGPU smoke
-browser WebGL2 smoke
-proxy topology mutation fixture
-proxy disposal fixture
-foam pixel capture
-water/fog integration capture
-Pages live smoke
+camera baseline fixture
+camera reset-fidelity fixture
+repeated drag/reset fixture
+stale command fixture
+multi-pointer browser fixture
+WebGPU browser smoke
+WebGL2 browser smoke
+Pages camera smoke
 ```
 
 ## Acceptance gate
 
 ```txt
-one admitted graph revision owns one physical plan revision
-one source topology revision owns one proxy topology revision
-all source/proxy membership is exact
-no shared geometry is double-disposed
-all owned proxy resources retire exactly once
-all declared foam inputs are bound or removed
-physical order comes from execution receipts
-both backends pass visible occlusion and lifecycle fixtures
-first visible foam frame identifies graph, topology, binding and resources
+one admitted immutable baseline owns one fingerprint
+session input never mutates authored baseline points
+reset recreates the exact initial descriptor
+repeated drag/reset cannot accumulate path drift
+one command produces one typed camera transition result
+old-generation commands cannot mutate current camera state
+browser and headless input share one admission path
+public descriptor exposes baseline, path, reset and camera revisions
+first visible reset frame cites the committed camera revision
 ```

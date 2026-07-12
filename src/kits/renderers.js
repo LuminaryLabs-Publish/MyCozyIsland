@@ -5,3 +5,4 @@ export { createWebGPUPostPipeline } from "./renderer-post.js";
 export { createRendererCellCache } from "./renderer-cell-cache.js";
 export { disposeRendererObject } from "./renderer-disposal.js";
 export { createCellAwareWorldRendererController } from "./renderer-world-cells.js";
+export { COZY_RENDER_LAYERS, assignRenderLayer, createLayerMask } from "./render-layers.js";

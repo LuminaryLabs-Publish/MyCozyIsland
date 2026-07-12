@@ -1,15 +1,14 @@
-# Validation: MyCozyIsland Multi-Domain Transaction Audit
+# Validation: MyCozyIsland Agriculture Cutover Recovery Audit
 
-Last updated: `2026-07-12T10-20-02-04-00`
+Last updated: `2026-07-12T12-50-46-04-00`
 
 ## Change boundary
 
 ```txt
-runtime source changed: no
-transaction behavior changed: no
-gameplay behavior changed: no
+runtime source changed in this audit run: no
+Agriculture behavior changed in this audit run: no
+Inventory behavior changed: no
 persistence behavior changed: no
-input behavior changed: no
 render output changed: no
 package scripts changed: no
 dependencies changed: no
@@ -20,46 +19,66 @@ pull request created: no
 
 ## Source review completed
 
-- [x] Publish organization repository inventory.
-- [x] Central repo-ledger timestamps and status.
-- [x] Active adventure composition and installed kits.
-- [x] Input and interaction operation identity.
-- [x] Inventory transaction wrapper.
-- [x] Farming plant and harvest nesting.
-- [x] Foraging reward and node mutation nesting.
-- [x] NexusEngine core transaction-ledger implementation.
-- [x] Adventure happy-path smoke.
-- [x] Standalone core-ledger smoke.
-- [x] Package test command.
-- [x] Existing save/render authority documentation.
+- [x] Full accessible Publish organization repository inventory.
+- [x] Central ledger state and prior MyCozyIsland audit boundary.
+- [x] Post-audit Agriculture cutover commit and changed-file set.
+- [x] Pinned NexusEngine and NexusEngine-Kits dependency references.
+- [x] Active composition and domain paths.
+- [x] Tropical Agriculture configuration and legacy-state migration.
+- [x] Product Inventory settlement and recovery shortcut.
+- [x] Official Agriculture planning, commit, events, snapshots and reset.
+- [x] Core Transaction Ledger apply-once and snapshot behavior.
+- [x] ECS event queues, journal and scheduler clearing behavior.
+- [x] Save-v2 capture, save-v1 migration and restore rollback.
+- [x] Renderer-neutral Agriculture descriptors and frame snapshot.
+- [x] Agriculture smoke test and package scripts.
 
-## Commands
+## Existing source proof
 
 ```txt
+npm test target:
+  tests/adventure-domains-smoke.mjs
+
+smoke assertions present:
+  official Agriculture path installed
+  old farming path absent
+  annual crop lifecycle
+  perennial coconut regrowth
+  wild coconut Foraging separation
+  save-v2 round trip
+  synthetic save-v1 migration
+  Agriculture render descriptors
+```
+
+## Commands in this documentation run
+
+```txt
+npm install: not run
 npm test: not run
-tests/adventure-domains-smoke.mjs: not run
-tests/core-transaction-ledger-smoke.mjs: not run
 browser smoke: not run
 Pages smoke: not run
 ```
 
-The GitHub connector provided source review and writes but no runnable repository checkout in this environment. A direct public clone attempt could not resolve `github.com`, so no local command result is claimed.
+The GitHub connector provided source reads and writes but no runnable repository checkout. No command success is claimed.
 
 ## Missing executable proof
 
 ```txt
-nested operation failure fixture: unavailable
-participant rollback fixture: unavailable
-save-during-split fixture: unavailable
-incomplete restore reconciliation fixture: unavailable
-same-ID retry fixture: unavailable
-new-ID retry fixture: unavailable
-transaction/frame correlation fixture: unavailable
-WebGPU/WebGL2 parity fixture: unavailable
+failure-after-Inventory fixture: unavailable
+failure-after-Agriculture fixture: unavailable
+event-queue rollback fixture: unavailable
+ECS-journal rollback fixture: unavailable
+partial-history recovery fixture: unavailable
+resource-delta reconciliation fixture: unavailable
+authentic legacy-save fixture: unavailable
+legacy-ledger migration fixture: unavailable
+post-migration retry fixture: unavailable
+save-during-indeterminate fixture: unavailable
+transaction-to-frame fixture: unavailable
+WebGPU/WebGL2 recovery parity fixture: unavailable
+Pages restored-save smoke: not run
 ```
 
-## Current proof
+## Current conclusion
 
-The standalone ledger smoke proves one operation is executed once, duplicate calls return the cached result and a ledger snapshot can restore. The adventure smoke proves the normal farm/forage/save loop. Neither proves atomic multi-domain commitment or rollback.
-
-No runtime transaction correctness, exactly-once reward delivery, rollback safety, save consistency, visible-frame consistency or deployment readiness claim is made.
+The official Agriculture DSK cutover is source-backed and the domain ownership split is materially better than the removed product farming authority. This audit does not claim complete transaction atomicity, effect rollback, partial-history recovery, legacy-ledger reconciliation or first-visible-frame provenance.

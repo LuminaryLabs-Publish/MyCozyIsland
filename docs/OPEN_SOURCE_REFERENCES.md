@@ -2,20 +2,22 @@
 
 The rebuild was designed after reviewing upstream implementations. No third-party project was copied wholesale; the application uses its own NexusEngine domain contracts and scene composition.
 
-## NexusEngine Core World
+## NexusEngine Core World and Core Graphics
 
 Repository: `LuminaryLabs-Dev/NexusEngine`  
-Pinned commit: `38229f59c22cb40024ffd13a9f48040de759f5d7`
+Pinned commit: `481cbf6df742e81279bd42245c4238c6a1fc69f2`
 
-Imported capabilities:
+Imported browser capabilities:
 
+- `createEngine`
 - `createCoreWorldDomain`
 - `createUniformGridPartition`
 - `createFlatWorldSurface`
-- `createTerrainProviderAdapter`
 - `defineWorldEffectProvider`
 
-The Core World domain coordinates portable world identity, cells, focus, provider phases, lifecycle, and snapshots. MyCozyIsland retains ownership of terrain generation, biome classification, population data, Three.js objects, GPU buffers, and visual effects.
+The same pinned NexusEngine commit contains the renderer-agnostic Core Graphics `render-layer-graph-kit`, pass contracts, dependency ordering, resource-flow validation, transparent-depth policy, and final scene-content boundary used as the reusable engine contract for this application-specific composition.
+
+Core World coordinates portable world identity, cells, focus, provider phases, lifecycle, and snapshots. MyCozyIsland retains ownership of terrain generation, island/sea-floor classification, population data, Three.js objects, GPU buffers, and renderer-adapter effects.
 
 The browser imports the pinned `src/engine.js` and `src/core-domains/core-world-domain/index.js` entry points directly. It intentionally avoids the broad root index because that surface also exports Node-only headless-editor modules.
 

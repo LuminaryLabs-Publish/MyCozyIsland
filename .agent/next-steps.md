@@ -1,64 +1,65 @@
-# Next Steps: MyCozyIsland Multi-Domain Transaction Authority
+# Next Steps: MyCozyIsland Agriculture Cutover Recovery
 
-Last updated: `2026-07-12T10-20-02-04-00`
+Last updated: `2026-07-12T12-50-46-04-00`
 
 ## Goal
 
-Implement one session-scoped action transaction authority that stages farm/forage participants, commits product state and ledger records atomically, rolls back completely, and correlates save/render output with the committed revision.
+Implement one product coordination authority that makes official Agriculture actions atomic and recoverable across Inventory, Agriculture, parent/child ledgers, events, save migration and visible frames.
 
 ## Ordered implementation checklist
 
-- [ ] Add `cozy-island-multi-domain-transaction-commit-authority-domain`.
-- [ ] Define session, generation, command and transaction identity.
-- [ ] Replace input-frame-only operation identity with session/generation/sequence identity.
-- [ ] Add immutable `AdventureActionCommand` and typed admission results.
-- [ ] Resolve and freeze the participant set before mutation.
-- [ ] Capture inventory, plot/node and ledger predecessor revisions.
-- [ ] Split farming and foraging APIs into pure planning and explicit commit operations.
-- [ ] Add inventory, farm and forage candidate-state builders.
-- [ ] Validate balances, target state, yields and cross-participant invariants before commit.
-- [ ] Add one transaction commit barrier for participant state and parent/child ledger records.
-- [ ] Add complete rollback receipts for every participant.
-- [ ] Define `committed`, `rejected`, `rolled-back` and `indeterminate` terminal results.
-- [ ] Block save and render admission while a revision is committing or indeterminate.
-- [ ] Add transaction revision to save and render snapshots.
-- [ ] Reconcile incomplete parent/child transaction families during restore.
-- [ ] Add first-visible-frame acknowledgement for committed and rolled-back transactions.
-- [ ] Keep game-specific validation in inventory/farming/foraging domains.
-- [ ] Keep portable idempotency in `core-transaction-ledger-kit`.
-- [ ] Wire `tests/adventure-domains-smoke.mjs` and `tests/core-transaction-ledger-smoke.mjs` into `npm test`.
-- [ ] Add failure injection after each nested participant operation.
-- [ ] Add save-during-split, restore-reconciliation and retry fixtures.
-- [ ] Add WebGPU/WebGL2 transaction-to-frame parity smoke.
-- [ ] Pin NexusEngine browser imports to one reviewed commit.
-- [ ] Continue the previously documented persistence authority after transaction commit truth exists.
+- [ ] Add `cozy-island-agriculture-cutover-recovery-authority-domain`.
+- [ ] Define session, command, transaction and recovery generation identity.
+- [ ] Replace frame-index-centered operation identity with durable session and command sequence identity.
+- [ ] Freeze Inventory, plot, Agriculture state and ledger predecessor revisions before planning.
+- [ ] Preserve the official Agriculture plan as the reusable crop-rule source of truth.
+- [ ] Build Inventory and Agriculture candidate states without publishing live events.
+- [ ] Reserve parent and child ledger records before participant commit.
+- [ ] Add one commit barrier across Inventory, Agriculture and all required records.
+- [ ] Publish Agriculture events only after aggregate commit succeeds.
+- [ ] Add event-queue and ECS-journal segmentation for rollback.
+- [ ] Define exact predecessor restore versus declared rollback-generation policy.
+- [ ] Add `committed`, `rejected`, `rolled-back`, `reconciled`, `quarantined-legacy` and `indeterminate` results.
+- [ ] Validate Inventory child record, Agriculture child record and resource delta before parent recovery.
+- [ ] Add a bounded reconciliation journal and retry policy.
+- [ ] Migrate or quarantine legacy `cozy-farming` ledger records during save-v1 restore.
+- [ ] Add source schema, migration policy version and target Agriculture fingerprint to migration receipts.
+- [ ] Replace the direct `cozyFarming` alias with an explicit compatibility adapter or remove it after a documented window.
+- [ ] Add transaction and recovery revision to save snapshots.
+- [ ] Add transaction and recovery revision to frame snapshots and HUD results.
+- [ ] Add first-visible-frame acknowledgement for committed and recovered actions.
+- [ ] Add failure injection after Inventory commit, Agriculture state commit, event enqueue and before parent record.
+- [ ] Add event-queue and ECS-journal rollback parity fixtures.
+- [ ] Add recovery fixtures with missing or conflicting child records.
+- [ ] Add authentic pre-cutover save-v1 and ledger fixtures.
+- [ ] Add post-migration retry exactly-once fixtures.
+- [ ] Add WebGPU/WebGL2 transaction-frame parity smoke.
+- [ ] Add Pages smoke using restored Agriculture saves.
 
 ## Acceptance criteria
 
 ```txt
-plant failure after seed debit
-  -> seed balance restored
-  -> plot unchanged
-  -> no parent or child terminal record remains
-  -> no save or frame exposes the candidate
+successful plant or harvest
+  -> Inventory delta, Agriculture state and all records commit once
+  -> event publishes after commit
+  -> save and frame cite the same transaction revision
 
-harvest failure after reward
-  -> reward restored
-  -> plot remains predecessor
-  -> retry produces exactly one reward
+failure after Agriculture event candidate
+  -> predecessor state or declared rollback generation restored
+  -> candidate event and journal rows not observable as committed
+  -> retry cannot duplicate debit or reward
 
-forage failure after coconut reward
-  -> inventory and node both rollback
-  -> node cannot remain harvestable with committed reward
+partial-history recovery
+  -> parent success only after Inventory and Agriculture child parity proof
+  -> conflicting history becomes indeterminate or quarantined
 
-successful action
-  -> all participant and ledger receipts share one transaction revision
-  -> save snapshot cites that revision
-  -> first visible frame cites that revision
+legacy save-v1
+  -> farming state migrates
+  -> old ledger history is classified and recorded
+  -> retry after restore cannot duplicate a historical action
 
-restore
-  -> incomplete parent/child transaction family is rejected or deterministically reconciled
-
-indeterminate commit
-  -> input retry, save and rendering are blocked until reconciliation completes
+visible frame
+  -> crop mesh, HUD result and participant revisions cite one committed transaction
 ```
+
+Keep Agriculture rules in the official provider. Keep Inventory balances in Inventory and wild resources in Foraging. The new authority coordinates product transaction truth only.

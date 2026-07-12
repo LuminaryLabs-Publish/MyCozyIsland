@@ -16,10 +16,11 @@ export function createLegacyWorldComposition({ quality, backend = "webgpu" } = {
   const illuminationService = createIlluminationState({ clock, weather });
   const illumination = illuminationService.getState();
   const terrain = createTerrainSurface({ seed: seedService.seed, radius: 108, maxHeight: 24, beachWidth: 12, clearingRadius: 17 });
+  const terrainShelf = Object.freeze({ width: 6, depth: -5, handoffDepth: -7 });
   const biomeField = createTerrainBiomeField(terrain);
   const shoreline = createShorelineField(terrain);
   const terrainLod = createTerrainLodPolicy(quality);
-  const oceanFloor = createOceanFloorProfile(terrain);
+  const oceanFloor = createOceanFloorProfile(terrain, { minimumCoastDepth: terrainShelf.handoffDepth });
   const oceanWaves = createOceanWaveState();
   const oceanOptics = createOceanOpticsDescriptor();
   const underwater = createUnderwaterAtmosphereDescriptor();
@@ -47,7 +48,7 @@ export function createLegacyWorldComposition({ quality, backend = "webgpu" } = {
   const materials = createStylizedMaterialCatalog();
   const renderArchetypes = createRenderArchetypeCatalog();
   const fallbackPolicy = createWebGL2FallbackPolicy();
-  const descriptors = Object.freeze({ seed: seedService.seed, quality, backend, terrain, terrainLod, biomeField, shoreline, oceanFloor, oceanWaves, oceanOptics, underwater, caustics, sunGlitter, foam, vegetation, vegetationArchetypes, vegetationWind, vegetationLod, rocks, props, campfire, cloudWeather, cloudDensity, cloudLighting, cloudLod, cloudShadow, cloudHorizon, fogDensity, fogAdvection, fogPlacement, illumination, aerialPerspective, materials, renderArchetypes, fallbackPolicy });
+  const descriptors = Object.freeze({ seed: seedService.seed, quality, backend, terrain, terrainShelf, terrainLod, biomeField, shoreline, oceanFloor, oceanWaves, oceanOptics, underwater, caustics, sunGlitter, foam, vegetation, vegetationArchetypes, vegetationWind, vegetationLod, rocks, props, campfire, cloudWeather, cloudDensity, cloudLighting, cloudLod, cloudShadow, cloudHorizon, fogDensity, fogAdvection, fogPlacement, illumination, aerialPerspective, materials, renderArchetypes, fallbackPolicy });
   const snapshot = createRenderSnapshot(descriptors);
   const cameraSequence = createCameraRailSequence(terrain);
   const scenario = createCozyIslandScenario({ clock, cameraSequence, snapshot });

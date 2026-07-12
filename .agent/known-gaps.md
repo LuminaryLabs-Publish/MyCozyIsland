@@ -1,105 +1,97 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-12T05-00-19-04-00`
+Last updated: `2026-07-12T06-51-27-04-00`
 
 ## Summary
 
-Adaptive quality has no authoritative active descriptor or transition revision. It samples RAF spacing, accepts transitions after refresh-rate-dependent frame counts, changes only part of the renderer, and does not restore base pixel ratio when recovery reaches level zero.
+Browser wheel, pointer, and keyboard callbacks currently mutate camera state directly. The runtime has no normalized command envelope, command sequence, frame queue, focus and visibility policy, deterministic replay, or visible-frame receipt.
 
-## Policy and identity gaps
+## Identity and ordering
 
 ```txt
-quality policy ID: absent
-fixed versus adaptive mode: absent
-base quality revision: absent
-active quality descriptor: absent
-quality transition ID: absent
-quality transition revision: absent
-expected predecessor revision: absent
-URL override semantics: ambiguous
+input session ID: absent
+runtime generation: absent
+command ID: absent
+command sequence: absent
+target frame ID: absent
+device descriptor: absent
+input state revision: absent
+camera revision from input: absent
 ```
 
-## Measurement gaps
+## Wheel
 
 ```txt
-RAF callback spacing sampled: yes
-CPU frame timing identified: no
-GPU timing identified: no
-presentation latency identified: no
-visibility state admitted: no
-first-frame/discontinuity rejection: no
-sample ID and validity result: absent
-time-based observation window: absent
+raw deltaY consumed: yes
+deltaMode consumed: no
+pixel, line, and page normalization: absent
+device scaling policy: absent
+rail progress result: absent
+wheel parity fixture: absent
 ```
 
-## Transition gaps
+## Pointer
 
 ```txt
-degrade threshold: 90 qualifying frames
-recover threshold: 360 qualifying frames
-refresh-rate-independent dwell: no
-transactional consumer plan: absent
-partial-application rollback: absent
-stale transition rejection: absent
-transition reason/result: absent
-bounded transition journal: absent
+pointer capture requested: yes
+capture lease identity: absent
+lost-pointer-capture handling: absent
+sample coalescing: absent
+per-frame pointer reduction: absent
+per-event rail clamp: present
+equivalent cadence parity: not guaranteed
+drag clear on blur: absent
 ```
 
-## Consumer gaps
+## Keyboard
 
 ```txt
-cloud steps adapt: yes
-fog steps adapt: yes
-fog resolution adapts: yes
-DPR degrades above level zero: yes
-DPR restores at level zero: no
-shadow map adapts: no
-volume texture size adapts: no
-ocean geometry adapts: no
-terrain resolution adapts: no
-vegetation density adapts: no
-mutable versus immutable classification: absent
-consumer receipts: absent
+ambient pressed Set: present
+edge versus hold model: absent
+repeat classification: absent
+focus target policy: absent
+visibility clear policy: absent
+clear command and result: absent
+runtime-generation fence: absent
 ```
 
-## Resize and lifecycle gaps
+## Admission and lifecycle
 
 ```txt
-resize updates renderer size: yes
-resize updates camera aspect: yes
-resize re-evaluates base quality: no
-resize creates quality revision: no
-page visibility suspends samples: no
-pagehide disposes domains only: yes
-performance budget reset/disposal result: absent
-new runtime generation fencing: absent
+camera-mode policy: implicit
+focus admission: partial
+visibility admission: absent
+pagehide input retirement: absent
+stale callback rejection: absent
+listener lease registry: absent
+bounded input journal: absent
 ```
 
-## Diagnostics and frame gaps
+## Frame and observation
 
 ```txt
-debug base tier: present
-debug active level: indirect through FPS only
-active DPR: not projected
-quality transition revision: absent
-transition reason: absent
-consumer receipt set: absent
-public active-quality descriptor: absent
-first visible quality-frame acknowledgement: absent
+immutable InputFrame: absent
+frame-start reduction: absent
+input command result: absent
+input-to-camera fingerprint: absent
+input-to-world-focus correlation: absent
+public input read model: absent
+input replay: absent
+first visible input-frame acknowledgement: absent
 ```
 
 ## Test gaps
 
 ```txt
-performance-budget unit fixture: absent
-30/60/120 Hz cadence parity fixture: absent
-pixel-ratio recovery fixture: absent
-override-policy fixture: absent
-hidden-tab sample fixture: absent
-resize transaction fixture: absent
-partial consumer failure fixture: absent
-WebGPU/WebGL2 transition parity fixture: absent
-visible quality-frame smoke: absent
+wheel unit normalization fixture: absent
+pointer cadence parity fixture: absent
+keyboard edge and hold fixture: absent
+blur and visibility fixture: absent
+pointer-capture-loss fixture: absent
+stale runtime-generation fixture: absent
+input replay parity fixture: absent
+WebGPU and WebGL2 input parity fixture: absent
+visible input-frame smoke: absent
 ```
 
 ## Related retained gaps
@@ -107,35 +99,36 @@ visible quality-frame smoke: absent
 ```txt
 browser startup transaction and rollback
 runtime session ownership and callback leases
-legacy/Core world lifecycle parity
+legacy and Core world lifecycle parity
 render graph and physical resource binding
 foam proxy topology and lifecycle
-Core World reset/reprepare
+Core World reset and reprepare
 focus transaction authority
-materialization generation/readiness
-renderer cell commit/disposal
+materialization readiness
+renderer cell commit and disposal
 camera rail baseline fidelity
 dynamic environment frame coherence
+adaptive quality transaction and recovery
 ```
 
 ## Risk ranking
 
 ```txt
-P0 recovery to level zero can retain reduced DPR indefinitely
-P1 transition dwell changes materially with display refresh rate
-P1 hidden-tab or callback discontinuity samples can influence quality
-P1 forced quality override has no explicit lock/adaptive contract
-P1 diagnostics can label base tier while active renderer settings differ
-P1 partial consumer mutation has no rollback or receipt proof
-P2 resize does not reconsider capability policy
-P2 startup-only quality resources are not explicitly classified
+P0 wheel gestures can produce different rail progress because deltaMode is ignored
+P1 equivalent pointer motion can produce different rail geometry because clamping is per event
+P1 browser callbacks mutate camera state outside frame admission
+P1 drag state is not explicitly cleared by blur or capture loss
+P1 prior-generation callbacks have no rejection fence
+P1 no replay or frame receipt proves which input produced the visible camera
+P2 keyboard edge and hold semantics are implicit
 ```
 
-## Non-goals of this documentation run
+## Non-goals
 
 ```txt
-no quality implementation changed
-no renderer settings changed
+no input implementation changed
+no camera behavior changed
+no render behavior changed
 no tests or package scripts changed
 no dependencies changed
 no deployment configuration changed

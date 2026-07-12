@@ -1,65 +1,94 @@
-# Next Steps: MyCozyIsland Agriculture Cutover Recovery
+# Next Steps: MyCozyIsland Host Save Persistence
 
-Last updated: `2026-07-12T12-50-46-04-00`
+Last updated: `2026-07-12T14-51-49-04-00`
 
 ## Goal
 
-Implement one product coordination authority that makes official Agriculture actions atomic and recoverable across Inventory, Agriculture, parent/child ledgers, events, save migration and visible frames.
+Implement one browser-host persistence authority that distinguishes portable snapshot capture from verified durable commit and makes restore, reset, conflict, lifecycle and save-status results truthful.
 
-## Ordered implementation checklist
+## Plan ledger
 
-- [ ] Add `cozy-island-agriculture-cutover-recovery-authority-domain`.
-- [ ] Define session, command, transaction and recovery generation identity.
-- [ ] Replace frame-index-centered operation identity with durable session and command sequence identity.
-- [ ] Freeze Inventory, plot, Agriculture state and ledger predecessor revisions before planning.
-- [ ] Preserve the official Agriculture plan as the reusable crop-rule source of truth.
-- [ ] Build Inventory and Agriculture candidate states without publishing live events.
-- [ ] Reserve parent and child ledger records before participant commit.
-- [ ] Add one commit barrier across Inventory, Agriculture and all required records.
-- [ ] Publish Agriculture events only after aggregate commit succeeds.
-- [ ] Add event-queue and ECS-journal segmentation for rollback.
-- [ ] Define exact predecessor restore versus declared rollback-generation policy.
-- [ ] Add `committed`, `rejected`, `rolled-back`, `reconciled`, `quarantined-legacy` and `indeterminate` results.
-- [ ] Validate Inventory child record, Agriculture child record and resource delta before parent recovery.
-- [ ] Add a bounded reconciliation journal and retry policy.
-- [ ] Migrate or quarantine legacy `cozy-farming` ledger records during save-v1 restore.
-- [ ] Add source schema, migration policy version and target Agriculture fingerprint to migration receipts.
-- [ ] Replace the direct `cozyFarming` alias with an explicit compatibility adapter or remove it after a documented window.
-- [ ] Add transaction and recovery revision to save snapshots.
-- [ ] Add transaction and recovery revision to frame snapshots and HUD results.
-- [ ] Add first-visible-frame acknowledgement for committed and recovered actions.
-- [ ] Add failure injection after Inventory commit, Agriculture state commit, event enqueue and before parent record.
-- [ ] Add event-queue and ECS-journal rollback parity fixtures.
-- [ ] Add recovery fixtures with missing or conflicting child records.
-- [ ] Add authentic pre-cutover save-v1 and ledger fixtures.
-- [ ] Add post-migration retry exactly-once fixtures.
-- [ ] Add WebGPU/WebGL2 transaction-frame parity smoke.
-- [ ] Add Pages smoke using restored Agriculture saves.
+- [ ] Add `cozy-island-host-save-persistence-authority-domain` as a host adapter around `cozy-save-domain-kit`.
+- [ ] Define save session, command, storage generation and dirty revision identity.
+- [ ] Stop mutating committed SaveState during candidate capture.
+- [ ] Add an immutable host save envelope with producer, world, dependency, predecessor and dirty-revision fingerprints.
+- [ ] Add a canonical save-key registry and explicit migration from `my-cozy-island.adventure-save.v1`.
+- [ ] Add browser storage capability and quota classification.
+- [ ] Add tab identity and writer lease ownership.
+- [ ] Require expected predecessor checksum and storage generation for commit.
+- [ ] Write candidates to a staging generation.
+- [ ] Read back and verify serialized bytes, schema and checksums.
+- [ ] Commit through an active pointer or equivalent predecessor-preserving protocol.
+- [ ] Retain a bounded verified backup generation.
+- [ ] Add committed, unchanged, rejected, conflicted and failed save results.
+- [ ] Keep dirty state pending after every failed or conflicted write.
+- [ ] Derive HUD `Saved` only from a verified `SaveCommitResult`.
+- [ ] Add corrupt-record quarantine and fallback-to-backup policy.
+- [ ] Add restore-preparation admission before mutating live participants.
+- [ ] Add `restore-rollback-failed` and `restore-indeterminate` outcomes.
+- [ ] Add restore command and storage generation to render snapshots.
+- [ ] Add first visible restored-frame acknowledgement.
+- [ ] Replace simulation-dt-only autosave cadence with an explicit monotonic policy.
+- [ ] Add visibility/pagehide flush commands with lifecycle generations.
+- [ ] Add pageshow/bfcache rearm and stale-callback rejection.
+- [ ] Make reset immediately durable through a baseline, tombstone or explicit erase commit.
+- [ ] Revoke or reconcile stale multi-tab writers through storage events.
+- [ ] Add a bounded save, conflict, quarantine and lifecycle journal.
+- [ ] Add quota/security failure fixtures.
+- [ ] Add readback corruption and backup recovery fixtures.
+- [ ] Add two-tab predecessor conflict fixtures.
+- [ ] Add pagehide -> bfcache -> pageshow -> pagehide fixtures.
+- [ ] Add reset-then-crash-reload fixtures.
+- [ ] Add restore rollback-failure fixtures.
+- [ ] Add WebGPU/WebGL2 save-status and first-frame parity smoke.
+- [ ] Add deployed Pages save round-trip and recovery smoke.
+
+## Agriculture recovery dependency
+
+The previous Agriculture cutover recovery work remains required after host save truth is established:
+
+- [ ] Add event-queue and ECS-journal segmentation.
+- [ ] Prove Inventory and Agriculture child-record parity before parent recovery.
+- [ ] Reconcile or quarantine legacy `cozy-farming` ledger records.
+- [ ] Add transaction/recovery revisions to portable saves and render snapshots.
+- [ ] Add first visible Agriculture transaction-frame acknowledgement.
 
 ## Acceptance criteria
 
 ```txt
-successful plant or harvest
-  -> Inventory delta, Agriculture state and all records commit once
-  -> event publishes after commit
-  -> save and frame cite the same transaction revision
+successful autosave
+  -> immutable candidate captured
+  -> storage candidate staged and read back
+  -> predecessor still matches
+  -> active generation committed once
+  -> HUD cites the commit ID and storage generation
 
-failure after Agriculture event candidate
-  -> predecessor state or declared rollback generation restored
-  -> candidate event and journal rows not observable as committed
-  -> retry cannot duplicate debit or reward
+storage failure
+  -> predecessor remains active
+  -> dirty revision remains pending
+  -> HUD never says Saved
+  -> retry is typed and idempotent
 
-partial-history recovery
-  -> parent success only after Inventory and Agriculture child parity proof
-  -> conflicting history becomes indeterminate or quarantined
+corrupt active record
+  -> invalid record is quarantined
+  -> verified backup remains available
+  -> restore result identifies fallback generation
 
-legacy save-v1
-  -> farming state migrates
-  -> old ledger history is classified and recorded
-  -> retry after restore cannot duplicate a historical action
+multi-tab conflict
+  -> stale predecessor cannot silently overwrite
+  -> conflict result exposes expected and actual generations
+
+restore failure
+  -> rollback outcome is truthful
+  -> rollback failure enters recovery/indeterminate state
+  -> gameplay does not claim a restored session
+
+reset
+  -> engine reset and durable baseline/tombstone commit complete together
+  -> crash/reload cannot resurrect predecessor state
 
 visible frame
-  -> crop mesh, HUD result and participant revisions cite one committed transaction
+  -> first restored/reset frame cites the same storage and command generation
 ```
 
-Keep Agriculture rules in the official provider. Keep Inventory balances in Inventory and wild resources in Foraging. The new authority coordinates product transaction truth only.
+Keep gameplay state in its existing domains. Keep portable payload rules in `cozy-save-domain-kit`. The new authority coordinates browser durability only.

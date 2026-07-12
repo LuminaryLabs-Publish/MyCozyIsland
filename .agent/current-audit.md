@@ -1,30 +1,32 @@
-# Current Audit: MyCozyIsland Agriculture Cutover Recovery Authority
+# Current Audit: MyCozyIsland Host Save Persistence Authority
 
-Last updated: `2026-07-12T12-50-46-04-00`
+Last updated: `2026-07-12T14-51-49-04-00`
 
 ## Summary
 
-The active route is a NexusEngine island-adventure loop with deterministic world generation, normalized input, first-person movement, official Agriculture services, product Inventory settlement, wild coconut Foraging, save-v2 capture, save-v1 migration, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
+The active route is a NexusEngine island-adventure loop with deterministic world generation, normalized input, first-person movement, official Agriculture services, product Inventory settlement, wild coconut Foraging, portable save-v2 capture, save-v1 migration, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
 
-Commit `6b642344d2875f76eef1184111793ff0e206109f` replaced the installed product-specific farming DSK with the pinned official `n:production:agriculture` DSK. The cutover improves bounded ownership and adds plan-based plot mutation, stale-plan rejection, batch Inventory settlement and perennial coconut regrowth.
+The current gap is the boundary between portable snapshot capture and browser durability. `cozy-save-domain-kit` updates SaveState to `captured` before `src/main-adventure.js` proves that localStorage accepted and can read back the record. A failed host write can therefore leave engine diagnostics and the HUD claiming `Saved` without a durable commit.
 
-The current gap is complete recovery truth. Snapshot reload restores selected owner state after an exception, but it does not retract queued Agriculture events or ECS journal entries. The recovery shortcut can accept an Agriculture child record without verifying the Inventory child record and resource delta. Save-v1 migration converts farming state but does not translate or reconcile legacy `cozy-farming` ledger history.
+The prior Agriculture cutover recovery authority remains required for gameplay transaction truth. The new host-save authority composes after it and owns only browser persistence, restore admission, lifecycle and durable status.
 
 ## Plan ledger
 
-**Goal:** make Agriculture actions atomic and recoverable across Inventory, Agriculture, parent/child ledgers, event publication, save migration and visible-frame projection.
+**Goal:** make save capture, browser commit, restore, reset, conflict handling and visible save status one truthful generation-bound transaction.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
-- [x] Select only `MyCozyIsland` by post-audit runtime-change priority.
-- [x] Identify the interaction loop, all domains, all kits and offered services.
-- [x] Inspect product settlement and official provider implementation.
-- [x] Inspect core ledger, ECS event queue, save migration, render snapshot and tests.
+- [x] Select only `MyCozyIsland` as the oldest eligible central entry.
+- [x] Identify the complete startup, frame, autosave, restore, pagehide and reset loops.
+- [x] Identify every active domain.
+- [x] Preserve all 13 engine-installed kits and their services.
+- [x] Preserve all 50 cataloged world/render/host kits and the additional composition kit.
+- [x] Audit capture/commit truth, rollback reporting, key migration, quarantine, writer conflicts and lifecycle generations.
 - [x] Add timestamped architecture and system-specific audits.
 - [x] Refresh root `.agent` files and machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime recovery and executable failure fixtures remain future work.
+- [ ] Runtime persistence implementation and browser fixtures remain future work.
 
 ## Selection evidence
 
@@ -36,8 +38,8 @@ central-ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
 
 selected: MyCozyIsland
-reason: new runtime Agriculture cutover after prior 10-20-02 audit
-runtime commit: 6b642344d2875f76eef1184111793ff0e206109f
+reason: oldest eligible central entry
+selected timestamp: 2026-07-12T12-58-08-04-00
 excluded: TheCavalryOfRome
 ```
 
@@ -45,97 +47,128 @@ excluded: TheCavalryOfRome
 
 ```txt
 startup
-  -> import pinned NexusEngine and NexusEngine-Kits Agriculture source
+  -> create WebGPU/WebGL2 renderer and quality policy
   -> install Core Object and Core Transaction Ledger
-  -> install World, Input and Inventory
-  -> install official Agriculture with tropical config and 12 plots
+  -> install World, Input, Inventory and official Agriculture
   -> install Foraging, Player, Scenario, Interaction, Camera, Save and Render Snapshot
-  -> initialize deterministic wild-resource nodes
-  -> restore save-v2 or migrate save-v1 when present
-  -> build procedural WebGPU/WebGL2 presentation
-  -> bind lifecycle, resize and input callbacks
-  -> start RAF
+  -> read my-cozy-island.adventure-save.v1 from localStorage
+  -> parse JSON and call cozySave.restore
+  -> build static and first frame snapshots
+  -> construct world and presentation resources
+  -> bind input, resize, visibility and pagehide listeners
+  -> start renderer animation loop
 
 frame
   -> admit normalized input frame
-  -> advance Agriculture continuous growth
-  -> advance wild Foraging respawn
+  -> advance Agriculture growth and Foraging respawn
   -> advance scenario and player
-  -> choose nearest plot or forage node
-  -> settle E interaction
-  -> assemble camera, HUD and render snapshot
-  -> render frame
-  -> evaluate durable save fingerprint
+  -> resolve and settle contextual interaction
+  -> build renderer-neutral frame snapshot
+  -> update world, gameplay, ocean, HUD and diagnostics
+  -> render post-processing pipeline
+  -> accumulate clamped simulation dt for autosave
+  -> compare durableFingerprint with last successful host fingerprint
 
-Agriculture settlement
-  -> derive operation ID from target revision, input frame and crop
-  -> check cozy-agriculture-actions parent ledger
-  -> check agriculture child ledger recovery shortcut
-  -> plan prepare, plant, water or harvest against plot revision
-  -> validate Inventory item definitions and balances
-  -> capture Inventory, Agriculture and ledger snapshots
-  -> apply Inventory resourceChanges
-  -> commit Agriculture plan and emit event
-  -> record product parent result
-  -> on exception reload owner snapshots
+host autosave
+  -> cozySave.capture builds portable v2 snapshot
+  -> SaveState becomes captured and saveCount increments
+  -> JSON.stringify
+  -> localStorage.setItem on one fixed key
+  -> update lastSaveFingerprint only when setItem returns
 
-save restore
-  -> validate checksum
-  -> migrate save-v1 farming state when required
+restore
+  -> clone predecessor snapshots
+  -> validate checksum and schema
+  -> migrate v1 farming state when required
   -> sequentially load world, ledger, scenario, inventory, agriculture, foraging and player
-  -> reset Interaction
-  -> publish save result
+  -> reset interaction
+  -> on failure sequentially reload predecessor snapshots
+  -> log rollback failure but still return rolledBack true
+
+page lifecycle
+  -> visibilitychange clears input only
+  -> pagehide once calls storeSave
+  -> pagehide disposes gameplayRenderer only
+  -> no pageshow/bfcache persistence generation
+
+reset
+  -> public resetAdventure calls cozySave.resetAll
+  -> engine owners reset
+  -> durable record is replaced only by a later autosave or pagehide
 ```
 
 ## Source-backed strengths
 
 - Dependencies and browser imports are pinned to immutable commits.
-- No `n:cozy-farming` domain is installed.
-- Official Agriculture owns renderer-neutral land, soil, cultivation, water, growth, harvest and perennial semantics.
-- Tropical content is supplied through configuration rather than copied provider logic.
-- Plan IDs and plot predecessor revisions support stale-plan rejection.
-- Inventory batch settlement validates all changes before writing its state.
-- Cultivated coconut palms regrow under Agriculture; wild coconut palms remain Foraging resources.
-- Save-v2 stores Agriculture schema directly.
-- Render snapshots use Agriculture as authoritative crop state.
-- `npm test` now runs the adventure Agriculture smoke.
+- Official Agriculture remains the correct reusable crop authority.
+- Portable save payloads include world, ledger, scenario, inventory, Agriculture, Foraging and player snapshots.
+- Payload checksum validation exists.
+- Save-v1 farming state can migrate into Agriculture schema.
+- The host retries autosave when a storage write fails because it does not advance `lastSaveFingerprint`.
+- The engine save domain remains host-agnostic through adapter-owned persistence metadata.
+- Node smoke proves engine-level v2 round trip and synthetic v1 migration.
 
 ## Source-backed gaps
 
-### Rollback is state-only, not effect-complete
+### Capture is reported before durable commit
 
-Agriculture commit writes state and queues a domain event before the product parent record is written. If a later step throws, the catch path reloads Inventory, Agriculture and ledger snapshots, but it has no event-queue checkpoint or ECS-journal rollback. Cleanup systems can observe a candidate Agriculture event after participant state was reverted.
+`cozySave.capture()` sets `status: captured`, increments `saveCount`, stores `lastHash` and increments SaveState revision before the host calls localStorage. A quota, security or serialization failure therefore leaves capture diagnostics that look like durable success.
 
-### Rollback does not reproduce exact predecessor observation
+### HUD save status is not durable truth
 
-`cozyInventory.loadSnapshot()` increments Inventory revision. Core Transaction Ledger snapshot loading increments capability sequence and emits `snapshotLoaded`. Agriculture snapshot loading emits `SnapshotLoaded`. The state payload may be restored while observation sequence, events and journal provenance differ from the predecessor.
+`updateHud()` displays `Saved` whenever `frame.save.status === "captured"`. It has no host commit result, storage generation, dirty revision or failure state. The next frame can display `Saved` after `localStorage.setItem` failed.
 
-### Partial-history recovery assumes Inventory parity
+### Restore rollback result can lie
 
-When an `agriculture` child record exists and the product parent is absent, the product adapter writes the parent record immediately. It does not require the paired `cozy-inventory` child record, verify the expected resource delta or compare current Inventory balances with the Agriculture result.
+The restore catch block attempts participant rollback. If rollback throws, it logs the error, then still returns `{ ok: false, rolledBack: true }`. No `rollback-failed` or `indeterminate` state exists.
 
-### Save migration omits transaction-family migration
+### Corrupt records are not quarantined
 
-Save-v1 migration converts farming state into `nexusengine.agriculture/1`, but carries `transactionLedger` unchanged. Legacy `cozy-farming` records remain under the old ledger identity and are not mapped, quarantined or reconciled with `agriculture` and `cozy-agriculture-actions` records.
+JSON parse, checksum and schema failures leave the same localStorage record in place. Every reload retries the same record. No verified backup, quarantine row, fallback generation or repair receipt exists.
 
-### Compatibility alias is name-only
+### Key identity is ambiguous
 
-`engine.n.cozyFarming` points directly at `engine.n.agriculture`. It is non-enumerable and read-only, but does not translate the old farming API or result contract.
+The browser key is `my-cozy-island.adventure-save.v1`, while the current payload schema is `cozy-island-adventure-save/2`. The old key may preserve continuity, but no canonical key registry, key migration policy or migration receipt makes that intent explicit.
 
-### Proof is happy-path focused
+### Storage has no staged commit
 
-The smoke proves domain installation, annual crops, perennial coconuts, wild-resource separation, save-v2 round trip and a synthetic v1 migration. It does not inject failures, inspect events/journal after rollback, validate child-record parity, migrate authentic old ledgers or correlate a transaction with the first visible frame.
+The host overwrites one key directly. It has no staging generation, readback verification, active pointer, predecessor backup, storage commit ID or bounded retention policy.
+
+### Multi-tab writes are uncoordinated
+
+Multiple tabs can load one predecessor and later replace each other using last-writer-wins localStorage. No tab identity, writer lease, storage event admission, expected predecessor checksum or conflict result exists.
+
+### Autosave cadence uses simulation time
+
+The five-second accumulator advances by clamped frame `dt`, not monotonic wall time. Background throttling and long callback gaps can delay autosave. Normal movement and scenario time continuously change the durable fingerprint.
+
+### Page lifecycle is not bfcache-safe
+
+The pagehide listener uses `{ once: true }`. After a bfcache restore, no pageshow handler allocates a new lifecycle generation or rearms the save handler. Visibility changes clear input but do not trigger a persistence policy.
+
+### Reset is not immediately durable
+
+`resetAdventure()` resets in-memory owners but does not immediately clear or replace the durable record. A process termination before the next autosave/pagehide can resurrect the predecessor save.
+
+### Restore has no first-frame proof
+
+No storage generation, restore command ID or migration receipt is carried into the render snapshot. No acknowledgement proves that the first visible island frame matches the restored durable record.
+
+### Browser persistence proof is absent
+
+The Node smoke calls `cozySave.capture()` and `restore()` directly. It does not instantiate localStorage, page lifecycle, quota failures, corrupt records, multiple tabs, WebGPU/WebGL2 status projection or Pages persistence.
 
 ## Domains in use
 
 ```txt
-browser shell, loader, HUD, hotbar, controls and diagnostics
-WebGPU/WebGL2 renderer, quality, adaptive performance, resize and post-processing
+browser shell, loader, controls, HUD, hotbar and diagnostics
+browser localStorage adapter and page lifecycle
+WebGPU/WebGL2 rendering, quality, adaptive performance, resize and post-processing
 NexusEngine runtime, ECS phases, resources, events and service installation
 core object registration
 core transaction ledger, repeat detection, snapshot and reset
 seeded island world, terrain and surface queries
-farm and wild-resource layout
+farm plots and wild-resource layout
 normalized input queue and frame admission
 scenario clock, day, phase and objective
 Inventory balances, seed selection and batch settlement
@@ -146,7 +179,8 @@ wild coconut collection and respawn
 player movement, grounding, view and stamina
 nearest-target contextual interaction
 camera intro and first-person projection
-save capture, checksum, schema migration, restore, rollback and reset
+portable save capture, checksum, schema migration, restore, rollback and reset
+host save dirty tracking, storage commit, conflict, quarantine and lifecycle policy
 renderer-neutral static/frame/HUD/debug snapshots
 terrain, biome, shoreline, ocean floor, vegetation, rocks, props and campfire
 ocean, foam, cloud, fog, weather, wind, illumination and sky
@@ -244,69 +278,92 @@ ordered Core World providers retained in source: 9
 ## Required parent domain
 
 ```txt
-cozy-island-agriculture-cutover-recovery-authority-domain
+cozy-island-host-save-persistence-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-agriculture-action-command-kit
-agriculture-transaction-id-kit
-agriculture-transaction-generation-kit
-agriculture-participant-set-kit
-agriculture-predecessor-revision-kit
-agriculture-resource-delta-kit
-agriculture-candidate-plan-kit
-inventory-candidate-settlement-kit
-agriculture-candidate-state-kit
-transaction-ledger-record-reservation-kit
-agriculture-commit-barrier-kit
-post-commit-agriculture-event-kit
-transaction-event-suppression-kit
-transaction-journal-segment-kit
-agriculture-recovery-admission-kit
-child-record-parity-kit
-resource-delta-reconciliation-kit
-legacy-farming-ledger-migration-kit
-legacy-transaction-quarantine-kit
-agriculture-rollback-result-kit
-agriculture-reconciliation-result-kit
-agriculture-transaction-observation-kit
-agriculture-transaction-journal-kit
-agriculture-save-revision-kit
-agriculture-render-revision-kit
-first-agriculture-frame-ack-kit
-failure-after-inventory-fixture-kit
-failure-after-agriculture-fixture-kit
-event-rollback-fixture-kit
-legacy-ledger-migration-fixture-kit
+save-session-id-kit
+save-command-id-kit
+save-storage-generation-kit
+save-dirty-revision-kit
+save-envelope-v3-kit
+save-source-fingerprint-kit
+save-storage-capability-kit
+save-key-registry-kit
+save-key-migration-kit
+save-writer-lease-kit
+save-predecessor-checksum-kit
+save-capture-candidate-kit
+save-stage-write-kit
+save-readback-verification-kit
+save-pointer-commit-kit
+save-backup-retention-kit
+corrupt-save-quarantine-kit
+save-conflict-result-kit
+save-commit-result-kit
+save-restore-admission-kit
+save-rollback-result-kit
+save-reset-commit-kit
+save-autosave-policy-kit
+page-lifecycle-save-flush-kit
+bfcache-save-resume-kit
+save-status-projection-kit
+save-observation-journal-kit
+save-frame-ack-kit
+storage-quota-failure-fixture-kit
+corrupt-save-quarantine-fixture-kit
+multi-tab-write-conflict-fixture-kit
+pagehide-bfcache-cycle-fixture-kit
+reset-crash-reload-fixture-kit
+restore-rollback-failure-fixture-kit
+browser-storage-roundtrip-smoke-kit
+pages-storage-roundtrip-smoke-kit
 ```
 
-## Required transaction
+## Required save transaction
 
 ```txt
-accepted action
-  -> resolve session, command, transaction and target identity
-  -> freeze participant and ledger predecessors
-  -> build immutable Agriculture plan and resource delta
-  -> prepare Inventory and Agriculture candidates
-  -> reserve parent and child records
-  -> validate cross-owner invariants
-  -> commit state and records atomically
-  -> publish Agriculture events after commit
-  -> publish transaction result and revision
-  -> admit save and render projections
-  -> acknowledge first visible frame
+dirty gameplay state
+  -> increment dirty revision
+  -> admit SaveCommand against session, writer lease and predecessor
+  -> capture immutable portable candidate without marking durable success
+  -> serialize and write staging generation
+  -> read back and verify bytes, schema and checksums
+  -> compare active predecessor again
+  -> commit active pointer and retain bounded backup
+  -> publish SaveCommitResult
+  -> clear matching dirty revision
+  -> project Saved with commit and storage generation
+```
 
-failure or incomplete history
-  -> classify rolled-back, reconciled, quarantined or indeterminate
-  -> restore exact predecessor or create a declared recovery generation
-  -> suppress candidate events and journal rows
-  -> prove child records and resource deltas before parent recovery
-  -> migrate or quarantine legacy ledger history
-  -> publish reconciliation receipt before retry
+## Required restore transaction
+
+```txt
+startup
+  -> resolve canonical key and active pointer
+  -> migrate legacy key with receipt
+  -> parse and verify candidate
+  -> quarantine invalid active record
+  -> select verified active or backup generation
+  -> prepare participant restore
+  -> commit all participants or publish truthful rollback failure
+  -> publish RestoreResult
+  -> acknowledge first visible frame from restored generation
+```
+
+## Required reset transaction
+
+```txt
+ResetCommand
+  -> reset engine participants
+  -> create baseline or tombstone candidate
+  -> commit it immediately
+  -> retire predecessor storage generation
+  -> publish ResetCommitResult and first reset frame receipt
 ```
 
 ## Validation boundary
 
-Documentation changed only. Runtime, gameplay, save, rendering, dependencies and deployment were not modified in this audit run.
+Documentation changed only. Runtime, save behavior, gameplay, rendering, dependencies and deployment were not modified in this audit run.

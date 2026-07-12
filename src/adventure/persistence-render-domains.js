@@ -4,19 +4,24 @@ import {
   COZY_ADVENTURE_VERSION,
   CROP_DEFINITIONS,
   ITEM_DEFINITIONS,
+  SEED_CYCLE,
   clone,
   hashText,
   stableStringify
 } from "./definitions.js";
+import { migrateLegacyFarmingSnapshot } from "./agriculture-config.js";
 
 const SaveState = defineResource("cozy.adventure.save.state");
+const SAVE_SCHEMA_V1 = "cozy-island-adventure-save/1";
+const SAVE_SCHEMA_V2 = "cozy-island-adventure-save/2";
 
 function saveInitialState() {
   return {
-    schema: "cozy-island-adventure-save/1",
+    schema: SAVE_SCHEMA_V2,
     status: "ready",
     saveCount: 0,
     loadCount: 0,
+    migrationCount: 0,
     lastHash: null,
     lastError: null,
     revision: 1
@@ -27,6 +32,72 @@ function checksumPayload(payload) {
   return hashText(stableStringify(payload));
 }
 
+function validateEnvelope(snapshot = {}) {
+  const { checksum, ...payload } = clone(snapshot);
+  const expected = checksumPayload(payload);
+  if (!checksum || checksum !== expected) throw new Error("Save checksum does not match its payload.");
+  return { payload, checksum };
+}
+
+function migrateSavePayload(payload, engine) {
+  if (payload.schema === SAVE_SCHEMA_V2) return { payload, migrated: false };
+  if (payload.schema !== SAVE_SCHEMA_V1) throw new TypeError(`Unsupported cozy island save schema: ${payload.schema}`);
+  const agriculture = migrateLegacyFarmingSnapshot(
+    payload.farming ?? {},
+    engine.n.agriculture.getSnapshot()
+  );
+  return {
+    migrated: true,
+    payload: {
+      schema: SAVE_SCHEMA_V2,
+      version: COZY_ADVENTURE_VERSION,
+      world: payload.world,
+      scenario: payload.scenario,
+      transactionLedger: payload.transactionLedger,
+      inventory: payload.inventory,
+      agriculture,
+      foraging: payload.foraging,
+      player: payload.player
+    }
+  };
+}
+
+function durableFingerprint(engine) {
+  const inventory = engine.n.cozyInventory.getState();
+  const agriculture = engine.n.agriculture.getState();
+  const foraging = engine.n.cozyForaging.getState();
+  const player = engine.n.cozyPlayer.getState();
+  const scenario = engine.n.cozyScenario.getState();
+  return hashText(stableStringify({
+    inventory: {
+      items: inventory.items,
+      selectedSeedItemId: inventory.selectedSeedItemId
+    },
+    agriculture: {
+      currentDay: agriculture.currentDay,
+      plots: agriculture.plots,
+      totalHarvests: agriculture.totalHarvests
+    },
+    foraging: {
+      nodes: foraging.nodes,
+      totalGathered: foraging.totalGathered
+    },
+    player: {
+      position: player.position,
+      yaw: player.yaw,
+      pitch: player.pitch,
+      mode: player.mode,
+      stamina: player.stamina,
+      distanceWalked: player.distanceWalked
+    },
+    scenario: {
+      elapsedSeconds: scenario.elapsedSeconds,
+      day: scenario.day,
+      phase: scenario.phase
+    }
+  }));
+}
+
 export function createCozySaveDomain() {
   return defineDomainServiceKit({
     id: "cozy-save-domain-kit",
@@ -35,13 +106,13 @@ export function createCozySaveDomain() {
     apiName: "cozySave",
     version: COZY_ADVENTURE_VERSION,
     stability: "product-stable",
-    services: ["capture", "validation", "restore", "reset", "diagnostics"],
+    services: ["capture", "validation", "migration", "restore", "rollback", "reset", "diagnostics"],
     requires: [
       "n:core-transaction-ledger",
       "n:cozy-world",
       "n:cozy-scenario",
       "n:cozy-inventory",
-      "n:cozy-farming",
+      "n:production:agriculture",
       "n:cozy-foraging",
       "n:cozy-player",
       "n:cozy-interaction"
@@ -49,7 +120,7 @@ export function createCozySaveDomain() {
     provides: ["save:cozy-adventure"],
     resources: { SaveState },
     metadata: {
-      purpose: "Portable save capture, checksum validation, restore, and reset across all durable cozy-adventure domains.",
+      purpose: "Portable v2 save capture, v1 agriculture migration, checksum validation, rollback-safe restore, and reset across durable cozy-adventure domains.",
       rendererAgnostic: true,
       deterministic: true,
       hostPersistence: "adapter-owned"
@@ -66,13 +137,13 @@ export function createCozySaveDomain() {
 
       function capture() {
         const payload = {
-          schema: "cozy-island-adventure-save/1",
+          schema: SAVE_SCHEMA_V2,
           version: COZY_ADVENTURE_VERSION,
           world: engine.n.cozyWorld.getSnapshot(),
           scenario: engine.n.cozyScenario.getSnapshot(),
           transactionLedger: engine.n.coreTransactionLedger.getSnapshot(),
           inventory: engine.n.cozyInventory.getSnapshot(),
-          farming: engine.n.cozyFarming.getSnapshot(),
+          agriculture: engine.n.agriculture.getSnapshot(),
           foraging: engine.n.cozyForaging.getSnapshot(),
           player: engine.n.cozyPlayer.getSnapshot()
         };
@@ -91,30 +162,51 @@ export function createCozySaveDomain() {
       }
 
       function restore(snapshot = {}) {
+        const before = {
+          world: engine.n.cozyWorld.getSnapshot(),
+          transactionLedger: engine.n.coreTransactionLedger.getSnapshot(),
+          scenario: engine.n.cozyScenario.getSnapshot(),
+          inventory: engine.n.cozyInventory.getSnapshot(),
+          agriculture: engine.n.agriculture.getSnapshot(),
+          foraging: engine.n.cozyForaging.getSnapshot(),
+          player: engine.n.cozyPlayer.getSnapshot()
+        };
         try {
-          if (snapshot.schema !== "cozy-island-adventure-save/1") throw new TypeError("Unsupported cozy island save schema.");
-          const { checksum, ...payload } = clone(snapshot);
-          const expected = checksumPayload(payload);
-          if (checksum !== expected) throw new Error("Save checksum does not match its payload.");
+          const envelope = validateEnvelope(snapshot);
+          const migration = migrateSavePayload(envelope.payload, engine);
+          const payload = migration.payload;
           engine.n.cozyWorld.loadSnapshot(payload.world);
           engine.n.coreTransactionLedger.loadSnapshot(payload.transactionLedger);
           engine.n.cozyScenario.loadSnapshot(payload.scenario);
           engine.n.cozyInventory.loadSnapshot(payload.inventory);
-          engine.n.cozyFarming.loadSnapshot(payload.farming);
+          engine.n.agriculture.loadSnapshot(payload.agriculture);
           engine.n.cozyForaging.loadSnapshot(payload.foraging);
           engine.n.cozyPlayer.loadSnapshot(payload.player);
           engine.n.cozyInteraction.reset();
           const state = read();
           write({
             ...state,
-            status: "restored",
+            status: migration.migrated ? "migrated-and-restored" : "restored",
             loadCount: state.loadCount + 1,
-            lastHash: checksum,
+            migrationCount: state.migrationCount + (migration.migrated ? 1 : 0),
+            lastHash: envelope.checksum,
             lastError: null,
             revision: state.revision + 1
           });
-          return { ok: true, checksum };
+          return { ok: true, checksum: envelope.checksum, schema: payload.schema, migrated: migration.migrated };
         } catch (error) {
+          try {
+            engine.n.cozyWorld.loadSnapshot(before.world);
+            engine.n.coreTransactionLedger.loadSnapshot(before.transactionLedger);
+            engine.n.cozyScenario.loadSnapshot(before.scenario);
+            engine.n.cozyInventory.loadSnapshot(before.inventory);
+            engine.n.agriculture.loadSnapshot(before.agriculture);
+            engine.n.cozyForaging.loadSnapshot(before.foraging);
+            engine.n.cozyPlayer.loadSnapshot(before.player);
+            engine.n.cozyInteraction.reset();
+          } catch (rollbackError) {
+            console.error("Cozy save rollback failed", rollbackError);
+          }
           const state = read();
           write({
             ...state,
@@ -122,7 +214,7 @@ export function createCozySaveDomain() {
             lastError: String(error?.message ?? error),
             revision: state.revision + 1
           });
-          return { ok: false, error: String(error?.message ?? error) };
+          return { ok: false, rolledBack: true, error: String(error?.message ?? error) };
         }
       }
 
@@ -131,7 +223,7 @@ export function createCozySaveDomain() {
         engine.n.cozyWorld.reset();
         engine.n.cozyScenario.reset();
         engine.n.cozyInventory.reset();
-        engine.n.cozyFarming.reset();
+        engine.n.agriculture.reset();
         engine.n.cozyForaging.reset();
         engine.n.cozyPlayer.reset();
         engine.n.cozyInteraction.reset();
@@ -141,19 +233,11 @@ export function createCozySaveDomain() {
         return { ok: true };
       }
 
-      function fingerprint() {
-        const inventory = engine.n.cozyInventory.getState();
-        const farming = engine.n.cozyFarming.getState();
-        const foraging = engine.n.cozyForaging.getState();
-        const player = engine.n.cozyPlayer.getState();
-        return hashText(`${inventory.revision}:${farming.revision}:${foraging.revision}:${player.revision}`);
-      }
-
       return {
         capture,
         restore,
         resetAll,
-        fingerprint,
+        fingerprint: () => durableFingerprint(engine),
         getState: () => clone(read()),
         getSnapshot: () => clone(read()),
         reset() {
@@ -174,21 +258,21 @@ export function createCozyRenderSnapshotDomain() {
     apiName: "cozyRenderSnapshot",
     version: COZY_ADVENTURE_VERSION,
     stability: "product-stable",
-    services: ["static-world", "frame-snapshot", "hud-descriptor", "debug-descriptor"],
+    services: ["static-world", "agriculture-descriptors", "frame-snapshot", "hud-descriptor", "debug-descriptor"],
     requires: [
       "n:cozy-world",
       "n:cozy-scenario",
       "n:cozy-player",
       "n:cozy-camera",
       "n:cozy-inventory",
-      "n:cozy-farming",
+      "n:production:agriculture",
       "n:cozy-foraging",
       "n:cozy-interaction",
       "n:cozy-save"
     ],
     provides: ["render:cozy-static", "render:cozy-frame"],
     metadata: {
-      purpose: "Read-only renderer and HUD descriptors assembled from authoritative NexusEngine domain state.",
+      purpose: "Read-only world, Agriculture, Wild Resources, HUD, lighting, and camera descriptors assembled from authoritative NexusEngine state.",
       rendererAgnostic: true,
       deterministic: true
     },
@@ -199,6 +283,7 @@ export function createCozyRenderSnapshotDomain() {
           ...base,
           adventureVersion: COZY_ADVENTURE_VERSION,
           farmLayout: engine.n.cozyWorld.getPlots(),
+          agricultureLayout: engine.n.agriculture.getDescriptors(),
           forageLayout: engine.n.cozyWorld.getForageNodes(),
           landmarks: engine.n.cozyWorld.getLandmarks()
         });
@@ -209,7 +294,7 @@ export function createCozyRenderSnapshotDomain() {
         const scenario = engine.n.cozyScenario.getState();
         const player = engine.n.cozyPlayer.getState();
         const inventory = engine.n.cozyInventory.getState();
-        const farming = engine.n.cozyFarming.getState();
+        const agriculture = engine.n.agriculture.getState();
         const foraging = engine.n.cozyForaging.getState();
         const interaction = engine.n.cozyInteraction.getState();
         const save = engine.n.cozySave.getState();
@@ -218,13 +303,14 @@ export function createCozyRenderSnapshotDomain() {
           .filter(([id]) => ITEM_DEFINITIONS[id]?.category === "food")
           .reduce((total, [, amount]) => total + Number(amount || 0), 0);
         return Object.freeze({
-          revision: `${scenario.revision}:${player.revision}:${inventory.revision}:${farming.revision}:${foraging.revision}:${interaction.revision}`,
+          revision: `${scenario.revision}:${player.revision}:${inventory.revision}:${agriculture.revision}:${foraging.revision}:${interaction.revision}`,
           clock: model.clock.getState(),
           illumination: model.illuminationService.getState(),
           camera: engine.n.cozyCamera.getDescriptor(),
           player,
           inventory,
-          farming,
+          agriculture,
+          farming: agriculture,
           foraging,
           interaction,
           scenario,
@@ -239,7 +325,7 @@ export function createCozyRenderSnapshotDomain() {
             seedOptions: SEED_CYCLE.map((itemId, index) => Object.freeze({
               index: index + 1,
               itemId,
-              label: CROP_DEFINITIONS[Object.values(CROP_DEFINITIONS).find((crop) => crop.seedItemId === itemId)?.id]?.label ?? ITEM_DEFINITIONS[itemId].label,
+              label: Object.values(CROP_DEFINITIONS).find((crop) => crop.seedItemId === itemId)?.label ?? ITEM_DEFINITIONS[itemId].label,
               amount: Number(inventory.items[itemId] ?? 0),
               selected: itemId === selected.itemId
             })),
@@ -264,7 +350,7 @@ export function createCozyRenderSnapshotDomain() {
             camera: frame.camera,
             player: frame.player,
             inventory: frame.inventory,
-            farming: frame.farming,
+            agriculture: frame.agriculture,
             foraging: frame.foraging,
             interaction: frame.interaction,
             scenario: frame.scenario,

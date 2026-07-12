@@ -1,9 +1,15 @@
 {
   "name": "my-cozy-island-webgpu",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/static-check.mjs && node tests/domain-smoke.mjs && node tests/world-baseline.mjs && node tests/core-world-runtime.mjs && node tests/world-provider-order.mjs && node tests/world-query-parity.mjs && node tests/world-population-parity.mjs && node tests/world-snapshot-portability.mjs && node tests/world-cell-lifecycle.mjs && node tests/lazy-world-materialization.mjs && node tests/render-layer-graph.mjs && node tests/terrain-layer-separation.mjs && node tests/camera-rail-ground-clearance.mjs && node tests/camera-first-person-contract.mjs && node tests/foam-depth-occlusion.mjs && node tests/renderer-cell-cache.mjs && node tests/renderer-resource-disposal.mjs"
+    "serve": "python3 -m http.server 8080",
+    "test": "node tests/adventure-domains-smoke.mjs",
+    "test:agriculture": "node tests/adventure-domains-smoke.mjs"
+  },
+  "dependencies": {
+    "@luminarylabs/nexusengine-kits": "github:LuminaryLabs-Dev/NexusEngine-Kits#2218856ccd729744140d153d738ba8db638b3359",
+    "nexusengine": "github:LuminaryLabs-Dev/NexusEngine#c5548de504072bf09eb68986b98aca0292903803"
   }
 }

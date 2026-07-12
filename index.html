@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#e8a86f">
-  <meta name="description" content="Walk a procedural golden-hour island, tend tropical crops, gather coconuts, and build a quiet food garden through NexusEngine domain services.">
+  <meta name="description" content="Walk a procedural golden-hour island, tend tropical crops, gather wild coconuts, and build a quiet food garden through NexusEngine domain services.">
   <title>My Cozy Island — Golden Hour Adventure</title>
   <style>
-    :root { color-scheme: dark; font-family: Inter,ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#e8a86f; color:#fffaf0; }
-    * { box-sizing: border-box; }
+    :root { color-scheme:dark; font-family:Inter,ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#e8a86f; color:#fffaf0; }
+    * { box-sizing:border-box; }
     html,body,#app { width:100%; height:100%; margin:0; overflow:hidden; background:#e8a86f; }
     body { overscroll-behavior:none; }
     button,input { font:inherit; }
@@ -41,21 +41,8 @@
     #debug[hidden],#error[hidden] { display:none; }
     #controls { position:fixed; right:max(14px,env(safe-area-inset-right)); bottom:max(14px,env(safe-area-inset-bottom)); z-index:8; max-width:260px; padding:9px 11px; border-radius:14px; background:rgba(22,52,51,.38); color:rgba(255,255,255,.72); font-size:10px; line-height:1.55; letter-spacing:.02em; backdrop-filter:blur(9px); pointer-events:none; }
     #error { position:fixed; left:16px; right:16px; bottom:16px; z-index:50; max-height:50vh; margin:0; overflow:auto; padding:16px; border:1px solid rgba(255,190,190,.35); border-radius:14px; background:rgba(74,13,19,.94); color:#ffe8e8; font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; white-space:pre-wrap; box-shadow:0 18px 50px rgba(0,0,0,.35); }
-    @media (max-width:760px) {
-      #top-hud { width:calc(100vw - 28px); }
-      #controls { display:none; }
-      #interaction-hud { bottom:max(106px,calc(env(safe-area-inset-bottom) + 98px)); font-size:12px; }
-      #bottom-hud { padding:8px; }
-      .seed-slot { padding:7px 6px; }
-      .seed-name { font-size:9px; }
-    }
-    @media (max-height:590px) {
-      #top-hud { padding:10px 12px; }
-      #objective { display:none; }
-      #resource-row { margin-top:5px; }
-      #interaction-hud { bottom:82px; }
-      #bottom-hud { bottom:8px; }
-    }
+    @media (max-width:760px) { #top-hud { width:calc(100vw - 28px); } #controls { display:none; } #interaction-hud { bottom:max(106px,calc(env(safe-area-inset-bottom) + 98px)); font-size:12px; } #bottom-hud { padding:8px; } .seed-slot { padding:7px 6px; } .seed-name { font-size:9px; } }
+    @media (max-height:590px) { #top-hud { padding:10px 12px; } #objective { display:none; } #resource-row { margin-top:5px; } #interaction-hud { bottom:82px; } #bottom-hud { bottom:8px; } }
     @media (prefers-reduced-motion:reduce) { #loader,#loader-fill,.seed-slot { transition:none; } }
   </style>
   <script type="importmap">
@@ -65,11 +52,12 @@
         "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
         "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.tsl.js",
         "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/",
-        "nexusengine/engine": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/engine.js",
-        "nexusengine/ecs": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/ecs.js",
-        "nexusengine/domain-service-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/domain-service-kit.js",
-        "nexusengine/core-object": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-object-kit/index.js",
-        "nexusengine/core-transaction-ledger": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-transaction-ledger-kit/index.js"
+        "nexusengine/engine": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/engine.js",
+        "nexusengine/ecs": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/ecs.js",
+        "nexusengine/domain-service-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/domain-service-kit.js",
+        "nexusengine/core-object": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/core-kits/core-object-kit/index.js",
+        "nexusengine/core-transaction-ledger": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/core-kits/core-transaction-ledger-kit/index.js",
+        "@luminarylabs/nexusengine-kits/kits/production/agriculture-domain-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine-Kits@2218856ccd729744140d153d738ba8db638b3359/kits/production/agriculture-domain-kit/index.js"
       }
     }
   </script>
@@ -79,7 +67,7 @@
     <canvas id="game" role="application" aria-label="Walk, farm, and forage on My Cozy Island" tabindex="0"></canvas>
     <aside id="top-hud" class="glass" aria-label="Island adventure status">
       <div id="hud-title"><strong>My Cozy Island</strong><span id="save-status">Auto-save on</span></div>
-      <p id="objective">Prepare a plot, plant island food, water it, and gather coconuts while it grows.</p>
+      <p id="objective">Prepare a plot, plant island food, water it, and gather wild coconuts while it grows.</p>
       <div id="resource-row">
         <span class="resource-pill">Seed · <b id="seed-label">Taro</b> × <b id="seed-count">6</b></span>
         <span class="resource-pill">Food · <b id="food-count">0</b></span>
@@ -87,7 +75,7 @@
         <span class="resource-pill"><span id="stamina"><span id="stamina-fill"></span></span></span>
       </div>
     </aside>
-    <div id="interaction-hud" class="glass"><span id="prompt">Walk the island and find a farm plot or coconut palm.</span></div>
+    <div id="interaction-hud" class="glass"><span id="prompt">Walk the island and find an agriculture plot or wild coconut palm.</span></div>
     <aside id="bottom-hud" class="glass" aria-label="Seed selection">
       <div id="hotbar">
         <div class="seed-slot is-selected" data-seed-index="1"><div class="seed-top"><span>1</span><span>× <b data-amount>6</b></span></div><div class="seed-name" data-label>Taro</div></div>
@@ -97,13 +85,13 @@
       </div>
     </aside>
     <section id="loader" class="glass" aria-live="polite">
-      <div id="loader-header"><span id="loader-kicker">My Cozy Island</span><span id="loader-text">Installing NexusEngine adventure domains</span></div>
+      <div id="loader-header"><span id="loader-kicker">My Cozy Island</span><span id="loader-text">Installing NexusEngine Agriculture services</span></div>
       <div id="loader-track" aria-hidden="true"><div id="loader-fill"></div></div>
     </section>
     <aside id="debug" aria-label="NexusEngine diagnostics" hidden></aside>
-    <div id="controls">WASD walk · Shift sprint · drag to look · E contextual farm/forage action · Q or 1–4 change seed · Space skips the intro · H diagnostics</div>
+    <div id="controls">WASD walk · Shift sprint · drag to look · E contextual agriculture/forage action · Q or 1–4 change seed · Space skips intro · H diagnostics</div>
     <pre id="error" role="alert" hidden></pre>
   </main>
-  <script type="module" src="./src/main-adventure.js?v=cozy-adventure-cutover-1"></script>
+  <script type="module" src="./src/main-adventure.js?v=agriculture-cutover-1"></script>
 </body>
 </html>

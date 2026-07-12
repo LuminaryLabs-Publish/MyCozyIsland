@@ -1,41 +1,32 @@
 import { createEngine } from "nexusengine/engine";
+import { defineEvent, defineResource } from "nexusengine/ecs";
+import { defineDomainServiceKit } from "nexusengine/domain-service-kit";
 import { createCoreObjectKit } from "nexusengine/core-object";
 import { createCoreTransactionLedgerKit } from "nexusengine/core-transaction-ledger";
+import { createAgricultureDomainKit } from "@luminarylabs/nexusengine-kits/kits/production/agriculture-domain-kit";
 import { createCozyWorldDomain } from "./world-domain.js";
 import {
   createCozyInputDomain,
   createCozyScenarioDomain,
   createCozyPlayerDomain,
-  createCozyInteractionDomain,
   createCozyCameraDomain
 } from "./runtime-domains.js";
+import { createCozyInteractionDomain } from "./interaction-agriculture-domain.js";
 import {
   createCozyInventoryDomain,
-  createCozyFarmingDomain,
   createCozyForagingDomain
-} from "./life-domains.js";
+} from "./resource-domains.js";
 import {
   createCozySaveDomain,
   createCozyRenderSnapshotDomain
 } from "./persistence-render-domains.js";
+import { createTropicalAgricultureConfig } from "./agriculture-config.js";
 
-function initialFarmSnapshot(plots) {
-  return {
-    plots: Object.fromEntries(plots.map((plot) => [plot.id, {
-      id: plot.id,
-      status: "untilled",
-      cropId: null,
-      progressSeconds: 0,
-      stage: 0,
-      watered: false,
-      harvestCount: 0,
-      revision: 1
-    }])),
-    revision: 1,
-    totalHarvests: 0,
-    lastResult: null
-  };
-}
+const AGRICULTURE_NEXUS_RUNTIME = Object.freeze({
+  defineEvent,
+  defineResource,
+  defineDomainServiceKit
+});
 
 function initialForageSnapshot(nodes) {
   return {
@@ -63,11 +54,11 @@ export function createCozyAdventure({ quality, backend = "webgpu" } = {}) {
       createCoreTransactionLedgerKit(),
       createCozyWorldDomain({ quality, backend }),
       createCozyInputDomain(),
-      createCozyScenarioDomain(),
       createCozyInventoryDomain(),
-      createCozyFarmingDomain(),
+      createAgricultureDomainKit(AGRICULTURE_NEXUS_RUNTIME, createTropicalAgricultureConfig()),
       createCozyForagingDomain(),
       createCozyPlayerDomain(),
+      createCozyScenarioDomain(),
       createCozyInteractionDomain(),
       createCozyCameraDomain(),
       createCozySaveDomain(),
@@ -75,8 +66,17 @@ export function createCozyAdventure({ quality, backend = "webgpu" } = {}) {
     ]
   });
 
-  engine.n.cozyFarming.loadSnapshot(initialFarmSnapshot(engine.n.cozyWorld.getPlots()));
   engine.n.cozyForaging.loadSnapshot(initialForageSnapshot(engine.n.cozyWorld.getForageNodes()));
+
+  // Read-only migration alias for older host/debug surfaces. No farming DSK is installed.
+  if (!Object.prototype.hasOwnProperty.call(engine.n, "cozyFarming")) {
+    Object.defineProperty(engine.n, "cozyFarming", {
+      value: engine.n.agriculture,
+      enumerable: false,
+      configurable: false,
+      writable: false
+    });
+  }
 
   return Object.freeze({
     engine,
@@ -91,13 +91,13 @@ export function createCozyAdventure({ quality, backend = "webgpu" } = {}) {
         world: engine.n.cozyWorld.getState(),
         player: engine.n.cozyPlayer.getState(),
         inventory: engine.n.cozyInventory.getState(),
-        farming: engine.n.cozyFarming.getState(),
+        agriculture: engine.n.agriculture.getState(),
         foraging: engine.n.cozyForaging.getState(),
         interaction: engine.n.cozyInteraction.getState(),
         scenario: engine.n.cozyScenario.getState(),
         save: engine.n.cozySave.getState(),
         objectCount: engine.n.coreObject.list().length,
-        domainPaths: engine.getDomainPaths?.() ?? []
+        domainPaths: engine.n.paths?.().map((entry) => entry.path) ?? []
       });
     }
   });

@@ -1,90 +1,159 @@
 # My Cozy Island
 
-A standalone **WebGPU-first NexusEngine experiment** focused on a stylized island, separated island and sea-floor terrain, transparent anime water, volumetric clouds, rolling fog, and depth-correct final-pass shoreline foam.
+**My Cozy Island** is a procedural golden-hour farming and foraging adventure built with NexusEngine Domain Service Kits.
 
-The live app is a static site. Open `index.html` through GitHub Pages or any local HTTP server.
+The player can:
+
+```txt
+walk across the island beyond the central clearing
+prepare and tend twelve procedural farm plots
+plant taro, sweet potatoes, pineapple, and coconut palms
+water crops and watch visible growth stages
+harvest food into a persistent inventory
+gather coconuts from procedural palm nodes
+explore a dense but friendly tropical forest
+save and restore the complete adventure state
+```
+
+The visual target remains a warm, highly readable island at golden hour with rolling volumetric clouds, low terrain fog, transparent anime water, shoreline foam, broad beaches, friendly forest density, and a small island home.
 
 ## Runtime architecture
 
 ```txt
-NexusEngine Core World
-→ deterministic 48 m cells and ordered semantic providers
-→ independent island and sea-floor terrain state
-→ validated Core Graphics-inspired render-layer graph
-→ Three.js WebGPU renderer adapter
-→ background + opaque world + transparent anime water
-→ rolling-fog composite
-→ foam occlusion depth pass
-→ final authored foam color composite
-→ technical output transform
+NexusEngine Realtime Core
+├─ Core Object Kit
+├─ Core Transaction Ledger Kit
+├─ Cozy World DSK
+├─ Cozy Input DSK
+├─ Cozy Scenario DSK
+├─ Cozy Inventory DSK
+├─ Cozy Farming DSK
+├─ Cozy Foraging DSK
+├─ Cozy Player DSK
+├─ Cozy Interaction DSK
+├─ Cozy Camera DSK
+├─ Cozy Save DSK
+└─ Cozy Render Snapshot DSK
+        ↓
+Three.js WebGPU presentation adapters
 ```
 
-The application contains **50 focused local domain, sequence, host, and renderer kits** under `src/kits/`, coordinated by a pinned NexusEngine runtime. Semantic generation stays deterministic and renderer-independent; Three.js and WebGPU remain in host/renderer adapters.
+The game has **one authoritative seeded island model**. Terrain rendering, player grounding, camera clearance, farm plots, coconut nodes, shoreline data, biome data, and population placement derive from the same model and the same canonical `surfaceAt()` query.
 
-## Major visual systems
+There is no legacy/core dual mode, compatibility render snapshot, background 49-cell materializer, or second copy of the island world in the supported runtime.
 
-- Independent island and sea-floor Core World providers.
-- Coast-clipped island geometry with a six-meter submerged shelf instead of a square sea-level plane.
-- Opaque toon-shaded sea-floor terrain with separate material classification.
-- One physical transparent ocean mesh with transmission, IOR, clearcoat, Fresnel-compatible reflection, procedural waves, and sun highlights.
-- A validated logical pass graph: background, opaque world, water, atmosphere, foam, output.
-- Shoreline foam as the final authored scene-content layer.
-- A dedicated foam depth prepass compared against opaque scene depth, preventing foam from showing through terrain, fences, rocks, vegetation, and props.
-- WebGPU compute-generated 3D density textures for cloud and fog volumes.
-- Bounded volumetric clouds and reduced-resolution depth-aware rolling fog.
-- Deterministic suitability-based vegetation and rock placement with instancing.
-- Unlit three-layer alpha-cutout grass with depth writing.
-- Automatic `ultra`, `high`, `medium`, and `low` quality profiles.
-- WebGL2 fallback through Three.js `WebGPURenderer` with deterministic CPU volume textures.
+## Domain boundaries
 
-## Controls and camera contract
+### NexusEngine core
+
+- Realtime Core advances deterministic ticks.
+- Core Object supplies stable procedural object identity.
+- Core Transaction Ledger deduplicates durable operations after retries and save/restore.
+
+### Product Domain Service Kits
+
+- `cozy-world-domain-kit` owns the seeded island model, terrain queries, farm layout, forage layout, landmarks, and static render base.
+- `cozy-input-domain-kit` queues raw host input and admits one normalized frame of intent per Realtime Core tick.
+- `cozy-player-domain-kit` owns free island walking, terrain grounding, view state, and stamina.
+- `cozy-inventory-domain-kit` owns seeds, tools, food, coconuts, and item transactions.
+- `cozy-farming-domain-kit` owns tilling, planting, watering, growth, and harvesting.
+- `cozy-foraging-domain-kit` owns coconut availability, collection, and deterministic respawn.
+- `cozy-interaction-domain-kit` resolves nearby targets and contextual actions.
+- `cozy-camera-domain-kit` publishes terrain-safe intro and first-person camera descriptors.
+- `cozy-save-domain-kit` captures and validates portable domain snapshots; the browser host owns `localStorage`.
+- `cozy-render-snapshot-domain-kit` exposes read-only world, HUD, crop, forage, lighting, and camera descriptors.
+
+## Controls
 
 ```txt
-Mouse wheel / trackpad   descend from the aerial reveal
-Drag                     orbit during reveal; look in first person
-W A S D                  move inside the central clearing after landing
-H                        toggle renderer diagnostics
-
-Rail start FOV           55 degrees
-First-person FOV         80 degrees
-Player eye height        2.0 m above sampled terrain
+W A S D       walk
+Shift         sprint
+Drag          look around
+E             contextual action: till, plant, water, harvest, or gather coconuts
+Q             cycle seed selection
+1–4           select a seed directly
+Space/Enter   finish the aerial introduction
+H             toggle NexusEngine diagnostics
 ```
 
-Late rail positions and look targets are terrain-relative. Every interpolated rail sample is clamped above the procedural surface so the final descent cannot enter the clearing mound.
+## Farming loop
 
-Force a quality tier with `?quality=ultra`, `?quality=high`, `?quality=medium`, or `?quality=low`. The default world path is `?world=core`; use `?world=legacy` for the temporary rollback path.
+A farm plot moves through:
 
-## Local development
+```txt
+untilled
+→ tilled
+→ planted/growing
+→ watered growth
+→ ready
+→ harvested back to tilled
+```
+
+Every planting, inventory transfer, harvest, and coconut collection uses a stable operation ID recorded by NexusEngine’s Core Transaction Ledger. Reprocessing an operation cannot duplicate its durable effect.
+
+## Procedural world data
+
+The world seed deterministically produces:
+
+```txt
+island height and coastline
+biome weights
+walkability and slope
+separate sea floor
+vegetation and friendly forest clearings
+rocks and driftwood
+twelve farm plots
+coconut forage nodes
+island landmarks
+weather, wind, clouds, fog, waves, and foam descriptors
+```
+
+Detailed presentation remains renderer-owned. Domain state and saves contain no Three.js objects, GPU handles, DOM nodes, or browser APIs.
+
+## Rendering
+
+The validated render order remains:
+
+```txt
+background
+opaque island, sea floor, farm, crops, vegetation, props, and landmarks
+transparent anime water
+rolling depth-aware fog
+opaque-depth-admitted shoreline foam
+technical output transform
+```
+
+The renderer supports WebGPU first and Three.js WebGL2 fallback. Adaptive quality controls volumetric steps, fog resolution, shadow resolution, and device pixel ratio without changing gameplay state.
+
+## Persistence
+
+The browser host stores `cozy-island-adventure-save/1` snapshots in `localStorage`. The save payload includes portable world identity, scenario time, transaction ledgers, inventory, plots, coconut nodes, and player state plus a deterministic checksum.
+
+## Development
 
 ```bash
 npm install
 npm test
-python3 -m http.server 8080
+npm run serve
 ```
 
-Then open `http://localhost:8080/`.
-
-## Documentation
-
-- `docs/WEBGPU_ATMOSPHERE_ARCHITECTURE.md` — atmospheric rendering boundaries.
-- `docs/KIT_CATALOG.md` — all 50 local kits and dependencies.
-- `docs/WORLD_LAYER_MIGRATION.md` — Core World provider ownership and lifecycle.
-- `docs/LAZY_WORLD_MATERIALIZATION.md` — bounded post-first-frame cell work.
-- `docs/RENDER_LAYER_GRAPH.md` — terrain, water, fog, foam depth admission, camera projection, and output ordering.
+Open `http://localhost:8080/`.
 
 ## Debug surface
 
 ```js
 CozyIsland.getState()
-CozyIsland.camera.fov
-CozyIsland.worldRuntime.getState()
-CozyIsland.worldQuery.islandSurfaceAt(0, 0)
-CozyIsland.worldQuery.seaFloorSurfaceAt(120, 0)
-CozyIsland.renderLayerGraph
+CozyIsland.engine.getDomainPaths()
+CozyIsland.world.surfaceAt(x, z)
+CozyIsland.player.getState()
+CozyIsland.inventory.getState()
+CozyIsland.farming.listPlots()
+CozyIsland.foraging.listNodes()
+CozyIsland.captureSave()
 CozyIsland.renderPassOrder
 CozyIsland.physicalRenderPassOrder
 ```
 
-## Deployment
+## Source-of-truth rule
 
-The project is static and requires no build step. GitHub Pages serves `index.html` and ES modules directly. Three.js `0.185.0` and NexusEngine commit `481cbf6df742e81279bd42245c4238c6a1fc69f2` are pinned through narrow browser-safe import-map entry points.
+NexusEngine and the product DSKs own state and gameplay meaning. The browser host adapts input, lifecycle, `localStorage`, and frames. Three.js presents descriptors. No gameplay truth is owned by the renderer.

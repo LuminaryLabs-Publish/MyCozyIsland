@@ -9,6 +9,7 @@ import {
   transformNormalToView,
   vec3
 } from "three/tsl";
+import { COZY_RENDER_LAYERS, assignRenderLayer } from "./render-layers.js";
 
 export function createWebGPUOceanRenderer({ waveState, optics, quality } = {}) {
   const segments = Number(quality.oceanSegments ?? 96);
@@ -25,6 +26,17 @@ export function createWebGPUOceanRenderer({ waveState, optics, quality } = {}) {
     clearcoat: optics.clearcoat,
     clearcoatRoughness: optics.clearcoatRoughness
   });
+  material.depthTest = true;
+  material.premultipliedAlpha = optics.premultipliedAlpha !== false;
+  material.transmission = Number(optics.transmission ?? 0.92);
+  material.thickness = Number(optics.thickness ?? 1.35);
+  material.ior = Number(optics.ior ?? 1.333);
+  material.attenuationColor = new THREE.Color(optics.attenuationColor ?? optics.midColor);
+  material.attenuationDistance = Number(optics.attenuationDistance ?? optics.absorptionDistance ?? 36);
+  material.reflectivity = Number(optics.reflectivity ?? 0.72);
+  material.envMapIntensity = Number(optics.envMapIntensity ?? 1.15);
+  material.specularIntensity = Number(optics.specularIntensity ?? 1.4);
+  material.specularColor = new THREE.Color(optics.highlightColor ?? "#fff2c4");
 
   const waveNodes = waveState.waves.map(wave => ({
     dx: float(wave.direction.x),
@@ -55,10 +67,25 @@ export function createWebGPUOceanRenderer({ waveState, optics, quality } = {}) {
   })();
 
   const mesh = new THREE.Mesh(geometry, material);
-  mesh.name = "webgpu-ocean-surface";
+  mesh.name = "anime-transparent-ocean-surface";
   mesh.position.y = waveState.seaLevel;
   mesh.receiveShadow = true;
-  mesh.renderOrder = 2;
+  mesh.renderOrder = 0;
+  assignRenderLayer(mesh, COZY_RENDER_LAYERS.WATER_SURFACE, false);
+  mesh.userData.renderLayerContract = Object.freeze({
+    passId: "water-composite",
+    transparent: true,
+    depthTest: true,
+    depthWrite: false,
+    blend: "premultiplied-alpha",
+    singlePhysicalSurface: true,
+    sublayers: Object.freeze([
+      "transmitted-toon-seafloor",
+      "depth-absorption",
+      "fresnel-reflection",
+      "sun-glitter"
+    ])
+  });
   return Object.freeze({ mesh, material });
 }
 
@@ -108,9 +135,9 @@ function foamRibbonGeometry(points, width) {
 
 export function createWebGPUFoamRenderer(foamDescriptor) {
   const group = new THREE.Group();
-  group.name = "animated-shoreline-foam";
+  group.name = "final-shoreline-foam-overlay";
   const meshes = [];
-  for (const band of foamDescriptor.bands) {
+  for (const [index, band] of foamDescriptor.bands.entries()) {
     const material = new THREE.MeshBasicNodeMaterial({
       color: 0xfff5dc,
       transparent: true,
@@ -118,13 +145,32 @@ export function createWebGPUFoamRenderer(foamDescriptor) {
       side: THREE.DoubleSide,
       depthWrite: false
     });
+    material.depthTest = true;
+    material.premultipliedAlpha = true;
+    material.toneMapped = false;
+    material.fog = true;
     const mesh = new THREE.Mesh(foamRibbonGeometry(band.points, band.width), material);
     mesh.name = band.id;
-    mesh.renderOrder = 4;
+    mesh.renderOrder = index * 10;
     mesh.userData.band = band;
+    mesh.userData.renderLayerContract = Object.freeze({
+      passId: "foam-overlay",
+      finalSceneContent: true,
+      depthTest: true,
+      depthWrite: false,
+      blend: "premultiplied-alpha"
+    });
+    assignRenderLayer(mesh, COZY_RENDER_LAYERS.FOAM_OVERLAY, false);
     meshes.push(mesh);
     group.add(mesh);
   }
+  assignRenderLayer(group, COZY_RENDER_LAYERS.FOAM_OVERLAY, false);
+  group.userData.renderLayerContract = Object.freeze({
+    passId: "foam-overlay",
+    finalSceneContent: true,
+    rendersAfter: Object.freeze(["water-composite", "atmosphere-composite"])
+  });
+
   function update(elapsedSeconds = 0) {
     for (const mesh of meshes) {
       const band = mesh.userData.band;
@@ -132,5 +178,6 @@ export function createWebGPUFoamRenderer(foamDescriptor) {
       mesh.position.y = Math.sin(elapsedSeconds * band.speed + band.phase) * 0.055;
     }
   }
-  return Object.freeze({ group, update });
+
+  return Object.freeze({ group, meshes: Object.freeze(meshes), update });
 }

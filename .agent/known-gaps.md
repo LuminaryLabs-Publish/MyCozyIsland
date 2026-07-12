@@ -1,47 +1,50 @@
-# Known Gaps: MyCozyIsland Multi-Domain Transactions
+# Known Gaps: MyCozyIsland Agriculture Cutover
 
-Last updated: `2026-07-12T10-20-02-04-00`
+Last updated: `2026-07-12T12-50-46-04-00`
 
 ## Critical
 
-1. **Parent record follows live mutation:** `coreTransactionLedger.applyOnce()` records only after the product callback returns.
-2. **Nested participant commits:** farming and foraging commit inventory child operations before parent plot/node state and parent ledger history.
-3. **No atomic rollback:** an exception or interruption can leave child ledger/state committed while the parent operation is absent.
-4. **Save can capture split state:** save admission has no transaction barrier or committed transaction revision.
-5. **Render can display split state:** frame snapshots have no participant-parity or transaction-revision gate.
-6. **Restore does not reconcile transaction families:** parent and child ledger records and product owners restore independently.
+1. **Rollback does not retract events:** Agriculture events queued before a later failure remain outside snapshot restoration.
+2. **Rollback does not retract ECS journal rows:** candidate state writes and restoration writes remain in the same world journal without transaction classification.
+3. **Recovery can accept incomplete child history:** an Agriculture child record can recreate the product parent without paired Inventory record or resource-delta proof.
+4. **Legacy ledgers are not migrated:** save-v1 converts farming state but carries old `cozy-farming` transaction history unchanged.
+5. **No save/frame transaction barrier:** save and render snapshots expose participant revisions but no committed Agriculture transaction or recovery revision.
 
 ## High
 
-- Interaction IDs still use input frame index and target ID rather than session/generation/transaction identity.
-- No participant set, predecessor revision, mutation plan or candidate graph exists.
-- No typed commit, rollback or indeterminate result exists.
-- No retry policy distinguishes terminal product rejection from infrastructure failure.
-- Failed product results can be stored as completed ledger results without outcome classification.
-- Inventory, farming and foraging expose direct live mutation APIs outside a coordinating capability boundary.
-- The browser import map references NexusEngine `@main` rather than a reviewed commit.
-- The previously documented persistence boundary still has idle write churn, false saved status and non-atomic restore.
+- Inventory snapshot loading increments revision during rollback rather than restoring the exact predecessor observation.
+- Core Transaction Ledger snapshot loading increments capability sequence and emits `snapshotLoaded`.
+- Agriculture snapshot loading emits `SnapshotLoaded` during rollback.
+- No outcome type distinguishes rejected, rolled-back, reconciled, quarantined or indeterminate history.
+- No event-publication barrier exists after aggregate commit.
+- No child-record and state-parity validator exists.
+- Operation identity still includes input frame index rather than durable session and command sequence.
+- The hidden `cozyFarming` alias preserves a name but not the removed API contract.
+- Global `CozyIsland` diagnostics expose live owners outside a product transaction admission boundary.
 
 ## Medium
 
-- Save and render snapshots expose no transaction provenance.
-- HUD interaction results expose no participant receipts or rollback state.
-- Global `CozyIsland` capabilities can access live owners without transaction admission.
-- No bounded transaction journal or reconciliation diagnostics exist.
-- No policy defines behavior during pagehide or browser termination while a transaction is committing.
-- No policy defines whether failed action IDs are retryable or consumed.
-- Duplicate composition paths still create maintenance risk.
+- Save-v1 migration test is synthetic and reuses current Agriculture plot structures.
+- No authentic pre-cutover save and ledger fixture is retained.
+- Render snapshots do not cite Agriculture plan ID, resource-delta fingerprint or record IDs.
+- HUD lastAction does not include a recovery or first-frame receipt.
+- No bounded reconciliation journal exists.
+- No policy defines page termination during an indeterminate Agriculture action.
+- Continuous growth advances plot revisions independently of product transactions, but snapshots expose no source classification for revision changes.
+- Compatibility alias retirement and deprecation policy are undocumented.
 
 ## Proof gaps
 
-- `tests/adventure-domains-smoke.mjs` is not invoked by `npm test`.
-- `tests/core-transaction-ledger-smoke.mjs` is not invoked by `npm test`.
-- No failure injection after seed removal.
-- No failure injection after harvest reward.
-- No failure injection between coconut and sprout reward.
-- No participant rollback parity fixture.
-- No save-during-split fixture.
-- No incomplete-transaction restore fixture.
-- No same-ID and new-ID retry fixture.
-- No transaction-to-visible-frame fixture.
-- No WebGPU/WebGL2 transaction revision parity smoke.
+- No failure injection after Inventory settlement.
+- No failure injection after Agriculture state mutation.
+- No failure injection after Agriculture event enqueue.
+- No event-queue rollback fixture.
+- No ECS-journal rollback fixture.
+- No recovery fixture with missing Inventory child history.
+- No conflicting resource-delta recovery fixture.
+- No authentic legacy-ledger migration fixture.
+- No post-migration retry exactly-once fixture.
+- No save-during-indeterminate fixture.
+- No transaction-to-first-visible-frame fixture.
+- No WebGPU/WebGL2 recovery-revision parity smoke.
+- No Pages restored-save smoke.

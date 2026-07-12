@@ -1,38 +1,39 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-11T22-20-00-04-00`
+Last aligned: `2026-07-12T00-20-01-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make the logical ocean render graph, the physical Three.js/WebGPU pass graph, the kit catalog, and visible-frame evidence describe the same admitted resources and ordering.
+Current focus: preserve the new opaque-depth foam mask while making the foam-depth proxy an admitted, topology-aware, disposable, frame-correlated render capability.
 
 ## Summary
 
-`MyCozyIsland` now has independent island and sea-floor providers, a validated logical ocean composition graph, fused physical rendering for sky/opaque/water, a rolling-fog pass, and a final foam pass. The new composition source is not registered in the 50-kit catalog, and the physical pipeline is hard-coded rather than compiled from the graph.
+The post-audit runtime series fixed the clearest visible issue from the prior render-layer audit. Final shoreline foam now receives a manually constructed depth proxy, samples its depth against the fused scene depth, and masks foam color behind opaque world geometry.
 
-The strongest contract split is the final foam pass. The logical graph declares opaque-depth, water-mask, water-surface-depth, shoreline-distance, foam-state, and fog-transmittance reads. The physical foam pass renders a separate scene with `depthBuffer: false` and does not bind those declared resources. The foam materials request depth testing, but there is no shared opaque depth attachment in that pass.
+The fix remains outside the logical six-pass graph and outside a complete resource lifecycle. The proxy pair list is captured once from `foamRenderer.meshes`, only transforms are synchronized per frame, the new proxy material and pass have no disposal result, pass readback is still hand-authored, and the test checks source tokens rather than GPU attachments or pixels. Water-mask, water-surface-depth, and fog-transmittance remain declared logical inputs without physical bindings.
 
 ## Plan ledger
 
-**Goal:** document one authoritative path from catalog admission and logical pass declarations through physical resource binding, pass execution, visible-frame acknowledgement, and WebGPU/WebGL2 parity.
+**Goal:** align graph, proxy topology, physical resources, lifecycle, backend execution, diagnostics, and visible-frame evidence without regressing depth-correct foam.
 
 - [x] Compare all 10 accessible Publish repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` because it was the oldest eligible central entry and a new layered-render runtime series postdated its audit.
-- [x] Trace startup, world preparation, scene construction, logical graph validation, physical pass construction, per-frame rendering, readback, and tests.
-- [x] Identify the complete interaction loop, active domains, 50 cataloged kits, one additional runtime composition kit, nine providers, and five imported NexusEngine services.
-- [x] Document the logical/physical pass-resource mismatch and catalog omission.
-- [x] Add architecture, render, gameplay, interaction, render-graph, and deployment audits.
-- [x] Refresh all required root `.agent` files and machine registry.
-- [x] Push documentation directly to `main`; create no branch or pull request.
-- [ ] Implement graph compilation, physical binding receipts, depth-correct foam, and browser parity fixtures.
+- [x] Confirm all nine eligible repositories have ledger and root `.agent` coverage.
+- [x] Select only `MyCozyIsland` because its central audit was oldest and a newer foam/camera runtime series postdated it.
+- [x] Trace startup, world preparation, logical graph creation, proxy construction, per-frame sync, post rendering, readback, page exit, and tests.
+- [x] Identify the interaction loop, all domains, all 50 cataloged kits, the extra composition kit, nine providers, and five imported NexusEngine services.
+- [x] Record closed, partially closed, and retained render-binding findings.
+- [x] Define the foam-depth proxy authority DSK and fixture gate.
+- [x] Add timestamped tracker, turn ledger, architecture, render, gameplay, interaction, render-proxy, and deploy audits.
+- [x] Refresh required root `.agent` files and machine registry.
+- [x] Push only to `main`; create no branch or pull request.
+- [ ] Runtime implementation and executable browser/GPU fixtures remain future work.
 
 ## Runtime identity
 
 ```txt
-route:               index.html -> src/main-cloudform.js?v=render-layer-graph-2
-package:             0.4.0
+route:               index.html -> src/main-cloudform.js?v=foam-depth-camera-1
+package:             0.4.1
 Three.js:            0.185.0
 NexusEngine commit:  481cbf6df742e81279bd42245c4238c6a1fc69f2
 world id:            world:cozy-island-webgpu-v4
@@ -46,43 +47,41 @@ fallback mode:       legacy
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-11T22-20-00-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-11T22-20-00-04-00-render-layer-binding-authority-dsk-map.md
-.agent/render-audit/2026-07-11T22-20-00-04-00-logical-physical-pass-resource-gap.md
-.agent/render-graph-audit/2026-07-11T22-20-00-04-00-pass-binding-depth-provenance-contract.md
-.agent/gameplay-audit/2026-07-11T22-20-00-04-00-final-foam-occlusion-loop.md
-.agent/interaction-audit/2026-07-11T22-20-00-04-00-render-readback-admission-map.md
-.agent/deploy-audit/2026-07-11T22-20-00-04-00-webgpu-webgl2-layer-parity-fixture-gate.md
-.agent/turn-ledger/2026-07-11T22-20-00-04-00.md
+.agent/trackers/2026-07-12T00-20-01-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-12T00-20-01-04-00-foam-depth-proxy-authority-dsk-map.md
+.agent/render-audit/2026-07-12T00-20-01-04-00-manual-depth-proxy-resource-gap.md
+.agent/render-proxy-audit/2026-07-12T00-20-01-04-00-topology-lifecycle-frame-contract.md
+.agent/gameplay-audit/2026-07-12T00-20-01-04-00-foam-topology-frame-loop.md
+.agent/interaction-audit/2026-07-12T00-20-01-04-00-render-proxy-readback-admission-map.md
+.agent/deploy-audit/2026-07-12T00-20-01-04-00-foam-proxy-browser-fixture-gate.md
+.agent/turn-ledger/2026-07-12T00-20-01-04-00.md
 ```
 
 ## Interaction loop
 
 ```txt
 startup
-  -> validate the 50-entry catalog
-  -> independently create cozy-ocean-composition-kit
-  -> initialize WebGPU/WebGL2 renderer
-  -> create and prepare the selected world runtime
-  -> bridge one compatibility render snapshot
-  -> construct island, sea floor, water, clouds, fog, and foam
-  -> construct a hard-coded physical post pipeline
-  -> expose CozyIsland readback
+  -> validate catalog and create logical composition graph
+  -> initialize renderer and world runtime
+  -> create source foam meshes
+  -> snapshot source mesh membership into a foam-depth proxy scene
+  -> install input, resize, timers and animation loop
 
-per frame
+frame
   -> tick scenario and camera
-  -> update Core World focus
-  -> animate world and foam
-  -> sample adaptive performance
-  -> render fused base scene
-  -> render rolling fog
-  -> render separate final foam scene
-  -> apply output transform
-  -> process one bounded materialization slice
-  -> periodically project diagnostics
+  -> update source foam
+  -> copy source transforms into fixed proxy pairs
+  -> render fused base depth and fog
+  -> render foam proxy depth
+  -> compare proxy depth against scene depth
+  -> mask and composite foam color
+  -> materialize cells and project diagnostics
+
+page exit
+  -> dispose world domains only
 ```
 
-## Current render split
+## Current render state
 
 ```txt
 logical graph
@@ -94,79 +93,30 @@ logical graph
   output-transform
 
 physical graph
-  base-scene-fused: background + opaque-world + water-composite
+  base-scene-fused
   atmosphere-composite
+  foam-occlusion-depth
   foam-overlay
   output-transform
 ```
 
-The logical graph is validated as data. The physical graph is manually authored and returns hard-coded order strings. There is no compile result, resource-binding table, pass receipt, attachment identity, or visible-frame acknowledgement proving that the declared reads and writes were physically honored.
+The opaque-depth visual mask is now present. The physical depth pass is still manually inserted rather than compiled from the graph, and the proxy has no topology revision, resource lease, disposal contract, pass receipt, or visible-frame acknowledgement.
 
-## Implemented kit accounting
+## Implemented surface
 
 ```txt
 50 catalog-admitted DomainKit entries
-1 source-backed runtime composition kit outside the catalog
+1 source-backed composition kit outside the catalog
 9 ordered Core World providers
-5 imported NexusEngine services used by the active Core path
+5 imported NexusEngine services
 ```
 
-The unregistered runtime kit is:
-
-```txt
-cozy-ocean-composition-kit
-  logical render-layer graph
-  contract validation
-  terrain handoff metadata
-  per-layer depth/blend policy
-```
-
-## Main finding
-
-```txt
-foam logical contract
-  reads opaque depth, water mask, water surface depth,
-  shoreline distance, foam state, and fog transmittance
-
-foam physical pass
-  separate THREE.Scene
-  depthBuffer: false
-  no shared scene-depth binding
-  no water-mask binding
-  no rolling-fog transmittance binding
-  material.depthTest: true
-```
-
-The current source can therefore report a valid logical graph while the physical pass lacks the resources that graph says it consumes. At minimum, shoreline foam occlusion and fog integration are not proven by the current tests or readback.
+The complete per-kit service map is in `.agent/current-audit.md`, `.agent/kit-registry.json`, and the current tracker.
 
 ## Required parent domain
 
 ```txt
-cozy-island-render-layer-binding-authority-domain
-```
-
-Candidate kits:
-
-```txt
-kit-catalog-completeness-kit
-render-composition-admission-kit
-logical-pass-identity-kit
-physical-pass-identity-kit
-render-resource-identity-kit
-render-resource-production-kit
-render-resource-binding-kit
-fused-pass-plan-kit
-pass-admission-result-kit
-depth-provenance-kit
-water-mask-provenance-kit
-fog-transmittance-provenance-kit
-foam-occlusion-policy-kit
-render-graph-compile-result-kit
-logical-physical-parity-result-kit
-render-pass-observation-kit
-first-layered-frame-receipt-kit
-browser-foam-occlusion-fixture-kit
-webgpu-webgl2-layer-parity-fixture-kit
+cozy-island-foam-depth-proxy-authority-domain
 ```
 
 ## Ordered implementation queue
@@ -176,6 +126,7 @@ webgpu-webgl2-layer-parity-fixture-kit
 2. Runtime Session Lifecycle Authority
 3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
 4. Render Layer Graph Admission and Physical Resource Binding Authority
+4a. Foam Depth Proxy Topology and Lifecycle Authority
 5. Core World Reset / Re-prepare Authority
 6. Pinned Core World Focus Transaction Authority
 7. Live Materialization Readiness Commit Authority
@@ -197,7 +148,7 @@ branch created: no
 pull request created: no
 npm test: not run
 browser WebGPU/WebGL2 smoke: not run
-physical resource-binding fixture: unavailable
-foam occlusion fixture: unavailable
-first layered-frame receipt: unavailable
+proxy topology fixture: unavailable
+proxy disposal fixture: unavailable
+first visible foam-frame receipt: unavailable
 ```

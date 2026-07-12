@@ -1,11 +1,17 @@
 import { clamp01, hashUnit, lerp, smoothstep, TAU } from "./determinism.js";
 
-export function createOceanFloorProfile(terrain) {
-  const size = terrain.radius * 18;
+export function createOceanFloorProfile(terrain, options = {}) {
+  const size = Number(options.size ?? terrain.radius * 18);
+  const minimumCoastDepth = Number(options.minimumCoastDepth ?? -7);
+  const seaLevel = Number(terrain.seaLevel ?? 0);
+
   function sampleHeight(point = {}) {
     const x = Number(point.x ?? 0);
     const z = Number(point.z ?? 0);
     const distance = Math.hypot(x, z);
+    const angle = Math.atan2(z, x);
+    const coast = terrain.coastRadius(angle);
+    const outsideCoast = Math.max(0, distance - coast);
     const shelfStart = terrain.radius * 0.92;
     const shelfEnd = terrain.radius * 1.65;
     const deepStart = terrain.radius * 3.4;
@@ -14,14 +20,35 @@ export function createOceanFloorProfile(terrain) {
     const islandMound = lerp(-3.2, -20, shelfBlend);
     const deep = lerp(islandMound, -92, deepBlend);
     const undulation = Math.sin(x * 0.018) * Math.cos(z * 0.016) * 3.8 * deepBlend;
-    return deep + undulation;
+    const bathymetry = deep + undulation;
+    const separatedCoastFloor = minimumCoastDepth - outsideCoast * 0.16;
+    return Math.min(bathymetry, separatedCoastFloor);
   }
+
+  function sampleNormal(point = {}, epsilon = 2.5) {
+    const x = Number(point.x ?? 0);
+    const z = Number(point.z ?? 0);
+    const left = sampleHeight({ x: x - epsilon, z });
+    const right = sampleHeight({ x: x + epsilon, z });
+    const down = sampleHeight({ x, z: z - epsilon });
+    const up = sampleHeight({ x, z: z + epsilon });
+    const nx = left - right;
+    const ny = epsilon * 2;
+    const nz = down - up;
+    const length = Math.hypot(nx, ny, nz) || 1;
+    return Object.freeze({ x: nx / length, y: ny / length, z: nz / length });
+  }
+
   return Object.freeze({
-    id: "ocean-floor:cozy-island",
+    id: "ocean-floor:cozy-island-v2",
     size,
+    seaLevel,
+    minimumCoastDepth,
     baseDepth: -92,
-    shelfDepth: -8,
-    sampleHeight
+    shelfDepth: minimumCoastDepth,
+    semanticTerrain: "sea-floor",
+    sampleHeight,
+    sampleNormal
   });
 }
 
@@ -43,17 +70,33 @@ export function createOceanWaveState(options = {}) {
 
 export function createOceanOpticsDescriptor(options = {}) {
   return Object.freeze({
-    id: "ocean-optics:cozy-island",
-    deepColor: options.deepColor ?? "#1f8f9d",
-    midColor: options.midColor ?? "#42b9b0",
-    shallowColor: options.shallowColor ?? "#82d9c7",
-    absorptionDistance: Number(options.absorptionDistance ?? 23),
-    refractionStrength: Number(options.refractionStrength ?? 0.085),
-    roughness: Number(options.roughness ?? 0.18),
-    metalness: Number(options.metalness ?? 0.08),
-    clearcoat: Number(options.clearcoat ?? 0.84),
-    clearcoatRoughness: Number(options.clearcoatRoughness ?? 0.16),
-    opacity: Number(options.opacity ?? 0.76)
+    id: "ocean-optics:cozy-island-anime-v2",
+    deepColor: options.deepColor ?? "#1c7088",
+    midColor: options.midColor ?? "#3fb8b0",
+    shallowColor: options.shallowColor ?? "#a2ead4",
+    highlightColor: options.highlightColor ?? "#fff2c4",
+    attenuationColor: options.attenuationColor ?? "#5dc8b9",
+    absorptionDistance: Number(options.absorptionDistance ?? 28),
+    attenuationDistance: Number(options.attenuationDistance ?? 36),
+    refractionStrength: Number(options.refractionStrength ?? 0.018),
+    roughness: Number(options.roughness ?? 0.12),
+    metalness: Number(options.metalness ?? 0),
+    clearcoat: Number(options.clearcoat ?? 1),
+    clearcoatRoughness: Number(options.clearcoatRoughness ?? 0.08),
+    reflectivity: Number(options.reflectivity ?? 0.72),
+    envMapIntensity: Number(options.envMapIntensity ?? 1.15),
+    specularIntensity: Number(options.specularIntensity ?? 1.4),
+    transmission: Number(options.transmission ?? 0.92),
+    thickness: Number(options.thickness ?? 1.35),
+    ior: Number(options.ior ?? 1.333),
+    opacity: Number(options.opacity ?? 0.22),
+    premultipliedAlpha: true,
+    depthBands: Object.freeze([
+      Object.freeze({ maxDepth: 2, color: options.shallowColor ?? "#a2ead4" }),
+      Object.freeze({ maxDepth: 8, color: options.midColor ?? "#3fb8b0" }),
+      Object.freeze({ maxDepth: 24, color: options.deepColor ?? "#1c7088" }),
+      Object.freeze({ maxDepth: Infinity, color: options.abyssColor ?? "#174d68" })
+    ])
   });
 }
 

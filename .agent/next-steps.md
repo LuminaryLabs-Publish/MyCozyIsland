@@ -1,94 +1,47 @@
-# Next Steps: MyCozyIsland Host Save Persistence
+# Next Steps: MyCozyIsland Browser Input Ownership
 
-Last updated: `2026-07-12T14-51-49-04-00`
+Last updated: `2026-07-12T17-01-09-04-00`
 
-## Goal
+## Summary
 
-Implement one browser-host persistence authority that distinguishes portable snapshot capture from verified durable commit and makes restore, reset, conflict, lifecycle and save-status results truthful.
+Add one browser-input authority before `cozy-input-domain-kit`. DOM focus and pointer-capture rules stay in the host adapter; the DSK continues to publish renderer-neutral input frames.
 
 ## Plan ledger
 
-- [ ] Add `cozy-island-host-save-persistence-authority-domain` as a host adapter around `cozy-save-domain-kit`.
-- [ ] Define save session, command, storage generation and dirty revision identity.
-- [ ] Stop mutating committed SaveState during candidate capture.
-- [ ] Add an immutable host save envelope with producer, world, dependency, predecessor and dirty-revision fingerprints.
-- [ ] Add a canonical save-key registry and explicit migration from `my-cozy-island.adventure-save.v1`.
-- [ ] Add browser storage capability and quota classification.
-- [ ] Add tab identity and writer lease ownership.
-- [ ] Require expected predecessor checksum and storage generation for commit.
-- [ ] Write candidates to a staging generation.
-- [ ] Read back and verify serialized bytes, schema and checksums.
-- [ ] Commit through an active pointer or equivalent predecessor-preserving protocol.
-- [ ] Retain a bounded verified backup generation.
-- [ ] Add committed, unchanged, rejected, conflicted and failed save results.
-- [ ] Keep dirty state pending after every failed or conflicted write.
-- [ ] Derive HUD `Saved` only from a verified `SaveCommitResult`.
-- [ ] Add corrupt-record quarantine and fallback-to-backup policy.
-- [ ] Add restore-preparation admission before mutating live participants.
-- [ ] Add `restore-rollback-failed` and `restore-indeterminate` outcomes.
-- [ ] Add restore command and storage generation to render snapshots.
-- [ ] Add first visible restored-frame acknowledgement.
-- [ ] Replace simulation-dt-only autosave cadence with an explicit monotonic policy.
-- [ ] Add visibility/pagehide flush commands with lifecycle generations.
-- [ ] Add pageshow/bfcache rearm and stale-callback rejection.
-- [ ] Make reset immediately durable through a baseline, tombstone or explicit erase commit.
-- [ ] Revoke or reconcile stale multi-tab writers through storage events.
-- [ ] Add a bounded save, conflict, quarantine and lifecycle journal.
-- [ ] Add quota/security failure fixtures.
-- [ ] Add readback corruption and backup recovery fixtures.
-- [ ] Add two-tab predecessor conflict fixtures.
-- [ ] Add pagehide -> bfcache -> pageshow -> pagehide fixtures.
-- [ ] Add reset-then-crash-reload fixtures.
-- [ ] Add restore rollback-failure fixtures.
-- [ ] Add WebGPU/WebGL2 save-status and first-frame parity smoke.
-- [ ] Add deployed Pages save round-trip and recovery smoke.
+**Goal:** make keyboard, pointer, wheel and focus-loss behavior source-owned, stale-safe and testable.
 
-## Agriculture recovery dependency
+- [ ] Add a stable game-canvas surface ID and revision.
+- [ ] Allocate a focus generation when gameplay focus is valid.
+- [ ] Close that generation on blur, hidden-page transition, pagehide or fatal state.
+- [ ] Admit gameplay keys only while the game surface owns focus.
+- [ ] Ignore gameplay keys from editable controls and non-game surfaces.
+- [ ] Require primary pointer and primary button for look gestures.
+- [ ] Allocate a gesture ID on admitted pointerdown.
+- [ ] Require the same pointer ID for move, up, cancel and capture-loss processing.
+- [ ] Handle lost pointer capture as a terminal gesture result.
+- [ ] Replace permanent input generation `1` with a revisioned generation.
+- [ ] Reject stale commands after focus or lifecycle transitions.
+- [ ] Reject duplicate command IDs and publish typed results.
+- [ ] Increment rejection diagnostics for malformed, stale and duplicate commands.
+- [ ] Make clear close the current generation so later stale commands cannot reactivate input.
+- [ ] Route the diagnostics key through the same command boundary or classify it as host-only.
+- [ ] Add player, interaction and camera consumer receipts.
+- [ ] Carry input generation and accepted command IDs into frame snapshots.
+- [ ] Add first-visible-input-frame acknowledgement.
+- [ ] Add browser fixtures for focus, editable controls, multiple pointers, capture loss, blur fencing and duplicate IDs.
+- [ ] Run the fixtures on WebGPU, WebGL2 fallback and deployed Pages.
 
-The previous Agriculture cutover recovery work remains required after host save truth is established:
-
-- [ ] Add event-queue and ECS-journal segmentation.
-- [ ] Prove Inventory and Agriculture child-record parity before parent recovery.
-- [ ] Reconcile or quarantine legacy `cozy-farming` ledger records.
-- [ ] Add transaction/recovery revisions to portable saves and render snapshots.
-- [ ] Add first visible Agriculture transaction-frame acknowledgement.
-
-## Acceptance criteria
+## Implementation order
 
 ```txt
-successful autosave
-  -> immutable candidate captured
-  -> storage candidate staged and read back
-  -> predecessor still matches
-  -> active generation committed once
-  -> HUD cites the commit ID and storage generation
-
-storage failure
-  -> predecessor remains active
-  -> dirty revision remains pending
-  -> HUD never says Saved
-  -> retry is typed and idempotent
-
-corrupt active record
-  -> invalid record is quarantined
-  -> verified backup remains available
-  -> restore result identifies fallback generation
-
-multi-tab conflict
-  -> stale predecessor cannot silently overwrite
-  -> conflict result exposes expected and actual generations
-
-restore failure
-  -> rollback outcome is truthful
-  -> rollback failure enters recovery/indeterminate state
-  -> gameplay does not claim a restored session
-
-reset
-  -> engine reset and durable baseline/tombstone commit complete together
-  -> crash/reload cannot resurrect predecessor state
-
-visible frame
-  -> first restored/reset frame cites the same storage and command generation
+surface and focus generation
+-> pointer gesture lifecycle
+-> command identity and deduplication
+-> clear fencing and typed results
+-> consumer receipts and frame acknowledgement
+-> browser and Pages fixtures
 ```
 
-Keep gameplay state in its existing domains. Keep portable payload rules in `cozy-save-domain-kit`. The new authority coordinates browser durability only.
+## Completion criteria
+
+An unfocused key, secondary pointer, mismatched pointer move, duplicate command, stale-generation command or post-blur event must produce a typed rejection with zero gameplay or camera mutation.

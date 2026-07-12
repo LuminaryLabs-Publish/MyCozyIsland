@@ -1,31 +1,32 @@
-# Current Audit: MyCozyIsland Adaptive Quality Transaction Authority
+# Current Audit: MyCozyIsland Browser Input Command Authority
 
-Last updated: `2026-07-12T05-00-19-04-00`
+Last updated: `2026-07-12T06-51-27-04-00`
 
 ## Summary
 
-MyCozyIsland selects a frozen base quality descriptor at startup, then runs a separate mutable performance budget. The budget samples RAF callback spacing, applies an exponential moving average, and uses frame-count hysteresis to move between levels 0, 1, and 2.
+MyCozyIsland wires browser wheel, pointer, keyboard, blur, and resize events directly into mutable camera-sequence state. The active route has no normalized input envelope, command sequence, frame queue, focus/visibility policy, replay stream, or visible-frame receipt.
 
-A degradation updates cloud steps, fog steps, fog resolution, and renderer pixel ratio. Recovery is incomplete: `applyPerformanceLevel(0)` restores the volumetric controls but never calls `renderer.setPixelRatio(...)`, so a return to level zero can leave the renderer at a previously reduced DPR.
+Two source-backed determinism gaps are central:
 
-The current system also lacks one active-quality descriptor, transition revision, timing-source identity, visibility/throttling admission, explicit override policy, consumer receipt set, resize transaction, and visible-frame acknowledgement.
+1. `input.wheel()` consumes `deltaY` without `WheelEvent.deltaMode`, so pixel, line, and page units are treated as equivalent.
+2. Rail pointer orbit clamps each `pointermove` delta before mutating canonical rail points. One large event and several smaller events with the same total movement can produce different camera rails.
 
 ## Plan ledger
 
-**Goal:** document one authoritative path from measured frame cost and quality policy through an accepted transition, symmetric renderer mutation, diagnostics, resize, recovery, and the first visible frame using the new quality revision.
+**Goal:** define one deterministic path from browser device samples through normalized input commands, frame admission, camera mutation, world focus, render projection, readback, and first-visible-frame proof.
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
-- [x] Inspect quality selection, performance sampling, renderer mutations, resize, diagnostics, host readback, and tests.
-- [x] Identify the complete interaction loop, active domains, 50 cataloged kits, one extra runtime kit, nine providers, and five imported services.
-- [x] Confirm asymmetric pixel-ratio recovery.
-- [x] Confirm frame-count dwell is refresh-rate dependent.
-- [x] Confirm URL override is not represented as a fixed/adaptive policy.
-- [x] Confirm no quality revision or frame receipt correlates the accepted level with visible output.
-- [x] Define policy, sample, transition, consumer receipt, resize, recovery, journal, fixture, and frame-proof contracts.
+- [x] Select only `MyCozyIsland` as the oldest eligible repository.
+- [x] Inspect active route listeners and camera-sequence input mutators.
+- [x] Inspect rail and first-person mode transitions, movement, reset, frame projection, public readback, and current tests.
+- [x] Identify the complete interaction loop and active domains.
+- [x] Reconcile 50 cataloged kits, one extra runtime kit, nine providers, and five imported services.
+- [x] Confirm wheel-unit ambiguity and pointer-cadence divergence.
+- [x] Confirm browser input mutates canonical state outside a frame-scoped transaction.
+- [x] Define normalization, admission, queue, reducer, leases, result, replay, and frame-proof contracts.
 - [x] Change documentation only.
-- [ ] Implement and run adaptive-quality fixtures.
+- [ ] Implement and run executable input fixtures.
 
 ## Runtime identity
 
@@ -40,109 +41,92 @@ runtime kit surfaces:  51
 providers:             9
 ```
 
-## Interaction loop
+## Complete interaction loop
 
 ```txt
 startup
-  -> chooseRenderQuality({ backend })
-  -> optional URL tier wins, otherwise capability policy chooses tier
-  -> set renderer DPR to min(device DPR, base cap)
-  -> allocate shadow, terrain, ocean, volume and world resources from base quality
-  -> create performance budget with targetFrameMs
+  -> validate catalog
+  -> initialize renderer and world
+  -> construct camera sequence and scenario
+  -> bind wheel, pointer, key, blur, resize, pagehide listeners
+  -> start renderer animation loop
 
-frame
-  -> frameMs = clamp(now - last, 0..100)
-  -> scenario/world/foam update
-  -> performanceBudget.sample(frameMs)
-  -> moving average and qualifying frame counters update
-  -> accepted level transition invokes applyPerformanceLevel(level)
-  -> post pipeline renders immediately with the mutated controls
-  -> every 12 frames diagnostics read base quality plus budget state
+wheel event
+  -> prevent browser default
+  -> send raw event.deltaY
+  -> progress += deltaY * 0.00072
+  -> clamp progress to 0..1
 
-degrade
-  -> average > target * 1.26 for 90 qualifying frames
-  -> increment level, maximum 2
-  -> reduce cloud/fog step scale and fog resolution
-  -> reduce DPR because level > 0
+pointer event
+  -> pointerdown stores client coordinates
+  -> pointermove computes delta from prior event
+  -> yaw and pitch mutate immediately
+  -> rail mode mutates every canonical rail point after a per-event clamp
+  -> pointerup or pointercancel clears local drag state
 
-recover
-  -> average < target * 0.86 for 360 qualifying frames
-  -> decrement level
-  -> restore cloud/fog controls toward base
-  -> when level reaches 0, DPR is not restored
+keyboard event
+  -> keydown adds code to pressed Set
+  -> keyup removes code
+  -> blur clears pressed Set
+  -> no command edge, sequence, frame target, or runtime generation exists
+
+animation frame
+  -> derive callback dt
+  -> scenario.tick reads current pressed Set
+  -> camera descriptor reads progress, rail points, yaw, pitch, and player state
+  -> Core World focus follows camera position and mode
+  -> renderer submits world and post pipeline
+  -> public readback exposes current camera descriptor only
 ```
 
 ## Concrete defects
 
-### Sticky pixel-ratio degradation
+### Wheel unit ambiguity
+
+The host forwards `event.deltaY` but not `event.deltaMode`. DOM wheel deltas may be expressed in pixels, lines, or pages. The same physical wheel gesture can therefore produce materially different rail progress across devices and browser settings.
+
+### Pointer cadence divergence
+
+Rail drag applies:
 
 ```txt
-startup high tier at DPR 1.5
-  -> level 1 sets cap to 1.32
-  -> level 2 sets cap to 1.14
-  -> recovery to level 1 sets cap to 1.32
-  -> recovery to level 0 skips renderer.setPixelRatio
-  -> active DPR remains 1.32 instead of returning to 1.5
+orbitInfluence = clamp(deltaX * 0.00008, -0.035, 0.035)
+railPoint.x += orbitInfluence * abs(railPoint.z) * 0.02
 ```
 
-The exact retained value depends on the preceding level and device DPR, but level zero does not authoritatively restore startup resolution.
+Because the clamp is applied per event, event segmentation changes the result. A single 1000-pixel delta is clamped once to `0.035`; ten 100-pixel deltas contribute `0.008` ten times. Equivalent total motion can therefore create different rail geometry.
 
-### Refresh-rate-dependent dwell
+### Ambient mutation outside frame admission
 
-```txt
-90 qualifying frames:
-  30 Hz -> about 3.0 seconds
-  60 Hz -> about 1.5 seconds
- 120 Hz -> about 0.75 seconds
+Wheel and pointer handlers mutate camera state immediately. Keyboard handlers mutate a persistent `Set`. The next RAF reads whichever partial event sequence arrived before its callback. No immutable `InputFrame` records the accepted samples.
 
-360 qualifying frames:
-  30 Hz -> about 12 seconds
-  60 Hz -> about 6 seconds
- 120 Hz -> about 3 seconds
-```
+### Incomplete focus and capture lifecycle
 
-The moving average changes the exact wall time, but the acceptance threshold is still frame-count based rather than elapsed-time based.
+`blur` clears held keys but does not clear the host's local `drag` record. There is no `visibilitychange` policy, `lostpointercapture` handler, pointer-capture lease, stale event fence, or typed clear result.
 
-### Measurement ambiguity
+### Missing result-to-frame correlation
 
-`renderer` is created with timestamp tracking enabled, but the adaptive budget consumes RAF callback spacing. That value may include scheduling, tab throttling, OS stalls, browser pauses, and CPU work. No typed sample distinguishes CPU frame time, GPU time, presentation latency, callback delay, invalid samples, or visibility transitions.
-
-### Override ambiguity
-
-`?quality=low|medium|high|ultra` selects the base tier, but the performance budget remains active. The runtime has no explicit policy saying whether the override is a fixed lock, an upper bound, a lower bound, or an adaptive starting tier.
-
-### Partial consumer coverage
-
-Adaptive transitions currently affect:
-
-```txt
-cloud ray-step scale
-fog ray-step scale
-fog resolution scale
-renderer pixel ratio on levels above zero
-```
-
-They do not transition already-created resources such as shadow-map size, cloud/fog texture dimensions, ocean segments, terrain resolution, vegetation density, or other base-quality allocations. This can be a valid policy, but it is not represented as an explicit mutable/immutable consumer contract.
+The public host exposes the latest camera descriptor and scenario, but no input command result, input-state revision, camera revision, or frame receipt proves which accepted commands produced the visible frame.
 
 ## Domains in use
 
 ```txt
 browser startup, loader, error and debug projection
 kit catalog declaration, validation and completeness
-logical render graph declaration and validation
-physical render pass and proxy-resource construction
-WebGPU/WebGL2 backend and base-quality selection
-adaptive performance sampling and quality mutation
-legacy/Core world mode and lifecycle
-Core World grid, focus, providers and materialization
-camera rail, first-person input, movement, reset and frame projection
+browser wheel, pointer, keyboard, focus and resize input
+camera rail progress, orbit, landing and first-person movement
+input normalization, command admission and frame reduction gap
 scenario clock, tick, reset and render snapshots
-deterministic seed, wind, weather, illumination and aerial perspective
-cloud, fog, ocean, foam, vegetation, campfire and terrain presentation
-island, sea floor, biome, shoreline and ground contact
+Core World focus, providers, materialization and query
+legacy/Core world lifecycle and compatibility
+WebGPU/WebGL2 backend and quality policy
+adaptive performance sampling and renderer mutation
+island, sea floor, terrain, biome, shoreline and ground contact
+vegetation, rocks, props, path, campfire and population
+ocean, foam, caustics, underwater optics and sun glitter
+cloud, fog, weather, wind, illumination and sky
 render layers, depth, blend, post and output transform
-browser input, resize, visibility, page lifecycle and public host
-tests and Pages deployment
+runtime lifecycle, public readback, tests and Pages deployment
 ```
 
 ## All implemented kits and offered services
@@ -160,8 +144,8 @@ webgpu-post-processing-renderer-kit         depth, fog, foam and output composit
 webgpu-rolling-fog-renderer-kit              volume fog and advection
 webgpu-stylized-material-renderer-kit       world materials and animation
 webgpu-volumetric-cloud-renderer-kit        cloud volume rendering
-camera-rail-sequence-kit                    rail, orbit, landing, reset and FPS input
-cozy-island-scenario-kit                    clock tick, camera tick, reset and snapshots
+camera-rail-sequence-kit                    wheel/drag/key input, rail, FPS movement, reset and descriptors
+cozy-island-scenario-kit                    clock tick, camera tick, reset and render snapshots
 terrain-surface-domain-kit                  island surface
 vegetation-placement-domain-kit             deterministic placement graph
 aerial-perspective-domain-kit               haze and exposure
@@ -240,88 +224,85 @@ defineWorldEffectProvider
 ## Required parent domain
 
 ```txt
-cozy-island-adaptive-quality-transaction-authority-domain
+cozy-island-browser-input-command-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-quality-policy-id-kit
-quality-policy-descriptor-kit
-quality-override-policy-kit
-frame-cost-sample-kit
-frame-cost-source-kit
-frame-cost-validity-kit
-quality-observation-window-kit
-quality-transition-command-kit
-quality-transition-id-kit
-quality-transition-revision-kit
-quality-transition-admission-kit
-quality-transition-result-kit
-quality-dwell-time-kit
-quality-consumer-plan-kit
-quality-consumer-receipt-kit
-pixel-ratio-quality-adapter-kit
-volumetric-quality-adapter-kit
-immutable-quality-resource-policy-kit
-quality-resize-transaction-kit
-quality-visibility-suspension-kit
-quality-recovery-transaction-kit
-quality-frame-commit-kit
-quality-observation-kit
-quality-transition-journal-kit
-stale-quality-transition-rejection-kit
-adaptive-quality-cadence-fixture-kit
-pixel-ratio-recovery-fixture-kit
-quality-override-policy-fixture-kit
-quality-visible-frame-smoke-kit
+input-session-id-kit
+input-runtime-generation-kit
+input-command-id-kit
+input-command-sequence-kit
+input-device-descriptor-kit
+wheel-unit-normalization-kit
+pointer-sample-kit
+pointer-coalescing-policy-kit
+keyboard-edge-hold-kit
+input-command-envelope-kit
+input-admission-policy-kit
+camera-mode-input-policy-kit
+input-frame-queue-kit
+input-frame-reducer-kit
+input-command-result-kit
+input-state-revision-kit
+input-clear-command-kit
+pointer-capture-lease-kit
+focus-visibility-input-gate-kit
+stale-input-rejection-kit
+camera-input-adapter-kit
+input-frame-commit-kit
+input-observation-kit
+input-journal-kit
+wheel-delta-mode-fixture-kit
+pointer-cadence-parity-fixture-kit
+blur-capture-loss-fixture-kit
+input-replay-parity-fixture-kit
+input-visible-frame-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-admit valid frame-cost sample
-  -> identify CPU/GPU/presentation source and visibility state
-  -> update a time-based observation window
-  -> evaluate explicit fixed/adaptive override policy
-  -> propose transition from expected quality revision
-  -> construct complete mutable-consumer plan
-  -> apply DPR, volumetric, and other admitted changes symmetrically
-  -> collect typed consumer receipts
-  -> reject partial or stale transition
-  -> commit active quality descriptor and revision
-  -> render one frame using that revision
-  -> publish visible quality-frame acknowledgement
+browser device sample
+  -> identify device, unit, timestamp, session and runtime generation
+  -> normalize wheel, pointer and keyboard semantics
+  -> admit against focus, visibility, capture lease and camera-mode policy
+  -> enqueue one immutable command with monotonic sequence
+  -> at frame start reduce accepted commands into one InputFrame
+  -> apply edges, holds, wheel and pointer deltas exactly once
+  -> publish input result and state revision
+  -> derive camera and world-focus revisions
+  -> render one frame using those revisions
+  -> publish first visible input-frame acknowledgement
 ```
 
 ## Required proof
 
 ```txt
-30/60/120 Hz produce equivalent time-based transition timing
-level 2 -> 1 -> 0 restores exact base DPR
-resize recomputes or explicitly preserves policy under one transaction
-URL override follows a documented fixed/adaptive rule
-hidden-tab and invalid timing samples cannot trigger transitions
-all mutable consumers cite one quality revision
-immutable consumers are explicitly classified
-base tier, active level, DPR and consumer state agree in diagnostics
-first visible frame after transition cites the committed quality revision
+pixel, line and page wheel inputs normalize to equivalent rail progress
+one large pointer delta and equivalent segmented deltas produce the same camera result
+browser event rate does not change rail or first-person outcome
+blur, visibility loss and pointer-capture loss clear or reject stale input
+old runtime-generation events cannot mutate replacement state
+keyboard edge and hold semantics are explicit
+input replay reproduces camera descriptors and player positions
+public readback cites input, camera and visible-frame revisions
 ```
 
 ## Validation boundary
 
 ```txt
 runtime source changed: no
-quality implementation changed: no
+input implementation changed: no
+camera behavior changed: no
 render output changed: no
 package scripts changed: no
 dependencies changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-quality source inspected: yes
-existing test chain inspected: yes
-npm test run: no
-new adaptive-quality fixtures implemented: no
-browser adaptive smoke run: no
+npm test: not run
+browser input smoke: not run
+input fixtures: not implemented
 ```

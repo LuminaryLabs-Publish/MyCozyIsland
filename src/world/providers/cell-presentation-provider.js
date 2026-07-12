@@ -4,27 +4,37 @@ import { createProviderRuntimeStore } from "../provider-runtime-store.js";
 export function createCellPresentationProvider({
   defineWorldEffectProvider,
   terrainSource,
+  seaFloorSource,
   biomeStore,
   shorelineStore,
+  seaFloorMaterialStore,
   vegetationStore,
   rockStore,
   propStore
 } = {}) {
   if (!defineWorldEffectProvider) throw new TypeError("createCellPresentationProvider requires defineWorldEffectProvider.");
-
   const store = createProviderRuntimeStore("cell-presentation-provider-runtime");
 
   function build({ world, cell }) {
     const terrain = terrainSource.getRuntimeCell(cell.id);
+    const seaFloor = seaFloorSource.getRuntimeCell(cell.id);
     const biome = biomeStore.get(cell.id);
     const shoreline = shorelineStore.get(cell.id);
+    const seaFloorMaterial = seaFloorMaterialStore.get(cell.id);
     const vegetation = vegetationStore.get(cell.id);
     const rocks = rockStore.get(cell.id);
     const props = propStore.get(cell.id);
     const handleId = `${cell.id}:render-cell`;
     const version = Number(store.get(cell.id)?.descriptor?.version ?? 0) + 1;
+    const ready = Boolean(
+      terrain
+      && seaFloor
+      && biome?.status === "ready"
+      && shoreline?.status === "ready"
+      && seaFloorMaterial?.status === "ready"
+    );
     const descriptor = createCellEffectDescriptor({
-      schema: "cozy.render-cell.v2",
+      schema: "cozy.render-cell.v3",
       id: handleId,
       worldId: world.id,
       cell,
@@ -33,13 +43,22 @@ export function createCellPresentationProvider({
       runtimeHandleId: handleId,
       capabilities: ["render-cell-descriptor"],
       data: {
-        terrainHandleId: terrain?.handleId ?? null,
-        biomeHandleId: biome?.status === "ready" ? biome.handleId : null,
+        islandTerrainHandleId: terrain?.handleId ?? null,
+        seaFloorTerrainHandleId: seaFloor?.handleId ?? null,
+        islandBiomeHandleId: biome?.status === "ready" ? biome.handleId : null,
         shorelineHandleId: shoreline?.status === "ready" ? shoreline.handleId : null,
+        seaFloorMaterialHandleId: seaFloorMaterial?.status === "ready" ? seaFloorMaterial.handleId : null,
         vegetationHandleId: vegetation?.handleId ?? null,
         rockHandleId: rocks?.handleId ?? null,
         propHandleId: props?.handleId ?? null,
-        materialization: terrain && biome?.status === "ready" && shoreline?.status === "ready" ? "ready" : "queued"
+        materialization: ready ? "ready" : "queued",
+        renderLayers: {
+          islandTerrain: "opaque-world",
+          seaFloorTerrain: "opaque-world",
+          water: "water-composite",
+          fog: "atmosphere-composite",
+          foam: "foam-overlay"
+        }
       }
     });
     store.set(cell.id, { handleId, descriptor, cell, worldId: world.id });
@@ -52,9 +71,11 @@ export function createCellPresentationProvider({
       kind: "render-cell",
       phase: "presentation",
       requires: [
-        "terrain-descriptor",
+        "island-terrain-descriptor",
+        "seafloor-descriptor",
         "biome-weights",
         "shoreline-distance",
+        "seafloor-material",
         "vegetation-instances",
         "rock-instances",
         "prop-instances"

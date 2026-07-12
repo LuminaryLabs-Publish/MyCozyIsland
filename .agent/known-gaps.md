@@ -1,84 +1,92 @@
 # Known Gaps: MyCozyIsland
 
-Last updated: `2026-07-12T02-10-14-04-00`
+Last updated: `2026-07-12T03-39-52-04-00`
 
 ## Summary
 
-The camera rail has no immutable baseline authority. Rail-mode drag mutates authored path points in place, reset does not restore them, and camera descriptors cannot prove which baseline, path revision, reset generation, or input result produced the visible frame.
+The visible environment does not have one authoritative time or frame revision. World animation and foam use the scenario clock, ocean/cloud/fog shaders use Three TSL global time, and several environment descriptors remain frozen at startup. Reset restarts only part of the visible environment.
 
-## Camera baseline gaps
-
-```txt
-immutable rail baseline: absent
-baseline ID and version: absent
-baseline fingerprint: absent
-terrain revision binding: absent
-path revision: absent
-separate mutable session path: absent
-in-place authored point mutation: present
-reset restores authored points: no
-reset descriptor fidelity proof: absent
-```
-
-## Camera input gaps
+## Clock and frame gaps
 
 ```txt
-input command envelope: absent
-command ID and sequence: absent
-session/runtime generation admission: absent
-expected camera revision: absent
-pointer drag lease: absent
-multi-pointer isolation: absent
-wheel result: absent
-drag result: absent
-key result: absent
-clear result: absent
-stale command rejection: absent
-duplicate classification: absent
-bounded input journal: absent
-```
-
-## Camera transition and reset gaps
-
-```txt
-rail-to-first-person transition result: absent
-mode transition revision: absent
-reset command: absent
-reset result: absent
+canonical environment clock source: absent
+clock source ID: absent
+clock revision: absent
+environment frame ID: absent
+environment frame revision: absent
 reset generation: absent
-baseline reconstruction: absent
-rollback on invalid candidate: absent
-first visible reset-frame acknowledgement: absent
+frame fingerprint: absent
+bounded environment journal: absent
 ```
 
-## Descriptor and public readback gaps
+## Dynamic descriptor gaps
 
 ```txt
-camera state revision: absent
-rail baseline ID: absent
-rail baseline fingerprint: absent
-rail path revision: absent
-terrain revision: absent
+illumination evaluated per frame: no
+wind descriptor evaluated per frame: no
+vegetation wind updated per frame: no
+campfire wind updated per frame: no
+cloud weather and lighting updated per frame: no
+fog advection updated per frame: no
+sky and light state updated from current clock: no
+explicit immutable-policy classification: absent
+```
+
+## Render consumer gaps
+
+```txt
+world and foam use scenario elapsed time: yes
+ocean uses renderer-global TSL time: yes
+clouds use renderer-global TSL time: yes
+fog uses renderer-global TSL time: yes
+canonical TSL time uniform: absent
+environment render plan: absent
+consumer receipts: absent
+partial consumer rejection: absent
+stale generation rejection: absent
+visible environment-frame acknowledgement: absent
+```
+
+## Reset gaps
+
+```txt
+scenario clock resets to 48 seconds: yes
+camera resets: yes
+TSL time resets: no
+static environment descriptors rebuild: no
+ocean phase restarts: no
+cloud phase restarts: no
+fog phase restarts: no
+foam phase restarts: yes
+world sway and campfire phase restart: yes
+all-consumer reset parity proof: absent
+```
+
+## Public readback gaps
+
+```txt
+static startup snapshot exposed: yes
+dynamic clock exposed separately: yes
+environment frame provenance: absent
+clock source and revision: absent
 reset generation: absent
-last command ID: absent
-last transition result: absent
-committed frame ID: absent
-raw scenario and world runtime exposed: yes
+consumer receipt set: absent
+last committed environment frame: absent
+visible output acknowledgement: absent
 ```
 
 ## Current test gaps
 
 ```txt
-ground-clearance test: present
-first-person eye/FOV test: present
-initial versus post-reset descriptor fixture: absent
-repeated drag/reset drift fixture: absent
-baseline immutability fixture: absent
-threshold transition fixture: absent
-stale command fixture: absent
-multi-pointer browser fixture: absent
-visible reset-frame fixture: absent
-Pages camera smoke: absent
+deterministic domain construction: present
+scenario clock advances: present
+CPU versus TSL clock parity fixture: absent
+reset phase parity fixture: absent
+dynamic descriptor revision fixture: absent
+consumer receipt fixture: absent
+WebGPU/WebGL2 environment parity fixture: absent
+visible environment frame fixture: absent
+Pages reset parity smoke: absent
 ```
 
 ## Related retained gaps
@@ -93,27 +101,27 @@ Core World reset/reprepare
 focus transaction authority
 materialization generation/readiness
 renderer cell commit/disposal
-dynamic environment frame coherence
+camera rail baseline fidelity
 adaptive quality transaction
 ```
 
 ## Risk ranking
 
 ```txt
-P0 reset can report baseline progress while retaining a mutated rail path
-P1 repeated drag/reset cycles can accumulate unbounded path displacement
-P1 authored data and session input state share mutable objects
-P1 browser inputs mutate camera state without command admission or typed results
-P1 no visible-frame proof correlates reset with rendered camera state
-P2 multi-pointer events can overwrite or clear the shared drag state
-P2 diagnostics cannot identify baseline, path, reset, command, or frame revisions
+P0 reset can restart foam, vegetation and campfire while ocean, clouds and fog continue
+P1 one visible frame can combine unrelated scenario and renderer-global times
+P1 startup illumination and wind-derived descriptors can become stale against the clock
+P1 diagnostics cannot identify which time and descriptor revision produced a frame
+P1 no consumer receipt proves all required environment systems committed together
+P2 WebGPU and WebGL2 can drift without a shared environment-frame fixture
 ```
 
 ## Non-goals of this documentation run
 
 ```txt
-no camera implementation changed
-no browser event handling changed
+no environment implementation changed
+no shader time source changed
+no reset behavior changed
 no render output changed
 no package scripts or dependencies changed
 no deployment configuration changed

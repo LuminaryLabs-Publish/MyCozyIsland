@@ -1,46 +1,50 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-12T02-10-14-04-00`
+Last aligned: `2026-07-12T03-39-52-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make the camera rail an immutable, revisioned baseline so drag, descent, reset, and replay cannot accumulate hidden path drift.
+Current focus: make one committed environment frame own simulation time, shader time, wind, illumination, atmosphere, ocean motion, reset, diagnostics, and visible-frame provenance.
 
 ## Summary
 
-The active camera sequence stores its rail as mutable point objects. While the camera is still on the aerial rail, every drag directly changes every rail point's `x` coordinate. `reset()` restores progress, yaw, pitch, pressed keys, and the player position, but it does not rebuild or restore the mutated rail points.
+The runtime advances `environment-clock-domain-kit` through `scenario.tick(dt)`, then passes that elapsed time to the world and shoreline-foam renderers. Ocean waves, cloud detail, and fog advection do not use that clock. They use Three TSL's global `time` node, which follows renderer lifetime instead of scenario state.
 
-A drag followed by reset therefore does not return the camera to the original authored path. Repeated rail drags can accumulate permanent path displacement for the lifetime of the sequence, while public descriptors expose no baseline fingerprint, path revision, reset generation, input result, or visible-frame acknowledgement.
+At the same time, illumination, vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadows, fog density, and fog advection are evaluated once during composition and frozen into the startup render snapshot. `scenario.reset()` resets the environment clock to 48 seconds, but it does not reset TSL time or rebuild those descriptors.
+
+A reset can therefore restart foam, vegetation sway, and campfire animation while ocean, cloud, and fog phases continue. The visible frame can combine multiple time authorities without an environment frame ID, clock revision, reset generation, consumer receipt, or visible-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** preserve the authored aerial descent and first-person handoff while making rail baselines, input admission, reset fidelity, camera revisions, diagnostics, and visible-frame proof deterministic.
+**Goal:** preserve the cozy environment while replacing mixed ambient time with one deterministic, resettable, revisioned environment-frame transaction.
 
 - [x] Compare all 10 accessible Publish repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have ledger and root `.agent` coverage.
-- [x] Select only `MyCozyIsland` as the oldest fully synchronized eligible repository.
-- [x] Trace browser wheel, pointer, keyboard, blur, scenario tick, camera descriptor, reset, and existing camera tests.
+- [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
+- [x] Trace environment composition, clock tick/reset, wind sampling, static descriptors, renderer updates, TSL time, public readback, and tests.
 - [x] Identify the interaction loop, all domains, all 50 cataloged kits, one extra runtime kit, nine providers, and five imported NexusEngine services.
-- [x] Confirm rail drag mutates the authored point array and reset leaves those mutations intact.
-- [x] Define camera baseline, command, reset-result, revision, journal, fixture, and frame-proof contracts.
+- [x] Confirm world and foam updates use scenario elapsed time.
+- [x] Confirm ocean, clouds, and fog use renderer-global TSL time.
+- [x] Confirm dynamic environment descriptors are captured once during composition.
+- [x] Define environment frame, clock source, reset, consumer receipt, journal, fixture, and visible-frame contracts.
 - [x] Add timestamped architecture and system-specific audits.
 - [x] Refresh required root `.agent` files and the machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable camera fidelity fixtures remain future work.
+- [ ] Runtime implementation and executable environment-frame fixtures remain future work.
 
 ## Selection comparison
 
 ```txt
-MyCozyIsland       2026-07-12T00-20-01-04-00  selected
-PrehistoricRush    2026-07-12T00-30-49-04-00
-TheOpenAbove       2026-07-12T00-39-05-04-00
-IntoTheMeadow      2026-07-12T00-58-12-04-00
-HorrorCorridor     2026-07-12T01-08-06-04-00
-PhantomCommand     2026-07-12T01-20-00-04-00
-ZombieOrchard      2026-07-12T01-30-07-04-00
-TheUnmappedHouse   2026-07-12T01-41-56-04-00
-AetherVale         2026-07-12T01-58-43-04-00
+MyCozyIsland       2026-07-12T02-10-14-04-00  selected
+PrehistoricRush    2026-07-12T02-21-55-04-00
+TheOpenAbove       2026-07-12T02-29-50-04-00
+IntoTheMeadow      2026-07-12T02-38-23-04-00
+HorrorCorridor     2026-07-12T02-49-19-04-00
+PhantomCommand     2026-07-12T03-00-46-04-00
+ZombieOrchard      2026-07-12T03-11-51-04-00
+TheUnmappedHouse   2026-07-12T03-21-27-04-00
+AetherVale         2026-07-12T03-28-44-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -62,57 +66,56 @@ fallback mode:       legacy
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-12T02-10-14-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-12T02-10-14-04-00-camera-rail-baseline-authority-dsk-map.md
-.agent/render-audit/2026-07-12T02-10-14-04-00-reset-camera-visible-path-gap.md
-.agent/camera-system-audit/2026-07-12T02-10-14-04-00-baseline-revision-reset-fidelity-contract.md
-.agent/gameplay-audit/2026-07-12T02-10-14-04-00-drag-descend-reset-replay-loop.md
-.agent/interaction-audit/2026-07-12T02-10-14-04-00-camera-input-command-result-map.md
-.agent/deploy-audit/2026-07-12T02-10-14-04-00-camera-baseline-fixture-gate.md
-.agent/turn-ledger/2026-07-12T02-10-14-04-00.md
+.agent/trackers/2026-07-12T03-39-52-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-12T03-39-52-04-00-dynamic-environment-frame-authority-dsk-map.md
+.agent/render-audit/2026-07-12T03-39-52-04-00-mixed-clock-visible-frame-gap.md
+.agent/environment-frame-audit/2026-07-12T03-39-52-04-00-clock-descriptor-consumer-commit-contract.md
+.agent/gameplay-audit/2026-07-12T03-39-52-04-00-reset-environment-phase-divergence-loop.md
+.agent/interaction-audit/2026-07-12T03-39-52-04-00-environment-tick-reset-command-result-map.md
+.agent/deploy-audit/2026-07-12T03-39-52-04-00-environment-clock-parity-fixture-gate.md
+.agent/turn-ledger/2026-07-12T03-39-52-04-00.md
 ```
 
 ## Interaction loop
 
 ```txt
 startup
-  -> construct terrain-dependent authored rail points
-  -> initialize progress, yaw, pitch, keys, and player position
-  -> install wheel, pointer, keyboard, blur, resize, and RAF callbacks
+  -> create environment clock at 48 seconds
+  -> sample wind and illumination
+  -> freeze vegetation, campfire, cloud, fog, and lighting descriptors
+  -> create ocean, cloud, and fog shaders using Three TSL global time
 
-rail interaction
-  -> wheel mutates progress directly
-  -> pointer drag mutates yaw and pitch
-  -> while progress < 0.985, the same drag also mutates every rail point x value
-  -> descriptor samples the now-mutated rail
-
-first-person
-  -> threshold switches mode
-  -> WASD moves the player inside clearing bounds
-  -> prior rail drag yaw and pitch become first-person view orientation
+frame
+  -> renderer callback supplies now and dt
+  -> scenario advances the environment clock
+  -> world renderer and foam consume scenario elapsedSeconds
+  -> ocean, cloud, and fog shaders consume renderer-global TSL time
+  -> static sky, lights, fog parameters, and environment descriptors remain unchanged
+  -> post pipeline submits one visually mixed frame
 
 reset
-  -> reset progress, yaw, pitch, keys, and player position
-  -> retain all accumulated rail point mutations
-  -> next descriptor reports a reset progress on a non-baseline path
+  -> scenario resets environment clock to 48 seconds
+  -> world, foam, vegetation, and campfire phase restart from scenario time
+  -> ocean, cloud, and fog TSL time continues
+  -> static descriptors are not regenerated
 ```
 
 ## Main finding
 
 ```txt
-immutable authored rail baseline: absent
-rail baseline fingerprint: absent
-rail path revision: absent
-input command identity: absent
-drag result: absent
-reset command/result: absent
+canonical environment frame: absent
+authoritative clock-source ID: absent
+environment frame ID and revision: absent
 reset generation: absent
-stale input rejection: absent
-camera descriptor provenance: absent
-first visible reset-frame acknowledgement: absent
+static descriptor revision: absent
+dynamic wind and illumination evaluation: absent
+scenario-to-TSL time binding: absent
+environment consumer receipts: absent
+stale frame rejection: absent
+visible environment-frame acknowledgement: absent
 ```
 
-The existing camera tests verify terrain clearance, first-person eye height, and FOV. They do not compare pre-drag and post-reset descriptors, repeat drag/reset cycles, verify zero cumulative drift, or correlate the reset with the first rendered camera frame.
+The existing test chain proves deterministic domain construction and that the scenario clock advances. It does not prove that every visible environment consumer uses the same time, that reset restores all phases, that static descriptors match the current clock, or that a rendered frame cites one committed environment revision.
 
 ## Implemented surface
 
@@ -128,7 +131,7 @@ The complete per-kit service map is in `.agent/current-audit.md`, `.agent/kit-re
 ## Required parent domain
 
 ```txt
-cozy-island-camera-rail-baseline-authority-domain
+cozy-island-dynamic-environment-frame-authority-domain
 ```
 
 ## Ordered implementation queue
@@ -152,7 +155,7 @@ cozy-island-camera-rail-baseline-authority-domain
 
 ```txt
 runtime source changed by this pass: no
-camera behavior changed by this pass: no
+environment behavior changed by this pass: no
 render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
@@ -160,8 +163,8 @@ deployment changed by this pass: no
 branch created: no
 pull request created: no
 npm test: not run
-camera baseline fixture: unavailable
-repeated drag/reset fixture: unavailable
-browser pointer/wheel parity smoke: not run
-first visible reset-frame receipt: unavailable
+environment clock parity fixture: unavailable
+reset phase parity fixture: unavailable
+WebGPU/WebGL2 frame parity smoke: not run
+visible environment-frame receipt: unavailable
 ```

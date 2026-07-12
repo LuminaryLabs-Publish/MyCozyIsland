@@ -1,38 +1,35 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-12T05-00-19-04-00`
+Last aligned: `2026-07-12T06-51-27-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make adaptive quality a revisioned transaction whose requested policy, measured load, accepted transition, renderer consumers, diagnostics, recovery, resize behavior, and visible frame all agree.
+Current focus: place wheel, pointer, keyboard, focus, visibility, and camera-mode input behind one normalized, frame-admitted command authority.
 
 ## Summary
 
-The runtime selects one immutable base quality tier at startup, then samples browser callback time through `createPerformanceBudget()`. Sustained over-budget samples raise a mutable performance level and immediately reduce cloud steps, fog steps, fog resolution, and device-pixel ratio.
+The browser host currently sends raw DOM events directly into `cameraSequence.input`. Wheel input ignores `WheelEvent.deltaMode`, pointer deltas are applied immediately per browser event, and keyboard state mutates an ambient `Set` outside the frame transaction.
 
-The recovery path is asymmetric. Returning to level `0` restores cloud/fog settings, but `applyPerformanceLevel(0)` never restores the original pixel ratio because `renderer.setPixelRatio(...)` only runs when `level > 0`. A temporary slowdown can therefore leave the canvas permanently below its startup resolution until the page is recreated.
-
-The transition thresholds are counted in frames rather than elapsed time. Ninety over-budget frames and 360 under-budget frames represent different real durations at 30, 60, and 120 Hz. The budget also samples RAF callback spacing rather than a typed CPU/GPU frame-cost result, and the debug overlay continues to label only the immutable base tier.
+This makes equivalent physical input device- and cadence-dependent. A line-mode wheel and a pixel-mode trackpad can advance the rail by different magnitudes. Pointer segmentation also changes rail orbit because each event is clamped independently before mutating the canonical rail points.
 
 ## Plan ledger
 
-**Goal:** preserve automatic performance protection while making every degrade and recovery decision symmetric, cadence-independent, policy-aware, observable, resettable, and correlated with the frame that actually used it.
+**Goal:** preserve responsive camera control while making input units, ordering, focus state, camera-mode policy, command results, replay, and visible-frame ownership deterministic.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
-- [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
-- [x] Trace startup quality selection, URL override behavior, RAF timing, moving-average hysteresis, renderer mutations, resize, diagnostics, public readback, and tests.
-- [x] Identify the interaction loop, all domains, all 50 cataloged kits, one extra runtime kit, nine providers, and five imported NexusEngine services.
-- [x] Confirm pixel ratio is reduced on degrade but not restored when level returns to zero.
-- [x] Confirm degrade/recovery dwell is frame-count based and refresh-rate dependent.
-- [x] Confirm the quality override selects a base tier but does not explicitly lock adaptive degradation.
-- [x] Confirm diagnostics expose base tier and performance level separately without one active-quality revision.
-- [x] Define quality policy, sample, transition, consumer receipt, recovery, resize, journal, fixture, and visible-frame contracts.
+- [x] Select only `MyCozyIsland` as the oldest eligible repository.
+- [x] Trace browser listeners, wheel progress, pointer drag, keyboard holds, blur clearing, camera mode, scenario tick, render projection, public readback, and tests.
+- [x] Identify the complete interaction loop, all active domains, all 50 cataloged kits, one source-backed composition kit, nine providers, and five imported NexusEngine services.
+- [x] Confirm wheel units are consumed without `deltaMode` normalization.
+- [x] Confirm pointer event segmentation changes the clamped rail-orbit result.
+- [x] Confirm browser events mutate input state outside a frame-scoped command queue.
+- [x] Define input normalization, admission, reduction, leases, results, replay, fixtures, and visible-frame proof.
 - [x] Add timestamped architecture and system-specific audits.
-- [x] Refresh required root `.agent` files and the machine registry.
+- [x] Refresh all required root `.agent` files and the machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable adaptive-quality fixtures remain future work.
+- [ ] Runtime implementation and executable input fixtures remain future work.
 
 ## Selection comparison
 
@@ -42,15 +39,15 @@ eligible non-Cavalry repositories: 9
 new or central-ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
 
-MyCozyIsland       2026-07-12T03-39-52-04-00  selected
-PrehistoricRush    2026-07-12T03-51-15-04-00
-TheOpenAbove       2026-07-12T04-00-32-04-00
-IntoTheMeadow      2026-07-12T04-11-54-04-00
-PhantomCommand     2026-07-12T04-18-44-04-00
-HorrorCorridor     2026-07-12T04-28-03-04-00
-ZombieOrchard      2026-07-12T04-38-12-04-00
-AetherVale         2026-07-12T04-50-41-04-00
-TheUnmappedHouse   active repo-local work at prior comparison; not selected
+MyCozyIsland       2026-07-12T05-00-19-04-00 selected oldest
+TheOpenAbove       2026-07-12T05-11-46-04-00
+PrehistoricRush    2026-07-12T05-21-52-04-00
+IntoTheMeadow      2026-07-12T05-39-42-04-00
+PhantomCommand     2026-07-12T05-49-04-00
+HorrorCorridor     2026-07-12T05-59-28-04-00
+ZombieOrchard      2026-07-12T06-19-56-04-00
+TheUnmappedHouse   2026-07-12T06-30-34-04-00
+AetherVale         2026-07-12T06-41-32-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -72,77 +69,73 @@ fallback mode:       legacy
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-12T05-00-19-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-12T05-00-19-04-00-adaptive-quality-transaction-authority-dsk-map.md
-.agent/render-audit/2026-07-12T05-00-19-04-00-sticky-pixel-ratio-visible-frame-gap.md
-.agent/performance-audit/2026-07-12T05-00-19-04-00-frame-count-hysteresis-recovery-contract.md
-.agent/interaction-audit/2026-07-12T05-00-19-04-00-quality-sample-transition-result-map.md
-.agent/deploy-audit/2026-07-12T05-00-19-04-00-adaptive-quality-fixture-gate.md
-.agent/turn-ledger/2026-07-12T05-00-19-04-00.md
+.agent/trackers/2026-07-12T06-51-27-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-12T06-51-27-04-00-browser-input-command-authority-dsk-map.md
+.agent/render-audit/2026-07-12T06-51-27-04-00-input-camera-visible-frame-provenance-gap.md
+.agent/gameplay-audit/2026-07-12T06-51-27-04-00-rail-first-person-input-loop.md
+.agent/interaction-audit/2026-07-12T06-51-27-04-00-browser-event-admission-result-map.md
+.agent/input-audit/2026-07-12T06-51-27-04-00-unit-cadence-focus-command-contract.md
+.agent/deploy-audit/2026-07-12T06-51-27-04-00-input-replay-fixture-gate.md
+.agent/turn-ledger/2026-07-12T06-51-27-04-00.md
 ```
 
 ## Interaction loop
 
 ```txt
-startup
-  -> choose immutable base quality from URL, backend, memory, viewport, DPR, and motion preference
-  -> set startup pixel ratio and allocate quality-dependent resources
-  -> create performance budget at level 0
+wheel event
+  -> prevent default
+  -> pass raw deltaY to input.wheel
+  -> mutate rail progress immediately
 
-frame
-  -> calculate RAF callback spacing
-  -> advance scenario and update world/foam
-  -> sample callback spacing into moving average
-  -> possibly mutate performance level
-  -> immediately change cloud steps, fog steps, fog resolution, and sometimes DPR
-  -> render
-  -> periodically project base tier plus separate performance state
+pointer drag
+  -> retain browser client coordinates
+  -> calculate one delta per pointermove event
+  -> mutate yaw and pitch immediately
+  -> while on rail, clamp each event and mutate canonical rail points
 
-degrade
-  -> 90 qualifying over-budget frames
-  -> level increments up to 2
-  -> lower volumetric work and DPR
+keyboard
+  -> keydown/keyup mutate an ambient pressed Set
+  -> blur clears the Set
 
-recover
-  -> 360 qualifying under-budget frames
-  -> level decrements
-  -> restore volumetric work
-  -> level 0 does not restore startup DPR
+animation frame
+  -> scenario.tick reads the current Set
+  -> camera descriptor reads already-mutated rail, yaw, pitch, progress, and player state
+  -> world focus follows the descriptor
+  -> render submits the frame
 ```
 
 ## Main finding
 
 ```txt
-base quality descriptor: immutable startup value
-active quality descriptor: absent
-quality transition ID/revision: absent
-sample source identity: absent
-CPU/GPU timing separation: absent
-time-based dwell: absent
-visibility/throttling admission: absent
-URL override lock policy: ambiguous
-pixel-ratio recovery to level 0: missing
-resize reclassification: absent
-consumer receipts: absent
-first visible quality-frame acknowledgement: absent
-adaptive-quality fixture coverage: absent
+wheel delta mode normalization: absent
+input command ID and sequence: absent
+session and runtime generation: absent
+frame target: absent
+pointer coalescing policy: absent
+keyboard edge versus hold model: absent
+focus and visibility admission: partial blur-only clear
+pointer-capture lease and loss result: absent
+camera-mode input policy: implicit
+input result and state revision: absent
+input replay: absent
+first visible input-frame acknowledgement: absent
 ```
 
 ## Implemented surface
 
 ```txt
 50 catalog-admitted DomainKit entries
-1 source-backed composition kit outside the catalog
+1 source-backed render-composition kit outside the catalog
 9 ordered Core World providers
 5 imported NexusEngine services
 ```
 
-The complete per-kit service map is in `.agent/current-audit.md` and `.agent/kit-registry.json`.
+The complete kit and service map is in `.agent/current-audit.md` and `.agent/kit-registry.json`.
 
 ## Required parent domain
 
 ```txt
-cozy-island-adaptive-quality-transaction-authority-domain
+cozy-island-browser-input-command-authority-domain
 ```
 
 ## Ordered implementation queue
@@ -150,23 +143,25 @@ cozy-island-adaptive-quality-transaction-authority-domain
 ```txt
 1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
-3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
-4. Render Layer Graph Admission and Physical Resource Binding Authority
-4a. Foam Depth Proxy Topology and Lifecycle Authority
-5. Core World Reset / Re-prepare Authority
-6. Pinned Core World Focus Transaction Authority
-7. Live Materialization Readiness Commit Authority
-8. Core World Render Commit Authority
-9. Camera Rail Baseline Authority
-10. Dynamic Environment Frame Authority
-11. Adaptive Quality Transaction Authority
+3. Browser Input Command and Camera Control Authority
+4. World Lifecycle Contract and Legacy/Core Mode Parity Authority
+5. Render Layer Graph Admission and Physical Resource Binding Authority
+5a. Foam Depth Proxy Topology and Lifecycle Authority
+6. Core World Reset / Re-prepare Authority
+7. Pinned Core World Focus Transaction Authority
+8. Live Materialization Readiness Commit Authority
+9. Core World Render Commit Authority
+10. Camera Rail Baseline Authority
+11. Dynamic Environment Frame Authority
+12. Adaptive Quality Transaction Authority
 ```
 
 ## Validation boundary
 
 ```txt
 runtime source changed by this pass: no
-quality behavior changed by this pass: no
+input behavior changed by this pass: no
+camera behavior changed by this pass: no
 render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
@@ -174,7 +169,7 @@ deployment changed by this pass: no
 branch created: no
 pull request created: no
 npm test: not run
-adaptive quality fixtures: unavailable
-browser/WebGPU/WebGL2 adaptive smoke: not run
-visible quality-frame receipt: unavailable
+browser input smoke: not run
+input replay fixtures: unavailable
+visible input-frame receipt: unavailable
 ```

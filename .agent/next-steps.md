@@ -1,29 +1,29 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-11T20-51-14-04-00`
+Last updated: `2026-07-11T22-20-00-04-00`
 
 ## Summary
 
-World lifecycle parity is the next documentation-defined contract beneath startup and runtime-session ownership. The wrapper must stop treating `prepared` as lifecycle authority and must expose one typed phase/generation/result model across legacy and Core modes.
+The layered ocean pipeline needs one authority between the logical graph and the physical renderer. The next implementation slice should register the composition kit, compile one physical execution plan, bind each declared resource explicitly, and prove foam occlusion and backend parity in a browser.
 
 ## Plan ledger
 
-**Goal:** make prepare, reusable reset, terminal disposal and read-model validity explicit before restart, recovery, focus, materialization or render cutover depend on the wrapper.
+**Goal:** make the logical render graph executable and observable instead of maintaining a valid descriptor beside a separately hard-coded pipeline.
 
-- [ ] Add `WorldLifecycleState` with phase, mode, generation and revisions.
-- [ ] Make `prepared` a derived compatibility field.
-- [ ] Add command IDs, sequence and expected phase/generation.
-- [ ] Normalize legacy/Core result schemas.
-- [ ] Separate reusable reset from terminal disposal.
-- [ ] Retain or re-register the Core World definition during reusable reset.
-- [ ] Add provider/materializer retirement receipts.
-- [ ] Make terminal disposal idempotent.
-- [ ] Reject prepare, focus, materialization and query acquisition after disposal.
-- [ ] Bind queries and diagnostics to generation leases.
-- [ ] Reject stale generation callbacks and results.
-- [ ] Correlate first READY frame after reset with the new generation.
-- [ ] Revoke global world/query readback on terminal page lifecycle.
-- [ ] Add legacy/Core parity, reset/reprepare and use-after-dispose fixtures.
+- [ ] Add `cozy-ocean-composition-kit` to the canonical kit catalog or explicitly classify it outside the catalog.
+- [ ] Update catalog count, capabilities, public kit catalog, and diagnostics from one source.
+- [ ] Assign stable logical pass, physical pass, graph revision, and resource IDs.
+- [ ] Compile fused physical passes from the admitted logical graph.
+- [ ] Resolve every declared read against one producer or admitted external input.
+- [ ] Add typed missing-binding, stale-binding, unsupported-backend, and cycle results.
+- [ ] Bind the final foam pass to the exact opaque depth attachment it tests against.
+- [ ] Either bind water-mask/water-surface-depth/fog-transmittance or revise the logical foam contract to match the physical algorithm.
+- [ ] Derive reported logical and physical pass order from the compiled plan.
+- [ ] Publish pass execution receipts and one first-layered-frame acknowledgement.
+- [ ] Add WebGPU and WebGL2 physical resource-binding parity fixtures.
+- [ ] Add browser captures proving foam does not render through island, sea floor, props, or vegetation.
+- [ ] Add rolling-fog/foam integration fixtures at near, mid, and far camera positions.
+- [ ] Keep all prior startup, session, lifecycle, focus, materialization, and disposal gaps visible.
 
 ## Ordered implementation queue
 
@@ -31,111 +31,137 @@ World lifecycle parity is the next documentation-defined contract beneath startu
 1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
 3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
-4. Core World Reset / Re-prepare Authority
-5. Pinned Core World Focus Transaction Authority
-6. Live Materialization Readiness Commit Authority
-7. Core World Render Commit Authority
-8. Camera Rail Baseline Authority
-9. Dynamic Environment Frame Authority
-10. Adaptive Quality Transaction Authority
+4. Render Layer Graph Admission and Physical Resource Binding Authority
+5. Core World Reset / Re-prepare Authority
+6. Pinned Core World Focus Transaction Authority
+7. Live Materialization Readiness Commit Authority
+8. Core World Render Commit Authority
+9. Camera Rail Baseline Authority
+10. Dynamic Environment Frame Authority
+11. Adaptive Quality Transaction Authority
 ```
 
-## Candidate lifecycle kits
+## Candidate render-binding kits
 
 ```txt
-world-lifecycle-phase-kit
-world-runtime-generation-kit
-world-mode-contract-kit
-world-lifecycle-command-kit
-world-lifecycle-admission-kit
-world-prepare-result-kit
-world-reset-policy-kit
-world-reset-result-kit
-world-dispose-result-kit
-world-definition-lease-kit
-world-query-lease-kit
-world-diagnostics-lease-kit
-provider-materializer-retirement-kit
-stale-world-generation-rejection-kit
-terminal-use-after-dispose-rejection-kit
-legacy-core-lifecycle-adapter-kit
-world-lifecycle-observation-kit
-world-lifecycle-journal-kit
-world-mode-parity-fixture-kit
-world-use-after-dispose-fixture-kit
-browser-world-lifecycle-smoke-kit
+kit-catalog-completeness-kit
+render-composition-admission-kit
+logical-pass-identity-kit
+physical-pass-identity-kit
+render-resource-identity-kit
+render-resource-production-kit
+render-resource-binding-kit
+fused-pass-plan-kit
+pass-admission-result-kit
+depth-provenance-kit
+water-mask-provenance-kit
+fog-transmittance-provenance-kit
+foam-occlusion-policy-kit
+render-graph-compile-result-kit
+logical-physical-parity-result-kit
+render-pass-observation-kit
+first-layered-frame-receipt-kit
+browser-foam-occlusion-fixture-kit
+webgpu-webgl2-layer-parity-fixture-kit
 ```
 
-## Required state
+## Required compiled plan
 
 ```txt
-WorldLifecycleState {
-  sessionId
-  worldId
-  mode
-  phase
-  generation
-  definitionRevision
-  snapshotRevision
-  providerStateRevision
-  materializerRevision
-  activeCellCount
-  queryLeaseCount
-  lastResult
+CompiledRenderPlan {
+  graphId
+  graphRevision
+  backend
+  logicalPasses[]
+  physicalPasses[]
+  fusionGroups[]
+  resources[]
+  bindings[]
+  externalInputs[]
+  outputResourceId
+  validation
 }
 ```
 
-## Required transaction rules
+## Required resource binding
 
 ```txt
-Prepare
-  NEW or RESET -> READY
-  duplicate READY -> typed idempotent result
+RenderResourceBinding {
+  bindingId
+  resourceId
+  producerPassId
+  consumerPassId
+  attachmentKind
+  backendHandleClass
+  format
+  sizeRevision
+  worldRevision
+  frameId
+  accepted
+  rejectionReason
+}
+```
 
-Reset
-  READY or recoverable FAILED -> RESET
-  retire current generation
-  preserve/recreate reusable definition policy
+## Required foam contract
 
-Dispose
-  any non-DISPOSED phase -> DISPOSED
-  duplicate DISPOSED -> typed idempotent result
-
-After DISPOSED
-  reject all mutations and new read-model leases
+```txt
+foam pass
+  receives one current scene color input
+  receives one current opaque depth input when depth testing is declared
+  receives or explicitly does not require water mask and water-surface depth
+  receives or explicitly does not require rolling-fog transmittance
+  cannot write depth
+  cannot mutate terrain, physics, or fog state
+  remains the final authored scene-content pass
 ```
 
 ## Minimum fixture matrix
 
 ```txt
-legacy prepare/reset/prepare
-core prepare/reset/re-register/prepare
-duplicate prepare
-duplicate dispose
-prepare/update/materialize after dispose
-stale query lease
-provider/materializer exact retirement counts
-first replacement frame generation parity
-pagehide readback revocation
-WebGPU/WebGL2 lifecycle-result parity
+catalog completeness
+  all source-backed kit IDs accounted for exactly once
+
+logical/physical compile
+  six logical passes -> admitted fused physical plan
+
+missing resource
+  declared read without producer -> deterministic rejection
+
+foam depth
+  opaque island and prop occlude shoreline foam
+
+foam/water
+  foam appears only on admitted shoreline/water regions
+
+foam/fog
+  rolling fog and distance treatment match the declared contract
+
+backend parity
+  WebGPU and WebGL2 expose the same plan/result schema
+
+resize/quality
+  resource revisions advance and stale bindings reject
+
+visible frame
+  first layered frame cites graph, plan, resource, world, and backend revisions
 ```
 
 ## Acceptance conditions
 
 ```txt
-READY always has a valid committed snapshot
-RESET is reusable in both modes
-DISPOSED is terminal in both modes
-legacy/Core methods return the same result classes
-world generation advances on successful reprepare
-stale generation work cannot commit
-query/diagnostic leases are revoked on reset/dispose
-first replacement frame identifies the committed generation
+catalog and runtime kit counts agree
+physical passes are derived from one admitted graph revision
+every logical read has one explicit binding or admitted external source
+depth-tested foam identifies and samples the current opaque depth attachment
+hard-coded pass-order strings are removed or derived
+WebGPU/WebGL2 return the same compile and execution result classes
+browser evidence proves opaque occlusion and final-pass ordering
+public readback cites the current graph and physical plan revisions
 ```
 
 ## Next safe ledge
 
 ```txt
-MyCozyIsland World Lifecycle Contract and Legacy/Core Mode Parity Authority
-+ Reset/Re-prepare / Terminal-Dispose / Query-Lease / First-Replacement-Frame Fixture Gate
+MyCozyIsland Render Layer Graph Admission and Physical Resource Binding Authority
++ Catalog Completeness / Foam Depth / Fog Integration / Backend Parity / First-Layered-Frame Fixture Gate
 ```

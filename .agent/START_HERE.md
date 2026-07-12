@@ -1,50 +1,56 @@
 # START HERE: MyCozyIsland
 
-Last aligned: `2026-07-12T03-39-52-04-00`
+Last aligned: `2026-07-12T05-00-19-04-00`
 
 Repository: `LuminaryLabs-Publish/MyCozyIsland`
 
-Current focus: make one committed environment frame own simulation time, shader time, wind, illumination, atmosphere, ocean motion, reset, diagnostics, and visible-frame provenance.
+Current focus: make adaptive quality a revisioned transaction whose requested policy, measured load, accepted transition, renderer consumers, diagnostics, recovery, resize behavior, and visible frame all agree.
 
 ## Summary
 
-The runtime advances `environment-clock-domain-kit` through `scenario.tick(dt)`, then passes that elapsed time to the world and shoreline-foam renderers. Ocean waves, cloud detail, and fog advection do not use that clock. They use Three TSL's global `time` node, which follows renderer lifetime instead of scenario state.
+The runtime selects one immutable base quality tier at startup, then samples browser callback time through `createPerformanceBudget()`. Sustained over-budget samples raise a mutable performance level and immediately reduce cloud steps, fog steps, fog resolution, and device-pixel ratio.
 
-At the same time, illumination, vegetation wind, campfire wind, cloud weather, cloud lighting, cloud shadows, fog density, and fog advection are evaluated once during composition and frozen into the startup render snapshot. `scenario.reset()` resets the environment clock to 48 seconds, but it does not reset TSL time or rebuild those descriptors.
+The recovery path is asymmetric. Returning to level `0` restores cloud/fog settings, but `applyPerformanceLevel(0)` never restores the original pixel ratio because `renderer.setPixelRatio(...)` only runs when `level > 0`. A temporary slowdown can therefore leave the canvas permanently below its startup resolution until the page is recreated.
 
-A reset can therefore restart foam, vegetation sway, and campfire animation while ocean, cloud, and fog phases continue. The visible frame can combine multiple time authorities without an environment frame ID, clock revision, reset generation, consumer receipt, or visible-frame acknowledgement.
+The transition thresholds are counted in frames rather than elapsed time. Ninety over-budget frames and 360 under-budget frames represent different real durations at 30, 60, and 120 Hz. The budget also samples RAF callback spacing rather than a typed CPU/GPU frame-cost result, and the debug overlay continues to label only the immutable base tier.
 
 ## Plan ledger
 
-**Goal:** preserve the cozy environment while replacing mixed ambient time with one deterministic, resettable, revisioned environment-frame transaction.
+**Goal:** preserve automatic performance protection while making every degrade and recovery decision symmetric, cadence-independent, policy-aware, observable, resettable, and correlated with the frame that actually used it.
 
-- [x] Compare all 10 accessible Publish repositories with central tracking.
+- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have ledger and root `.agent` coverage.
+- [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
 - [x] Select only `MyCozyIsland` as the oldest eligible synchronized repository.
-- [x] Trace environment composition, clock tick/reset, wind sampling, static descriptors, renderer updates, TSL time, public readback, and tests.
+- [x] Trace startup quality selection, URL override behavior, RAF timing, moving-average hysteresis, renderer mutations, resize, diagnostics, public readback, and tests.
 - [x] Identify the interaction loop, all domains, all 50 cataloged kits, one extra runtime kit, nine providers, and five imported NexusEngine services.
-- [x] Confirm world and foam updates use scenario elapsed time.
-- [x] Confirm ocean, clouds, and fog use renderer-global TSL time.
-- [x] Confirm dynamic environment descriptors are captured once during composition.
-- [x] Define environment frame, clock source, reset, consumer receipt, journal, fixture, and visible-frame contracts.
+- [x] Confirm pixel ratio is reduced on degrade but not restored when level returns to zero.
+- [x] Confirm degrade/recovery dwell is frame-count based and refresh-rate dependent.
+- [x] Confirm the quality override selects a base tier but does not explicitly lock adaptive degradation.
+- [x] Confirm diagnostics expose base tier and performance level separately without one active-quality revision.
+- [x] Define quality policy, sample, transition, consumer receipt, recovery, resize, journal, fixture, and visible-frame contracts.
 - [x] Add timestamped architecture and system-specific audits.
 - [x] Refresh required root `.agent` files and the machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable environment-frame fixtures remain future work.
+- [ ] Runtime implementation and executable adaptive-quality fixtures remain future work.
 
 ## Selection comparison
 
 ```txt
-MyCozyIsland       2026-07-12T02-10-14-04-00  selected
-PrehistoricRush    2026-07-12T02-21-55-04-00
-TheOpenAbove       2026-07-12T02-29-50-04-00
-IntoTheMeadow      2026-07-12T02-38-23-04-00
-HorrorCorridor     2026-07-12T02-49-19-04-00
-PhantomCommand     2026-07-12T03-00-46-04-00
-ZombieOrchard      2026-07-12T03-11-51-04-00
-TheUnmappedHouse   2026-07-12T03-21-27-04-00
-AetherVale         2026-07-12T03-28-44-04-00
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new or central-ledger-missing eligible repositories: 0
+root-.agent-missing eligible repositories: 0
+
+MyCozyIsland       2026-07-12T03-39-52-04-00  selected
+PrehistoricRush    2026-07-12T03-51-15-04-00
+TheOpenAbove       2026-07-12T04-00-32-04-00
+IntoTheMeadow      2026-07-12T04-11-54-04-00
+PhantomCommand     2026-07-12T04-18-44-04-00
+HorrorCorridor     2026-07-12T04-28-03-04-00
+ZombieOrchard      2026-07-12T04-38-12-04-00
+AetherVale         2026-07-12T04-50-41-04-00
+TheUnmappedHouse   active repo-local work at prior comparison; not selected
 TheCavalryOfRome   excluded
 ```
 
@@ -66,56 +72,61 @@ fallback mode:       legacy
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-12T03-39-52-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-12T03-39-52-04-00-dynamic-environment-frame-authority-dsk-map.md
-.agent/render-audit/2026-07-12T03-39-52-04-00-mixed-clock-visible-frame-gap.md
-.agent/environment-frame-audit/2026-07-12T03-39-52-04-00-clock-descriptor-consumer-commit-contract.md
-.agent/gameplay-audit/2026-07-12T03-39-52-04-00-reset-environment-phase-divergence-loop.md
-.agent/interaction-audit/2026-07-12T03-39-52-04-00-environment-tick-reset-command-result-map.md
-.agent/deploy-audit/2026-07-12T03-39-52-04-00-environment-clock-parity-fixture-gate.md
-.agent/turn-ledger/2026-07-12T03-39-52-04-00.md
+.agent/trackers/2026-07-12T05-00-19-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-12T05-00-19-04-00-adaptive-quality-transaction-authority-dsk-map.md
+.agent/render-audit/2026-07-12T05-00-19-04-00-sticky-pixel-ratio-visible-frame-gap.md
+.agent/performance-audit/2026-07-12T05-00-19-04-00-frame-count-hysteresis-recovery-contract.md
+.agent/interaction-audit/2026-07-12T05-00-19-04-00-quality-sample-transition-result-map.md
+.agent/deploy-audit/2026-07-12T05-00-19-04-00-adaptive-quality-fixture-gate.md
+.agent/turn-ledger/2026-07-12T05-00-19-04-00.md
 ```
 
 ## Interaction loop
 
 ```txt
 startup
-  -> create environment clock at 48 seconds
-  -> sample wind and illumination
-  -> freeze vegetation, campfire, cloud, fog, and lighting descriptors
-  -> create ocean, cloud, and fog shaders using Three TSL global time
+  -> choose immutable base quality from URL, backend, memory, viewport, DPR, and motion preference
+  -> set startup pixel ratio and allocate quality-dependent resources
+  -> create performance budget at level 0
 
 frame
-  -> renderer callback supplies now and dt
-  -> scenario advances the environment clock
-  -> world renderer and foam consume scenario elapsedSeconds
-  -> ocean, cloud, and fog shaders consume renderer-global TSL time
-  -> static sky, lights, fog parameters, and environment descriptors remain unchanged
-  -> post pipeline submits one visually mixed frame
+  -> calculate RAF callback spacing
+  -> advance scenario and update world/foam
+  -> sample callback spacing into moving average
+  -> possibly mutate performance level
+  -> immediately change cloud steps, fog steps, fog resolution, and sometimes DPR
+  -> render
+  -> periodically project base tier plus separate performance state
 
-reset
-  -> scenario resets environment clock to 48 seconds
-  -> world, foam, vegetation, and campfire phase restart from scenario time
-  -> ocean, cloud, and fog TSL time continues
-  -> static descriptors are not regenerated
+degrade
+  -> 90 qualifying over-budget frames
+  -> level increments up to 2
+  -> lower volumetric work and DPR
+
+recover
+  -> 360 qualifying under-budget frames
+  -> level decrements
+  -> restore volumetric work
+  -> level 0 does not restore startup DPR
 ```
 
 ## Main finding
 
 ```txt
-canonical environment frame: absent
-authoritative clock-source ID: absent
-environment frame ID and revision: absent
-reset generation: absent
-static descriptor revision: absent
-dynamic wind and illumination evaluation: absent
-scenario-to-TSL time binding: absent
-environment consumer receipts: absent
-stale frame rejection: absent
-visible environment-frame acknowledgement: absent
+base quality descriptor: immutable startup value
+active quality descriptor: absent
+quality transition ID/revision: absent
+sample source identity: absent
+CPU/GPU timing separation: absent
+time-based dwell: absent
+visibility/throttling admission: absent
+URL override lock policy: ambiguous
+pixel-ratio recovery to level 0: missing
+resize reclassification: absent
+consumer receipts: absent
+first visible quality-frame acknowledgement: absent
+adaptive-quality fixture coverage: absent
 ```
-
-The existing test chain proves deterministic domain construction and that the scenario clock advances. It does not prove that every visible environment consumer uses the same time, that reset restores all phases, that static descriptors match the current clock, or that a rendered frame cites one committed environment revision.
 
 ## Implemented surface
 
@@ -126,12 +137,12 @@ The existing test chain proves deterministic domain construction and that the sc
 5 imported NexusEngine services
 ```
 
-The complete per-kit service map is in `.agent/current-audit.md`, `.agent/kit-registry.json`, and the current tracker.
+The complete per-kit service map is in `.agent/current-audit.md` and `.agent/kit-registry.json`.
 
 ## Required parent domain
 
 ```txt
-cozy-island-dynamic-environment-frame-authority-domain
+cozy-island-adaptive-quality-transaction-authority-domain
 ```
 
 ## Ordered implementation queue
@@ -155,7 +166,7 @@ cozy-island-dynamic-environment-frame-authority-domain
 
 ```txt
 runtime source changed by this pass: no
-environment behavior changed by this pass: no
+quality behavior changed by this pass: no
 render output changed by this pass: no
 package scripts changed by this pass: no
 dependencies changed by this pass: no
@@ -163,8 +174,7 @@ deployment changed by this pass: no
 branch created: no
 pull request created: no
 npm test: not run
-environment clock parity fixture: unavailable
-reset phase parity fixture: unavailable
-WebGPU/WebGL2 frame parity smoke: not run
-visible environment-frame receipt: unavailable
+adaptive quality fixtures: unavailable
+browser/WebGPU/WebGL2 adaptive smoke: not run
+visible quality-frame receipt: unavailable
 ```

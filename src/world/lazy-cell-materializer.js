@@ -1,7 +1,7 @@
 function snapshotCells(snapshot = {}) {
   return (snapshot.activeCells ?? [])
-    .map((entry) => entry?.cell ?? entry)
-    .filter((cell) => cell?.id && cell?.bounds);
+    .map(entry => entry?.cell ?? entry)
+    .filter(cell => cell?.id && cell?.bounds);
 }
 
 function cellCenter(cell) {
@@ -29,13 +29,24 @@ function comparePriority(left, right, focus) {
 export function createLazyCellMaterializer({
   config,
   terrainSource,
+  seaFloorSource,
   biomeProvider,
   shorelineProvider,
+  seaFloorMaterialProvider,
   presentationProvider,
   getWorldSnapshot
 } = {}) {
-  if (!config || !terrainSource || !biomeProvider || !shorelineProvider || !presentationProvider || !getWorldSnapshot) {
-    throw new TypeError("createLazyCellMaterializer requires config, providers, and getWorldSnapshot.");
+  if (
+    !config
+    || !terrainSource
+    || !seaFloorSource
+    || !biomeProvider
+    || !shorelineProvider
+    || !seaFloorMaterialProvider
+    || !presentationProvider
+    || !getWorldSnapshot
+  ) {
+    throw new TypeError("createLazyCellMaterializer requires island, sea-floor, classification, presentation, and snapshot providers.");
   }
 
   const states = new Map();
@@ -45,12 +56,10 @@ export function createLazyCellMaterializer({
 
   function sync() {
     const activeCells = snapshotCells(getWorldSnapshot() ?? {});
-    const activeIds = new Set(activeCells.map((cell) => String(cell.id)));
-
+    const activeIds = new Set(activeCells.map(cell => String(cell.id)));
     for (const cellId of states.keys()) {
       if (!activeIds.has(cellId)) states.delete(cellId);
     }
-
     for (const cell of activeCells) {
       const cellId = String(cell.id);
       const existing = states.get(cellId);
@@ -58,31 +67,36 @@ export function createLazyCellMaterializer({
         existing.cell = cell;
         continue;
       }
-      states.set(cellId, {
-        cell,
-        stage: "terrain",
-        complete: false
-      });
+      states.set(cellId, { cell, stage: "island-terrain", complete: false });
     }
-
-    completedCells = [...states.values()].filter((state) => state.complete).length;
+    completedCells = [...states.values()].filter(state => state.complete).length;
     return activeCells;
   }
 
   function advance(state) {
-    const materialization = config.materialization ?? {};
-    if (state.stage === "terrain") {
+    const budget = config.materialization ?? {};
+    if (state.stage === "island-terrain") {
       const result = terrainSource.materializeCellStep(state.cell.id, {
-        rows: materialization.terrainRowsPerStep ?? 4
+        rows: budget.terrainRowsPerStep ?? 1
       });
-      if (result.complete) state.stage = "biome";
+      if (result.complete) state.stage = "sea-floor-terrain";
+      return result;
+    }
+
+    if (state.stage === "sea-floor-terrain") {
+      const result = seaFloorSource.materializeCellStep(state.cell.id, {
+        rows: budget.seaFloorRowsPerStep ?? 2
+      });
+      if (result.complete) state.stage = "island-biome";
       return result;
     }
 
     const terrainRuntime = terrainSource.getRuntimeCell(state.cell.id);
-    if (state.stage === "biome") {
+    const seaFloorRuntime = seaFloorSource.getRuntimeCell(state.cell.id);
+
+    if (state.stage === "island-biome") {
       const result = biomeProvider.materializeCellStep(state.cell.id, terrainRuntime, {
-        rows: materialization.classificationRowsPerStep ?? 8
+        rows: budget.classificationRowsPerStep ?? 4
       });
       if (result.complete) state.stage = "shoreline";
       return result;
@@ -90,7 +104,15 @@ export function createLazyCellMaterializer({
 
     if (state.stage === "shoreline") {
       const result = shorelineProvider.materializeCellStep(state.cell.id, terrainRuntime, {
-        rows: materialization.classificationRowsPerStep ?? 8
+        rows: budget.classificationRowsPerStep ?? 4
+      });
+      if (result.complete) state.stage = "sea-floor-material";
+      return result;
+    }
+
+    if (state.stage === "sea-floor-material") {
+      const result = seaFloorMaterialProvider.materializeCellStep(state.cell.id, seaFloorRuntime, {
+        rows: budget.classificationRowsPerStep ?? 4
       });
       if (result.complete) state.stage = "presentation";
       return result;
@@ -129,11 +151,9 @@ export function createLazyCellMaterializer({
       0,
       Math.floor(Number(options.maxCells ?? config.materialization?.maxCellsPerFrame ?? 1))
     );
-
     const candidates = [...states.values()]
-      .filter((state) => !state.complete)
+      .filter(state => !state.complete)
       .sort((left, right) => comparePriority(left, right, focus));
-
     const processed = [];
     for (let index = 0; index < Math.min(maxCells, candidates.length); index += 1) {
       const state = candidates[index];
@@ -146,7 +166,6 @@ export function createLazyCellMaterializer({
       }));
       workSteps += 1;
     }
-
     return Object.freeze({
       frames,
       workSteps,
@@ -169,7 +188,7 @@ export function createLazyCellMaterializer({
       cells: Object.freeze(
         [...states.values()]
           .sort((a, b) => String(a.cell.id).localeCompare(String(b.cell.id)))
-          .map((state) => Object.freeze({
+          .map(state => Object.freeze({
             cellId: state.cell.id,
             lod: Number(state.cell.lod ?? 0),
             stage: state.stage,

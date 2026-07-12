@@ -1,252 +1,343 @@
-# Current Audit: MyCozyIsland World Lifecycle Contract and Mode Parity
+# Current Audit: MyCozyIsland Render Layer Graph and Physical Binding Authority
 
-Last updated: `2026-07-11T20-51-14-04-00`
+Last updated: `2026-07-11T22-20-00-04-00`
 
 ## Summary
 
-`MyCozyIsland` exposes the same public world-runtime shape in legacy and Core modes, but the lifecycle semantics are incompatible. Legacy `reset()` and `dispose()` only clear `prepared` and remain reversible. Core `reset()` clears Core World definitions and provider coordination, while Core `dispose()` also resets the domain. The wrapper still exposes methods, engine, providers and query state without a `DISPOSED` phase or terminal rejection policy.
+`MyCozyIsland` now separates island terrain from the sea floor and exposes a six-pass logical ocean render graph. The browser host does not compile that graph into the physical Three.js/WebGPU pipeline. It validates the graph as data, then separately constructs a fused base-scene pass, a fog pass, a foam pass, and an output transform.
+
+The final foam contract is the clearest mismatch. The logical graph declares depth, water-mask, water-surface-depth, shoreline, foam-state, and fog-transmittance inputs. The physical foam pass uses a separate scene with `depthBuffer: false`, while the foam material still requests `depthTest: true`. No binding receipt proves access to opaque depth, the water mask, or rolling-fog transmittance.
 
 ## Plan ledger
 
-**Goal:** define one explicit lifecycle contract across both modes, with authoritative phase, generation, reusable reset, terminal disposal, read-model leases and typed operation results.
+**Goal:** define one admitted composition source that is cataloged, compiled into physical passes, binds every declared resource, publishes execution receipts, and proves visible WebGPU/WebGL2 parity.
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Skip actively changing `PrehistoricRush`.
-- [x] Select only `MyCozyIsland` as the oldest stable eligible repository.
-- [x] Read `src/main-cloudform.js`, `src/world/world-runtime.js`, package tests and retained audits.
-- [x] Trace prepare, focus, materialization, reset, dispose, query and global readback.
-- [x] Identify all active domains, 50 local kits, six imported services and seven providers.
-- [x] Define lifecycle commands, results, phases, generations, leases and fixture gates.
+- [x] Confirm all eligible repositories have central and root `.agent` coverage.
+- [x] Select only `MyCozyIsland` because new layered-world/render work postdated its oldest eligible audit.
+- [x] Inspect `index.html`, `src/main-cloudform.js`, world runtime/config, composition graph, render layers, ocean renderer, post pipeline, package tests, and retained audits.
+- [x] Trace catalog validation, graph creation, pass construction, frame execution, readback, and tests.
+- [x] Identify all active domains, 50 cataloged kits, one extra runtime composition kit, nine providers, and five imported services.
+- [x] Document the logical/physical binding split and catalog omission.
 - [x] Change documentation only.
-- [ ] Implement and execute lifecycle parity authority.
+- [ ] Implement graph compilation, resource-binding receipts, depth-correct foam, and browser fixtures.
 
 ## Runtime identity
 
 ```txt
-route:                index.html -> src/main-cloudform.js?v=core-world-3
-package:              0.3.1
-Three.js:             0.185.0
-NexusEngine commit:   38229f59c22cb40024ffd13a9f48040de759f5d7
-world id:             world:cozy-island-webgpu-v3
-local kits:           50
-providers:            7
-default world mode:   core
-fallback mode:        legacy
+route:                 index.html -> src/main-cloudform.js?v=render-layer-graph-2
+package:               0.4.0
+Three.js:              0.185.0
+NexusEngine commit:    481cbf6df742e81279bd42245c4238c6a1fc69f2
+world id:              world:cozy-island-webgpu-v4
+world seed:            cozy-island-webgpu-v2
+cataloged kits:        50
+runtime kit surfaces:  51
+capabilities declared: 59
+providers:             9
 ```
 
 ## Interaction loop
 
 ```txt
 startup
-  -> choose mode from URL
-  -> create legacy or Core wrapper
-  -> prepare
-  -> create one compatibility snapshot
-  -> build persistent scene/render resources
-  -> install loop and expose CozyIsland host
+  -> validate kitCatalog
+  -> construct unregistered cozy-ocean-composition-kit
+  -> initialize WebGPURenderer and choose backend/quality
+  -> create legacy or Core world runtime
+  -> prepare world and create compatibility snapshot
+  -> construct scene, lights, separate terrains, water, clouds, fog, and foam
+  -> construct hard-coded post pipeline
+  -> attach browser input, resize, timers, and animation loop
+  -> expose raw render graph, pass-order strings, and runtime objects
 
 per frame
-  -> scenario tick
-  -> camera projection
-  -> updateWorldFocus
-  -> render compatibility graph
-  -> process materialization
-
-pagehide
-  -> domains.dispose()
-  -> global host and renderer ownership are not revoked by this call
+  -> sample renderer timestamp
+  -> tick scenario and environment clock
+  -> project camera
+  -> update Core World focus
+  -> animate world and foam
+  -> sample adaptive performance
+  -> execute physical post pipeline
+  -> process bounded lazy materialization after rendering
+  -> periodically project diagnostics
 ```
 
-## Lifecycle comparison
+## Logical render graph
 
-| Operation | Legacy mode | Core mode |
-|---|---|---|
-| `prepare()` | sets `prepared=true`, returns static snapshot | focuses registered world, updates 49 cells |
-| duplicate `prepare()` | returns static snapshot | returns current `worldSnapshot`, including possible null poison state |
-| `reset()` | sets `prepared=false` | calls `resetWorlds()`, resets materializer, clears wrapper fields |
-| `dispose()` | same as reset | reset plus Core World domain reset |
-| prepare after reset/dispose | accepted | definition/domain may be gone; no stable recovery contract |
-| terminal state | absent | absent |
-| generation | absent | absent |
-| typed results | absent | absent |
+```txt
+background
+  reads sky-environment, lighting-state
+  writes background-color, environment-reflection
+
+opaque-world
+  reads background-color, seafloor-height, lighting-state
+  writes opaque-color, opaque-depth, opaque-normal, opaque-material-id
+
+water-composite
+  reads opaque-color, opaque-depth, opaque-normal,
+        environment-reflection, ocean-wave-state, seafloor-height
+  writes water-composited-color, water-mask, water-surface-depth
+
+atmosphere-composite
+  reads water-composited-color, opaque-depth, water-mask,
+        fog-density, lighting-state
+  writes atmosphere-composited-color, fog-transmittance
+
+foam-overlay
+  reads atmosphere-composited-color, water-mask,
+        water-surface-depth, shoreline-distance,
+        foam-state, fog-transmittance
+  writes final-scene-color
+
+output-transform
+  reads final-scene-color
+  writes display-color
+```
+
+## Physical render graph
+
+```txt
+scenePass
+  fused background + opaque world + water
+  layer mask: OPAQUE_WORLD, WATER_SURFACE, CLOUD_VOLUME
+  produces one color node and one depth node
+
+volumetricPass
+  layer mask: FOG_VOLUME
+  no depth buffer
+  fog shader samples scenePass depth
+  blurred and additively composed over scenePass
+
+foamPass
+  separate foam-only THREE.Scene
+  layer mask: FOAM_OVERLAY
+  depthBuffer: false
+  alpha-composited over atmosphere result
+
+output
+  vec4(finalRgb, 1)
+```
+
+## Main source-backed mismatch
+
+```txt
+logical foam depth source: opaque-depth
+physical foam depth buffer: disabled
+foam material depth test: enabled
+shared depth binding: absent
+
+logical foam reads water-mask: yes
+physical water-mask binding: absent
+
+logical foam reads fog-transmittance: yes
+physical rolling-fog transmittance binding: absent
+```
+
+The current graph validator verifies descriptor ordering and flags. It does not inspect the physical pass objects or resource attachments. The post pipeline checks `layerGraph.validation.valid` but does not derive the pipeline from `layerGraph.graph`. Both `getPassOrder()` and `getPhysicalPassOrder()` return manually maintained string arrays.
 
 ## Domains in use
 
 ```txt
 browser module startup and DOM projection
-world-mode selection and compatibility API
-world lifecycle phase, generation and command admission
-legacy semantic composition and snapshot
-Core World registration, focus, providers and active cells
-provider runtime stores and lazy materialization
-world query, diagnostics and public read models
-camera rail, first-person scenario and environment clock
-terrain, biome, shoreline, contact and paths
-vegetation, rocks, props, grass and campfire
-ocean, foam, caustics and underwater state
-clouds, fog, weather, wind and illumination
-scene graph, render resources and post processing
-performance sampling and adaptive quality
-browser listeners, timers, animation loop and page lifecycle
-validation, tests and Pages deployment
+kit catalog declaration and validation
+render composition declaration and validation
+logical/physical pass admission and resource binding
+WebGPU/WebGL2 backend selection and quality policy
+legacy/Core world-mode compatibility
+Core World registration, focus, providers, and active cells
+provider stores and lazy cell materialization
+world query and compatibility render snapshot
+camera rail, first-person scenario, and environment clock
+island terrain, sea-floor terrain, biome, shoreline, and contact
+vegetation, rocks, props, grass, paths, and campfire
+ocean waves, optics, caustics, foam, and underwater atmosphere
+clouds, rolling fog, weather, wind, illumination, and sky
+scene layers, depth, blend, post-processing, and output transform
+adaptive performance and renderer resolution
+browser pointer, keyboard, resize, timers, and page lifecycle
+diagnostics, static tests, browser proof, and Pages deployment
 ```
 
-## Providers
+## Core World providers
 
 ```txt
-FOUNDATION:      cozy-island-terrain-provider
-CLASSIFICATION:  biome-classification-provider
-                 shoreline-classification-provider
-POPULATION:      vegetation-provider
-                 rock-provider
-                 prop-provider
-PRESENTATION:    cell-presentation-provider
+FOUNDATION
+  cozy-island-terrain-provider
+  cozy-seafloor-terrain-provider
+
+CLASSIFICATION
+  biome-classification-provider
+  shoreline-classification-provider
+  seafloor-material-provider
+
+POPULATION
+  vegetation-provider
+  rock-provider
+  prop-provider
+
+PRESENTATION
+  cell-presentation-provider
 ```
 
 ## All implemented kits and offered services
 
+### Catalog-admitted kits
+
 ```txt
-debug-overlay-host-kit                     diagnostics projection
-webgl2-fallback-renderer-kit                CPU-volume and reduced-ray fallback
-webgpu-compute-atmosphere-renderer-kit      cloud/fog volume generation
-webgpu-foam-renderer-kit                    shoreline foam rendering
-webgpu-ocean-renderer-kit                   wave displacement and ocean shading
-webgpu-performance-budget-kit               frame sampling and quality callbacks
-webgpu-post-processing-renderer-kit         scene/depth/fog final composition
-webgpu-rolling-fog-renderer-kit              depth-aware fog and step control
-webgpu-stylized-material-renderer-kit       world geometry/material presentation
-webgpu-volumetric-cloud-renderer-kit        cloud raymarch and step control
-camera-rail-sequence-kit                    rail, first-person transition and input
-cozy-island-scenario-kit                    scenario tick, reset and snapshots
-terrain-surface-domain-kit                  height and terrain fields
-vegetation-placement-domain-kit             deterministic placement graph
-aerial-perspective-domain-kit               haze and horizon descriptors
-campfire-atmosphere-domain-kit               fire, embers and smoke descriptors
-cloud-density-field-domain-kit              cloud density recipe
-cloud-horizon-band-domain-kit               distant cloud descriptors
-cloud-lighting-domain-kit                   cloud lighting profile
-cloud-lod-domain-kit                        cloud resolution and step policy
-cloud-shadow-domain-kit                     projected cloud shadow policy
-cloud-weather-domain-kit                    weather-to-cloud mapping
-fog-advection-domain-kit                    wind/clock fog motion
-fog-field-domain-kit                        fog density recipe
-fog-volume-placement-domain-kit             bounded fog placement
-ground-contact-domain-kit                   terrain seating and rejection
-illumination-domain-kit                     sun, sky, ambient and exposure
-ocean-caustics-domain-kit                   caustic descriptor
-ocean-floor-profile-domain-kit              shelf, reef and floor surface
-ocean-optics-domain-kit                     absorption, Fresnel and refraction
-ocean-wave-domain-kit                       multidirectional wave spectrum
-prop-archetype-domain-kit                   prop descriptor graph
-render-archetype-domain-kit                 semantic render mapping
-render-quality-domain-kit                   startup quality selection
-render-snapshot-domain-kit                  immutable render aggregation
-rock-archetype-domain-kit                   deterministic rock graph
-shoreline-field-domain-kit                  coast distance and breaker fields
-shoreline-foam-domain-kit                   foam contours and decay
-stylized-material-descriptor-domain-kit     palette and material classes
-sun-glitter-domain-kit                      view-dependent glitter descriptor
-terrain-biome-field-domain-kit              blended biome weights
-terrain-lod-domain-kit                      terrain detail and culling policy
-underwater-atmosphere-domain-kit            underwater haze and thresholds
-vegetation-archetype-domain-kit             plant silhouettes and metadata
-vegetation-lod-domain-kit                   vegetation LOD policy
-vegetation-wind-domain-kit                  wind bend and gust response
-weather-state-domain-kit                    stable weather intent
-wind-field-domain-kit                       deterministic wind and turbulence
-deterministic-seed-domain-kit               scoped RNG and stable identity
-environment-clock-domain-kit                deterministic environment time
+debug-overlay-host-kit                     backend, quality, timing, volume, and kit diagnostics
+webgl2-fallback-renderer-kit                deterministic CPU-volume/reduced-ray fallback
+webgpu-compute-atmosphere-renderer-kit      cloud/fog 3D texture generation
+webgpu-foam-renderer-kit                    shoreline ribbon geometry, animation, and material setup
+webgpu-ocean-renderer-kit                   wave displacement, normals, transmission, and reflection
+webgpu-performance-budget-kit               frame sampling, degrade, and recovery callbacks
+webgpu-post-processing-renderer-kit         scene depth, fog composition, foam composition, output
+webgpu-rolling-fog-renderer-kit              rolling-fog raymarch and depth clipping
+webgpu-stylized-material-renderer-kit       island, sea-floor, vegetation, rock, prop, and grass rendering
+webgpu-volumetric-cloud-renderer-kit        cloud density raymarch and horizon volumes
+camera-rail-sequence-kit                    aerial rail, orbit, landing, and first-person input
+cozy-island-scenario-kit                    scenario tick, camera state, reset, and render snapshot
+terrain-surface-domain-kit                  island height and continuous terrain fields
+vegetation-placement-domain-kit             deterministic suitability and spacing graph
+aerial-perspective-domain-kit               horizon haze and exposure descriptors
+campfire-atmosphere-domain-kit               fire, local light, embers, and smoke descriptors
+cloud-density-field-domain-kit              cloud volume and erosion recipe
+cloud-horizon-band-domain-kit               distant cloud continuation descriptors
+cloud-lighting-domain-kit                   cloud illumination and extinction profile
+cloud-lod-domain-kit                        cloud texture, ray-step, and termination policy
+cloud-shadow-domain-kit                     projected cloud-shadow policy
+cloud-weather-domain-kit                    weather/wind to cloud-state mapping
+fog-advection-domain-kit                    clock/wind fog offsets and dissipation
+fog-field-domain-kit                        terrain/shoreline-aware fog density recipe
+fog-volume-placement-domain-kit             bounded fog-volume placement
+ground-contact-domain-kit                   terrain seating and slope/burial rejection
+illumination-domain-kit                     sun, sky, ambient, and exposure state
+ocean-caustics-domain-kit                   caustic frequency, intensity, and attenuation
+ocean-floor-profile-domain-kit              shelf, reef, and deep-floor surface
+ocean-optics-domain-kit                     absorption, Fresnel, refraction, and roughness
+ocean-wave-domain-kit                       deterministic multidirectional wave spectrum
+prop-archetype-domain-kit                   fence, path, driftwood, clearing, and campfire descriptors
+render-archetype-domain-kit                 semantic geometry/material/instancing mapping
+render-quality-domain-kit                   backend, viewport, DPR, and preference quality selection
+render-snapshot-domain-kit                  immutable renderer-facing domain aggregation
+rock-archetype-domain-kit                   deterministic boulder/shore/reef/submerged rock graph
+shoreline-field-domain-kit                  signed coast distance, wetness, breaker, and normal fields
+shoreline-foam-domain-kit                   foam contours, contact bands, breakup, and decay
+stylized-material-descriptor-domain-kit     palettes, shadow tints, roughness, rim, and outlines
+sun-glitter-domain-kit                      view-dependent glitter-lobe descriptor
+terrain-biome-field-domain-kit              blended sand, grass, soil, forest, moss, and rock weights
+terrain-lod-domain-kit                      terrain density, detail, shadow, and culling policy
+underwater-atmosphere-domain-kit            underwater haze, extinction, and camera thresholds
+vegetation-archetype-domain-kit             tree/bush/fern/grass silhouettes and metadata
+vegetation-lod-domain-kit                   near/mid/far plant policy
+vegetation-wind-domain-kit                  bend, gust, stiffness, and instance phase
+weather-state-domain-kit                    stable sunrise-haze weather intent
+wind-field-domain-kit                       deterministic wind, gusts, and vertical turbulence
+deterministic-seed-domain-kit               scoped random streams and stable identities
+environment-clock-domain-kit                deterministic environment-time advancement
 ```
 
-Imported NexusEngine services:
+### Source-backed runtime kit outside the catalog
+
+```txt
+cozy-ocean-composition-kit
+  creates the six-pass logical layer graph
+  validates pass order, transparent depth writes, terrain handoff,
+  final-scene pass identity, and declared reads/writes
+  exposes per-layer depth/blend contracts
+```
+
+This kit is instantiated by the active host but is absent from `src/kits/catalog.js`, `docs/KIT_CATALOG.md`, the reported catalog count, and prior machine audit state.
+
+### Render-layer helper services
+
+```txt
+COZY_RENDER_LAYERS
+createLayerMask
+assignRenderLayer
+```
+
+### Imported NexusEngine services used by the active Core path
 
 ```txt
 createEngine
 createCoreWorldDomain
 createUniformGridPartition
 createFlatWorldSurface
-createTerrainProviderAdapter
 defineWorldEffectProvider
-```
-
-## Main findings
-
-```txt
-canonical lifecycle phase: absent
-world generation: absent
-legacy/Core semantic parity: absent
-reusable reset contract: absent
-terminal dispose contract: absent
-prepare/reset/dispose result schema: absent
-use-after-dispose rejection: absent
-query and diagnostics leases: absent
-stale-generation rejection: absent
-world-generation/frame correlation: absent
-```
-
-The immediate source-backed contradiction is:
-
-```txt
-legacy dispose -> reversible prepared flag
-core dispose   -> world/domain teardown
-same API       -> no phase or result explaining the difference
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-world-lifecycle-contract-authority-domain
+cozy-island-render-layer-binding-authority-domain
 ```
 
-Candidate kits:
+## Candidate authority kits
 
 ```txt
-world-lifecycle-phase-kit
-world-runtime-generation-kit
-world-mode-contract-kit
-world-lifecycle-command-kit
-world-lifecycle-admission-kit
-world-prepare-result-kit
-world-reset-policy-kit
-world-reset-result-kit
-world-dispose-result-kit
-world-definition-lease-kit
-world-query-lease-kit
-world-diagnostics-lease-kit
-provider-materializer-retirement-kit
-stale-world-generation-rejection-kit
-terminal-use-after-dispose-rejection-kit
-legacy-core-lifecycle-adapter-kit
-world-lifecycle-observation-kit
-world-lifecycle-journal-kit
-world-mode-parity-fixture-kit
-world-use-after-dispose-fixture-kit
-browser-world-lifecycle-smoke-kit
+kit-catalog-completeness-kit
+render-composition-admission-kit
+logical-pass-identity-kit
+physical-pass-identity-kit
+render-resource-identity-kit
+render-resource-production-kit
+render-resource-binding-kit
+fused-pass-plan-kit
+pass-admission-result-kit
+depth-provenance-kit
+water-mask-provenance-kit
+fog-transmittance-provenance-kit
+foam-occlusion-policy-kit
+render-graph-compile-result-kit
+logical-physical-parity-result-kit
+render-pass-observation-kit
+first-layered-frame-receipt-kit
+browser-foam-occlusion-fixture-kit
+webgpu-webgl2-layer-parity-fixture-kit
 ```
 
-## Required lifecycle
+## Required transaction
 
 ```txt
-NEW -> Prepare -> READY generation N
-READY -> Reset -> RESET
-RESET -> Prepare -> READY generation N+1
-NEW/READY/RESET/FAILED -> Dispose -> DISPOSED
-DISPOSED -> any mutation -> RejectedTerminal
+admit catalog and composition revision
+  -> verify every source-backed kit is cataloged or explicitly classified
+  -> compile logical passes into a physical fused-pass plan
+  -> allocate named render resources and attachment identities
+  -> bind each declared read to one current producer revision
+  -> reject missing, stale, cyclic, or backend-unsupported bindings
+  -> execute physical passes in the compiled order
+  -> publish one detached pass receipt per physical pass
+  -> acknowledge one visible frame with graph, binding, backend, and world revisions
 ```
 
-## Required fixtures
+## Required invariants
 
 ```txt
-legacy/Core result-schema parity
-duplicate prepare idempotency
-reset then prepare generation advance
-duplicate dispose idempotency
-post-dispose command rejection
-stale query lease rejection
-provider/materializer retirement counts
-first READY frame after reusable reset
-pagehide global readback revocation
+every runtime kit is cataloged or explicitly non-cataloged with a reason
+every declared read resolves to one current producer or admitted external input
+every depth test identifies the exact depth attachment used
+fused physical passes preserve logical dependency and resource semantics
+foam cannot render through opaque terrain or props
+rolling fog integration has explicit transmittance or an explicit alternative contract
+reported pass order is derived from the compiled execution plan
+WebGPU and WebGL2 publish the same logical result schema
+```
+
+## Existing validation surface
+
+```txt
+catalog syntax and dependency validation: present
+logical render-graph ordering/flag validation: present
+terrain/provider separation token checks: present
+hard-coded post-composition token checks: present
+physical attachment inspection: absent
+logical-to-physical binding parity: absent
+foam/opaque occlusion browser fixture: absent
+rolling-fog/foam integration fixture: absent
+WebGPU/WebGL2 layered-frame parity: absent
+first layered-frame receipt: absent
 ```
 
 ## Ordered queue
@@ -255,11 +346,12 @@ pagehide global readback revocation
 1. Browser Startup Admission and Failure Rollback Authority
 2. Runtime Session Lifecycle Authority
 3. World Lifecycle Contract and Legacy/Core Mode Parity Authority
-4. Core World Reset / Re-prepare Authority
-5. Pinned Core World Focus Transaction Authority
-6. Live Materialization Readiness Commit Authority
-7. Core World Render Commit Authority
-8. Camera Rail Baseline Authority
-9. Dynamic Environment Frame Authority
-10. Adaptive Quality Transaction Authority
+4. Render Layer Graph Admission and Physical Resource Binding Authority
+5. Core World Reset / Re-prepare Authority
+6. Pinned Core World Focus Transaction Authority
+7. Live Materialization Readiness Commit Authority
+8. Core World Render Commit Authority
+9. Camera Rail Baseline Authority
+10. Dynamic Environment Frame Authority
+11. Adaptive Quality Transaction Authority
 ```

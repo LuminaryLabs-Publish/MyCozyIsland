@@ -1,28 +1,29 @@
 # Next Steps: MyCozyIsland
 
-Last updated: `2026-07-12T02-10-14-04-00`
+Last updated: `2026-07-12T03-39-52-04-00`
 
 ## Summary
 
-Replace mutable authored rail points with an immutable baseline plus separate session camera state. Every wheel, drag, key, reset, transition, descriptor, and visible frame should carry a revisioned result so reset can prove exact baseline restoration and repeated input cannot accumulate hidden path drift.
+Replace mixed scenario, renderer-global, and startup-snapshot time with one immutable `EnvironmentFrameSnapshot`. Every dynamic environment consumer should use the same canonical time and revision, and reset should restart every CPU and GPU phase under one new reset generation.
 
 ## Plan ledger
 
-**Goal:** make camera rail construction, orbit, progress, first-person handoff, reset, replay, diagnostics, and visible-frame acknowledgement deterministic.
+**Goal:** make wind, illumination, ocean, foam, clouds, fog, vegetation, campfire, sky, diagnostics, reset, and visible-frame acknowledgement deterministic and coherent.
 
-- [ ] Freeze or deep-clone the authored rail positions and look targets.
-- [ ] Assign a stable baseline ID and deterministic baseline fingerprint.
-- [ ] Separate authored baseline data from mutable session orbit/progress state.
-- [ ] Replace in-place point mutation with a derived orbit transform or candidate path.
-- [ ] Add monotonic camera state, path, reset-generation, and command revisions.
-- [ ] Add typed wheel, drag, key, clear, and reset commands.
-- [ ] Add typed accepted, duplicate, stale, clamped, ignored, and rejected results.
-- [ ] Bind one pointer identity to one drag lease until release or cancellation.
-- [ ] Make reset reconstruct the exact initial state from the admitted baseline.
-- [ ] Publish baseline and path provenance in camera descriptors and public readback.
-- [ ] Correlate the committed camera revision with the first rendered frame.
-- [ ] Add reset-fidelity, repeated-drift, threshold-handoff, multi-pointer, and browser fixtures.
-- [ ] Keep startup, session, world lifecycle, render graph, foam proxy, materialization, environment, and adaptive-quality gaps visible.
+- [ ] Assign a stable environment clock source ID.
+- [ ] Add monotonic clock and environment frame revisions.
+- [ ] Add a reset generation shared by scenario and rendering.
+- [ ] Evaluate wind and illumination once per admitted environment frame.
+- [ ] Regenerate or update cloud, fog, campfire, and vegetation descriptors from that frame.
+- [ ] Replace direct TSL global `time` use with a canonical render-time uniform.
+- [ ] Bind ocean, cloud, and fog shaders to the same time used by world and foam updates.
+- [ ] Update sky, scene fog, exposure, hemisphere light, and sun from the committed frame.
+- [ ] Collect typed receipts from every environment render consumer.
+- [ ] Reject stale or partial environment consumer generations.
+- [ ] Publish one environment frame revision through diagnostics and public readback.
+- [ ] Acknowledge the first visible frame after reset.
+- [ ] Add clock-divergence, reset-parity, backend-parity, consumer-receipt, and visible-frame fixtures.
+- [ ] Keep startup, lifecycle, world, render graph, foam proxy, materialization, camera, and adaptive-quality gaps visible.
 
 ## Ordered implementation queue
 
@@ -44,94 +45,77 @@ Replace mutable authored rail points with an immutable baseline plus separate se
 ## Candidate kits
 
 ```txt
-camera-rail-baseline-descriptor-kit
-camera-rail-baseline-fingerprint-kit
-camera-rail-path-revision-kit
-camera-state-revision-kit
-camera-input-command-kit
-camera-input-admission-kit
-camera-progress-command-kit
-rail-orbit-command-kit
-first-person-look-command-kit
-camera-reset-command-kit
-camera-reset-result-kit
-camera-transition-result-kit
-stale-camera-command-rejection-kit
-camera-descriptor-provenance-kit
-camera-input-journal-kit
-first-visible-camera-frame-ack-kit
-rail-reset-fidelity-fixture-kit
-repeated-drag-drift-fixture-kit
-browser-pointer-wheel-parity-smoke-kit
+environment-frame-command-kit
+environment-frame-id-kit
+environment-frame-revision-kit
+environment-clock-source-kit
+environment-clock-revision-kit
+environment-reset-generation-kit
+environment-frame-snapshot-kit
+dynamic-wind-evaluation-kit
+dynamic-illumination-evaluation-kit
+dynamic-atmosphere-evaluation-kit
+dynamic-campfire-environment-kit
+canonical-render-time-uniform-kit
+environment-render-plan-kit
+environment-consumer-receipt-kit
+environment-frame-commit-kit
+stale-environment-frame-rejection-kit
+environment-frame-observation-kit
+environment-frame-journal-kit
+environment-clock-source-divergence-fixture-kit
+environment-reset-phase-parity-fixture-kit
+environment-visible-frame-parity-smoke-kit
 ```
 
 ## Required data contracts
 
 ```txt
-CameraRailBaseline {
-  baselineId
-  baselineVersion
-  terrainRevision
-  positionPoints[]
-  lookPoints[]
-  firstPersonThreshold
-  railFov
-  firstPersonFov
-  playerEyeHeight
-  fingerprint
-}
-
-CameraInputCommand {
+EnvironmentFrameCommand {
   commandId
   sessionId
   runtimeGeneration
   resetGeneration
-  expectedCameraRevision
-  sequence
+  expectedEnvironmentRevision
+  deltaSeconds
   source
-  pointerId
-  kind
-  payload
 }
 
-CameraTransitionResult {
-  commandId
+EnvironmentFrameSnapshot {
+  environmentFrameId
+  environmentRevision
+  clockSourceId
+  clockRevision
+  resetGeneration
+  elapsedSeconds
+  wind
+  illumination
+  cloud
+  fog
+  ocean
+  vegetation
+  campfire
+  fingerprint
+}
+
+EnvironmentConsumerReceipt {
+  consumerId
+  environmentFrameId
+  environmentRevision
+  resetGeneration
+  canonicalTime
+  resourceGeneration
   accepted
   classification
-  previousCameraRevision
-  nextCameraRevision
-  baselineId
-  pathRevision
-  resetGeneration
-  modeBefore
-  modeAfter
-  progressBefore
-  progressAfter
-  rejectionReason
 }
 
-CameraResetResult {
-  commandId
-  accepted
-  previousCameraRevision
-  nextCameraRevision
-  previousResetGeneration
-  nextResetGeneration
-  restoredBaselineId
-  restoredBaselineFingerprint
-  descriptorFingerprint
-}
-
-VisibleCameraFrameAck {
+VisibleEnvironmentFrameAck {
   frameId
-  cameraRevision
-  pathRevision
-  baselineId
+  environmentFrameId
+  environmentRevision
   resetGeneration
-  mode
-  position
-  lookAt
-  fov
+  canonicalTime
+  consumerReceipts[]
   visibleOutputId
 }
 ```
@@ -139,43 +123,37 @@ VisibleCameraFrameAck {
 ## Minimum fixture matrix
 
 ```txt
-initial baseline
-  -> descriptor is deterministic for the same terrain revision
+clock source
+  -> all CPU and GPU consumers receive the same canonical time
 
-single rail drag
-  -> derived orbit changes the candidate camera without changing baseline points
+normal frame
+  -> wind, illumination, foam, ocean, cloud, fog, vegetation and campfire cite one revision
 
-reset fidelity
-  -> initial and post-reset descriptor fingerprints are identical
+reset
+  -> all phases restart under one new reset generation
 
-repeated drag/reset
-  -> 100 cycles produce zero cumulative path drift
+stale render callback
+  -> old environment revisions cannot update current uniforms or objects
 
-threshold handoff
-  -> one admitted transition owns rail-to-first-person mode, FOV, yaw and pitch
+static descriptor migration
+  -> startup descriptors become dynamic evaluations or explicit immutable policy
 
-stale command
-  -> an old reset-generation or camera-revision command is rejected
-
-multi-pointer
-  -> unrelated pointer events cannot replace or terminate the active drag lease
-
-browser parity
-  -> wheel and pointer adapters produce the same typed commands as headless fixtures
+backend parity
+  -> WebGPU and WebGL2 consume equivalent EnvironmentFrameSnapshot values
 
 visible frame
-  -> first frame after reset cites the restored baseline and committed camera revision
+  -> first frame after reset cites the committed environment revision and every required receipt
 ```
 
 ## Acceptance conditions
 
 ```txt
-no authored rail point is mutated after baseline admission
-reset reconstructs exact initial camera state
-repeated input and reset cannot accumulate drift
-one camera command produces one typed transition result
-stale old-generation commands cannot mutate current state
-camera descriptors expose baseline, path and state revisions
-browser input and headless commands share one admission path
-first visible reset frame cites the committed camera revision
+one canonical clock owns every dynamic environment consumer
+scenario reset restarts CPU and GPU phases together
+no renderer-global ambient time bypasses the environment frame
+wind and illumination are evaluated from the committed clock revision
+all required consumers publish receipts for one revision
+stale generations cannot mutate current environment state
+public readback exposes environment frame provenance
+first visible reset frame cites the new reset generation
 ```

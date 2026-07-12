@@ -1,137 +1,56 @@
-# Next Steps: MyCozyIsland
+# Next Steps: MyCozyIsland Adventure Persistence Authority
 
-Last updated: `2026-07-12T06-51-27-04-00`
+Last updated: `2026-07-12T08:00:16-04:00`
 
-## Summary
+## Goal
 
-Replace direct DOM-to-camera mutation with a normalized, session-scoped input command pipeline. Browser events should become immutable samples, be admitted against focus and camera mode, reduce once at frame start, and publish a result that can be correlated with the visible camera frame.
+Implement one session-scoped persistence authority that writes only semantic durable changes, reports storage truth, restores atomically, preserves command identity across runtime generations, and proves the restored frame.
 
-## Plan ledger
+## Ordered implementation checklist
 
-**Goal:** make rail and first-person control equivalent across wheel units, pointer event rates, focus changes, browser suspension, replay, and WebGPU/WebGL2 rendering.
+- [ ] Add `cozy-island-adventure-persistence-authority-domain`.
+- [ ] Define a versioned durable-state schema separate from render and transient state.
+- [ ] Replace revision-number fingerprinting with canonical durable projection fingerprinting.
+- [ ] Add a semantic dirty set updated only by committed durable mutations.
+- [ ] Give every save attempt a save operation ID and observed durable revision.
+- [ ] Move localStorage behind a typed adapter capability.
+- [ ] Commit `Saved` only after an adapter write receipt.
+- [ ] Publish typed quota, privacy, serialization and stale-write failures.
+- [ ] Add slot revision and compare-and-swap semantics.
+- [ ] Stage restore in a candidate graph, or retain complete predecessor snapshots for rollback.
+- [ ] Restore input runtime generation and transaction-ledger continuity as one unit.
+- [ ] Replace frame-index-only interaction IDs with session/generation/sequence-based IDs.
+- [ ] Include `cozyInput.reset()` in reset authority.
+- [ ] Add migration registration and unsupported-version results.
+- [ ] Correlate restored state, camera/HUD snapshot and first rendered frame.
+- [ ] Wire `tests/adventure-domains-smoke.mjs` into `npm test`.
+- [ ] Add idle-write, storage-failure, rollback, collision and browser-reload fixtures.
+- [ ] Pin NexusEngine browser imports to one reviewed commit.
+- [ ] Remove or explicitly deprecate the duplicate composition path.
 
-- [ ] Define `InputCommandEnvelope` with session, runtime generation, command ID, sequence, timestamp, source, and frame target.
-- [ ] Normalize wheel pixel, line, and page units before changing rail progress.
-- [ ] Coalesce pointer samples before applying per-frame yaw, pitch, and rail orbit.
-- [ ] Separate keyboard edge commands from held-state snapshots.
-- [ ] Define explicit rail, transition, and first-person input policies.
-- [ ] Gate samples by focus, visibility, pointer-capture lease, and active runtime generation.
-- [ ] Clear keyboard and drag state through one typed `InputClearCommand`.
-- [ ] Reduce accepted commands once at frame start into an immutable `InputFrame`.
-- [ ] Apply one input revision to camera and player state.
-- [ ] Publish typed accepted, rejected, stale, cleared, and no-op results.
-- [ ] Add bounded input journaling and deterministic replay.
-- [ ] Expose input revision, camera revision, mode, and last result through detached public readback.
-- [ ] Acknowledge the first visible frame that consumes each committed input frame.
-- [ ] Add wheel-unit, pointer-cadence, blur, visibility, capture-loss, stale-generation, replay, and browser smoke fixtures.
-- [ ] Retain earlier startup, lifecycle, world, render, camera-baseline, environment, and adaptive-quality gaps.
-
-## Ordered implementation queue
-
-```txt
-1. Browser Startup Admission and Failure Rollback Authority
-2. Runtime Session Lifecycle Authority
-3. Browser Input Command and Camera Control Authority
-4. World Lifecycle Contract and Legacy/Core Mode Parity Authority
-5. Render Layer Graph Admission and Physical Resource Binding Authority
-5a. Foam Depth Proxy Topology and Lifecycle Authority
-6. Core World Reset / Re-prepare Authority
-7. Pinned Core World Focus Transaction Authority
-8. Live Materialization Readiness Commit Authority
-9. Core World Render Commit Authority
-10. Camera Rail Baseline Authority
-11. Dynamic Environment Frame Authority
-12. Adaptive Quality Transaction Authority
-```
-
-## Required data contracts
+## Acceptance criteria
 
 ```txt
-InputCommandEnvelope {
-  sessionId
-  runtimeGeneration
-  commandId
-  sequence
-  source
-  deviceId
-  timestamp
-  targetFrameId
-  cameraMode
-  payload
-}
+idle for 60 seconds
+  -> zero durable writes after initial synchronization
 
-InputFrame {
-  frameId
-  previousInputRevision
-  committedInputRevision
-  wheelDeltaNormalized
-  pointerDelta
-  keyEdges[]
-  heldKeys[]
-  clearReason
-  acceptedCommandIds[]
-  rejectedCommandIds[]
-}
+storage adapter failure
+  -> save result is failed
+  -> HUD never reports Saved
+  -> dirty state remains retryable
 
-InputCommandResult {
-  commandId
-  sequence
-  accepted
-  status
-  reason
-  previousRevision
-  committedRevision
-  cameraMode
-}
+late restore failure
+  -> every live domain remains on the predecessor revision
 
-VisibleInputFrameAck {
-  frameId
-  inputRevision
-  cameraRevision
-  worldFocusRevision
-  cameraMode
-  cameraDescriptorFingerprint
-  outputId
-}
-```
+reload
+  -> transaction and input identities never collide
+  -> the same user action executes exactly once
 
-## Minimum fixture matrix
+reset
+  -> input, transaction ledger, durable domains and visible frame share one new generation
 
-```txt
-wheel unit parity
-  -> pixel, line, and page samples representing the same gesture produce equivalent progress
-
-pointer cadence parity
-  -> one large sample and equivalent segmented samples produce the same yaw, pitch, and rail result
-
-keyboard edge and hold
-  -> repeat does not create extra edges and held movement is frame-duration based
-
-focus and visibility
-  -> blur and hidden-page transitions clear or reject held and drag state
-
-capture loss
-  -> lost pointer capture cannot leave a stale drag active
-
-runtime replacement
-  -> prior-generation events cannot mutate the replacement camera
-
-replay
-  -> recorded commands reproduce camera descriptors and player positions
-
-visible frame
-  -> first rendered frame cites the committed input and camera revisions
-```
-
-## Acceptance conditions
-
-```txt
-no raw deltaY reaches rail progress without unit normalization
-no per-event clamp makes equivalent pointer motion diverge
-no browser callback mutates canonical camera state outside frame admission
-no stale focus, capture, or runtime-generation event can mutate input
-keyboard edge and hold semantics are explicit
-input results and revisions are observable but detached
-replay reproduces camera and player state
-first visible frame is acknowledged with input and camera revisions
+successful restore
+  -> candidate graph validates
+  -> authority transfers atomically
+  -> first visible frame cites restore result and save checksum
 ```

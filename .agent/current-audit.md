@@ -1,308 +1,304 @@
-# Current Audit: MyCozyIsland Browser Input Command Authority
+# Current Audit: MyCozyIsland Adventure Persistence Commit and Restore Authority
 
-Last updated: `2026-07-12T06-51-27-04-00`
+Last updated: `2026-07-12T08:00:16-04:00`
 
 ## Summary
 
-MyCozyIsland wires browser wheel, pointer, keyboard, blur, and resize events directly into mutable camera-sequence state. The active route has no normalized input envelope, command sequence, frame queue, focus/visibility policy, replay stream, or visible-frame receipt.
+The active browser route now runs a complete NexusEngine island-adventure loop: aerial arrival, first-person movement, seed selection, farm interaction, crop growth, coconut foraging, portable save capture, localStorage auto-save, procedural rendering, HUD projection, diagnostics, and reset.
 
-Two source-backed determinism gaps are central:
-
-1. `input.wheel()` consumes `deltaY` without `WheelEvent.deltaMode`, so pixel, line, and page units are treated as equivalent.
-2. Rail pointer orbit clamps each `pointermove` delta before mutating canonical rail points. One large event and several smaller events with the same total movement can produce different camera rails.
+The save boundary is not yet authoritative. It uses per-frame revision counters as change detection, commits `captured` before storage succeeds, restores the live graph in place, and persists transaction history without persisting the input-generation identity used to form interaction operation IDs.
 
 ## Plan ledger
 
-**Goal:** define one deterministic path from browser device samples through normalized input commands, frame admission, camera mutation, world focus, render projection, readback, and first-visible-frame proof.
+**Goal:** make the new farming-adventure cutover persist only meaningful durable changes, commit storage truth only after the host write succeeds, restore atomically, preserve operation identity across reloads, and prove the first restored visible frame.
 
-- [x] Compare the full Publish inventory and central ledger.
+- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `MyCozyIsland` as the oldest eligible repository.
-- [x] Inspect active route listeners and camera-sequence input mutators.
-- [x] Inspect rail and first-person mode transitions, movement, reset, frame projection, public readback, and current tests.
-- [x] Identify the complete interaction loop and active domains.
-- [x] Reconcile 50 cataloged kits, one extra runtime kit, nine providers, and five imported services.
-- [x] Confirm wheel-unit ambiguity and pointer-cadence divergence.
-- [x] Confirm browser input mutates canonical state outside a frame-scoped transaction.
-- [x] Define normalization, admission, queue, reducer, leases, result, replay, and frame-proof contracts.
-- [x] Change documentation only.
-- [ ] Implement and run executable input fixtures.
+- [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
+- [x] Prioritize only `MyCozyIsland` because 27 newer commits replaced the active route with a NexusEngine farming adventure after its previous audit.
+- [x] Identify the complete interaction loop.
+- [x] Identify all active domains.
+- [x] Reconcile all engine-installed, world-generation, rendering, host, and retained legacy kits and their services.
+- [x] Trace input, farming, foraging, transaction IDs, auto-save, localStorage, restore, reset, HUD projection, tests, and deployment.
+- [x] Add timestamped architecture and system-specific audits.
+- [x] Refresh all required root `.agent` files and machine registry.
+- [x] Push `LuminaryLabs-Publish/MyCozyIsland` directly to `main`.
+- [x] Synchronize `LuminaryLabs-Dev/LuminaryLabs` on `main`.
+- [x] Create no branch or pull request.
+- [ ] Runtime fixes and executable persistence fixtures remain future work.
 
-## Runtime identity
+## Selection evidence
 
 ```txt
-route:                 index.html -> src/main-cloudform.js?v=foam-depth-camera-1
-package:               0.4.1
-Three.js:              0.185.0
-NexusEngine commit:    481cbf6df742e81279bd42245c4238c6a1fc69f2
-world id:              world:cozy-island-webgpu-v4
-cataloged kits:        50
-runtime kit surfaces:  51
-providers:             9
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new or ledger-missing eligible repositories: 0
+root-.agent-missing eligible repositories: 0
+
+recent undocumented source change:
+MyCozyIsland moved index.html to main-adventure.js and added 13 engine-installed adventure kits,
+a farming/foraging loop, save domain, render-snapshot domain, host auto-save, and a new smoke file.
 ```
 
 ## Complete interaction loop
 
 ```txt
 startup
-  -> validate catalog
-  -> initialize renderer and world
-  -> construct camera sequence and scenario
-  -> bind wheel, pointer, key, blur, resize, pagehide listeners
+  -> create WebGPU renderer and choose quality
+  -> install 13 NexusEngine/core adventure kits
+  -> initialize deterministic world, 12 farm plots and coconut nodes
+  -> load and checksum-validate localStorage save when present
+  -> create world, gameplay, ocean, cloud, fog, foam and post renderers
+  -> bind wheel, pointer, keyboard, blur, visibility, resize and pagehide
   -> start renderer animation loop
 
-wheel event
-  -> prevent browser default
-  -> send raw event.deltaY
-  -> progress += deltaY * 0.00072
-  -> clamp progress to 0..1
+frame
+  -> normalize callback delta to 0..0.05 seconds
+  -> engine tick admits queued input
+  -> advance scenario clock
+  -> advance crop growth and coconut respawn
+  -> advance player movement and stamina
+  -> resolve contextual farm/forage interaction
+  -> derive camera, HUD and render snapshot
+  -> update renderer state and HUD
+  -> sample adaptive performance
+  -> render post pipeline
+  -> every five accumulated seconds compare save fingerprint
+  -> capture and write localStorage when fingerprint differs
 
-pointer event
-  -> pointerdown stores client coordinates
-  -> pointermove computes delta from prior event
-  -> yaw and pitch mutate immediately
-  -> rail mode mutates every canonical rail point after a per-event clamp
-  -> pointerup or pointercancel clears local drag state
+farm action
+  -> E creates interaction:<input-frame-index>:<target-id>
+  -> transaction ledger applies action once
+  -> till, plant, water or harvest
+  -> inventory and plot state mutate
 
-keyboard event
-  -> keydown adds code to pressed Set
-  -> keyup removes code
-  -> blur clears pressed Set
-  -> no command edge, sequence, frame target, or runtime generation exists
+forage action
+  -> E creates interaction operation ID
+  -> transaction ledger applies once
+  -> inventory receives coconuts and optional sprout
+  -> node enters respawn
 
-animation frame
-  -> derive callback dt
-  -> scenario.tick reads current pressed Set
-  -> camera descriptor reads progress, rail points, yaw, pitch, and player state
-  -> Core World focus follows camera position and mode
-  -> renderer submits world and post pipeline
-  -> public readback exposes current camera descriptor only
+restore
+  -> validate schema and checksum
+  -> mutate world
+  -> mutate transaction ledger
+  -> mutate scenario
+  -> mutate inventory
+  -> mutate farming
+  -> mutate foraging
+  -> mutate player
+  -> reset interaction
+  -> publish restored status
 ```
 
-## Concrete defects
+## Source-backed persistence findings
 
-### Wheel unit ambiguity
+### Idle auto-save churn
 
-The host forwards `event.deltaY` but not `event.deltaMode`. DOM wheel deltas may be expressed in pixels, lines, or pages. The same physical wheel gesture can therefore produce materially different rail progress across devices and browser settings.
+`cozySave.fingerprint()` hashes inventory, farming, foraging, and player revision numbers. `cozyPlayerMovementSystem` increments player revision on every tick, including idle ticks with no position, stamina, mode, yaw, or pitch change. The host checks this fingerprint every five seconds, so an idle runtime still writes localStorage continuously.
 
-### Pointer cadence divergence
+### Storage status can lie
 
-Rail drag applies:
+`capture()` sets save status to `captured` before `storeSave()` calls `localStorage.setItem`. A storage quota, privacy, serialization, or adapter failure returns an unsuccessful result to the host but does not move the save domain out of `captured`. The next HUD snapshot can therefore render `Saved` for a write that failed.
 
-```txt
-orbitInfluence = clamp(deltaX * 0.00008, -0.035, 0.035)
-railPoint.x += orbitInfluence * abs(railPoint.z) * 0.02
-```
+### Restore is not atomic
 
-Because the clamp is applied per event, event segmentation changes the result. A single 1000-pixel delta is clamped once to `0.035`; ten 100-pixel deltas contribute `0.008` ten times. Equivalent total motion can therefore create different rail geometry.
+`restore()` mutates seven live owners in sequence. Its catch block records an error but does not restore predecessor snapshots. A failure after the first mutation leaves a mixed old/new graph.
 
-### Ambient mutation outside frame admission
+### Operation identity is not reload-safe
 
-Wheel and pointer handlers mutate camera state immediately. Keyboard handlers mutate a persistent `Set`. The next RAF reads whichever partial event sequence arrived before its callback. No immutable `InputFrame` records the accepted samples.
+The save includes the core transaction ledger but excludes `cozyInput`. Interaction IDs use `input.frame.index`; a replacement runtime starts that index at zero. Restored ledger entries and reused input indices can collide after reload, producing a cached predecessor result instead of a new action.
 
-### Incomplete focus and capture lifecycle
+### Reset is incomplete
 
-`blur` clears held keys but does not clear the host's local `drag` record. There is no `visibilitychange` policy, `lostpointercapture` handler, pointer-capture lease, stale event fence, or typed clear result.
+`resetAll()` resets the transaction ledger and durable gameplay domains but not `cozyInput`. Queued input, held keys, input sequence, frame index, and clear state are outside the reset transaction.
 
-### Missing result-to-frame correlation
+### Proof gap
 
-The public host exposes the latest camera descriptor and scenario, but no input command result, input-state revision, camera revision, or frame receipt proves which accepted commands produced the visible frame.
+A new `tests/adventure-domains-smoke.mjs` proves a happy-path capture/reset/restore round trip, but `npm test` does not invoke it. There are no idle-write, adapter-failure, partial-restore, operation-ID collision, or first-restored-frame fixtures.
 
 ## Domains in use
 
 ```txt
-browser startup, loader, error and debug projection
-kit catalog declaration, validation and completeness
-browser wheel, pointer, keyboard, focus and resize input
-camera rail progress, orbit, landing and first-person movement
-input normalization, command admission and frame reduction gap
-scenario clock, tick, reset and render snapshots
-Core World focus, providers, materialization and query
-legacy/Core world lifecycle and compatibility
-WebGPU/WebGL2 backend and quality policy
-adaptive performance sampling and renderer mutation
-island, sea floor, terrain, biome, shoreline and ground contact
-vegetation, rocks, props, path, campfire and population
-ocean, foam, caustics, underwater optics and sun glitter
+browser document, loader, error, HUD, hotbar and debug projection
+WebGPU/WebGL2 renderer creation, quality, adaptive performance and resize
+NexusEngine runtime, ECS phases and service installation
+core object registry and repeat-safe transaction ledger
+seeded island model, surface query, farm layout, forage layout and landmarks
+normalized browser input queue and frame admission
+scenario clock and objective
+inventory and seed selection
+farm plot lifecycle and deterministic harvest yield
+coconut collection and respawn
+player movement, terrain grounding, view and stamina
+nearest-target contextual interaction
+aerial intro and first-person camera
+portable save capture, checksum, localStorage adapter and restore
+renderer-neutral static/frame snapshots and HUD descriptors
+terrain, biome, shoreline, ocean floor, vegetation, rocks, props and campfire
 cloud, fog, weather, wind, illumination and sky
-render layers, depth, blend, post and output transform
-runtime lifecycle, public readback, tests and Pages deployment
+ocean, foam, render layers, post-processing and output
+diagnostics, tests and Pages deployment
+semantic dirty tracking, atomic storage commit and atomic restore: missing
+operation-ID continuity and restored-frame proof: missing
 ```
 
-## All implemented kits and offered services
+## Engine-installed kits and services
 
-### Catalog-admitted kits: 50
+- `core-object-kit`: stable object registration, lookup and listing.
+- `core-transaction-ledger-kit`: repeat-safe apply-once operations, snapshots, restore and reset.
+- `cozy-world-domain-kit`: seeded world model, surface queries, farm/forage layouts, render base, snapshot and reset.
+- `cozy-input-domain-kit`: normalized command queue, held state, frame admission, clear, snapshot and reset.
+- `cozy-scenario-domain-kit`: clock, objective, snapshot and reset.
+- `cozy-inventory-domain-kit`: items, seed selection, repeat-safe transactions, snapshot and reset.
+- `cozy-farming-domain-kit`: plots, till, plant, water, growth, harvest, snapshot and reset.
+- `cozy-foraging-domain-kit`: coconut nodes, collection, respawn, snapshot and reset.
+- `cozy-player-domain-kit`: movement, terrain grounding, view, stamina, snapshot and reset.
+- `cozy-interaction-domain-kit`: nearest targeting, contextual action, prompt, result, snapshot and reset.
+- `cozy-camera-domain-kit`: aerial intro, first-person view, terrain clearance and camera descriptor.
+- `cozy-save-domain-kit`: capture, checksum validation, restore, reset and diagnostics.
+- `cozy-render-snapshot-domain-kit`: static world, frame snapshot, HUD descriptor and debug descriptor.
+
+## World, presentation and host kit inventory
+
+The repository retains 50 cataloged world/render/host kits. The active adventure route consumes all except the retired `camera-rail-sequence-kit` and `cozy-island-scenario-kit`; their source remains for compatibility.
 
 ```txt
-debug-overlay-host-kit                     diagnostics projection
-webgl2-fallback-renderer-kit                fallback rendering policy
-webgpu-compute-atmosphere-renderer-kit      atmosphere texture generation
-webgpu-foam-renderer-kit                    shoreline foam rendering and animation
-webgpu-ocean-renderer-kit                   ocean displacement, normals and optics
-webgpu-performance-budget-kit               moving average, hysteresis and level callbacks
-webgpu-post-processing-renderer-kit         depth, fog, foam and output composition
-webgpu-rolling-fog-renderer-kit              volume fog and advection
-webgpu-stylized-material-renderer-kit       world materials and animation
-webgpu-volumetric-cloud-renderer-kit        cloud volume rendering
-camera-rail-sequence-kit                    wheel/drag/key input, rail, FPS movement, reset and descriptors
-cozy-island-scenario-kit                    clock tick, camera tick, reset and render snapshots
-terrain-surface-domain-kit                  island surface
-vegetation-placement-domain-kit             deterministic placement graph
-aerial-perspective-domain-kit               haze and exposure
-campfire-atmosphere-domain-kit               fire, light, embers, smoke and wind descriptor
-cloud-density-field-domain-kit              cloud density recipe
-cloud-horizon-band-domain-kit               horizon continuation
-cloud-lighting-domain-kit                   cloud lighting and extinction
-cloud-lod-domain-kit                        texture and ray-step policy
-cloud-shadow-domain-kit                     projected shadow policy
-cloud-weather-domain-kit                    weather-to-cloud mapping
-fog-advection-domain-kit                    wind-derived fog direction and speed
-fog-field-domain-kit                        terrain-aware fog density
-fog-volume-placement-domain-kit             fog bounds
-ground-contact-domain-kit                   terrain seating and rejection
-illumination-domain-kit                     sun, sky and exposure
-ocean-caustics-domain-kit                   caustic descriptor
-ocean-floor-profile-domain-kit              shelf, reef and deep floor
-ocean-optics-domain-kit                     absorption, Fresnel and refraction
-ocean-wave-domain-kit                       deterministic wave spectrum
-prop-archetype-domain-kit                   fence, path, driftwood and clearing
-render-archetype-domain-kit                 semantic render mapping
-render-quality-domain-kit                   base tier and resource policy
-render-snapshot-domain-kit                  immutable render aggregation
-rock-archetype-domain-kit                   rock graph
-shoreline-field-domain-kit                  signed coast field
-shoreline-foam-domain-kit                   foam contours and animation parameters
-stylized-material-descriptor-domain-kit     palettes and surface parameters
-sun-glitter-domain-kit                      glitter lobe
-terrain-biome-field-domain-kit              biome weights
-terrain-lod-domain-kit                      terrain detail policy
-underwater-atmosphere-domain-kit            underwater extinction
-vegetation-archetype-domain-kit             vegetation catalog
-vegetation-lod-domain-kit                   plant LOD
-vegetation-wind-domain-kit                  bend and gust descriptors
-weather-state-domain-kit                    stable weather intent
-wind-field-domain-kit                       deterministic clock-driven wind
-deterministic-seed-domain-kit               scoped random streams
-environment-clock-domain-kit                elapsed time, scale, pause and reset
+debug-overlay-host-kit
+webgl2-fallback-renderer-kit
+webgpu-compute-atmosphere-renderer-kit
+webgpu-foam-renderer-kit
+webgpu-ocean-renderer-kit
+webgpu-performance-budget-kit
+webgpu-post-processing-renderer-kit
+webgpu-rolling-fog-renderer-kit
+webgpu-stylized-material-renderer-kit
+webgpu-volumetric-cloud-renderer-kit
+camera-rail-sequence-kit
+cozy-island-scenario-kit
+terrain-surface-domain-kit
+vegetation-placement-domain-kit
+aerial-perspective-domain-kit
+campfire-atmosphere-domain-kit
+cloud-density-field-domain-kit
+cloud-horizon-band-domain-kit
+cloud-lighting-domain-kit
+cloud-lod-domain-kit
+cloud-shadow-domain-kit
+cloud-weather-domain-kit
+fog-advection-domain-kit
+fog-field-domain-kit
+fog-volume-placement-domain-kit
+ground-contact-domain-kit
+illumination-domain-kit
+ocean-caustics-domain-kit
+ocean-floor-profile-domain-kit
+ocean-optics-domain-kit
+ocean-wave-domain-kit
+prop-archetype-domain-kit
+render-archetype-domain-kit
+render-quality-domain-kit
+render-snapshot-domain-kit
+rock-archetype-domain-kit
+shoreline-field-domain-kit
+shoreline-foam-domain-kit
+stylized-material-descriptor-domain-kit
+sun-glitter-domain-kit
+terrain-biome-field-domain-kit
+terrain-lod-domain-kit
+underwater-atmosphere-domain-kit
+vegetation-archetype-domain-kit
+vegetation-lod-domain-kit
+vegetation-wind-domain-kit
+weather-state-domain-kit
+wind-field-domain-kit
+deterministic-seed-domain-kit
+environment-clock-domain-kit
 ```
 
-### Source-backed runtime kit outside catalog
+Additional active source-backed kit:
+
+- `cozy-ocean-composition-kit`: logical render-layer graph, dependency order, depth/blend contracts, transparent-depth validation and terrain handoff validation.
+
+## Kit census
 
 ```txt
-cozy-ocean-composition-kit
-  -> six-pass logical layer graph
-  -> pass order and dependency validation
-  -> transparent depth-write validation
-  -> terrain handoff validation
-  -> per-layer depth and blend contracts
-```
-
-### Core World providers: 9
-
-```txt
-cozy-island-terrain-provider
-cozy-seafloor-terrain-provider
-biome-classification-provider
-shoreline-classification-provider
-seafloor-material-provider
-vegetation-provider
-rock-provider
-prop-provider
-cell-presentation-provider
-```
-
-### Imported NexusEngine services: 5
-
-```txt
-createEngine
-createCoreWorldDomain
-createUniformGridPartition
-createFlatWorldSurface
-defineWorldEffectProvider
+engine-installed core/adventure kits: 13
+cataloged world/render/host kits: 50
+additional render-composition kit: 1
+source-backed kit surfaces in repository: 64
+active route kit surfaces: 62
+retained inactive legacy kits: 2
+ordered Core World providers retained in source: 9
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-browser-input-command-authority-domain
+cozy-island-adventure-persistence-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-input-session-id-kit
-input-runtime-generation-kit
-input-command-id-kit
-input-command-sequence-kit
-input-device-descriptor-kit
-wheel-unit-normalization-kit
-pointer-sample-kit
-pointer-coalescing-policy-kit
-keyboard-edge-hold-kit
-input-command-envelope-kit
-input-admission-policy-kit
-camera-mode-input-policy-kit
-input-frame-queue-kit
-input-frame-reducer-kit
-input-command-result-kit
-input-state-revision-kit
-input-clear-command-kit
-pointer-capture-lease-kit
-focus-visibility-input-gate-kit
-stale-input-rejection-kit
-camera-input-adapter-kit
-input-frame-commit-kit
-input-observation-kit
-input-journal-kit
-wheel-delta-mode-fixture-kit
-pointer-cadence-parity-fixture-kit
-blur-capture-loss-fixture-kit
-input-replay-parity-fixture-kit
-input-visible-frame-smoke-kit
+save-session-id-kit
+save-operation-id-kit
+durable-state-schema-kit
+durable-state-projection-kit
+durable-state-fingerprint-kit
+semantic-dirty-set-kit
+save-command-kit
+save-admission-kit
+save-capture-plan-kit
+storage-adapter-capability-kit
+storage-write-result-kit
+save-commit-result-kit
+save-status-projection-kit
+restore-command-kit
+restore-candidate-graph-kit
+restore-validation-kit
+restore-migration-kit
+restore-commit-kit
+restore-rollback-kit
+input-generation-continuity-kit
+operation-id-continuity-kit
+transaction-ledger-rebase-kit
+stale-save-result-rejection-kit
+first-restored-frame-ack-kit
+persistence-observation-kit
+persistence-journal-kit
+idle-autosave-fixture-kit
+storage-failure-fixture-kit
+partial-restore-fixture-kit
+operation-id-reload-fixture-kit
+persistence-roundtrip-browser-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-browser device sample
-  -> identify device, unit, timestamp, session and runtime generation
-  -> normalize wheel, pointer and keyboard semantics
-  -> admit against focus, visibility, capture lease and camera-mode policy
-  -> enqueue one immutable command with monotonic sequence
-  -> at frame start reduce accepted commands into one InputFrame
-  -> apply edges, holds, wheel and pointer deltas exactly once
-  -> publish input result and state revision
-  -> derive camera and world-focus revisions
-  -> render one frame using those revisions
-  -> publish first visible input-frame acknowledgement
-```
+committed durable gameplay mutation
+  -> update semantic dirty set
+  -> derive canonical durable projection
+  -> compute versioned durable fingerprint
+  -> admit save command once
+  -> capture immutable save candidate
+  -> validate storage capability
+  -> write through adapter
+  -> receive durable storage receipt
+  -> commit save status and revision only after receipt
+  -> project Saved state and frame acknowledgement
 
-## Required proof
-
-```txt
-pixel, line and page wheel inputs normalize to equivalent rail progress
-one large pointer delta and equivalent segmented deltas produce the same camera result
-browser event rate does not change rail or first-person outcome
-blur, visibility loss and pointer-capture loss clear or reject stale input
-old runtime-generation events cannot mutate replacement state
-keyboard edge and hold semantics are explicit
-input replay reproduces camera descriptors and player positions
-public readback cites input, camera and visible-frame revisions
+restore command
+  -> validate schema, checksum, version and migration path
+  -> construct candidate engine graph or full rollback snapshot
+  -> restore input generation and transaction continuity together
+  -> validate candidate invariants
+  -> atomically transfer authority
+  -> retire predecessor graph
+  -> acknowledge first restored visible frame
 ```
 
 ## Validation boundary
 
-```txt
-runtime source changed: no
-input implementation changed: no
-camera behavior changed: no
-render output changed: no
-package scripts changed: no
-dependencies changed: no
-deployment changed: no
-branch created: no
-pull request created: no
-npm test: not run
-browser input smoke: not run
-input fixtures: not implemented
-```
+Documentation changed only. No runtime, test script, dependency, renderer, gameplay, persistence, or deployment behavior was modified in this audit.

@@ -1,175 +1,77 @@
-# START HERE: MyCozyIsland
+# START HERE: MyCozyIsland Adventure Persistence Authority
 
-Last aligned: `2026-07-12T06-51-27-04-00`
-
-Repository: `LuminaryLabs-Publish/MyCozyIsland`
-
-Current focus: place wheel, pointer, keyboard, focus, visibility, and camera-mode input behind one normalized, frame-admitted command authority.
+Last updated: `2026-07-12T08:00:16-04:00`
 
 ## Summary
 
-The browser host currently sends raw DOM events directly into `cameraSequence.input`. Wheel input ignores `WheelEvent.deltaMode`, pointer deltas are applied immediately per browser event, and keyboard state mutates an ambient `Set` outside the frame transaction.
+`MyCozyIsland` has completed a major route cutover from the earlier camera-rail showcase to a NexusEngine-composed farming and foraging adventure. The new runtime installs world, input, scenario, inventory, farming, foraging, player, interaction, camera, save, and render-snapshot domains, then projects them through the existing WebGPU/WebGL2 island renderer.
 
-This makes equivalent physical input device- and cadence-dependent. A line-mode wheel and a pixel-mode trackpad can advance the rail by different magnitudes. Pointer segmentation also changes rail orbit because each event is clamped independently before mutating the canonical rail points.
+The highest-priority gap is persistence truth. Idle frames continuously advance `player.revision`, the auto-save fingerprint includes that revision, and the host therefore writes localStorage every five seconds even when no durable gameplay value changed. Capture status is committed before the storage adapter succeeds, restore mutates domains sequentially without rollback, and the transaction ledger is restored while input frame identity is not.
 
 ## Plan ledger
 
-**Goal:** preserve responsive camera control while making input units, ordering, focus state, camera-mode policy, command results, replay, and visible-frame ownership deterministic.
+**Goal:** make the new farming-adventure cutover persist only meaningful durable changes, commit storage truth only after the host write succeeds, restore atomically, preserve operation identity across reloads, and prove the first restored visible frame.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
-- [x] Select only `MyCozyIsland` as the oldest eligible repository.
-- [x] Trace browser listeners, wheel progress, pointer drag, keyboard holds, blur clearing, camera mode, scenario tick, render projection, public readback, and tests.
-- [x] Identify the complete interaction loop, all active domains, all 50 cataloged kits, one source-backed composition kit, nine providers, and five imported NexusEngine services.
-- [x] Confirm wheel units are consumed without `deltaMode` normalization.
-- [x] Confirm pointer event segmentation changes the clamped rail-orbit result.
-- [x] Confirm browser events mutate input state outside a frame-scoped command queue.
-- [x] Define input normalization, admission, reduction, leases, results, replay, fixtures, and visible-frame proof.
+- [x] Prioritize only `MyCozyIsland` because 27 newer commits replaced the active route with a NexusEngine farming adventure after its previous audit.
+- [x] Identify the complete interaction loop.
+- [x] Identify all active domains.
+- [x] Reconcile all engine-installed, world-generation, rendering, host, and retained legacy kits and their services.
+- [x] Trace input, farming, foraging, transaction IDs, auto-save, localStorage, restore, reset, HUD projection, tests, and deployment.
 - [x] Add timestamped architecture and system-specific audits.
-- [x] Refresh all required root `.agent` files and the machine registry.
-- [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable input fixtures remain future work.
+- [x] Refresh all required root `.agent` files and machine registry.
+- [x] Push `LuminaryLabs-Publish/MyCozyIsland` directly to `main`.
+- [x] Synchronize `LuminaryLabs-Dev/LuminaryLabs` on `main`.
+- [x] Create no branch or pull request.
+- [ ] Runtime fixes and executable persistence fixtures remain future work.
 
-## Selection comparison
-
-```txt
-accessible Publish repositories: 10
-eligible non-Cavalry repositories: 9
-new or central-ledger-missing eligible repositories: 0
-root-.agent-missing eligible repositories: 0
-
-MyCozyIsland       2026-07-12T05-00-19-04-00 selected oldest
-TheOpenAbove       2026-07-12T05-11-46-04-00
-PrehistoricRush    2026-07-12T05-21-52-04-00
-IntoTheMeadow      2026-07-12T05-39-42-04-00
-PhantomCommand     2026-07-12T05-49-04-00
-HorrorCorridor     2026-07-12T05-59-28-04-00
-ZombieOrchard      2026-07-12T06-19-56-04-00
-TheUnmappedHouse   2026-07-12T06-30-34-04-00
-AetherVale         2026-07-12T06-41-32-04-00
-TheCavalryOfRome   excluded
-```
-
-## Runtime identity
+## Active route
 
 ```txt
-route:               index.html -> src/main-cloudform.js?v=foam-depth-camera-1
-package:             0.4.1
-Three.js:            0.185.0
-NexusEngine commit:  481cbf6df742e81279bd42245c4238c6a1fc69f2
-world id:            world:cozy-island-webgpu-v4
-cataloged kits:      50
-extra runtime kits:  1
-providers:           9
-default world mode:  core
-fallback mode:       legacy
+index.html
+  -> src/main-adventure.js?v=cozy-adventure-cutover-1
+  -> src/adventure/composition-runtime.js
+  -> NexusEngine domains
+  -> existing procedural world and WebGPU/WebGL2 render services
 ```
 
-## Read this pass first
+## Read order
+
+1. `current-audit.md`
+2. `known-gaps.md`
+3. `architecture-audit/2026-07-12T08-00-16-04-00-adventure-persistence-authority-dsk-map.md`
+4. `persistence-audit/2026-07-12T08-00-16-04-00-autosave-restore-operation-continuity-contract.md`
+5. `next-steps.md`
+6. `validation.md`
+
+## Main findings
 
 ```txt
-.agent/trackers/2026-07-12T06-51-27-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-12T06-51-27-04-00-browser-input-command-authority-dsk-map.md
-.agent/render-audit/2026-07-12T06-51-27-04-00-input-camera-visible-frame-provenance-gap.md
-.agent/gameplay-audit/2026-07-12T06-51-27-04-00-rail-first-person-input-loop.md
-.agent/interaction-audit/2026-07-12T06-51-27-04-00-browser-event-admission-result-map.md
-.agent/input-audit/2026-07-12T06-51-27-04-00-unit-cadence-focus-command-contract.md
-.agent/deploy-audit/2026-07-12T06-51-27-04-00-input-replay-fixture-gate.md
-.agent/turn-ledger/2026-07-12T06-51-27-04-00.md
+idle simulation
+  -> cozy-player revision increments every tick
+  -> save fingerprint changes
+  -> five-second host check writes localStorage indefinitely
+
+save capture
+  -> domain status becomes captured
+  -> host attempts localStorage.setItem
+  -> storage failure leaves domain status captured
+  -> later HUD can still say Saved
+
+restore
+  -> world, ledger, scenario, inventory, farming, foraging and player mutate in sequence
+  -> any late failure leaves a partially restored graph
+  -> no candidate graph, rollback or replacement-session commit exists
+
+reload continuity
+  -> transaction ledger is restored
+  -> cozy input state is not restored
+  -> interaction operation IDs reuse input frame indices from zero
+  -> old ledger entries can collide with new-session commands
 ```
 
-## Interaction loop
+## Next safe ledge
 
-```txt
-wheel event
-  -> prevent default
-  -> pass raw deltaY to input.wheel
-  -> mutate rail progress immediately
-
-pointer drag
-  -> retain browser client coordinates
-  -> calculate one delta per pointermove event
-  -> mutate yaw and pitch immediately
-  -> while on rail, clamp each event and mutate canonical rail points
-
-keyboard
-  -> keydown/keyup mutate an ambient pressed Set
-  -> blur clears the Set
-
-animation frame
-  -> scenario.tick reads the current Set
-  -> camera descriptor reads already-mutated rail, yaw, pitch, progress, and player state
-  -> world focus follows the descriptor
-  -> render submits the frame
-```
-
-## Main finding
-
-```txt
-wheel delta mode normalization: absent
-input command ID and sequence: absent
-session and runtime generation: absent
-frame target: absent
-pointer coalescing policy: absent
-keyboard edge versus hold model: absent
-focus and visibility admission: partial blur-only clear
-pointer-capture lease and loss result: absent
-camera-mode input policy: implicit
-input result and state revision: absent
-input replay: absent
-first visible input-frame acknowledgement: absent
-```
-
-## Implemented surface
-
-```txt
-50 catalog-admitted DomainKit entries
-1 source-backed render-composition kit outside the catalog
-9 ordered Core World providers
-5 imported NexusEngine services
-```
-
-The complete kit and service map is in `.agent/current-audit.md` and `.agent/kit-registry.json`.
-
-## Required parent domain
-
-```txt
-cozy-island-browser-input-command-authority-domain
-```
-
-## Ordered implementation queue
-
-```txt
-1. Browser Startup Admission and Failure Rollback Authority
-2. Runtime Session Lifecycle Authority
-3. Browser Input Command and Camera Control Authority
-4. World Lifecycle Contract and Legacy/Core Mode Parity Authority
-5. Render Layer Graph Admission and Physical Resource Binding Authority
-5a. Foam Depth Proxy Topology and Lifecycle Authority
-6. Core World Reset / Re-prepare Authority
-7. Pinned Core World Focus Transaction Authority
-8. Live Materialization Readiness Commit Authority
-9. Core World Render Commit Authority
-10. Camera Rail Baseline Authority
-11. Dynamic Environment Frame Authority
-12. Adaptive Quality Transaction Authority
-```
-
-## Validation boundary
-
-```txt
-runtime source changed by this pass: no
-input behavior changed by this pass: no
-camera behavior changed by this pass: no
-render output changed by this pass: no
-package scripts changed by this pass: no
-dependencies changed by this pass: no
-deployment changed by this pass: no
-branch created: no
-pull request created: no
-npm test: not run
-browser input smoke: not run
-input replay fixtures: unavailable
-visible input-frame receipt: unavailable
-```
+Implement `cozy-island-adventure-persistence-authority-domain` before expanding save slots or long-form progression. It must own semantic dirty detection, adapter-backed commit results, atomic candidate restore, input/transaction continuity, and restored-frame acknowledgement.

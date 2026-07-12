@@ -1,151 +1,174 @@
-# Current Audit: MyCozyIsland Multi-Domain Transaction Commit Authority
+# Current Audit: MyCozyIsland Agriculture Cutover Recovery Authority
 
-Last updated: `2026-07-12T10-20-02-04-00`
+Last updated: `2026-07-12T12-50-46-04-00`
 
 ## Summary
 
-The active browser route runs a NexusEngine island-adventure loop: aerial arrival, first-person movement, seed selection, farm interaction, crop growth, coconut foraging, portable save capture, procedural rendering, HUD projection, diagnostics and reset.
+The active route is a NexusEngine island-adventure loop with deterministic world generation, normalized input, first-person movement, official Agriculture services, product Inventory settlement, wild coconut Foraging, save-v2 capture, save-v1 migration, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
 
-The current boundary is atomic product action commitment. The installed core ledger provides repeat detection and cached results, but it executes the operation callback before recording the parent operation. Farming and foraging call nested inventory ledger operations inside their parent callbacks, so participant state and parent/child ledger history can diverge if a failure occurs before the parent record is written.
+Commit `6b642344d2875f76eef1184111793ff0e206109f` replaced the installed product-specific farming DSK with the pinned official `n:production:agriculture` DSK. The cutover improves bounded ownership and adds plan-based plot mutation, stale-plan rejection, batch Inventory settlement and perennial coconut regrowth.
+
+The current gap is complete recovery truth. Snapshot reload restores selected owner state after an exception, but it does not retract queued Agriculture events or ECS journal entries. The recovery shortcut can accept an Agriculture child record without verifying the Inventory child record and resource delta. Save-v1 migration converts farming state but does not translate or reconcile legacy `cozy-farming` ledger history.
 
 ## Plan ledger
 
-**Goal:** make farm and forage actions commit inventory, plot/node state, parent/child ledger records, save revision and visible rendering together, with complete rollback on failure.
+**Goal:** make Agriculture actions atomic and recoverable across Inventory, Agriculture, parent/child ledgers, event publication, save migration and visible-frame projection.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledger entries and root `.agent` state.
-- [x] Select only `MyCozyIsland` by oldest-ledger and post-audit-change priority.
-- [x] Identify the interaction loop, active domains, kits and services.
-- [x] Trace core ledger semantics and product nesting.
-- [x] Add timestamped architecture, render, gameplay, interaction, transaction and deploy audits.
+- [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
+- [x] Select only `MyCozyIsland` by post-audit runtime-change priority.
+- [x] Identify the interaction loop, all domains, all kits and offered services.
+- [x] Inspect product settlement and official provider implementation.
+- [x] Inspect core ledger, ECS event queue, save migration, render snapshot and tests.
+- [x] Add timestamped architecture and system-specific audits.
 - [x] Refresh root `.agent` files and machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime fixes and executable failure fixtures remain future work.
+- [ ] Runtime recovery and executable failure fixtures remain future work.
 
 ## Selection evidence
 
 ```txt
-Publish repositories: 10
-eligible after Cavalry exclusion: 9
-new or ledger-missing: 0
-root .agent missing: 0
-oldest central timestamp: MyCozyIsland at 2026-07-12T08:00:16-04:00
-new post-audit commit: c6c52830... transaction-ledger smoke
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new eligible repositories: 0
+central-ledger-missing eligible repositories: 0
+root-.agent-missing eligible repositories: 0
+
+selected: MyCozyIsland
+reason: new runtime Agriculture cutover after prior 10-20-02 audit
+runtime commit: 6b642344d2875f76eef1184111793ff0e206109f
+excluded: TheCavalryOfRome
 ```
 
 ## Complete interaction loop
 
 ```txt
 startup
-  -> create renderer and quality policy
-  -> install core object, core ledger and 11 adventure domains
-  -> create deterministic world, 12 plots and forage nodes
-  -> validate and restore browser save when present
-  -> create procedural world and atmosphere render services
-  -> bind input, lifecycle and resize callbacks
-  -> start animation loop
+  -> import pinned NexusEngine and NexusEngine-Kits Agriculture source
+  -> install Core Object and Core Transaction Ledger
+  -> install World, Input and Inventory
+  -> install official Agriculture with tropical config and 12 plots
+  -> install Foraging, Player, Scenario, Interaction, Camera, Save and Render Snapshot
+  -> initialize deterministic wild-resource nodes
+  -> restore save-v2 or migrate save-v1 when present
+  -> build procedural WebGPU/WebGL2 presentation
+  -> bind lifecycle, resize and input callbacks
+  -> start RAF
 
 frame
-  -> admit queued input
-  -> advance scenario, crops, forage respawn and player
-  -> resolve nearest target and context action
-  -> derive camera, HUD and render snapshot
-  -> update procedural render services
-  -> render WebGPU/WebGL2 frame
-  -> periodically evaluate save fingerprint
+  -> admit normalized input frame
+  -> advance Agriculture continuous growth
+  -> advance wild Foraging respawn
+  -> advance scenario and player
+  -> choose nearest plot or forage node
+  -> settle E interaction
+  -> assemble camera, HUD and render snapshot
+  -> render frame
+  -> evaluate durable save fingerprint
 
-farm action
-  -> parent cozy-farming operation
-  -> optional child inventory debit/reward operation(s)
-  -> plot mutation
-  -> parent ledger record after callback return
+Agriculture settlement
+  -> derive operation ID from target revision, input frame and crop
+  -> check cozy-agriculture-actions parent ledger
+  -> check agriculture child ledger recovery shortcut
+  -> plan prepare, plant, water or harvest against plot revision
+  -> validate Inventory item definitions and balances
+  -> capture Inventory, Agriculture and ledger snapshots
+  -> apply Inventory resourceChanges
+  -> commit Agriculture plan and emit event
+  -> record product parent result
+  -> on exception reload owner snapshots
 
-forage action
-  -> parent cozy-foraging operation
-  -> child coconut and optional sprout reward operations
-  -> node depletion/respawn mutation
-  -> parent ledger record after callback return
-
-save/restore
-  -> capture world, ledger, scenario, inventory, farming, foraging and player
-  -> write through browser host
-  -> restore live owners sequentially
+save restore
+  -> validate checksum
+  -> migrate save-v1 farming state when required
+  -> sequentially load world, ledger, scenario, inventory, agriculture, foraging and player
+  -> reset Interaction
+  -> publish save result
 ```
 
-## Source-backed transaction findings
+## Source-backed strengths
 
-### Core ledger is idempotent, not atomic
+- Dependencies and browser imports are pinned to immutable commits.
+- No `n:cozy-farming` domain is installed.
+- Official Agriculture owns renderer-neutral land, soil, cultivation, water, growth, harvest and perennial semantics.
+- Tropical content is supplied through configuration rather than copied provider logic.
+- Plan IDs and plot predecessor revisions support stale-plan rejection.
+- Inventory batch settlement validates all changes before writing its state.
+- Cultivated coconut palms regrow under Agriculture; wild coconut palms remain Foraging resources.
+- Save-v2 stores Agriculture schema directly.
+- Render snapshots use Agriculture as authoritative crop state.
+- `npm test` now runs the adventure Agriculture smoke.
 
-`applyOnce()` checks for an existing record, executes `operation()`, then calls `record()`. An exception after any callback mutation leaves that mutation live while the parent operation remains unrecorded.
+## Source-backed gaps
 
-### Plant crosses two owners and ledgers
+### Rollback is state-only, not effect-complete
 
-Planting opens a `cozy-farming` parent operation, removes a seed through a `cozy-inventory` child operation, then mutates the plot. The seed debit can exist without the planted plot or parent record.
+Agriculture commit writes state and queues a domain event before the product parent record is written. If a later step throws, the catch path reloads Inventory, Agriculture and ledger snapshots, but it has no event-queue checkpoint or ECS-journal rollback. Cleanup systems can observe a candidate Agriculture event after participant state was reverted.
 
-### Harvest crosses multiple child rewards
+### Rollback does not reproduce exact predecessor observation
 
-Harvesting adds crop rewards, may add a coconut sprout, then resets the plot. Rewards can exist while the crop remains ready and the parent record is absent.
+`cozyInventory.loadSnapshot()` increments Inventory revision. Core Transaction Ledger snapshot loading increments capability sequence and emits `snapshotLoaded`. Agriculture snapshot loading emits `SnapshotLoaded`. The state payload may be restored while observation sequence, events and journal provenance differ from the predecessor.
 
-### Forage reward precedes node depletion
+### Partial-history recovery assumes Inventory parity
 
-Foraging adds coconuts and an optional sprout before setting node availability to zero. A failure can leave the reward committed while the node remains harvestable.
+When an `agriculture` child record exists and the product parent is absent, the product adapter writes the parent record immediately. It does not require the paired `cozy-inventory` child record, verify the expected resource delta or compare current Inventory balances with the Agriculture result.
 
-### Save and render can observe the split
+### Save migration omits transaction-family migration
 
-Neither the save projection nor render snapshot carries one committed adventure-transaction revision. They can read participant owners between nested mutations and parent commitment.
+Save-v1 migration converts farming state into `nexusengine.agriculture/1`, but carries `transactionLedger` unchanged. Legacy `cozy-farming` records remain under the old ledger identity and are not mapped, quarantined or reconciled with `agriculture` and `cozy-agriculture-actions` records.
 
-### Restore has no transaction-family invariant
+### Compatibility alias is name-only
 
-Ledger and product owners restore independently. No rule detects a parent record missing while child records or participant mutations are present.
+`engine.n.cozyFarming` points directly at `engine.n.agriculture`. It is non-enumerable and read-only, but does not translate the old farming API or result contract.
 
-### Proof gap
+### Proof is happy-path focused
 
-`tests/core-transaction-ledger-smoke.mjs` verifies one standalone apply-once operation, duplicate reuse and snapshot restore. `tests/adventure-domains-smoke.mjs` verifies the happy path. Neither test injects a nested failure, and neither is invoked by `npm test`.
+The smoke proves domain installation, annual crops, perennial coconuts, wild-resource separation, save-v2 round trip and a synthetic v1 migration. It does not inject failures, inspect events/journal after rollback, validate child-record parity, migrate authentic old ledgers or correlate a transaction with the first visible frame.
 
 ## Domains in use
 
 ```txt
 browser shell, loader, HUD, hotbar, controls and diagnostics
-WebGPU/WebGL2 renderer, quality, adaptive performance, resize and post pipeline
-NexusEngine runtime, ECS phases, service installation and ticking
+WebGPU/WebGL2 renderer, quality, adaptive performance, resize and post-processing
+NexusEngine runtime, ECS phases, resources, events and service installation
 core object registration
-core transaction ledger, repeat detection and portable records
+core transaction ledger, repeat detection, snapshot and reset
 seeded island world, terrain and surface queries
-farm and forage layouts
+farm and wild-resource layout
 normalized input queue and frame admission
-scenario clock and objective
-inventory and seed selection
-farm plot lifecycle and deterministic yield
-coconut collection and respawn
-player movement, terrain grounding, view and stamina
+scenario clock, day, phase and objective
+Inventory balances, seed selection and batch settlement
+production catalog family
+official Agriculture land, soil, cultivation, watering, growth, harvest and perennials
+tropical Agriculture configuration and product transaction coordination
+wild coconut collection and respawn
+player movement, grounding, view and stamina
 nearest-target contextual interaction
-aerial intro and first-person camera
-save capture, checksum validation, restore and reset
-renderer-neutral static/frame/HUD snapshots
+camera intro and first-person projection
+save capture, checksum, schema migration, restore, rollback and reset
+renderer-neutral static/frame/HUD/debug snapshots
 terrain, biome, shoreline, ocean floor, vegetation, rocks, props and campfire
 ocean, foam, cloud, fog, weather, wind, illumination and sky
 render graph, depth, blend, output and backend parity
-tests, CI, Pages deployment and internal audit tracking
-atomic product transaction planning, commit, rollback and reconciliation: missing
-transaction-to-save and transaction-to-frame correlation: missing
+tests, CI, Pages deployment and audit tracking
 ```
 
 ## Engine-installed kits and services
 
 - `core-object-kit`: stable object registration, lookup and listing.
-- `core-transaction-ledger-kit`: repeat detection, cached results, operation records, snapshots and reset.
-- `cozy-world-domain-kit`: seeded model, surface queries, farm/forage layout, render base, snapshot and reset.
-- `cozy-input-domain-kit`: command queue, held state, frame admission, clear, snapshot and reset.
-- `cozy-scenario-domain-kit`: clock, objective, snapshot and reset.
-- `cozy-inventory-domain-kit`: item balances, seed selection, child transactions, snapshot and reset.
-- `cozy-farming-domain-kit`: plots, till, plant, water, growth, harvest, snapshot and reset.
-- `cozy-foraging-domain-kit`: coconut nodes, collection, respawn, snapshot and reset.
-- `cozy-player-domain-kit`: movement, grounding, view, stamina, snapshot and reset.
-- `cozy-interaction-domain-kit`: targeting, context action, prompt, result, snapshot and reset.
-- `cozy-camera-domain-kit`: aerial intro, first-person camera, terrain clearance and descriptor.
-- `cozy-save-domain-kit`: capture, checksum validation, restore, reset and diagnostics.
-- `cozy-render-snapshot-domain-kit`: static world, frame snapshot, HUD and debug descriptors.
+- `core-transaction-ledger-kit`: ledger creation, record, apply-once, duplicate readback, snapshot and reset.
+- `cozy-world-domain-kit`: seeded model, surface queries, plot and forage layouts, render base, snapshot and reset.
+- `cozy-input-domain-kit`: normalized command queue, held state, frame admission, clear, snapshot and reset.
+- `cozy-inventory-domain-kit`: items, seed selection, single and batch transactions, snapshot and reset.
+- `agriculture-domain-kit`: land, soil, cultivation, water, continuous/daily growth, harvest, perennials, descriptors, events, snapshot and reset.
+- `cozy-foraging-domain-kit`: wild coconut nodes, collection, respawn, snapshot and reset.
+- `cozy-player-domain-kit`: movement, terrain grounding, view, stamina, snapshot and reset.
+- `cozy-scenario-domain-kit`: clock, day, phase, objective, snapshot and reset.
+- `cozy-interaction-domain-kit`: targeting, Agriculture settlement, wild-forage action, prompt, result, snapshot and reset.
+- `cozy-camera-domain-kit`: aerial intro, first-person view, terrain clearance and descriptor.
+- `cozy-save-domain-kit`: capture, checksum, v1 migration, restore, rollback, reset and diagnostics.
+- `cozy-render-snapshot-domain-kit`: static world, Agriculture descriptors, frame snapshot, HUD and debug descriptors.
 
 ## Cataloged world/render/host kits
 
@@ -202,83 +225,88 @@ deterministic-seed-domain-kit
 environment-clock-domain-kit
 ```
 
-Additional active source-backed kit:
+Additional source-backed kit:
 
-- `cozy-ocean-composition-kit`: logical render graph, dependency ordering, transparent-depth validation, terrain handoff and per-layer depth/blend contracts.
+- `cozy-ocean-composition-kit`: render-layer graph, dependency validation, transparent-depth validation, terrain handoff and per-layer depth/blend contracts.
 
 ## Kit census
 
 ```txt
 engine-installed core/adventure kits: 13
 cataloged world/render/host kits: 50
-additional render-composition kit: 1
+additional composition kit: 1
 source-backed kit surfaces: 64
 active route kit surfaces: 62
-retained inactive legacy kits: 2
+retained inactive catalog entries: 2
 ordered Core World providers retained in source: 9
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-multi-domain-transaction-commit-authority-domain
+cozy-island-agriculture-cutover-recovery-authority-domain
 ```
 
 ## Candidate kits
 
 ```txt
-adventure-transaction-id-kit
-adventure-transaction-generation-kit
-adventure-action-command-kit
-adventure-action-admission-kit
-transaction-participant-set-kit
-transaction-predecessor-revision-kit
-transaction-precondition-result-kit
-transaction-mutation-plan-kit
-inventory-mutation-candidate-kit
-farm-mutation-candidate-kit
-forage-mutation-candidate-kit
-transaction-candidate-invariant-kit
-transaction-commit-barrier-kit
-transaction-ledger-record-plan-kit
-atomic-participant-commit-kit
-transaction-rollback-plan-kit
-transaction-rollback-result-kit
-adventure-transaction-commit-result-kit
-transaction-retry-policy-kit
-transaction-observation-kit
-transaction-journal-kit
-transaction-render-revision-kit
-transaction-save-revision-kit
-first-transaction-frame-ack-kit
-nested-operation-failure-fixture-kit
-participant-rollback-fixture-kit
-save-during-transaction-fixture-kit
-transaction-visible-frame-fixture-kit
+agriculture-action-command-kit
+agriculture-transaction-id-kit
+agriculture-transaction-generation-kit
+agriculture-participant-set-kit
+agriculture-predecessor-revision-kit
+agriculture-resource-delta-kit
+agriculture-candidate-plan-kit
+inventory-candidate-settlement-kit
+agriculture-candidate-state-kit
+transaction-ledger-record-reservation-kit
+agriculture-commit-barrier-kit
+post-commit-agriculture-event-kit
+transaction-event-suppression-kit
+transaction-journal-segment-kit
+agriculture-recovery-admission-kit
+child-record-parity-kit
+resource-delta-reconciliation-kit
+legacy-farming-ledger-migration-kit
+legacy-transaction-quarantine-kit
+agriculture-rollback-result-kit
+agriculture-reconciliation-result-kit
+agriculture-transaction-observation-kit
+agriculture-transaction-journal-kit
+agriculture-save-revision-kit
+agriculture-render-revision-kit
+first-agriculture-frame-ack-kit
+failure-after-inventory-fixture-kit
+failure-after-agriculture-fixture-kit
+event-rollback-fixture-kit
+legacy-ledger-migration-fixture-kit
 ```
 
 ## Required transaction
 
 ```txt
-accepted action command
-  -> resolve identity, generation, target and participants
-  -> capture predecessor revisions
-  -> validate preconditions
-  -> build immutable mutation plan
-  -> stage participant candidates
-  -> validate cross-participant invariants
-  -> atomically commit participant state and ledger records
-  -> publish commit result and revision
+accepted action
+  -> resolve session, command, transaction and target identity
+  -> freeze participant and ledger predecessors
+  -> build immutable Agriculture plan and resource delta
+  -> prepare Inventory and Agriculture candidates
+  -> reserve parent and child records
+  -> validate cross-owner invariants
+  -> commit state and records atomically
+  -> publish Agriculture events after commit
+  -> publish transaction result and revision
   -> admit save and render projections
   -> acknowledge first visible frame
 
-failure
-  -> discard candidates or restore all predecessors
-  -> publish typed rollback result
-  -> prevent save/render admission from failed revision
-  -> reconcile indeterminate transaction before retry
+failure or incomplete history
+  -> classify rolled-back, reconciled, quarantined or indeterminate
+  -> restore exact predecessor or create a declared recovery generation
+  -> suppress candidate events and journal rows
+  -> prove child records and resource deltas before parent recovery
+  -> migrate or quarantine legacy ledger history
+  -> publish reconciliation receipt before retry
 ```
 
 ## Validation boundary
 
-Documentation changed only. No runtime, transaction, gameplay, persistence, rendering, dependency or deployment behavior was modified.
+Documentation changed only. Runtime, gameplay, save, rendering, dependencies and deployment were not modified in this audit run.

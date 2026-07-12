@@ -11,7 +11,10 @@ import {
   createRollingFogRenderer,
   createWebGPUOceanRenderer,
   createWebGPUFoamRenderer,
-  createWebGPUPostPipeline
+  createWebGPUPostPipeline,
+  createCozyOceanCompositionKit,
+  COZY_RENDER_LAYERS,
+  assignRenderLayer
 } from "./kits/index.js";
 import { createCozyIslandWorldRuntime } from "./world/index.js";
 
@@ -38,7 +41,7 @@ function fail(error) {
 
 function createSky(illumination) {
   const canvasTexture = document.createElement("canvas");
-  canvasTexture.width = 2;
+  canvasTexture.width = 1024;
   canvasTexture.height = 512;
   const context = canvasTexture.getContext("2d");
   const gradient = context.createLinearGradient(0, 0, 0, canvasTexture.height);
@@ -48,14 +51,23 @@ function createSky(illumination) {
   gradient.addColorStop(1, "#96cfc4");
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvasTexture.width, canvasTexture.height);
-  const map = new THREE.CanvasTexture(canvasTexture);
-  map.colorSpace = THREE.SRGBColorSpace;
-  const material = new THREE.MeshBasicNodeMaterial({ map, side: THREE.BackSide });
+
+  const skyMap = new THREE.CanvasTexture(canvasTexture);
+  skyMap.colorSpace = THREE.SRGBColorSpace;
+  const environmentMap = new THREE.CanvasTexture(canvasTexture);
+  environmentMap.colorSpace = THREE.SRGBColorSpace;
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+
+  const material = new THREE.MeshBasicNodeMaterial({ map: skyMap, side: THREE.BackSide });
   material.fog = false;
-  const sky = new THREE.Mesh(new THREE.SphereGeometry(2600, 48, 24), material);
-  sky.name = "pastel-sunrise-sky";
-  sky.frustumCulled = false;
-  return sky;
+  material.depthTest = false;
+  material.depthWrite = false;
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(2600, 48, 24), material);
+  mesh.name = "pastel-sunrise-sky";
+  mesh.frustumCulled = false;
+  mesh.renderOrder = -20;
+  assignRenderLayer(mesh, COZY_RENDER_LAYERS.CLOUD_VOLUME, false);
+  return Object.freeze({ mesh, environmentMap, skyMap });
 }
 
 async function main() {
@@ -65,6 +77,7 @@ async function main() {
   if (!catalogStatus.valid) {
     throw new Error(`Invalid Nexus kit catalog:\n${catalogStatus.errors.join("\n")}`);
   }
+  const oceanComposition = createCozyOceanCompositionKit();
 
   setLoad(5, "Starting WebGPU host");
   const renderer = new THREE.WebGPURenderer({
@@ -76,9 +89,7 @@ async function main() {
   await renderer.init();
   const backend = renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2";
   const quality = chooseRenderQuality({ backend });
-  const worldMode = new URLSearchParams(location.search).get("world") === "legacy"
-    ? "legacy"
-    : "core";
+  const worldMode = new URLSearchParams(location.search).get("world") === "legacy" ? "legacy" : "core";
 
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap));
   renderer.setSize(innerWidth, innerHeight, false);
@@ -88,17 +99,8 @@ async function main() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  setLoad(
-    14,
-    worldMode === "core"
-      ? "Registering lightweight Core World cells"
-      : "Composing legacy world"
-  );
-  const domains = await createCozyIslandWorldRuntime({
-    backend,
-    quality,
-    mode: worldMode
-  });
+  setLoad(14, worldMode === "core" ? "Registering layered Core World cells" : "Composing legacy world");
+  const domains = await createCozyIslandWorldRuntime({ backend, quality, mode: worldMode });
   await domains.prepare();
   const snapshot = domains.createLegacyRenderSnapshot();
   renderer.toneMappingExposure = snapshot.illumination.exposure;
@@ -110,26 +112,22 @@ async function main() {
     snapshot.aerialPerspective.nearStart * 2.5,
     snapshot.aerialPerspective.farEnd
   );
-  const camera = new THREE.PerspectiveCamera(
-    55,
-    innerWidth / innerHeight,
-    0.1,
-    3200
-  );
+  const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 3200);
+  camera.layers.enable(COZY_RENDER_LAYERS.OPAQUE_WORLD);
+  camera.layers.enable(COZY_RENDER_LAYERS.WATER_SURFACE);
+  camera.layers.enable(COZY_RENDER_LAYERS.CLOUD_VOLUME);
+  camera.layers.disable(COZY_RENDER_LAYERS.FOAM_OVERLAY);
+  camera.layers.disable(COZY_RENDER_LAYERS.FOG_VOLUME);
 
-  scene.add(createSky(snapshot.illumination));
-
-  const hemisphere = new THREE.HemisphereLight(
-    0xfff1dd,
-    0x2e6871,
-    snapshot.illumination.ambientIntensity
-  );
+  const skyRenderer = createSky(snapshot.illumination);
+  scene.add(skyRenderer.mesh);
+  scene.environment = skyRenderer.environmentMap;
+  const hemisphere = new THREE.HemisphereLight(0xfff1dd, 0x2e6871, snapshot.illumination.ambientIntensity);
+  hemisphere.layers.enable(COZY_RENDER_LAYERS.WATER_SURFACE);
   scene.add(hemisphere);
-  const sun = new THREE.DirectionalLight(
-    snapshot.illumination.sunColor,
-    snapshot.illumination.sunIntensity
-  );
+  const sun = new THREE.DirectionalLight(snapshot.illumination.sunColor, snapshot.illumination.sunIntensity);
   sun.position.set(-380, 560, 310);
+  sun.layers.enable(COZY_RENDER_LAYERS.WATER_SURFACE);
   sun.castShadow = true;
   sun.shadow.mapSize.set(quality.shadowMapSize, quality.shadowMapSize);
   sun.shadow.camera.left = -210;
@@ -142,7 +140,7 @@ async function main() {
   sun.shadow.normalBias = 0.04;
   scene.add(sun);
 
-  setLoad(26, "Building stylized island geometry");
+  setLoad(26, "Building separate island and sea-floor terrain");
   const worldRenderer = createStylizedWorldRenderer(snapshot);
   scene.add(worldRenderer.group);
 
@@ -153,7 +151,6 @@ async function main() {
   });
   scene.add(oceanRenderer.mesh);
   const foamRenderer = createWebGPUFoamRenderer(snapshot.foam);
-  scene.add(foamRenderer.group);
 
   setLoad(
     48,
@@ -176,6 +173,7 @@ async function main() {
     lod: snapshot.cloudLod,
     horizon: snapshot.cloudHorizon
   });
+  assignRenderLayer(cloudRenderer.group, COZY_RENDER_LAYERS.CLOUD_VOLUME, true);
   scene.add(cloudRenderer.group);
 
   setLoad(80, "Creating rolling depth-aware fog");
@@ -193,6 +191,8 @@ async function main() {
     scene,
     camera,
     fogRenderer,
+    foamRenderer,
+    layerGraph: oceanComposition,
     quality
   });
   const debugOverlay = createDebugOverlay(debugRoot);
@@ -203,8 +203,7 @@ async function main() {
     cloudRenderer.setStepScale(activeScale);
     fogRenderer.setStepScale(activeScale);
     postPipeline.setFogResolutionScale(
-      quality.fogResolutionScale
-        * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68)
+      quality.fogResolutionScale * (level === 0 ? 1 : level === 1 ? 0.82 : 0.68)
     );
     if (level > 0) {
       renderer.setPixelRatio(
@@ -259,24 +258,20 @@ async function main() {
 
   setLoad(
     100,
-    `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · ${worldMode} world ready`
+    `${backend === "webgpu" ? "WebGPU compute" : "WebGL2 fallback"} · layered ${worldMode} world ready`
   );
   setTimeout(() => {
     if (loader) loader.classList.add("is-complete");
-    setTimeout(() => {
-      if (loader) loader.hidden = true;
-    }, 520);
+    setTimeout(() => { if (loader) loader.hidden = true; }, 520);
   }, 260);
 
   let last = performance.now();
   let frames = 0;
   let materializationState = domains.getMaterializationState();
-
   renderer.setAnimationLoop(now => {
     const frameMs = Math.min(100, Math.max(0, now - last));
     const dt = Math.min(0.05, frameMs / 1000);
     last = now;
-
     domains.scenario.tick(dt);
     const renderState = domains.scenario.getRenderSnapshot();
     camera.position.set(
@@ -289,11 +284,7 @@ async function main() {
       renderState.camera.lookAt.y,
       renderState.camera.lookAt.z
     );
-    domains.updateWorldFocus(
-      renderState.camera.position,
-      renderState.camera.mode,
-      dt
-    );
+    domains.updateWorldFocus(renderState.camera.position, renderState.camera.mode, dt);
 
     worldRenderer.update(renderState.clock.elapsedSeconds);
     foamRenderer.update(renderState.clock.elapsedSeconds);
@@ -301,7 +292,6 @@ async function main() {
     postPipeline.render();
 
     frames += 1;
-
     if (frames > 1) {
       materializationState = domains.processMaterializationFrame({
         position: renderState.camera.position,
@@ -316,7 +306,7 @@ async function main() {
         backend: backend === "webgpu"
           ? `WebGPU compute · ${volumeTextures.source}`
           : `WebGL2 · ${volumeTextures.source}`,
-        quality: `${quality.tier} (${quality.source}) · ${worldMode} · cells ${baked}`,
+        quality: `${quality.tier} · ${worldMode} · cells ${baked} · foam final`,
         fps: perf.fps || 60,
         cloudSteps: cloudRenderer.getSteps(),
         fogSteps: fogRenderer.getSteps(),
@@ -336,6 +326,10 @@ async function main() {
     worldMode,
     worldRuntime: domains,
     worldQuery: domains.getQuery(),
+    oceanComposition,
+    renderLayerGraph: oceanComposition.graph,
+    renderPassOrder: postPipeline.getPassOrder(),
+    physicalRenderPassOrder: postPipeline.getPhysicalPassOrder(),
     kitCatalog,
     kitCatalogStatus: catalogStatus,
     snapshot,
@@ -345,6 +339,7 @@ async function main() {
     fogRenderer,
     oceanRenderer,
     foamRenderer,
+    skyRenderer,
     postPipeline,
     performanceBudget,
     getState() {
@@ -352,6 +347,9 @@ async function main() {
         backend,
         quality,
         world: domains.getState(),
+        renderLayers: oceanComposition.validation,
+        renderPassOrder: postPipeline.getPassOrder(),
+        physicalRenderPassOrder: postPipeline.getPhysicalPassOrder(),
         camera: domains.cameraSequence.descriptor(),
         clock: domains.clock.getState(),
         performance: performanceBudget.getState(),

@@ -1,54 +1,67 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-12T23-08-37-04-00`
+**Timestamp:** `2026-07-13T01-31-36-04-00`
 
 ## Summary
 
-The newest gap is adaptive render-quality transition truth. Degrade and recover do not mutate the same participant set, and no shared revision, verification, rollback or visible-frame receipt proves the applied quality state. Durable-save and browser-input gaps remain unresolved.
+The newest gap is browser page lifecycle truth. `pagehide` conflates retained-page suspension with terminal departure, disposes only one renderer subtree, clears gameplay presentation indexes and has no `pageshow` recovery path. Adaptive-quality, durable-save and browser-input gaps remain unresolved.
 
 ## Plan ledger
 
 **Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
-- [ ] Runtime session and run-generation authority.
+- [ ] Runtime session and lifecycle-generation authority.
+- [ ] BFCache-aware suspend/resume classification.
+- [ ] Complete terminal-retirement participant registry.
 - [ ] Browser input surface, focus, gesture and command ownership.
-- [ ] Durable save commit and truthful restore authority.
+- [ ] Durable save commit and truthful lifecycle flush authority.
 - [ ] Adaptive quality transition and render-generation authority.
-- [ ] Renderer participant readback and rollback.
-- [ ] First visible quality-frame provenance.
 - [ ] Agriculture recovery and cross-domain transaction proof.
 - [ ] Browser, backend and Pages parity fixtures.
 
-## Adaptive-quality gaps
+## Page-lifecycle gaps
 
 ```txt
-transition command ID: absent
-transition source classification: absent
-quality revision: absent
-render-surface generation: absent
-participant registry: absent
-participant capabilities: absent
-current-value readback: incomplete
-detached target plan: absent
-atomic multi-participant commit: absent
-verification: absent
-rollback: absent
-stale transition rejection: absent
-DPR recovery mutation: absent
-actual DPR diagnostics: absent
-actual fog-resolution diagnostics: absent
-terminal transition result: absent
-first visible quality-frame acknowledgement: absent
+page lifecycle command ID: absent
+runtime session and lifecycle generation: absent
+pagehide persisted-state classification: absent
+Suspend versus Retire decision: absent
+pageshow resume handler: absent
+animation-loop pause/stop receipt: absent
+wall-time baseline reset on resume: absent
+input-generation close/reopen: absent
+complete render participant registry: absent
+participant dependency order: absent
+retained participant validation: absent
+reconstruction result: absent
+complete resource disposal: absent
+exactly-once retirement receipt: absent
+stale/duplicate lifecycle-event rejection: absent
+first resumed visible-frame acknowledgement: absent
+BFCache and terminal-retirement fixtures: absent
 ```
 
 ## Concrete consequence
 
 ```txt
-level 2 degrade lowers cloud/fog costs and renderer DPR
-  -> sustained recovery lowers budget level to 1 and then 0
-  -> cloud/fog settings recover
-  -> renderer DPR remains at level-2 scale
-  -> debug surface can imply recovered quality without showing actual DPR
+pagehide for retained navigation
+  -> save candidate is written
+  -> gameplayRenderer.dispose clears plot/forage/crop indexes
+  -> page returns with no pageshow reconstruction
+  -> simulation and HUD can resume
+  -> gameplay world updates cannot resolve cleared indexes
+  -> target marker lookup can disappear
+  -> once-only pagehide listener cannot handle a later departure
+```
+
+## Retained adaptive-quality gaps
+
+```txt
+quality revision and render generation absent
+participant readback and atomic transition absent
+DPR recovery mutation absent
+rollback and stale-transition rejection absent
+first visible quality-frame acknowledgement absent
 ```
 
 ## Retained save gaps
@@ -79,40 +92,40 @@ first visible input-frame acknowledgement absent
 
 ## Other retained gaps
 
-- Renderer and browser listeners lack one coordinated retirement transaction.
-- `globalThis.CozyIsland` exposes raw engine and domain capabilities.
+- `globalThis.CozyIsland` exposes raw engine, renderer and domain capabilities without lifecycle revocation.
 - Agriculture recovery and cross-domain settlement need failure fixtures.
 - WebGPU/WebGL2 and deployed parity evidence remains incomplete.
 
-## Required quality fixtures
+## Required lifecycle fixtures
 
 ```txt
-level 0 -> 1 degrade
-level 1 -> 2 degrade
-level 2 -> 1 recover
-level 1 -> 0 recover
-DPR and participant readback
-participant failure rollback
-rollback failure reporting
-resize/pagehide during transition
-WebGPU/WebGL2 parity
-first visible matching frame
+BFCache round trip after Agriculture mutation
+BFCache round trip after Foraging mutation
+round trip with active interaction target
+repeated back/forward navigation
+pagehide during save activity
+pagehide during quality transition
+explicit terminal stop
+partial-construction failure retirement
+WebGPU/WebGL2 lifecycle parity
 source/build/Pages parity
+first resumed matching frame
 ```
 
 ## Dependency order
 
 ```txt
-runtime session and render generation
-  -> quality command and expected revision
-  -> detached participant plan
-  -> atomic commit and verification
-  -> rollback and terminal result
-  -> diagnostics from actual readback
-  -> visible-frame acknowledgement
+runtime session and lifecycle generation
+  -> lifecycle event admission
+  -> suspend/resume/retire plan
+  -> input/frame and save participants
+  -> renderer participant registry
+  -> retain/rebuild/dispose receipts
+  -> terminal result
+  -> first resumed visible-frame acknowledgement
   -> browser/backend/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim adaptive-quality recovery, atomic transitions, rollback safety, diagnostic truth, visible-frame correlation or deployed parity until the required fixtures pass on `main`.
+Do not claim BFCache safety, complete cleanup, exactly-once retirement, save-flush truth, visible-state continuity or deployed parity until the required fixtures pass on `main`.

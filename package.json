@@ -1,11 +1,12 @@
 {
   "name": "my-cozy-island-webgpu",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "node tests/startup-domain-smoke.mjs && node tests/adventure-domains-smoke.mjs",
+    "test": "node tests/menu-game-shell-smoke.mjs && node tests/startup-domain-smoke.mjs && node tests/adventure-domains-smoke.mjs",
+    "test:menu": "node tests/menu-game-shell-smoke.mjs",
     "test:startup": "node tests/startup-domain-smoke.mjs",
     "test:agriculture": "node tests/adventure-domains-smoke.mjs"
   },

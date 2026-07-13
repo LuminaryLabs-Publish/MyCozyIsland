@@ -121,6 +121,36 @@ export function createCozyStartupHost(options = {}) {
     });
   }
 
+  let globalFailureReported = false;
+  const onGlobalError = (event) => {
+    if (globalFailureReported || startup.getDescriptor().playable) return;
+    globalFailureReported = true;
+    fail(event?.error ?? event?.message ?? "Browser startup error", {
+      code: event?.error?.code ?? "cozy.startup.browser-error",
+      source: "browser-error-event"
+    });
+  };
+  const onUnhandledRejection = (event) => {
+    if (globalFailureReported || startup.getDescriptor().playable) return;
+    globalFailureReported = true;
+    fail(event?.reason ?? "Unhandled startup rejection", {
+      code: event?.reason?.code ?? "cozy.startup.unhandled-rejection",
+      source: "browser-unhandled-rejection"
+    });
+  };
+
+  if (options.captureGlobalErrors !== false && typeof globalThis.addEventListener === "function") {
+    globalThis.addEventListener("error", onGlobalError);
+    globalThis.addEventListener("unhandledrejection", onUnhandledRejection);
+  }
+
+  function dispose() {
+    if (typeof globalThis.removeEventListener === "function") {
+      globalThis.removeEventListener("error", onGlobalError);
+      globalThis.removeEventListener("unhandledrejection", onUnhandledRejection);
+    }
+  }
+
   return Object.freeze({
     engine,
     startup,
@@ -131,6 +161,7 @@ export function createCozyStartupHost(options = {}) {
     presentFirstFrame,
     enter,
     fail,
+    dispose,
     render: presentation.render,
     withTimeout: presentation.withTimeout,
     getDescriptor: startup.getDescriptor

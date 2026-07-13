@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#e8b47d">
+  <meta name="description" content="Enter My Cozy Island from a living palm-tree menu while the full island prepares in the background.">
+  <title>My Cozy Island</title>
+  <style>
+    :root { color-scheme:dark; font-family:Inter,ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#e8b47d; color:#fffaf0; }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; overflow:hidden; background:#e8b47d; }
+    body { overscroll-behavior:none; }
+    button { font:inherit; }
+    #game-preload,#menu-scene { position:fixed; inset:0; width:100%; height:100%; border:0; }
+    #game-preload { z-index:1; opacity:0; pointer-events:none; transition:opacity .85s ease; background:#e8b47d; }
+    #menu-scene { z-index:2; display:block; transition:opacity .8s ease,filter .8s ease; }
+    #menu-ui { position:fixed; inset:0; z-index:3; display:grid; place-items:center; padding:24px; transition:opacity .6s ease,transform .8s cubic-bezier(.2,.8,.2,1); }
+    #menu-card { width:min(520px,calc(100vw - 36px)); padding:30px 30px 26px; border:1px solid rgba(255,255,255,.28); border-radius:30px; background:linear-gradient(145deg,rgba(37,69,59,.52),rgba(24,49,50,.34)); box-shadow:0 30px 90px rgba(45,71,68,.28); backdrop-filter:blur(20px) saturate(1.18); text-align:center; }
+    #kicker { margin:0 0 8px; color:rgba(255,249,227,.72); font-size:11px; font-weight:850; letter-spacing:.18em; text-transform:uppercase; }
+    h1 { margin:0; font-size:clamp(42px,9vw,74px); line-height:.92; letter-spacing:-.055em; text-wrap:balance; text-shadow:0 12px 38px rgba(47,80,75,.22); }
+    #subtitle { max-width:390px; margin:18px auto 22px; color:rgba(255,255,244,.82); font-size:14px; line-height:1.55; }
+    #play { width:min(260px,100%); min-height:58px; border:1px solid rgba(255,255,255,.38); border-radius:999px; background:linear-gradient(180deg,#fff1a8,#edc77d); color:#35534b; box-shadow:0 16px 38px rgba(32,58,54,.3),inset 0 1px rgba(255,255,255,.75); font-size:15px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; transition:transform .18s ease,filter .18s ease,opacity .18s ease; }
+    #play:hover:not(:disabled) { transform:translateY(-2px) scale(1.01); filter:brightness(1.04); }
+    #play:active:not(:disabled) { transform:translateY(0) scale(.99); }
+    #play:disabled { cursor:default; opacity:.58; }
+    #preload { margin:18px auto 0; width:min(330px,100%); }
+    #preload-row { display:flex; justify-content:space-between; gap:14px; margin-bottom:8px; color:rgba(255,255,245,.66); font-size:10px; font-weight:820; letter-spacing:.08em; text-transform:uppercase; }
+    #preload-track { height:7px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.15); }
+    #preload-fill { width:1%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#91d6b0,#fff0a8 70%,#ffc48b); box-shadow:0 0 18px rgba(255,239,193,.42); transition:width .28s ease; }
+    #menu-error { position:fixed; left:18px; right:18px; bottom:18px; z-index:5; max-height:40vh; margin:0; overflow:auto; padding:14px 16px; border:1px solid rgba(255,188,188,.35); border-radius:16px; background:rgba(74,13,19,.92); color:#ffeaea; font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; white-space:pre-wrap; }
+    #menu-error[hidden] { display:none; }
+    body.is-entering #game-preload { opacity:1; pointer-events:auto; }
+    body.is-entering #menu-scene { opacity:0; filter:blur(8px); }
+    body.is-entering #menu-ui { opacity:0; transform:translateY(-16px) scale(1.025); pointer-events:none; }
+    @media (max-height:620px) { #menu-card { padding:22px 24px 20px; } #subtitle { margin:12px auto 16px; } #preload { margin-top:13px; } }
+    @media (prefers-reduced-motion:reduce) { #game-preload,#menu-scene,#menu-ui,#preload-fill,#play { transition:none; } }
+  </style>
+</head>
+<body>
+  <iframe id="game-preload" title="My Cozy Island game" aria-hidden="true" tabindex="-1"></iframe>
+  <canvas id="menu-scene" aria-hidden="true"></canvas>
+  <main id="menu-ui">
+    <section id="menu-card" aria-labelledby="title">
+      <p id="kicker">A quiet island adventure</p>
+      <h1 id="title">My Cozy Island</h1>
+      <p id="subtitle">Grow a tropical garden, gather wild coconuts, and wander beneath a warm golden sky.</p>
+      <button id="play" type="button" disabled>Preparing Island</button>
+      <div id="preload" aria-live="polite">
+        <div id="preload-row"><span id="preload-label">Waking the island</span><span id="preload-percent">1%</span></div>
+        <div id="preload-track" aria-hidden="true"><div id="preload-fill"></div></div>
+      </div>
+    </section>
+  </main>
+  <pre id="menu-error" role="alert" hidden></pre>
+  <script type="module" src="./src/menu.js?v=menu-game-shell-1"></script>
+</body>
+</html>

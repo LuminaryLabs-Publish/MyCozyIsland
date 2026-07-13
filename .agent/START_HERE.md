@@ -1,28 +1,26 @@
-# START HERE: MyCozyIsland Core Startup and bootstrap admission
+# START HERE: MyCozyIsland menu/game preload handoff
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T10-41-40-04-00`  
-**Status:** `core-startup-integration-central-reconciled`  
-**Technical status:** `core-startup-integrated-bootstrap-admission-gap-audited`  
-**Retained statuses:** `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
+**Aligned:** `2026-07-13T12-38-45-04-00`  
+**Status:** `menu-game-preload-handoff-scheduler-authority-audited`  
+**Retained statuses:** `core-startup-integration-central-reconciled`, `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
 
 ## Summary
 
-MyCozyIsland now uses NexusEngine Core Startup inside the same engine instance as the complete Agriculture adventure. Preparations, continuation, structured pre-playable failure and first-render gating are implemented. The current audit isolates the earlier browser boundary: the static module graph must resolve and evaluate before the startup host can report a typed failure.
+MyCozyIsland now routes through a living Canvas2D menu while the complete game starts in a hidden same-origin iframe. Core Startup supplies factual readiness and the bridge freezes simulation before enabling Play. The remaining authority gap is cross-document scheduler and handoff ownership: menu RAF, hidden game rendering, freeze/resume, messages, fallback reveal, focus/history transfer, and first visible game-frame proof are independent.
 
 ## Plan ledger
 
-**Goal:** admit one browser module generation, bind it to one Core Startup launch and prove the first matching visible frame before playable entry.
+**Goal:** admit one preload generation and one player-entry transaction, transfer scheduler and input ownership once, and prove the first matching visible game frame.
 
-- [x] Compare the full Publish inventory with central tracking and root `.agent` state.
+- [x] Compare all ten Publish repositories with the central ledger and root `.agent` state.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland because runtime was ten commits ahead of central documentation.
-- [x] Reconcile Core Startup, engine reuse, preparations, continuation, first-frame ordering and tests.
-- [x] Update the census to 65 source-backed kit surfaces and two startup adapters.
-- [x] Add the `2026-07-13T10-41-40-04-00` tracker and audit family.
-- [x] Reconcile the central repo ledger and internal change log.
-- [ ] Implement static module admission, renderer-derived first-frame evidence and browser/build/Pages fixtures.
+- [x] Select only MyCozyIsland because ten menu/game-shell commits were newer than central tracking.
+- [x] Reconcile the interaction loop, domains, 65 DSK/kit surfaces, five adapters, and offered services.
+- [x] Add the `2026-07-13T12-38-45-04-00` tracker and audit family.
+- [ ] Implement generation-bound scheduler, quiescence, message, entry, retirement, and visible-frame contracts.
+- [ ] Run source/browser/build/Pages fixtures.
 
 ## Read first
 
@@ -31,33 +29,31 @@ MyCozyIsland now uses NexusEngine Core Startup inside the same engine instance a
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/trackers/2026-07-13T10-41-40-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-13T10-41-40-04-00-core-startup-bootstrap-admission-dsk-map.md
-.agent/startup-audit/2026-07-13T10-41-40-04-00-static-module-bootstrap-contract.md
-.agent/render-audit/2026-07-13T10-41-40-04-00-startup-first-visible-frame-gap.md
+.agent/trackers/2026-07-13T12-38-45-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-13T12-38-45-04-00-menu-game-preload-handoff-scheduler-dsk-map.md
+.agent/preload-handoff-audit/2026-07-13T12-38-45-04-00-generation-quiescence-entry-contract.md
+.agent/render-audit/2026-07-13T12-38-45-04-00-hidden-game-dual-loop-visible-frame-gap.md
 ```
 
 ## Active authority
 
 ```txt
-cozy-island-static-module-bootstrap-admission-authority-domain
+cozy-island-menu-game-preload-handoff-scheduler-authority-domain
 ```
 
 ## Critical finding
 
 ```txt
-index.html static module tag
-  -> resolve Three.js, NexusEngine, Kits and local modules
-  -> parse and evaluate complete module graph
-  -> only then create cozy-startup-host
-  -> only then install error/unhandled-rejection listeners
-  -> only then Core Startup can publish failure
+menu Canvas2D RAF continues
+hidden game animation loop continues
+bridge replaces only engine.tick and engine.step
+Play resumes simulation and sends entered immediately
+parent reveals on entered or after a 900 ms fallback
+no entry generation or first post-resume visible-frame acknowledgement
 ```
 
-Import-map, provider, parse or module-evaluation failure can therefore leave the static loader at `Starting NexusEngine` without a typed terminal result, timeout, retry or fallback.
-
-The first-frame gate proves `postPipeline.render()` was called before `enter()`, but its receipt is caller-authored and does not prove renderer submission or visible canvas presentation.
+The menu visibility handler can also request an extra RAF callback on return to visibility without proving the recursive predecessor chain is retired.
 
 ## Do not claim
 
-Do not claim provider-independent startup failure handling, retry isolation, renderer submission proof, first-visible-frame acknowledgement, browser/build/Pages parity or production startup readiness until the fixture matrix passes on `main`.
+Do not claim single-scheduler ownership, hidden-render quiescence, exact freeze/resume, stale-message isolation, atomic focus/history transfer, first visible game-frame completion, BFCache safety, or deployed handoff parity until executable fixtures pass on `main`.

@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           rm -rf dist
           mkdir -p dist
-          cp index.html dist/index.html
+          cp ./*.html dist/
           cp package.json dist/package.json
           cp README.md dist/README.md
           cp -R src dist/src

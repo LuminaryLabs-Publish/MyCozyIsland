@@ -1,10 +1,11 @@
-# Next steps: MyCozyIsland
+# Next steps: MyCozyIsland public runtime capability authority
 
-**Timestamp:** `2026-07-13T04-10-37-04-00`
+**Timestamp:** `2026-07-13T04-21-10-04-00`  
+**Publication status:** `public-runtime-capability-publication-central-reconciled`
 
 ## Summary
 
-Replace the raw browser-global ownership graph with a narrow public projection and an opt-in debug/support gateway. Every mutating operation should be admitted against a runtime generation, return a typed result, record changed participants and correlate the effect with a visible frame.
+Replace the raw browser-global ownership graph with a narrow public projection and an opt-in debug/support gateway. Every mutating operation must be admitted against a runtime generation, return a typed result, record changed participants and correlate the effect with a visible frame.
 
 ## Plan ledger
 
@@ -12,30 +13,32 @@ Replace the raw browser-global ownership graph with a narrow public projection a
 
 - [ ] Define production, development, test and support host-channel policy.
 - [ ] Define `PublicHostId`, `PublicHostGeneration`, `CapabilityId` and grant expiry.
-- [ ] Publish an immutable read-only summary by default.
+- [ ] Publish an immutable detached read-only summary by default.
 - [ ] Remove raw renderer, scene, camera, adventure, engine and domain-service references from the public surface.
 - [ ] Route permitted mutations through typed capability commands.
-- [ ] Require caller/source, command ID, sequence, expected runtime generation and expected domain revision.
-- [ ] Reject duplicate, stale, unknown and revoked commands with zero mutation.
+- [ ] Require caller/source, command ID, sequence and expected runtime/domain/render revisions.
+- [ ] Reject duplicate, stale, unknown, expired and revoked commands with zero mutation.
 - [ ] Separate inspect, capture-save, input-injection, reset and renderer-debug capabilities.
 - [ ] Require explicit confirmation and participant scope for reset.
 - [ ] Return changed-domain, save, renderer and frame receipts.
-- [ ] Revoke the host during Suspend/Retire and reissue only under a new generation.
+- [ ] Revoke the host during terminal lifecycle retirement and reissue only under a successor generation.
 - [ ] Expose a bounded observation journal without raw mutable owners.
 - [ ] Add source, production-build and Pages fixtures.
 
-## Immediate safe ledge
+## Minimal implementation order
 
-1. Replace `globalThis.CozyIsland` with a read-only frozen projection containing backend, quality, domain paths, object count and the last committed frame revision.
-2. Keep a development-only gateway behind an explicit host-channel flag.
-3. Map each allowed operation to one capability ID and typed command.
-4. Do not expose `engine`, renderer, scene, camera or domain API objects.
-5. Add `inspectState()` and `captureSave()` as non-mutating commands with immutable results.
-6. Add reset only as `requestReset({commandId, expectedGeneration, confirmation})`.
-7. Record accepted, rejected, stale, duplicate and revoked results.
-8. Correlate accepted mutations with the first renderer frame carrying the resulting revision.
-9. Revoke all grants on page lifecycle retirement and runtime restart.
-10. Prove production builds omit mutating debug capabilities.
+```txt
+1. runtime session and lifecycle generation
+2. host identity, generation and channel policy
+3. detached production projection
+4. capability manifest, grants, expiry and revocation
+5. typed command admission and stale/duplicate rejection
+6. participant adapters and commit/rollback receipts
+7. reset confirmation and successor-generation policy
+8. bounded observation journal
+9. first visible capability-effect acknowledgement
+10. source/build/Pages proof
+```
 
 ## Target files
 
@@ -52,35 +55,27 @@ scripts/smoke-public-host-browser.mjs
 package.json
 ```
 
-## Required fixtures
+## Required acceptance cases
 
 ```txt
-production build -> read-only projection only
-development grant -> declared capabilities only
-raw engine/renderer/scene/camera -> absent from public projection
-unknown capability -> rejected with zero mutation
-duplicate command -> one result and one effect
-stale generation/revision -> rejected
-revoked grant -> rejected
-concurrent host tick -> prohibited
-reset without confirmation -> rejected
-reset with capability -> participant receipts and new generation
-page retirement -> host revoked
-accepted mutation -> first matching visible-frame acknowledgement
-source/build/Pages -> equivalent policy
+production build publishes read-only projection only
+development grant exposes only declared capabilities
+raw engine/renderer/scene/camera and domain API objects are absent
+unknown capability is rejected with zero mutation
+duplicate command creates one result and one effect
+stale generation or revision is rejected
+expired or revoked grant is rejected
+concurrent host tick is prohibited
+reset without confirmation is rejected
+accepted reset returns participant receipts and successor generation
+terminal page lifecycle revokes the host
+accepted mutation receives first matching visible-frame acknowledgement
+source, built output and Pages expose equivalent policy
 ```
 
-## Dependency order
+## Retained work
 
-```txt
-runtime session and lifecycle generation
-  -> host channel policy
-  -> capability manifest and grants
-  -> typed command admission
-  -> participant results and journal
-  -> visible-frame correlation
-  -> production and Pages proof
-```
+Page-lifecycle authority, adaptive-quality transitions, durable-save commits, browser-input ownership, Agriculture recovery and broader deployed parity remain open.
 
 ## Do not claim
 

@@ -20,12 +20,18 @@ Planted coconut palms are perennial Agriculture crops. Wild coconut palms remain
 
 ```txt
 NexusEngine Realtime Core
+├─ Core Startup                         n:core-startup
+│  ├─ launch truth
+│  ├─ required preparation facts
+│  ├─ continuation choice
+│  ├─ structured failure
+│  └─ first-frame playable readiness
 ├─ Core Object
 ├─ Core Transaction Ledger
 ├─ Cozy World DSK
 ├─ Cozy Input DSK
 ├─ Cozy Inventory DSK
-├─ Agriculture DSK                 n:production:agriculture
+├─ Agriculture DSK                      n:production:agriculture
 │  ├─ land service
 │  ├─ soil service
 │  ├─ cultivation service
@@ -41,10 +47,31 @@ NexusEngine Realtime Core
 ├─ Cozy Save DSK
 └─ Cozy Render Snapshot DSK
         ↓
+Browser startup and input adapters
+        ↓
 Three.js WebGPU presentation adapters
 ```
 
 There is no `cozy-farming-domain-kit` in the installed composition. `n:production` is a catalog family, not an executable parent kit.
+
+## Startup contract
+
+Core Startup records factual application state:
+
+```txt
+NexusEngine available
+→ presentation backend ready
+→ adventure composition installed
+→ new or restored island selected
+→ world presentation ready
+→ player controls ready
+→ first successful frame presented
+→ player may enter
+```
+
+The loader cannot disappear merely because JavaScript finished or the renderer object exists. The game becomes playable only after one successful presented frame.
+
+MyCozyIsland owns the human-facing copy such as “Growing your island.” Core Startup contains no product strings, splash ordering, tips, or visual layout. The browser adapter renders the descriptor and exposes structured failures and bounded initialization timeouts.
 
 ## Ownership
 
@@ -71,17 +98,18 @@ Does not own:
 
 ### MyCozyIsland product services
 
-- Inventory settles Agriculture `resourceChanges` atomically.
+- Inventory coordinates Agriculture `resourceChanges`; full multi-participant atomic settlement remains tracked separately.
 - Interaction chooses nearby agriculture or wild-resource targets.
 - World provides the shared procedural island and farm layout.
 - Save migrates `cozy-island-adventure-save/1` farming state into Agriculture schema v2.
 - Render Snapshot publishes Agriculture as the authoritative crop state.
+- Startup Host translates Core Startup facts into product copy and DOM presentation.
 
 ## Pinned reusable sources
 
 ```txt
-NexusEngine
-c5548de504072bf09eb68986b98aca0292903803
+NexusEngine Core Startup
+4fac5c2eea315ec6cf439c6a41b8f6ed0faba044
 
 NexusEngine-Kits Agriculture
 2218856ccd729744140d153d738ba8db638b3359
@@ -114,7 +142,7 @@ background
 → output transform
 ```
 
-The renderer reads descriptors. It does not own Agriculture, Inventory, or Foraging state.
+The renderer reads descriptors. It does not own Startup, Agriculture, Inventory, or Foraging state.
 
 ## Persistence
 
@@ -141,6 +169,8 @@ Then open `http://localhost:8080/`.
 ```js
 CozyIsland.getState()
 CozyIsland.engine.n.paths()
+CozyIsland.startup.getDescriptor()
+CozyIsland.startup.getSnapshot()
 CozyIsland.engine.n.agriculture.getState()
 CozyIsland.engine.n.agriculture.getDescriptors()
 CozyIsland.inventory.getState()
@@ -150,4 +180,4 @@ CozyIsland.captureSave()
 
 ## Source-of-truth rule
 
-NexusEngine supplies neutral mechanisms. The official Agriculture DSK owns reusable agricultural meaning. MyCozyIsland supplies tropical content, world configuration, cross-domain settlement, sequences, and presentation.
+NexusEngine supplies neutral mechanisms. Core Startup owns factual launch readiness. Product sequences and adapters own the waiting experience. The official Agriculture DSK owns reusable agricultural meaning. MyCozyIsland supplies tropical content, world configuration, cross-domain settlement, sequences, and presentation.

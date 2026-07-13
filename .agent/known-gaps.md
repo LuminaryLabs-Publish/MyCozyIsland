@@ -1,123 +1,110 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-13T08-04-17-04-00`  
-**Publication status:** `resource-settlement-recovery-authority-audited`
+**Timestamp:** `2026-07-13T10-41-40-04-00`  
+**Publication status:** `core-startup-integrated-bootstrap-admission-gap-audited`
 
 ## Summary
 
-The active gap is cross-domain resource settlement and recovery. Inventory, Agriculture, Foraging and Core Transaction Ledger expose useful bounded services, but planting, harvesting and wild collection are composed through sequential participant writes without one atomic commit, complete participant receipts, event buffering, evidence-safe recovery or visible-frame proof.
+Core Startup integration is implemented, but it begins only after the full static browser module graph has loaded. Provider, import-map, parse or evaluation failure can therefore occur before a typed startup result exists. The first-frame fact also proves host call order rather than renderer submission or visible canvas presentation.
 
 ## Plan ledger
 
-**Goal:** keep unresolved risks dependency ordered and tied to executable proof.
+**Goal:** keep startup and retained architecture risks dependency ordered and tied to executable proof.
 
-- [ ] Resource settlement identity and generation.
-- [ ] Expected participant and ledger revisions.
-- [ ] Detached Inventory, Agriculture and Foraging candidates.
-- [ ] Participant prepare and aggregate commit authority.
-- [ ] Event buffering and post-commit release.
-- [ ] Partial-attempt classification, recovery and quarantine.
-- [ ] Settlement-consistent save and restore.
-- [ ] Visible settlement-frame provenance.
-- [ ] Fault-injection and deployment-parity fixtures.
-- [ ] Public-runtime capability authority.
-- [ ] Page lifecycle, input, adaptive quality and durable storage authority.
+- [ ] Static bootstrap attempt identity and generation.
+- [ ] Immutable provider manifest and source receipts.
+- [ ] Provider-independent early failure projection.
+- [ ] Bounded module admission result.
+- [ ] Retry, fallback, cancellation and stale-attempt fencing.
+- [ ] Core Startup launch binding to accepted module graph.
+- [ ] Renderer-derived first-frame result.
+- [ ] First visible startup-frame acknowledgement.
+- [ ] Startup/bootstrap lifecycle disposal.
+- [ ] Browser/build/Pages bootstrap fixtures.
+- [ ] Resource settlement and recovery authority.
+- [ ] Public capability, page lifecycle, durable save, input and quality authorities.
 
-## Resource-settlement gaps
-
-```txt
-SettlementId and generation: absent
-expected Inventory revision: absent
-expected aggregate ledger sequence: absent
-Inventory prepare candidate: absent
-Agriculture participant prepare receipt: absent
-Foraging participant prepare receipt: absent
-participant event buffer: absent
-atomic multi-participant commit: absent
-aggregate terminal result with participant receipts: absent
-partial-attempt classification: absent
-divergence quarantine: absent
-save-eligible settlement generation: absent
-first visible settlement-frame acknowledgement: absent
-fault-injection fixtures: absent
-source/build/Pages settlement parity: absent
-```
-
-## Agriculture consequence
+## Active startup gaps
 
 ```txt
-Inventory applies resource changes
-  -> Agriculture commits plot state and may emit event
-  -> aggregate product ledger record commits last
+BootstrapAttemptId: absent
+BootstrapGeneration: absent
+ProviderManifestRevision: absent
+provider receipt and integrity evidence: absent
+static-shell typed failure result: absent
+module-load timeout: absent
+module export contract: absent
+retry and fallback result: absent
+stale predecessor rejection: absent
+Core Startup launch/module binding: absent
+renderer submission ID: absent
+visible startup-frame acknowledgement: absent
+bootstrap retirement receipt: absent
+browser/build/Pages startup fixtures: absent
 ```
 
-A catch path loads snapshots, but emitted events cannot be retracted and observers may already have seen intermediate state.
-
-## Agriculture recovery consequence
+## Static module consequence
 
 ```txt
-aggregate product record missing
-  -> inner Agriculture record exists
-  -> product code records aggregate success
+index.html
+  -> static import of src/main-adventure.js
+  -> remote/local dependency graph must resolve, parse and evaluate
+  -> only then createCozyStartupHost()
+  -> only then error and unhandled-rejection listeners exist
 ```
 
-No check proves that the corresponding Inventory operation succeeded, current balances match the plan, participant revisions share one predecessor or a partial state was not saved/rendered.
+A failure before host creation can leave the static loading shell unchanged with no typed reason or recovery action.
 
-## Foraging consequence
+## First-frame consequence
 
 ```txt
-outer Foraging applyOnce
-  -> Inventory add coconut
-  -> optional Inventory add sprout
-  -> node depletion
-  -> outer record
+postPipeline.render()
+  -> returns no result
+  -> host authors frame ID and pass-order receipt
+  -> Core Startup accepts first-frame fact
+  -> enter playable
 ```
 
-Nested Inventory results are ignored. No shared rollback or participant receipt joins resource addition to node depletion.
+No renderer/device generation, submission result, canvas readback or visible-frame receipt joins that fact to the displayed frame.
 
-## Persistence and rendering consequence
+## Retained resource-settlement gaps
 
 ```txt
-save capture reads participant snapshots sequentially
-restore writes participant snapshots sequentially
-render revision concatenates participant revisions
+multi-participant prepare/commit: absent
+Agriculture event buffering: absent
+Foraging nested Inventory receipt checks: absent
+partial settlement recovery and quarantine: absent
+settlement-consistent save generation: absent
+first visible settlement acknowledgement: absent
 ```
 
-Neither surface carries SettlementId, aggregate ledger sequence, participant receipts or settlement-generation acknowledgement.
-
-## Retained public capability gaps
-
-```txt
-raw engine and presentation owners remain publicly exposed
-channel policy and capability grants absent
-caller/source identity and expected revision absent
-host revocation and visible-effect acknowledgement absent
-```
-
-## Retained lifecycle, save, input and quality gaps
+## Retained lifecycle, capability, save, input and quality gaps
 
 ```txt
 BFCache-aware suspend/resume classification absent
 complete retirement participant registry absent
+startupHost.dispose not called by current page retirement
+raw engine and presentation owners remain publicly exposed
 durable storage write/readback receipt absent
 browser input focus/gesture/generation authority incomplete
 adaptive quality atomic transition and DPR recovery incomplete
-source/build/Pages fixture coverage incomplete
+source/build/Pages parity coverage incomplete
 ```
 
 ## Dependency order
 
 ```txt
-runtime and settlement generation
-  -> participant prepare adapters
-  -> atomic settlement result
-  -> event release
-  -> recovery evidence and quarantine
-  -> save eligibility
-  -> visible-frame acknowledgement
-  -> deployment proof
+static bootstrap admission
+  -> Core Startup launch binding
+  -> renderer submission result
+  -> visible startup frame
+  -> playable entry
+  -> lifecycle retirement
+  -> deployment parity
+
+then compose retained gameplay, settlement, save, input and quality authorities
 ```
 
 ## Do not claim
 
-Do not claim atomic resource exchange, event rollback, evidence-complete recovery, settlement-consistent saves, visible settlement provenance or production readiness until the fixture matrix passes on `main`.
+Do not claim provider-independent startup handling, retry isolation, first-visible-frame proof, atomic resource settlement, durable lifecycle convergence or production readiness until the relevant fixture matrices pass on `main`.

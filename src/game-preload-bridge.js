@@ -31,6 +31,12 @@ function readProgress() {
   };
 }
 
+function visibleHostError() {
+  const error = document.querySelector("#error");
+  if (!error || error.hidden || !error.textContent?.trim()) return null;
+  return error.textContent.trim();
+}
+
 function freezeSimulation() {
   if (!embeddedPreload || frozenEngine || !globalThis.CozyIsland?.engine) return;
   frozenEngine = globalThis.CozyIsland.engine;
@@ -84,12 +90,18 @@ function enterGame() {
 
 function inspect() {
   const { descriptor, progress, label } = readProgress();
+  const hostError = visibleHostError();
 
-  if (descriptor?.failure && !announcedFailure) {
+  if ((descriptor?.failure || hostError) && !announcedFailure) {
     announcedFailure = true;
+    const failure = descriptor?.failure ?? {
+      code: "cozy.startup.host-error",
+      message: hostError,
+      source: "game-host"
+    };
     post("cozy-game-failed", {
-      error: `${descriptor.failure.code}: ${descriptor.failure.message}`,
-      failure: descriptor.failure
+      error: `${failure.code}: ${failure.message}`,
+      failure
     });
     return;
   }

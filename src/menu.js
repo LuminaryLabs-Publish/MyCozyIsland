@@ -1,198 +1,214 @@
+import * as THREE from "three";
+
 const canvas = document.querySelector("#menu-scene");
-const context = canvas?.getContext("2d", { alpha: false });
 const frame = document.querySelector("#game-preload");
 const playButton = document.querySelector("#play");
-const progressFill = document.querySelector("#preload-fill");
-const progressLabel = document.querySelector("#preload-label");
-const progressPercent = document.querySelector("#preload-percent");
-const errorPanel = document.querySelector("#menu-error");
-
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let sceneRunning = true;
+
 let gameReady = false;
 let entering = false;
 let preloadStarted = false;
-let lastReportedProgress = 0.01;
+let lastProgress = 0.01;
+let sceneRunning = true;
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, Number(value) || 0));
+if (!canvas) throw new Error("Missing #menu-scene canvas.");
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: false,
+  powerPreference: "low-power"
+});
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+camera.position.set(0.25, 1.2, 9.5);
+camera.lookAt(-1.35, 0.85, 0);
+
+function createSky() {
+  const geometry = new THREE.SphereGeometry(36, 32, 18);
+  const material = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      topColor: { value: new THREE.Color("#ed9473") },
+      middleColor: { value: new THREE.Color("#f4c491") },
+      bottomColor: { value: new THREE.Color("#71b7aa") }
+    },
+    vertexShader: `
+      varying vec3 vDirection;
+      void main() {
+        vDirection = normalize(position);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 topColor;
+      uniform vec3 middleColor;
+      uniform vec3 bottomColor;
+      varying vec3 vDirection;
+      void main() {
+        float h = clamp(vDirection.y * 0.5 + 0.5, 0.0, 1.0);
+        vec3 lower = mix(bottomColor, middleColor, smoothstep(0.0, 0.62, h));
+        vec3 color = mix(lower, topColor, smoothstep(0.55, 1.0, h));
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+  const sky = new THREE.Mesh(geometry, material);
+  sky.name = "menu-sky";
+  return sky;
 }
 
-function resizeCanvas() {
-  if (!canvas || !context) return;
-  const ratio = Math.min(devicePixelRatio || 1, 2);
-  canvas.width = Math.max(1, Math.floor(innerWidth * ratio));
-  canvas.height = Math.max(1, Math.floor(innerHeight * ratio));
-  canvas.style.width = `${innerWidth}px`;
-  canvas.style.height = `${innerHeight}px`;
-  context.setTransform(ratio, 0, 0, ratio, 0, 0);
-}
+function createFrondGeometry(length = 2.65, width = 0.48, droop = 0.58) {
+  const segments = 9;
+  const positions = [];
+  const indices = [];
+  const uvs = [];
 
-function roundedCloud(x, y, scale, alpha) {
-  context.save();
-  context.globalAlpha = alpha;
-  context.fillStyle = "#fff8dd";
-  context.beginPath();
-  context.ellipse(x - 42 * scale, y + 4 * scale, 48 * scale, 20 * scale, 0, 0, Math.PI * 2);
-  context.ellipse(x, y - 7 * scale, 62 * scale, 30 * scale, 0, 0, Math.PI * 2);
-  context.ellipse(x + 51 * scale, y + 5 * scale, 49 * scale, 21 * scale, 0, 0, Math.PI * 2);
-  context.fill();
-  context.restore();
-}
-
-function drawPalm(time, width, height) {
-  const baseX = width * 0.76;
-  const baseY = height * 0.9;
-  const trunkHeight = Math.min(height * 0.58, 440);
-  const topX = baseX - trunkHeight * 0.16;
-  const topY = baseY - trunkHeight;
-  const sway = reducedMotion ? 0 : Math.sin(time * 0.00055) * 0.075;
-
-  context.save();
-  context.lineCap = "round";
-  context.strokeStyle = "#7a5a3f";
-  context.lineWidth = Math.max(17, width * 0.015);
-  context.beginPath();
-  context.moveTo(baseX, baseY);
-  context.bezierCurveTo(baseX - 10, baseY - trunkHeight * 0.36, topX + 22, topY + trunkHeight * 0.3, topX, topY);
-  context.stroke();
-
-  context.strokeStyle = "rgba(255,224,172,.22)";
-  context.lineWidth = Math.max(4, width * 0.0034);
-  context.beginPath();
-  context.moveTo(baseX - 4, baseY - 4);
-  context.bezierCurveTo(baseX - 8, baseY - trunkHeight * 0.36, topX + 13, topY + trunkHeight * 0.3, topX - 3, topY + 4);
-  context.stroke();
-
-  context.translate(topX, topY);
-  context.rotate(sway);
-  for (let index = 0; index < 9; index += 1) {
-    const angle = -Math.PI * 0.92 + index * (Math.PI * 1.84 / 8);
-    const length = 112 + (index % 3) * 18;
-    context.save();
-    context.rotate(angle);
-    context.strokeStyle = index % 2 ? "#4d9460" : "#5ba96b";
-    context.lineWidth = 15;
-    context.beginPath();
-    context.moveTo(0, 0);
-    context.quadraticCurveTo(length * 0.45, -15, length, 18 + Math.sin(time * 0.0008 + index) * 5);
-    context.stroke();
-    context.strokeStyle = "rgba(224,246,167,.26)";
-    context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(6, -2);
-    context.quadraticCurveTo(length * 0.46, -14, length - 5, 15);
-    context.stroke();
-    context.restore();
+  for (let index = 0; index <= segments; index += 1) {
+    const t = index / segments;
+    const x = length * t;
+    const y = -droop * t * t;
+    const halfWidth = Math.sin(Math.PI * t) * width * 0.5 * (1 - t * 0.38);
+    positions.push(x, y, -halfWidth, x, y, halfWidth);
+    uvs.push(t, 0, t, 1);
   }
 
-  context.fillStyle = "#6e5037";
+  for (let index = 0; index < segments; index += 1) {
+    const a = index * 2;
+    const b = a + 1;
+    const c = a + 2;
+    const d = a + 3;
+    indices.push(a, c, b, b, c, d);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createPalm() {
+  const palm = new THREE.Group();
+  palm.name = "menu-hero-palm";
+  palm.position.set(-2.15, -2.85, 0);
+  palm.rotation.y = 0.16;
+
+  const trunkCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0.08, 1.2, 0.02),
+    new THREE.Vector3(0.28, 2.7, 0),
+    new THREE.Vector3(0.62, 4.2, -0.04),
+    new THREE.Vector3(0.98, 5.35, 0)
+  ]);
+  const trunk = new THREE.Mesh(
+    new THREE.TubeGeometry(trunkCurve, 36, 0.24, 9, false),
+    new THREE.MeshStandardMaterial({ color: "#8a6040", roughness: 0.92, metalness: 0 })
+  );
+  trunk.name = "menu-palm-trunk";
+  palm.add(trunk);
+
+  const crown = new THREE.Group();
+  crown.name = "menu-palm-crown";
+  crown.position.copy(trunkCurve.getPoint(1));
+  palm.add(crown);
+
+  const leafMaterials = [
+    new THREE.MeshStandardMaterial({ color: "#4d9a62", roughness: 0.88, side: THREE.DoubleSide }),
+    new THREE.MeshStandardMaterial({ color: "#63ae69", roughness: 0.88, side: THREE.DoubleSide }),
+    new THREE.MeshStandardMaterial({ color: "#78b86e", roughness: 0.88, side: THREE.DoubleSide })
+  ];
+
+  const fronds = [];
+  for (let index = 0; index < 11; index += 1) {
+    const angle = index / 11 * Math.PI * 2;
+    const frond = new THREE.Mesh(
+      createFrondGeometry(2.35 + (index % 3) * 0.18, 0.46, 0.48 + (index % 2) * 0.12),
+      leafMaterials[index % leafMaterials.length]
+    );
+    frond.name = `menu-palm-frond-${index}`;
+    frond.rotation.set(-0.14 + (index % 3) * 0.08, angle, -0.08 + Math.sin(angle) * 0.12);
+    frond.userData.baseRotation = frond.rotation.clone();
+    frond.userData.phase = index * 0.71;
+    crown.add(frond);
+    fronds.push(frond);
+  }
+
+  const coconutMaterial = new THREE.MeshStandardMaterial({ color: "#6e4c32", roughness: 0.95 });
   for (let index = 0; index < 4; index += 1) {
-    const angle = index / 4 * Math.PI * 2 + 0.4;
-    context.beginPath();
-    context.ellipse(Math.cos(angle) * 15, 14 + Math.sin(angle) * 8, 9, 13, angle, 0, Math.PI * 2);
-    context.fill();
+    const angle = index / 4 * Math.PI * 2 + 0.42;
+    const coconut = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), coconutMaterial);
+    coconut.scale.set(0.88, 1.12, 0.88);
+    coconut.position.set(Math.cos(angle) * 0.28, -0.17 - (index % 2) * 0.05, Math.sin(angle) * 0.28);
+    crown.add(coconut);
   }
-  context.restore();
+
+  return { palm, crown, fronds };
 }
 
-function drawScene(time = 0) {
-  if (!context) return;
-  const width = innerWidth;
-  const height = innerHeight;
-  const sky = context.createLinearGradient(0, 0, 0, height);
-  sky.addColorStop(0, "#ef9f70");
-  sky.addColorStop(0.42, "#f4c98f");
-  sky.addColorStop(0.72, "#91cdb9");
-  sky.addColorStop(1, "#4f9b8e");
-  context.fillStyle = sky;
-  context.fillRect(0, 0, width, height);
+scene.add(createSky());
+scene.add(new THREE.HemisphereLight(0xffefd1, 0x356f68, 2.15));
+const sunlight = new THREE.DirectionalLight(0xffd69a, 2.4);
+sunlight.position.set(-5, 8, 6);
+scene.add(sunlight);
 
-  const sunX = width * 0.22;
-  const sunY = height * 0.24;
-  const sunRadius = Math.min(width, height) * 0.075;
-  const glow = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 3.5);
-  glow.addColorStop(0, "rgba(255,247,188,.98)");
-  glow.addColorStop(0.22, "rgba(255,225,145,.68)");
-  glow.addColorStop(1, "rgba(255,225,145,0)");
-  context.fillStyle = glow;
-  context.fillRect(0, 0, width, height);
-  context.fillStyle = "#fff2b3";
-  context.beginPath();
-  context.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
-  context.fill();
+const { palm, crown, fronds } = createPalm();
+scene.add(palm);
 
-  const drift = reducedMotion ? 0 : (time * 0.008) % (width + 400);
-  roundedCloud((width * 0.18 + drift * 0.16) % (width + 260) - 130, height * 0.18, 0.72, 0.48);
-  roundedCloud((width * 0.62 + drift * 0.1) % (width + 360) - 180, height * 0.31, 1.08, 0.34);
-  roundedCloud((width * 0.42 + drift * 0.07) % (width + 300) - 150, height * 0.1, 0.56, 0.28);
-
-  context.fillStyle = "#3c8878";
-  context.beginPath();
-  context.moveTo(0, height * 0.68);
-  context.quadraticCurveTo(width * 0.2, height * 0.57, width * 0.42, height * 0.68);
-  context.quadraticCurveTo(width * 0.67, height * 0.78, width, height * 0.61);
-  context.lineTo(width, height);
-  context.lineTo(0, height);
-  context.closePath();
-  context.fill();
-
-  const sea = context.createLinearGradient(0, height * 0.64, 0, height);
-  sea.addColorStop(0, "rgba(108,181,172,.7)");
-  sea.addColorStop(1, "#397f78");
-  context.fillStyle = sea;
-  context.fillRect(0, height * 0.72, width, height * 0.28);
-
-  context.fillStyle = "#6ca85d";
-  context.beginPath();
-  context.ellipse(width * 0.43, height * 0.74, width * 0.21, height * 0.08, -0.05, 0, Math.PI * 2);
-  context.fill();
-  context.fillStyle = "rgba(239,213,143,.72)";
-  context.beginPath();
-  context.ellipse(width * 0.43, height * 0.76, width * 0.22, height * 0.035, -0.05, 0, Math.PI * 2);
-  context.fill();
-
-  drawPalm(time, width, height);
-
-  const vignette = context.createRadialGradient(width * 0.5, height * 0.45, Math.min(width, height) * 0.18, width * 0.5, height * 0.5, Math.max(width, height) * 0.72);
-  vignette.addColorStop(0, "rgba(24,52,50,0)");
-  vignette.addColorStop(1, "rgba(20,46,45,.2)");
-  context.fillStyle = vignette;
-  context.fillRect(0, 0, width, height);
+function resize() {
+  const width = Math.max(1, innerWidth);
+  const height = Math.max(1, innerHeight);
+  const ratio = Math.min(devicePixelRatio || 1, 1.75);
+  renderer.setPixelRatio(ratio);
+  renderer.setSize(width, height, false);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
 }
 
-function animate(time) {
-  drawScene(time);
-  if (sceneRunning) requestAnimationFrame(animate);
-}
-
-function setProgress(progress, label) {
-  lastReportedProgress = Math.max(lastReportedProgress, clamp(progress, 0.01, 0.99));
-  const percent = Math.min(99, Math.max(1, Math.round(lastReportedProgress * 100)));
-  if (progressFill) progressFill.style.width = `${percent}%`;
-  if (progressPercent) progressPercent.textContent = `${percent}%`;
-  if (progressLabel && label) progressLabel.textContent = label;
-}
-
-function reportFailure(message) {
-  if (errorPanel) {
-    errorPanel.hidden = false;
-    errorPanel.textContent = String(message);
+function render(time = 0) {
+  if (!sceneRunning) return;
+  const seconds = time * 0.001;
+  if (!reducedMotion) {
+    palm.rotation.z = Math.sin(seconds * 0.38) * 0.012;
+    crown.rotation.z = Math.sin(seconds * 0.54) * 0.035;
+    for (const frond of fronds) {
+      const base = frond.userData.baseRotation;
+      frond.rotation.x = base.x + Math.sin(seconds * 0.72 + frond.userData.phase) * 0.025;
+      frond.rotation.z = base.z + Math.sin(seconds * 0.88 + frond.userData.phase) * 0.04;
+    }
   }
-  if (progressLabel) progressLabel.textContent = "The island could not wake";
-  if (playButton) {
-    playButton.disabled = true;
-    playButton.textContent = "Could Not Start";
-  }
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
 }
 
-function markReady(label = "Island ready") {
+function setProgress(progress) {
+  lastProgress = Math.max(lastProgress, Math.max(0.01, Math.min(0.99, Number(progress) || 0.01)));
+  const percent = Math.min(99, Math.max(1, Math.round(lastProgress * 100)));
+  if (playButton && !gameReady) playButton.textContent = `Preparing ${percent}%`;
+}
+
+function markReady() {
   if (gameReady) return;
   gameReady = true;
-  setProgress(0.99, label);
+  setProgress(0.99);
   if (playButton) {
     playButton.disabled = false;
     playButton.textContent = "Play";
+  }
+}
+
+function reportFailure(message) {
+  console.error(message);
+  if (playButton) {
+    playButton.disabled = true;
+    playButton.textContent = "Could Not Start";
+    playButton.title = String(message);
   }
 }
 
@@ -200,7 +216,7 @@ function startPreload() {
   if (preloadStarted || !frame) return;
   preloadStarted = true;
   frame.src = "./game.html?preload=1";
-  setProgress(0.02, "Waking the island");
+  setProgress(0.02);
 }
 
 function revealGame() {
@@ -217,6 +233,7 @@ function revealGame() {
     sceneRunning = false;
     frame.contentWindow?.focus();
     frame.contentDocument?.querySelector("#game")?.focus?.();
+    renderer.dispose();
   }, reducedMotion ? 0 : 820);
 }
 
@@ -236,9 +253,9 @@ addEventListener("message", (event) => {
   if (event.source !== frame?.contentWindow) return;
   const message = event.data ?? {};
   if (message.type === "cozy-game-progress") {
-    setProgress(message.progress, message.label);
+    setProgress(message.progress);
   } else if (message.type === "cozy-game-ready") {
-    markReady(message.label ?? "Island ready");
+    markReady();
   } else if (message.type === "cozy-game-entered") {
     revealGame();
   } else if (message.type === "cozy-game-failed") {
@@ -253,13 +270,10 @@ addEventListener("keydown", (event) => {
     requestEntry();
   }
 });
-addEventListener("resize", resizeCanvas);
-addEventListener("visibilitychange", () => {
-  if (!document.hidden && sceneRunning) requestAnimationFrame(animate);
-});
+addEventListener("resize", resize);
 
-resizeCanvas();
-requestAnimationFrame(animate);
+resize();
+requestAnimationFrame(render);
 requestAnimationFrame(() => {
   const schedule = globalThis.requestIdleCallback
     ? (callback) => requestIdleCallback(callback, { timeout: 450 })

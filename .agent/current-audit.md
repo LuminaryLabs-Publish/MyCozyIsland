@@ -1,100 +1,99 @@
-# Current audit: MyCozyIsland adaptive render-quality authority
+# Current audit: MyCozyIsland browser page-lifecycle authority
 
-**Timestamp:** `2026-07-12T23-08-37-04-00`  
-**Status:** `adaptive-render-quality-transition-authority-audited`  
+**Timestamp:** `2026-07-13T01-31-36-04-00`  
+**Status:** `browser-page-lifecycle-suspension-retirement-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The active audit is adaptive render-quality transition authority. `createPerformanceBudget()` raises or lowers an integer level from frame-time hysteresis. The browser host mutates cloud steps, fog steps, fog resolution and renderer DPR directly from callbacks.
+The active audit is browser page lifecycle authority. The host installs one `{ once: true }` `pagehide` listener that calls `storeSave(adventure)` and `gameplayRenderer.dispose()` regardless of whether the document is being retained for a later return.
 
-The transition is asymmetric: `onDegrade` changes all four participants, while `onRecover` restores only cloud steps, fog steps and fog resolution. Renderer DPR can remain at the lowest reached scale after the budget level returns to zero.
+There is no `pageshow` path, lifecycle generation, suspend/resume state, complete renderer participant registry, animation-loop stop/resume receipt or terminal-retirement result. `gameplayRenderer.dispose()` clears the plot, forage and crop maps that later frame updates require.
 
 ## Plan ledger
 
-**Goal:** define one admitted and verified transaction whose committed quality revision matches every participant and the first visible frame.
+**Goal:** define one admitted lifecycle transaction whose suspend, resume or retirement result covers runtime, input, save and every render participant.
 
 - [x] Compare the Publish inventory and central ledger.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only MyCozyIsland by the oldest eligible synchronized rule.
-- [x] Trace quality policy, budget sampling, callbacks and render participants.
+- [x] Trace pagehide, save, gameplay disposal and absent pageshow behavior.
 - [x] Preserve the full 64-kit and service inventory.
 - [x] Define the missing parent domain and candidate kits.
 - [x] Add required timestamped audit output.
-- [ ] Implement transition commands, revisions, verification and fixtures.
+- [ ] Implement lifecycle commands, participant adapters, results and fixtures.
 
 ## Source-backed behavior
 
 ```txt
-static tier inputs:
-  backend
-  URL override
-  device memory
-  viewport pixels
-  device pixel ratio
-  reduced-motion preference
+startup:
+  renderer.init
+  adventure creation and restore
+  world/gameplay/atmosphere/ocean/foam/post construction
+  window and canvas listener installation
+  renderer.setAnimationLoop
 
-budget behavior:
-  moving average smoothing
-  degrade after 90 over-budget samples
-  recover after 360 under-budget samples
-  levels 0..2
+pagehide listener:
+  registered once
+  ignores event.persisted
+  calls storeSave
+  calls gameplayRenderer.dispose
+  does not stop animation loop
+  does not detach listeners
+  does not dispose remaining resources
+  publishes no result
 
-onDegrade participants:
-  cloud steps
-  fog steps
-  fog resolution
-  renderer pixel ratio
-
-onRecover participants:
-  cloud steps
-  fog steps
-  fog resolution
-  renderer pixel ratio: omitted
+pageshow:
+  no handler
+  no participant validation
+  no timing-baseline reset
+  no input-generation reset
+  no presentation rebuild
 ```
 
-## Concrete recovery mismatch
-
-For high quality with device DPR at least `1.5`:
+## Gameplay renderer disposal effect
 
 ```txt
-level 0 DPR: 1.50
-level 1 DPR: 1.32
-level 2 DPR: 1.14
-recover to 1: cloud/fog level 1, DPR still 1.14
-recover to 0: cloud/fog level 0, DPR still 1.14
+dispose geometry and materials under gameplay group
+clear plotEntries
+clear forageEntries
+clear cropGroups
 ```
 
-This is a source-derived configuration path, not a measured production incident.
+`update(frame)` requires those maps to update soil/crops, forage visibility and interaction-target placement. A retained-page return can therefore resume a live simulation with a partially retired presentation surface.
 
 ## Interaction loop
 
 ```txt
 browser startup
-  -> choose static quality
-  -> configure renderer and participants
-  -> install NexusEngine adventure
+  -> construct authoritative adventure and all presentation participants
+  -> start continuous animation loop
 
-animation frame
-  -> adventure.tick
-  -> camera/world/gameplay/HUD update
-  -> performanceBudget.sample(frameMs)
-  -> direct quality callback mutation
-  -> postPipeline.render
+active frame
+  -> tick adventure
+  -> project current frame into camera, lighting, world, gameplay and HUD
+  -> render and periodically save
 
-observability
-  -> debug overlay shows static tier, FPS and cloud/fog steps
-  -> actual DPR, fog resolution, quality revision and render generation are not projected
+pagehide
+  -> direct save and partial disposal
+  -> no lifecycle command, generation or receipt
+
+possible pageshow
+  -> retained host resumes without reconstruction
+  -> frame loop uses cleared gameplay indexes
+  -> visible world can diverge from HUD/domain truth
 ```
 
 ## Domains in use
 
 ```txt
-browser shell, canvas, HUD, storage and lifecycle
-backend capability and static quality policy
-performance sampling and adaptive level hysteresis
-quality transition planning, admission, commit and rollback
-render-generation and visible-frame provenance
+browser shell, canvas, HUD, storage and page lifecycle
+lifecycle event classification, suspension, resume and retirement
+runtime session, lifecycle generation and frame admission
+input lifecycle and held-action cleanup
+save flush, verification and lifecycle receipt
+renderer participant registration and resource retirement
+backend capability and static/adaptive quality
 NexusEngine composition and snapshots
 Core Object and Core Transaction Ledger
 world, terrain, Agriculture, Foraging, Inventory and player
@@ -116,36 +115,38 @@ retained inactive entries: 2
 ordered Core World providers: 9
 ```
 
-The complete per-kit service inventory is in `.agent/trackers/2026-07-12T23-08-37-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
+The complete per-kit service inventory is in `.agent/trackers/2026-07-13T01-31-36-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
 
 ## Missing authority
 
 ```txt
-transition command ID and source
-quality-level revision
-render-surface generation
-participant registry and capability contract
-current-value readback
-detached multi-participant plan
-atomic commit
-verification
-rollback
-stale-result rejection
-typed terminal result
-truthful diagnostics
-first visible matching frame
+page lifecycle command ID
+runtime session and lifecycle generation
+pagehide persisted-state classification
+Suspend, Resume and Retire plans
+animation-loop lifecycle participant
+input lifecycle participant and new generation
+save-flush write/readback receipt
+complete renderer participant registry
+participant dependency order
+retain/rebuild/dispose results
+exactly-once disposal receipt
+stale/duplicate lifecycle-event rejection
+terminal PageLifecycleResult
+first resumed visible-frame acknowledgement
+browser/backend/Pages lifecycle fixtures
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-adaptive-render-quality-transition-authority-domain
+cozy-island-browser-page-lifecycle-authority-domain
 ```
 
 ## Required result
 
-`AdaptiveQualityTransitionResult` must identify the runtime session, predecessor and successor quality revisions, render generation, requested and actual participant values, verification result, rollback result and first visible frame ID.
+`PageLifecycleResult` must identify command, runtime session, predecessor/successor lifecycle generations, classified transition, participant receipts, save-flush result, incomplete work, terminal phase and first resumed visible-frame ID when applicable.
 
 ## Validation boundary
 
-Documentation only. No runtime, quality, rendering, gameplay, dependency, package-script or deployment behavior changed. No adaptive-quality fixture or browser/Pages smoke was run.
+Documentation only. No runtime, lifecycle, rendering, gameplay, save, dependency, package-script or deployment behavior changed. No BFCache, repeated-navigation, terminal-retirement, backend-parity or Pages lifecycle fixture was run.

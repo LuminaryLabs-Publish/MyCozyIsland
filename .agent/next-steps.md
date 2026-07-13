@@ -1,92 +1,99 @@
-# Next steps: MyCozyIsland menu/game preload handoff
+# Next steps: MyCozyIsland Three.js menu presentation lifecycle
 
-**Timestamp:** `2026-07-13T12-38-45-04-00`  
-**Publication status:** `menu-game-preload-handoff-scheduler-authority-audited`
+**Timestamp:** `2026-07-13T14-39-40-04-00`  
+**Publication status:** `threejs-menu-presentation-lifecycle-authority-audited`
 
 ## Summary
 
-Keep the living menu and one-time world construction. Replace implicit RAF ownership, engine monkey-patching, unversioned messages, and timer-based acceptance with explicit preload and entry commands, leases, terminal results, and visible-frame proof.
+Keep the minimal Three.js sky, hero palm and Play gate. Move hidden game preload into a provider-independent shell path, then give the menu renderer explicit provider, first-frame, scheduler, resource and retirement results.
 
 ## Plan ledger
 
-**Goal:** make every shell run end in one typed ready, entered, failed, cancelled, stale, or retired result with exactly one active scheduler per surface.
+**Goal:** allow factual game preload to proceed even when decorative menu presentation fails, and retire every accepted menu generation exactly once after visible game entry.
 
-- [ ] Add `MenuShellGeneration`, `PreloadGeneration`, and `PlayerEntryAttemptId`.
-- [ ] Wrap menu RAF ownership in one scheduler with duplicate-chain rejection.
-- [ ] Define hidden game presentation policy: running, throttled, paused, or retired.
-- [ ] Replace tick/step monkey-patching with a simulation quiescence lease.
-- [ ] Add a separate presentation quiescence lease.
-- [ ] Bind Core Startup readiness to the accepted preload generation.
-- [ ] Version every cross-window command and result.
-- [ ] Reject stale, duplicate, predecessor, and retired messages.
-- [ ] Remove accepted-looking fallback reveal; timeout must return a typed non-entered result.
-- [ ] Resume simulation at one admitted boundary.
-- [ ] Return renderer-derived post-resume submission evidence.
-- [ ] Require the first matching visible iframe frame before entry completes.
-- [ ] Commit history, focus, visibility, and menu retirement once.
-- [ ] Compose pagehide, BFCache, iframe reload, and direct-game lifecycle behavior.
-- [ ] Add source/browser/build/Pages fixtures.
+- [ ] Add `MenuPresentationAttemptId`, provider, renderer, resource, context and scheduler generations.
+- [ ] Start the hidden game preload from a local provider-independent shell boundary.
+- [ ] Add an immutable Three.js provider manifest and capability probe.
+- [ ] Define a local degraded menu fallback that preserves Play/progress/error access.
+- [ ] Prepare the renderer and scene resource set before adopting it as active.
+- [ ] Publish renderer-derived `MenuFrameSubmissionResult` and `FirstMenuFrameAck`.
+- [ ] Store one RAF ID and reject duplicate or stale successor scheduling.
+- [ ] Register every owned event and media listener.
+- [ ] Dispose every menu geometry and material exactly once.
+- [ ] Clear scene graph, arrays, callbacks, canvas and renderer references.
+- [ ] Define explicit WebGL context retention/release policy and receipt.
+- [ ] Publish terminal menu boot and retirement results.
+- [ ] Compose retirement with accepted player entry and first visible game-frame proof.
+- [ ] Run source, browser, built-output and GitHub Pages fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. shell/preload/entry identities and generations
-2. single menu RAF scheduler
-3. explicit simulation quiescence lease
-4. explicit hidden-presentation policy and lease
-5. revisioned cross-window protocol
-6. preload terminal result
-7. entry command and reservation
-8. post-resume renderer submission receipt
-9. first visible game-frame acknowledgement
-10. atomic history/focus/menu retirement
-11. lifecycle composition
-12. fixture matrix
+1. provider-independent shell bootstrap
+2. shell, menu, provider, canvas and preload generations
+3. game preload starts independently
+4. menu provider manifest and WebGL capability admission
+5. degraded local menu policy
+6. detached renderer and resource candidate
+7. first menu frame submission and acknowledgement
+8. single stored menu RAF scheduler
+9. owned listener registry
+10. accepted player-entry binding
+11. complete resource and renderer retirement
+12. context/canvas/reference retirement receipts
+13. first game-only frame acknowledgement
+14. fixture matrix
 ```
 
 ## Target files
 
 ```txt
+menu.html
 src/menu.js
 src/game-preload-bridge.js
 src/main-adventure.js
-src/adventure/composition-runtime.js
-src/adventure/startup-host.js
-game.html
-menu.html
 tests/menu-game-shell-smoke.mjs
-tests/menu-game-handoff-browser.fixture.mjs
+tests/menu-presentation-lifecycle-browser.fixture.mjs
 package.json
+.github/workflows/pages.yml
 ```
+
+A small local shell bootstrap module may be added if it can begin iframe preload and project terminal failures without depending on Three.js.
 
 ## Required acceptance cases
 
 ```txt
-one menu RAF chain after repeated hide/show
-one preload surface and one game animation loop
-zero simulation advancement while quiesced
-hidden presentation follows authored policy
-predecessor ready/entered messages rejected
-rapid double Play admits one entry
-entry timeout preserves menu and reports failure
-post-resume render failure preserves menu
-first visible successor frame completes entry
-history and focus commit once
-menu scheduler retires once
-iframe reload creates successor generation
-pagehide and BFCache do not duplicate participants
+game preload begins when Three.js provider is rejected
+game preload begins when WebGL is unavailable
+degraded local menu still exposes progress, failure and Play
+one accepted menu renderer and one RAF chain
+first menu frame cites accepted provider and resource generations
+menu and hidden game renderer overlap is explicit and bounded
+rapid duplicate Play admits one entry attempt
+first visible game frame precedes menu retirement
+all declared menu geometries and materials receive disposal receipts
+all owned listeners are removed
+late RAF callback after retirement is rejected
+duplicate retirement is idempotent
+stale predecessor retirement cannot affect successor menu
+context loss during transition returns a typed result
+pagehide and BFCache do not duplicate or orphan renderers
 direct game route remains functional
-source/build/Pages return equivalent results
+source, built output and Pages return equivalent terminal results
 ```
 
 ## Ownership constraints
 
-Core Startup owns factual readiness. The menu owns artwork and product copy. NexusEngine owns simulation. The renderer owns submission evidence. The handoff parent owns cross-domain admission and completion only.
+Core Startup owns factual game readiness. The menu shell owns product copy and Play intent. The menu presentation domain owns Three.js provider, WebGL renderer, scene resources, menu frames and retirement. The existing preload-handoff parent owns cross-document entry and consumes menu lifecycle results without absorbing renderer mechanics.
+
+## Taxonomy constraint
+
+The fifteen-level sky, palm and Play taxonomy remains semantic. Do not create fifteen executable kits. Only the application, entry experience, menu and menu-scene levels are executable ownership boundaries.
 
 ## Retained work
 
-Static module bootstrap admission, resource settlement/recovery, public capabilities, browser page lifecycle, durable saves, input, and adaptive quality remain open and must compose with this authority.
+The preload-handoff scheduler, static game-module bootstrap, resource settlement, public capabilities, browser page lifecycle, durable saves, input and adaptive quality authorities remain open and must compose with this work.
 
 ## Do not claim
 
-Do not claim scheduler uniqueness, hidden-render quiescence, exact freeze/resume, stale-message isolation, visible entry completion, lifecycle convergence, or deployed handoff readiness until the matrix passes on `main`.
+Do not claim provider-independent preload, first-menu-frame readiness, bounded dual-renderer usage, complete resource retirement, sole game-surface ownership, visible entry completion, lifecycle convergence or deployed readiness until the matrix passes on `main`.

@@ -1,9 +1,10 @@
 {
-  "schemaVersion": 87,
-  "lastUpdated": "2026-07-13T04-10-37-04-00",
+  "schemaVersion": 88,
+  "lastUpdated": "2026-07-13T04-21-10-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "public-runtime-capability-authority-audited",
+  "status": "public-runtime-capability-publication-central-reconciled",
+  "technicalStatus": "public-runtime-capability-authority-audited",
   "retainedStatuses": [
     "browser-page-lifecycle-authority-central-reconciled",
     "adaptive-render-quality-transition-authority-audited",
@@ -17,11 +18,12 @@
     "newEligibleCount": 0,
     "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
+    "repoLocalNewerThanCentralCount": 1,
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
-    "reason": "Oldest eligible documented repository in the fresh central-ledger ordering.",
+    "reason": "The repo-local public-runtime capability audit was newer than central tracking and therefore took priority over the oldest synchronized selection rule.",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "ledgerOrder": [
-      "MyCozyIsland:2026-07-13T01-40-00-04-00:selected",
+      "MyCozyIsland:central-2026-07-13T01-40-00-04-00:local-2026-07-13T04-10-37-04-00:selected-unsynchronized",
       "TheUnmappedHouse:2026-07-13T01-49-49-04-00",
       "AetherVale:2026-07-13T02-15-51-04-00",
       "TheOpenAbove:2026-07-13T02-18-03-04-00",
@@ -164,17 +166,19 @@
     "capability-source-build-pages-parity-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-13T04-10-37-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-13T04-10-37-04-00.md",
-    ".agent/architecture-audit/2026-07-13T04-10-37-04-00-public-runtime-capability-dsk-map.md",
-    ".agent/render-audit/2026-07-13T04-10-37-04-00-public-mutation-visible-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-13T04-10-37-04-00-global-host-direct-mutation-loop.md",
-    ".agent/interaction-audit/2026-07-13T04-10-37-04-00-capability-command-admission-result-map.md",
-    ".agent/capability-audit/2026-07-13T04-10-37-04-00-public-host-grant-revoke-contract.md",
-    ".agent/deploy-audit/2026-07-13T04-10-37-04-00-production-host-capability-fixture-gate.md"
+    ".agent/trackers/2026-07-13T04-21-10-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-13T04-21-10-04-00.md",
+    ".agent/architecture-audit/2026-07-13T04-21-10-04-00-public-runtime-capability-central-reconciliation-dsk-map.md",
+    ".agent/render-audit/2026-07-13T04-21-10-04-00-public-render-owner-visible-frame-reconciliation-gap.md",
+    ".agent/gameplay-audit/2026-07-13T04-21-10-04-00-global-host-direct-mutation-reconciliation-loop.md",
+    ".agent/interaction-audit/2026-07-13T04-21-10-04-00-capability-command-publication-reconciliation-map.md",
+    ".agent/capability-audit/2026-07-13T04-21-10-04-00-public-host-grant-revoke-reconciliation-contract.md",
+    ".agent/deploy-audit/2026-07-13T04-21-10-04-00-production-host-capability-central-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-13T04-21-10-04-00-repo-ledger-public-capability-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
+    "centralLedgerReconciliationPlanned": true,
     "npmTestRun": false,
     "npmBuildRun": false,
     "publicCapabilityFixturesRun": false,

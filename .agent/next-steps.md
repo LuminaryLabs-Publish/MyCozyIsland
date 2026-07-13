@@ -1,92 +1,90 @@
-# Next steps: MyCozyIsland resource settlement and recovery authority
+# Next steps: MyCozyIsland Core Startup and bootstrap admission
 
-**Timestamp:** `2026-07-13T08-04-17-04-00`  
-**Publication status:** `resource-settlement-recovery-authority-audited`
+**Timestamp:** `2026-07-13T10-41-40-04-00`  
+**Publication status:** `core-startup-integrated-bootstrap-admission-gap-audited`
 
 ## Summary
 
-Replace sequential cross-domain mutation with detached participant preparation, one aggregate commit decision, buffered event release and evidence-complete recovery. Preserve Inventory, Agriculture and Foraging ownership while making the product-level settlement result authoritative.
+Keep Core Startup as the renderer-neutral owner of factual launch readiness. Add a thin product/browser bootstrap authority before the static module graph, then bind accepted provider/module evidence and a renderer-derived visible-frame receipt into the existing Core Startup launch.
 
 ## Plan ledger
 
-**Goal:** ensure every resource-changing interaction commits all affected participants exactly once or leaves all participants unchanged.
+**Goal:** make every browser launch end in one typed playable, failed, cancelled or retired result without leaving a permanently unchanged loading shell.
 
-- [ ] Define `SettlementId`, settlement generation and monotonic command sequence.
-- [ ] Bind commands to expected Inventory, Agriculture/Foraging and ledger revisions.
-- [ ] Add detached Inventory change candidates that do not mutate balances during preparation.
-- [ ] Add detached Agriculture adoption candidates around official plans.
-- [ ] Add detached Foraging node candidates and explicit Inventory resource changes.
-- [ ] Add participant prepare results and fingerprints.
-- [ ] Buffer Agriculture and Foraging events until aggregate commit succeeds.
-- [ ] Commit participant successors and aggregate ledger evidence under one settlement generation.
-- [ ] Publish typed participant receipts and `ResourceSettlementResult`.
-- [ ] Reject stale, duplicate, divergent and partial evidence with zero new mutation.
-- [ ] Replace Agriculture-only recovery with all-participant evidence validation.
-- [ ] Add quarantine for unsafe partial attempts.
-- [ ] Bind save eligibility to committed settlement generations.
-- [ ] Add settlement provenance to renderer-neutral frames and HUD results.
-- [ ] Publish `FirstVisibleSettlementFrameAck`.
-- [ ] Add fault-injection, partial-save, browser, build and Pages fixtures.
+- [ ] Replace the direct static `main-adventure.js` module tag with a minimal local bootstrap entry.
+- [ ] Install provider-independent loader failure and retry projection before remote imports.
+- [ ] Define `BootstrapAttemptId`, generation and immutable provider manifest.
+- [ ] Load the browser entry module under timeout and cancellation policy.
+- [ ] Validate the bootstrap export contract before adventure mutation.
+- [ ] Bind the accepted module graph to exactly one Core Startup launch.
+- [ ] Reject stale and duplicate completions after retry or retirement.
+- [ ] Preserve product preparation order and wording outside Core Startup.
+- [ ] Return renderer-derived first-frame submission evidence.
+- [ ] Add a matching visible canvas acknowledgement before `enter()`.
+- [ ] Call startup/bootstrap disposal during terminal page retirement.
+- [ ] Add import, provider, parse, evaluation, renderer and Pages fixtures.
+- [ ] Retain resource-settlement, lifecycle, save, input and quality work as composed follow-on authorities.
 
 ## Minimal implementation order
 
 ```txt
-1. SettlementId, generation and expected revisions
-2. Inventory prepare adapter
-3. Agriculture prepare/event-buffer adapter
-4. Foraging prepare adapter
-5. aggregate prepare validation
-6. atomic commit result and participant receipts
-7. partial-attempt evidence scanner
-8. recovery and quarantine policy
-9. save-consistency generation
-10. renderer-neutral settlement frame
-11. first visible settlement acknowledgement
-12. executable source/browser/build/Pages matrix
+1. local bootstrap entry and provider-independent error projection
+2. BootstrapAttemptId and generation
+3. immutable provider manifest
+4. bounded dynamic entry-module admission
+5. export-contract validation
+6. Core Startup launch binding
+7. retry, fallback, cancellation and stale fencing
+8. renderer submission result
+9. first visible startup-frame acknowledgement
+10. lifecycle disposal
+11. source/browser/build/Pages fixture matrix
 ```
 
 ## Target files
 
 ```txt
-src/adventure/agriculture-config.js
-src/adventure/resource-domains.js
-src/adventure/interaction-agriculture-domain.js
-src/adventure/persistence-render-domains.js
-src/adventure/resource-settlement-domain.js
-src/adventure/resource-settlement-adapters.js
+index.html
+src/bootstrap.js
+src/adventure/startup-host.js
 src/main-adventure.js
-tests/resource-settlement.fixture.mjs
-tests/resource-settlement-recovery.fixture.mjs
-scripts/smoke-resource-settlement-browser.mjs
+src/kits/renderer-post.js
+tests/startup-domain-smoke.mjs
+tests/bootstrap-admission.fixture.mjs
+scripts/smoke-startup-browser.mjs
 package.json
 ```
-
-The generic Core Transaction Ledger should remain an idempotency mechanism. Do not silently turn it into a game-specific transaction coordinator.
 
 ## Required acceptance cases
 
 ```txt
-prepare soil commits no Inventory change
-plant commits one seed removal and one plot successor together
-water commits one plot successor with no Inventory change
-harvest commits plot successor and all yield changes together
-perennial harvest commits regrowth state and all resource changes together
-wild forage commits coconut/sprout additions and node depletion together
-unknown/stale/duplicate command produces zero new mutation
-participant preparation failure publishes no event
-participant commit failure publishes no visible partial state
-participant-only evidence is recovered only with matching receipts and fingerprints
-unsafe partial evidence is quarantined
-save capture includes only committed settlement generations
-restore rejects or quarantines divergent settlement state
-committed and recovered settlement receive one matching visible-frame acknowledgement
-source, built output and Pages produce equivalent terminal results
+valid providers create one Core Startup launch
+invalid provider URL returns typed failure before adventure mutation
+module timeout exposes retry
+parse/evaluation failure exposes bounded evidence
+retry retires predecessor generation
+stale predecessor completion is ignored
+WebGPU success enters playable once
+WebGL2 fallback enters playable once
+renderer failure never publishes first-frame success
+device loss before acknowledgement never enters playable
+visible canvas acknowledgement matches launch and frame generations
+terminal page retirement removes startup listeners
+source, built output and Pages return equivalent terminal results
 ```
+
+## Ownership constraints
+
+- Core Startup continues to own facts, not product copy or DOM.
+- The browser host owns module/provider loading and retry UI.
+- The renderer owns submission evidence.
+- The visible-frame adapter owns presentation acknowledgement.
+- Gameplay domains remain unchanged.
 
 ## Retained work
 
-Public-runtime capability authority, page lifecycle, adaptive quality, durable storage commit, browser input ownership and wider deployed parity remain open and must compose with this settlement authority.
+Resource settlement/recovery, public runtime capabilities, BFCache lifecycle, durable saves, browser input and adaptive quality remain open and must compose with this startup authority.
 
 ## Do not claim
 
-Do not claim atomic settlement, rollback-safe events, recovery convergence, settlement-consistent persistence or visible settlement provenance until the full matrix passes on `main`.
+Do not claim provider-independent startup recovery, first-visible-frame proof, retry isolation or deployed startup readiness until the full matrix passes on `main`.

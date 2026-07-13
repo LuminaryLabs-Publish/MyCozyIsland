@@ -1,112 +1,106 @@
-# START HERE: MyCozyIsland durable save commit authority
+# START HERE: MyCozyIsland adaptive render-quality authority
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Aligned:** `2026-07-12T20-40-56-04-00`  
-**Status:** `durable-save-commit-authority-audited`
+**Aligned:** `2026-07-12T23-08-37-04-00`  
+**Status:** `adaptive-render-quality-transition-authority-audited`
 
 ## Summary
 
-MyCozyIsland is a NexusEngine-composed procedural island adventure with official Agriculture, Inventory, wild Foraging, first-person movement, contextual interaction, portable saves, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
+MyCozyIsland is a NexusEngine-composed procedural island adventure with official Agriculture, Inventory, wild Foraging, first-person movement, portable saves, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
 
-The newest audit isolates durable-save commit authority. The portable save DSK marks a candidate `captured` before the browser adapter proves `localStorage` persistence, and the HUD maps that intermediate state to `Saved`. A storage failure can therefore report success visually. Restore also returns `rolledBack: true` even when rollback itself throws.
+The newest audit isolates adaptive render-quality transitions. Degrade changes cloud steps, fog steps, fog resolution and renderer pixel ratio. Recover restores cloud/fog settings but omits renderer pixel ratio, so a recovered quality level can remain visibly bound to the lowest drawing density reached earlier.
 
 ## Plan ledger
 
-**Goal:** make capture, browser persistence, restore, rollback and visible save status one revisioned transaction with truthful typed receipts.
+**Goal:** make each adaptive-quality change one revisioned, verified and rollback-safe render-generation transaction.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Avoid the active partial ZombieOrchard documentation pass.
-- [x] Select only MyCozyIsland as the oldest stable synchronized repository.
-- [x] Trace startup restore, autosave, pagehide save, migration, rollback and HUD projection.
-- [x] Identify the complete interaction loop, domains, all 64 kit surfaces and offered services.
-- [x] Add the timestamped tracker and architecture/system audit family.
+- [x] Confirm no substantive unsynchronized repository took priority.
+- [x] Select only MyCozyIsland as the oldest eligible synchronized repository.
+- [x] Trace quality selection, performance sampling, degrade, recover, render mutation and diagnostics.
+- [x] Identify the interaction loop, domains, all 64 kit surfaces and offered services.
+- [x] Add the timestamped tracker and audit family.
 - [x] Refresh required root documents and the machine registry.
 - [x] Synchronize the central ledger and internal change log on `main`.
 - [x] Create no branch or pull request.
-- [ ] Implement and execute browser-storage durability fixtures.
+- [ ] Implement and execute adaptive-quality fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T20-40-56-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T20-40-56-04-00.md
+.agent/trackers/2026-07-12T23-08-37-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T23-08-37-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T20-40-56-04-00-durable-save-commit-dsk-map.md
-.agent/render-audit/2026-07-12T20-40-56-04-00-save-status-visible-frame-gap.md
-.agent/gameplay-audit/2026-07-12T20-40-56-04-00-capture-before-persist-loop.md
-.agent/interaction-audit/2026-07-12T20-40-56-04-00-save-capture-persist-restore-map.md
-.agent/save-system-audit/2026-07-12T20-40-56-04-00-storage-receipt-rollback-contract.md
-.agent/deploy-audit/2026-07-12T20-40-56-04-00-save-durability-fixture-gate.md
+.agent/architecture-audit/2026-07-12T23-08-37-04-00-adaptive-render-quality-dsk-map.md
+.agent/render-audit/2026-07-12T23-08-37-04-00-recovery-pixel-ratio-visible-gap.md
+.agent/gameplay-audit/2026-07-12T23-08-37-04-00-frame-budget-degrade-recover-loop.md
+.agent/interaction-audit/2026-07-12T23-08-37-04-00-quality-signal-plan-commit-result-map.md
+.agent/quality-system-audit/2026-07-12T23-08-37-04-00-participant-revision-rollback-contract.md
+.agent/deploy-audit/2026-07-12T23-08-37-04-00-adaptive-quality-fixture-gate.md
 ```
 
 ## Interaction loop
 
 ```txt
 startup
+  -> choose static quality tier
+  -> configure renderer and render participants
   -> install 13 engine kits
-  -> read localStorage
-  -> parse and restore portable save
-  -> checksum validation and optional migration
-  -> sequential participant load or rollback
-  -> construct and present the world
+  -> construct world and begin animation loop
 
-runtime
-  -> tick and render
-  -> every five seconds compare durable fingerprint
-  -> capture portable candidate
-  -> write localStorage
-  -> update host fingerprint only after adapter success
-  -> project save status into HUD
+frame
+  -> tick adventure
+  -> update camera, world, gameplay and HUD
+  -> sample frame duration
+  -> possibly run degrade or recover callback
+  -> render post pipeline
 
-pagehide
-  -> attempt one final storeSave
-  -> dispose gameplay renderer
+quality transition
+  -> mutate cloud steps
+  -> mutate fog steps
+  -> mutate fog resolution
+  -> mutate DPR only on degrade
+  -> publish no typed result or visible-frame receipt
 ```
 
 ## Main findings
 
 ```txt
-capture publishes before durable write: yes
-HUD maps captured to Saved: yes
-durable storage receipt: absent
-write/readback verification: absent
-last-known-good slot authority: absent
-storage error classification: absent
-pagehide completion result: absent
-rollback failure reported truthfully: no
-first visible durable-save frame acknowledgement: absent
+quality transition command/revision: absent
+render generation: absent
+multi-participant plan: absent
+atomic commit and rollback: absent
+DPR recovery mutation: absent
+actual DPR diagnostics: absent
+stale transition rejection: absent
+first visible quality-frame acknowledgement: absent
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-durable-save-commit-authority-domain
+cozy-island-adaptive-render-quality-transition-authority-domain
 ```
 
 ## Required flow
 
 ```txt
-SaveCommitCommand
-  -> detached candidate capture
-  -> schema and checksum validation
-  -> storage write and readback
-  -> DurableSaveReceipt or typed failure
-  -> predecessor preservation
-  -> HUD projection from receipt only
-
-RestoreCommand
-  -> durable slot validation
-  -> detached migration
-  -> participant restore barrier
-  -> post-restore fingerprint validation
-  -> truthful rollback result on failure
+performance signal
+  -> admitted transition command
+  -> detached participant plan
+  -> capability validation
+  -> atomic commit
+  -> readback verification
+  -> rollback on failure
+  -> AdaptiveQualityTransitionResult
+  -> truthful diagnostics
   -> first matching visible-frame acknowledgement
 ```
 
@@ -116,10 +110,9 @@ RestoreCommand
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not equate captured with persisted.
-Do not display Saved without a durable receipt.
-Do not report rolledBack=true after rollback failure.
-Do not claim save durability until browser and Pages fixtures pass.
+Do not treat callback completion as committed quality.
+Do not report recovery unless every degraded participant is restored.
+Do not claim adaptive-quality correctness until browser and Pages fixtures pass.
 ```
 
-The prior browser-input ownership audit remains valid and is retained in the historical timestamped audit family.
+The prior durable-save and browser-input audits remain valid and are retained in their timestamped audit families.

@@ -1,107 +1,113 @@
-# START HERE: MyCozyIsland adaptive render-quality authority
+# START HERE: MyCozyIsland browser page-lifecycle authority
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Aligned:** `2026-07-12T23-08-37-04-00`  
-**Status:** `adaptive-render-quality-transition-authority-audited`
+**Aligned:** `2026-07-13T01-31-36-04-00`  
+**Status:** `browser-page-lifecycle-suspension-retirement-authority-audited`
 
 ## Summary
 
-MyCozyIsland is a NexusEngine-composed procedural island adventure with official Agriculture, Inventory, wild Foraging, first-person movement, portable saves, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
+MyCozyIsland is a NexusEngine-composed procedural island Agriculture and wild-resource adventure with portable saves and WebGPU/WebGL2 presentation.
 
-The newest audit isolates adaptive render-quality transitions. Degrade changes cloud steps, fog steps, fog resolution and renderer pixel ratio. Recover restores cloud/fog settings but omits renderer pixel ratio, so a recovered quality level can remain visibly bound to the lowest drawing density reached earlier.
+The newest audit isolates browser page lifecycle ownership. A once-only `pagehide` handler always saves and disposes only `gameplayRenderer`. It does not distinguish BFCache suspension from terminal departure, has no `pageshow` reconstruction path and leaves the animation loop, listeners and remaining GPU resources outside one retirement contract. Because gameplay disposal clears plot, forage and crop indexes, a retained-page return can resume simulation and HUD updates against stale world presentation.
 
 ## Plan ledger
 
-**Goal:** make each adaptive-quality change one revisioned, verified and rollback-safe render-generation transaction.
+**Goal:** make every page lifecycle transition a classified, generation-fenced suspend, resume or retire transaction with complete participant receipts.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Confirm no substantive unsynchronized repository took priority.
+- [x] Confirm no new, missing or substantively unsynchronized repository takes priority.
 - [x] Select only MyCozyIsland as the oldest eligible synchronized repository.
-- [x] Trace quality selection, performance sampling, degrade, recover, render mutation and diagnostics.
-- [x] Identify the interaction loop, domains, all 64 kit surfaces and offered services.
-- [x] Add the timestamped tracker and audit family.
-- [x] Refresh required root documents and the machine registry.
-- [x] Synchronize the central ledger and internal change log on `main`.
-- [x] Create no branch or pull request.
-- [ ] Implement and execute adaptive-quality fixtures.
+- [x] Trace pagehide, save, gameplay disposal and the absent pageshow path.
+- [x] Preserve the complete 64-kit and service inventory.
+- [x] Add the timestamped lifecycle audit family.
+- [x] Refresh required root documents and machine registry.
+- [x] Push only to `main` and create no branch or pull request.
+- [ ] Implement and execute lifecycle fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T23-08-37-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T23-08-37-04-00.md
+.agent/trackers/2026-07-13T01-31-36-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T01-31-36-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T23-08-37-04-00-adaptive-render-quality-dsk-map.md
-.agent/render-audit/2026-07-12T23-08-37-04-00-recovery-pixel-ratio-visible-gap.md
-.agent/gameplay-audit/2026-07-12T23-08-37-04-00-frame-budget-degrade-recover-loop.md
-.agent/interaction-audit/2026-07-12T23-08-37-04-00-quality-signal-plan-commit-result-map.md
-.agent/quality-system-audit/2026-07-12T23-08-37-04-00-participant-revision-rollback-contract.md
-.agent/deploy-audit/2026-07-12T23-08-37-04-00-adaptive-quality-fixture-gate.md
+.agent/architecture-audit/2026-07-13T01-31-36-04-00-browser-page-lifecycle-dsk-map.md
+.agent/render-audit/2026-07-13T01-31-36-04-00-bfcache-resume-visible-state-gap.md
+.agent/gameplay-audit/2026-07-13T01-31-36-04-00-pagehide-dispose-resume-loop.md
+.agent/interaction-audit/2026-07-13T01-31-36-04-00-pagehide-pageshow-admission-map.md
+.agent/lifecycle-audit/2026-07-13T01-31-36-04-00-suspend-resume-retire-contract.md
+.agent/deploy-audit/2026-07-13T01-31-36-04-00-page-lifecycle-browser-fixture-gate.md
 ```
 
 ## Interaction loop
 
 ```txt
 startup
-  -> choose static quality tier
-  -> configure renderer and render participants
-  -> install 13 engine kits
-  -> construct world and begin animation loop
+  -> choose backend and quality
+  -> install NexusEngine adventure
+  -> restore save and construct render participants
+  -> install input/lifecycle listeners
+  -> start animation loop
 
 frame
-  -> tick adventure
-  -> update camera, world, gameplay and HUD
-  -> sample frame duration
-  -> possibly run degrade or recover callback
+  -> tick simulation
+  -> update camera, world, Agriculture, Foraging and HUD
+  -> sample quality budget
   -> render post pipeline
+  -> periodically save changed state
 
-quality transition
-  -> mutate cloud steps
-  -> mutate fog steps
-  -> mutate fog resolution
-  -> mutate DPR only on degrade
-  -> publish no typed result or visible-frame receipt
+pagehide today
+  -> store save
+  -> dispose gameplay renderer
+  -> clear plot/forage/crop indexes
+  -> no event classification or lifecycle result
+
+retained-page return today
+  -> no pageshow handler
+  -> no renderer reconstruction
+  -> no timing/input generation reset
+  -> animation and simulation may resume against cleared presentation indexes
 ```
 
 ## Main findings
 
 ```txt
-quality transition command/revision: absent
-render generation: absent
-multi-participant plan: absent
-atomic commit and rollback: absent
-DPR recovery mutation: absent
-actual DPR diagnostics: absent
-stale transition rejection: absent
-first visible quality-frame acknowledgement: absent
+pagehide persisted-state classification: absent
+suspend versus terminal-retire policy: absent
+pageshow resume command: absent
+animation-loop lifecycle ownership: absent
+complete renderer participant registry: absent
+save-flush terminal receipt: absent
+exactly-once resource retirement: absent
+wall-time baseline reset on resume: absent
+first resumed visible-frame acknowledgement: absent
+BFCache and terminal-retirement fixtures: absent
 ```
 
 ## Required parent domain
 
 ```txt
-cozy-island-adaptive-render-quality-transition-authority-domain
+cozy-island-browser-page-lifecycle-authority-domain
 ```
 
 ## Required flow
 
 ```txt
-performance signal
-  -> admitted transition command
-  -> detached participant plan
-  -> capability validation
-  -> atomic commit
-  -> readback verification
-  -> rollback on failure
-  -> AdaptiveQualityTransitionResult
-  -> truthful diagnostics
-  -> first matching visible-frame acknowledgement
+browser lifecycle event
+  -> classify persisted suspension, resume or terminal retirement
+  -> validate runtime session and expected lifecycle generation
+  -> build participant plan
+  -> suspend without destructive disposal
+     or resume with timing/input reset
+     or retire every participant exactly once
+  -> publish PageLifecycleResult
+  -> acknowledge first resumed visible frame when applicable
 ```
 
 ## Guardrails
@@ -110,9 +116,10 @@ performance signal
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not treat callback completion as committed quality.
-Do not report recovery unless every degraded participant is restored.
-Do not claim adaptive-quality correctness until browser and Pages fixtures pass.
+Do not treat pagehide as proof of terminal unload.
+Do not dispose retained-page renderer indexes during suspension.
+Do not report Retired while mandatory participants remain owned.
+Do not claim lifecycle safety until real browser and Pages fixtures pass.
 ```
 
-The prior durable-save and browser-input audits remain valid and are retained in their timestamped audit families.
+The prior adaptive-quality, durable-save and browser-input audits remain valid in their timestamped audit families.

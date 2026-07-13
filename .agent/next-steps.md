@@ -1,47 +1,100 @@
-# Next Steps: MyCozyIsland Browser Input Ownership
+# Next steps: MyCozyIsland durable save commit authority
 
-Last updated: `2026-07-12T17-01-09-04-00`
+**Timestamp:** `2026-07-12T20-40-56-04-00`
 
 ## Summary
 
-Add one browser-input authority before `cozy-input-domain-kit`. DOM focus and pointer-capture rules stay in the host adapter; the DSK continues to publish renderer-neutral input frames.
+Add a composed durable-save authority around the existing portable save DSK and browser storage adapter. Do not move `localStorage` into the engine kit; connect them through explicit candidate, write, readback, rollback and visible-receipt results.
 
 ## Plan ledger
 
-**Goal:** make keyboard, pointer, wheel and focus-loss behavior source-owned, stale-safe and testable.
+**Goal:** replace inferred save success with verified durable commit and truthful restore outcomes.
 
-- [ ] Add a stable game-canvas surface ID and revision.
-- [ ] Allocate a focus generation when gameplay focus is valid.
-- [ ] Close that generation on blur, hidden-page transition, pagehide or fatal state.
-- [ ] Admit gameplay keys only while the game surface owns focus.
-- [ ] Ignore gameplay keys from editable controls and non-game surfaces.
-- [ ] Require primary pointer and primary button for look gestures.
-- [ ] Allocate a gesture ID on admitted pointerdown.
-- [ ] Require the same pointer ID for move, up, cancel and capture-loss processing.
-- [ ] Handle lost pointer capture as a terminal gesture result.
-- [ ] Replace permanent input generation `1` with a revisioned generation.
-- [ ] Reject stale commands after focus or lifecycle transitions.
-- [ ] Reject duplicate command IDs and publish typed results.
-- [ ] Increment rejection diagnostics for malformed, stale and duplicate commands.
-- [ ] Make clear close the current generation so later stale commands cannot reactivate input.
-- [ ] Route the diagnostics key through the same command boundary or classify it as host-only.
-- [ ] Add player, interaction and camera consumer receipts.
-- [ ] Carry input generation and accepted command IDs into frame snapshots.
-- [ ] Add first-visible-input-frame acknowledgement.
-- [ ] Add browser fixtures for focus, editable controls, multiple pointers, capture loss, blur fencing and duplicate IDs.
-- [ ] Run the fixtures on WebGPU, WebGL2 fallback and deployed Pages.
+- [ ] Define `SaveCommandId`, `SaveSessionId`, `SaveCommitGeneration` and `SaveSlotId`.
+- [ ] Make portable capture return a detached candidate without setting durable success.
+- [ ] Add typed browser storage write results.
+- [ ] Read back the written envelope and verify schema and checksum.
+- [ ] Preserve a last-known-good predecessor slot and revision.
+- [ ] Classify quota, security, availability, serialization, write and readback failures.
+- [ ] Advance the host durable fingerprint only from `DurableSaveReceipt`.
+- [ ] Derive HUD save status only from commit results.
+- [ ] Add explicit retry and backoff policy.
+- [ ] Add restore generation and participant registry.
+- [ ] Validate post-restore participant revisions and durable fingerprint.
+- [ ] Return an independent `RollbackResult` with participant receipts.
+- [ ] Report rollback failure truthfully and expose partial-state diagnostics.
+- [ ] Define pagehide best-effort/completed/failed semantics.
+- [ ] Carry save receipt and restore generation into renderer-neutral frames.
+- [ ] Add first-visible-save-frame acknowledgement.
+- [ ] Add Node, browser, WebGPU, WebGL2 and Pages fixtures.
 
-## Implementation order
+## Immediate safe ledge
+
+1. Change `capture()` so its state is `candidate-captured`, not `captured` or `saved`.
+2. Add a host `persistCandidate(candidate, context)` adapter returning a typed result.
+3. On success, read the slot back and compare checksums.
+4. Add `commitDurableReceipt(receipt)` to the save authority.
+5. Replace the HUD string condition with receipt-derived states.
+6. Track the predecessor slot before replacement.
+7. Split restore failure from rollback success/failure.
+8. Add a quota-failure fixture proving `Saved` is not displayed.
+9. Add a rollback-failure fixture proving `rolledBack` is false.
+10. Add reload-after-save proof in local and deployed browsers.
+
+## Required runtime flow
 
 ```txt
-surface and focus generation
--> pointer gesture lifecycle
--> command identity and deduplication
--> clear fencing and typed results
--> consumer receipts and frame acknowledgement
--> browser and Pages fixtures
+changed durable fingerprint
+  -> SaveCommitCommand
+  -> detached candidate capture
+  -> storage write
+  -> storage readback validation
+  -> DurableSaveReceipt
+  -> advance last durable fingerprint
+  -> project Saved with receipt revision
+
+restore request
+  -> read validated slot
+  -> detached migration candidate
+  -> participant restore barrier
+  -> post-restore validation
+  -> RestoreResult
+  -> verified rollback result on failure
+  -> matching visible frame
+```
+
+## Target files
+
+```txt
+src/adventure/persistence-render-domains.js
+src/adventure/composition-runtime.js
+src/main-adventure.js
+src/adventure/durable-save-authority.js
+src/adventure/browser-save-storage-adapter.js
+tests/adventure-domains-smoke.mjs
+tests/save-durable-commit.fixture.mjs
+tests/save-rollback.fixture.mjs
+scripts/smoke-save-browser.mjs
+package.json
+```
+
+## Required fixtures
+
+```txt
+normal write/readback -> one durable receipt
+quota failure -> predecessor preserved, no Saved
+SecurityError -> typed failure
+corrupt readback -> rejected commit
+late generation -> stale rejection
+v1 migration -> validated durable successor
+restore failure -> full verified rollback
+rollback failure -> explicit false/partial result
+pagehide -> explicit result
+HUD -> receipt-bound status
+reload -> state matches reported durable receipt
+source/WebGPU/WebGL2/Pages -> equivalent results
 ```
 
 ## Completion criteria
 
-An unfocused key, secondary pointer, mismatched pointer move, duplicate command, stale-generation command or post-blur event must produce a typed rejection with zero gameplay or camera mutation.
+A save may display `Saved` only after the candidate is written, read back, checksum-validated and committed under the current generation. Any restore failure must report the actual rollback state and preserve or explicitly identify every affected participant.

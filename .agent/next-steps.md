@@ -1,82 +1,92 @@
-# Next steps: MyCozyIsland public runtime capability authority
+# Next steps: MyCozyIsland resource settlement and recovery authority
 
-**Timestamp:** `2026-07-13T04-21-10-04-00`  
-**Publication status:** `public-runtime-capability-publication-central-reconciled`
+**Timestamp:** `2026-07-13T08-04-17-04-00`  
+**Publication status:** `resource-settlement-recovery-authority-audited`
 
 ## Summary
 
-Replace the raw browser-global ownership graph with a narrow public projection and an opt-in debug/support gateway. Every mutating operation must be admitted against a runtime generation, return a typed result, record changed participants and correlate the effect with a visible frame.
+Replace sequential cross-domain mutation with detached participant preparation, one aggregate commit decision, buffered event release and evidence-complete recovery. Preserve Inventory, Agriculture and Foraging ownership while making the product-level settlement result authoritative.
 
 ## Plan ledger
 
-**Goal:** establish least-authority browser diagnostics without removing useful inspection and support workflows.
+**Goal:** ensure every resource-changing interaction commits all affected participants exactly once or leaves all participants unchanged.
 
-- [ ] Define production, development, test and support host-channel policy.
-- [ ] Define `PublicHostId`, `PublicHostGeneration`, `CapabilityId` and grant expiry.
-- [ ] Publish an immutable detached read-only summary by default.
-- [ ] Remove raw renderer, scene, camera, adventure, engine and domain-service references from the public surface.
-- [ ] Route permitted mutations through typed capability commands.
-- [ ] Require caller/source, command ID, sequence and expected runtime/domain/render revisions.
-- [ ] Reject duplicate, stale, unknown, expired and revoked commands with zero mutation.
-- [ ] Separate inspect, capture-save, input-injection, reset and renderer-debug capabilities.
-- [ ] Require explicit confirmation and participant scope for reset.
-- [ ] Return changed-domain, save, renderer and frame receipts.
-- [ ] Revoke the host during terminal lifecycle retirement and reissue only under a successor generation.
-- [ ] Expose a bounded observation journal without raw mutable owners.
-- [ ] Add source, production-build and Pages fixtures.
+- [ ] Define `SettlementId`, settlement generation and monotonic command sequence.
+- [ ] Bind commands to expected Inventory, Agriculture/Foraging and ledger revisions.
+- [ ] Add detached Inventory change candidates that do not mutate balances during preparation.
+- [ ] Add detached Agriculture adoption candidates around official plans.
+- [ ] Add detached Foraging node candidates and explicit Inventory resource changes.
+- [ ] Add participant prepare results and fingerprints.
+- [ ] Buffer Agriculture and Foraging events until aggregate commit succeeds.
+- [ ] Commit participant successors and aggregate ledger evidence under one settlement generation.
+- [ ] Publish typed participant receipts and `ResourceSettlementResult`.
+- [ ] Reject stale, duplicate, divergent and partial evidence with zero new mutation.
+- [ ] Replace Agriculture-only recovery with all-participant evidence validation.
+- [ ] Add quarantine for unsafe partial attempts.
+- [ ] Bind save eligibility to committed settlement generations.
+- [ ] Add settlement provenance to renderer-neutral frames and HUD results.
+- [ ] Publish `FirstVisibleSettlementFrameAck`.
+- [ ] Add fault-injection, partial-save, browser, build and Pages fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. runtime session and lifecycle generation
-2. host identity, generation and channel policy
-3. detached production projection
-4. capability manifest, grants, expiry and revocation
-5. typed command admission and stale/duplicate rejection
-6. participant adapters and commit/rollback receipts
-7. reset confirmation and successor-generation policy
-8. bounded observation journal
-9. first visible capability-effect acknowledgement
-10. source/build/Pages proof
+1. SettlementId, generation and expected revisions
+2. Inventory prepare adapter
+3. Agriculture prepare/event-buffer adapter
+4. Foraging prepare adapter
+5. aggregate prepare validation
+6. atomic commit result and participant receipts
+7. partial-attempt evidence scanner
+8. recovery and quarantine policy
+9. save-consistency generation
+10. renderer-neutral settlement frame
+11. first visible settlement acknowledgement
+12. executable source/browser/build/Pages matrix
 ```
 
 ## Target files
 
 ```txt
-src/main-adventure.js
-src/adventure/composition-runtime.js
-src/adventure/persistence-render-domains.js
-src/adventure/runtime-domains.js
+src/adventure/agriculture-config.js
 src/adventure/resource-domains.js
-src/adventure/public-capability-domain.js
-src/adventure/public-host-adapter.js
-tests/public-capability.fixture.mjs
-scripts/smoke-public-host-browser.mjs
+src/adventure/interaction-agriculture-domain.js
+src/adventure/persistence-render-domains.js
+src/adventure/resource-settlement-domain.js
+src/adventure/resource-settlement-adapters.js
+src/main-adventure.js
+tests/resource-settlement.fixture.mjs
+tests/resource-settlement-recovery.fixture.mjs
+scripts/smoke-resource-settlement-browser.mjs
 package.json
 ```
+
+The generic Core Transaction Ledger should remain an idempotency mechanism. Do not silently turn it into a game-specific transaction coordinator.
 
 ## Required acceptance cases
 
 ```txt
-production build publishes read-only projection only
-development grant exposes only declared capabilities
-raw engine/renderer/scene/camera and domain API objects are absent
-unknown capability is rejected with zero mutation
-duplicate command creates one result and one effect
-stale generation or revision is rejected
-expired or revoked grant is rejected
-concurrent host tick is prohibited
-reset without confirmation is rejected
-accepted reset returns participant receipts and successor generation
-terminal page lifecycle revokes the host
-accepted mutation receives first matching visible-frame acknowledgement
-source, built output and Pages expose equivalent policy
+prepare soil commits no Inventory change
+plant commits one seed removal and one plot successor together
+water commits one plot successor with no Inventory change
+harvest commits plot successor and all yield changes together
+perennial harvest commits regrowth state and all resource changes together
+wild forage commits coconut/sprout additions and node depletion together
+unknown/stale/duplicate command produces zero new mutation
+participant preparation failure publishes no event
+participant commit failure publishes no visible partial state
+participant-only evidence is recovered only with matching receipts and fingerprints
+unsafe partial evidence is quarantined
+save capture includes only committed settlement generations
+restore rejects or quarantines divergent settlement state
+committed and recovered settlement receive one matching visible-frame acknowledgement
+source, built output and Pages produce equivalent terminal results
 ```
 
 ## Retained work
 
-Page-lifecycle authority, adaptive-quality transitions, durable-save commits, browser-input ownership, Agriculture recovery and broader deployed parity remain open.
+Public-runtime capability authority, page lifecycle, adaptive quality, durable storage commit, browser input ownership and wider deployed parity remain open and must compose with this settlement authority.
 
 ## Do not claim
 
-Do not claim a safe public host, least authority, deterministic external control, reset safety, revocation or visible-effect provenance until the fixture matrix passes on `main`.
+Do not claim atomic settlement, rollback-safe events, recovery convergence, settlement-consistent persistence or visible settlement provenance until the full matrix passes on `main`.

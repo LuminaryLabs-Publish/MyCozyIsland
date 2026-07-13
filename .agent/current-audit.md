@@ -1,105 +1,79 @@
 # Current audit: MyCozyIsland browser page-lifecycle authority
 
-**Timestamp:** `2026-07-13T01-31-36-04-00`  
-**Status:** `browser-page-lifecycle-suspension-retirement-authority-audited`  
+**Timestamp:** `2026-07-13T01-40-00-04-00`  
+**Status:** `browser-page-lifecycle-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-The active audit is browser page lifecycle authority. The host installs one `{ once: true }` `pagehide` listener that calls `storeSave(adventure)` and `gameplayRenderer.dispose()` regardless of whether the document is being retained for a later return.
+The active audit is browser page lifecycle authority. `src/main-adventure.js` registers one `{ once: true }` `pagehide` listener that calls `storeSave(adventure)` and `gameplayRenderer.dispose()` without checking `event.persisted`. There is no `pageshow` handler, lifecycle generation, complete participant registry, animation-loop stop/resume receipt or terminal retirement result.
 
-There is no `pageshow` path, lifecycle generation, suspend/resume state, complete renderer participant registry, animation-loop stop/resume receipt or terminal-retirement result. `gameplayRenderer.dispose()` clears the plot, forage and crop maps that later frame updates require.
+`gameplayRenderer.dispose()` clears `plotEntries`, `forageEntries` and `cropGroups`; later `update(frame)` requires those maps for soil/crop projection, forage visibility and interaction-target placement. A retained-page return can therefore resume domain/HUD updates with a partially retired world presentation.
 
 ## Plan ledger
 
-**Goal:** define one admitted lifecycle transaction whose suspend, resume or retirement result covers runtime, input, save and every render participant.
+**Goal:** define one admitted lifecycle transaction whose Suspend, Resume or Retire result covers runtime, input, save and every rendering participant.
 
-- [x] Compare the Publish inventory and central ledger.
+- [x] Compare Publish inventory, central ledger and root `.agent` state.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland by the oldest eligible synchronized rule.
-- [x] Trace pagehide, save, gameplay disposal and absent pageshow behavior.
-- [x] Preserve the full 64-kit and service inventory.
-- [x] Define the missing parent domain and candidate kits.
-- [x] Add required timestamped audit output.
+- [x] Select only MyCozyIsland due to repo-local lifecycle state newer than central tracking.
+- [x] Trace pagehide, animation, listeners, save and gameplay disposal.
+- [x] Preserve the complete 64-kit and service inventory.
+- [x] Add the timestamped reconciliation audit family.
+- [x] Refresh root routing and machine state.
 - [ ] Implement lifecycle commands, participant adapters, results and fixtures.
 
 ## Source-backed behavior
 
 ```txt
 startup:
-  renderer.init
-  adventure creation and restore
-  world/gameplay/atmosphere/ocean/foam/post construction
-  window and canvas listener installation
-  renderer.setAnimationLoop
+  initialize renderer and backend
+  create adventure and restore save
+  construct world, gameplay, atmosphere, ocean, foam, sky and post participants
+  install canvas/window listeners
+  start renderer.setAnimationLoop
 
-pagehide listener:
+pagehide:
   registered once
-  ignores event.persisted
-  calls storeSave
-  calls gameplayRenderer.dispose
-  does not stop animation loop
-  does not detach listeners
-  does not dispose remaining resources
-  publishes no result
+  event.persisted ignored
+  save attempted
+  gameplay renderer disposed
+  animation loop continues without a lifecycle result
+  listeners remain installed
+  remaining resources have no retirement receipt
 
 pageshow:
   no handler
-  no participant validation
-  no timing-baseline reset
-  no input-generation reset
-  no presentation rebuild
+  no retained participant validation
+  no wall-time or input-generation reset
+  no presentation reconstruction
 ```
-
-## Gameplay renderer disposal effect
-
-```txt
-dispose geometry and materials under gameplay group
-clear plotEntries
-clear forageEntries
-clear cropGroups
-```
-
-`update(frame)` requires those maps to update soil/crops, forage visibility and interaction-target placement. A retained-page return can therefore resume a live simulation with a partially retired presentation surface.
 
 ## Interaction loop
 
 ```txt
-browser startup
-  -> construct authoritative adventure and all presentation participants
-  -> start continuous animation loop
-
-active frame
-  -> tick adventure
-  -> project current frame into camera, lighting, world, gameplay and HUD
-  -> render and periodically save
-
-pagehide
-  -> direct save and partial disposal
-  -> no lifecycle command, generation or receipt
-
-possible pageshow
-  -> retained host resumes without reconstruction
-  -> frame loop uses cleared gameplay indexes
-  -> visible world can diverge from HUD/domain truth
+browser startup -> construct authoritative adventure/presentation -> start loop
+active frame -> tick -> project state -> render -> periodic save
+pagehide -> direct save and partial disposal
+possible return -> retained host resumes without reconstruction
+result -> domain and HUD truth can diverge from gameplay presentation
 ```
 
 ## Domains in use
 
 ```txt
-browser shell, canvas, HUD, storage and page lifecycle
-lifecycle event classification, suspension, resume and retirement
-runtime session, lifecycle generation and frame admission
-input lifecycle and held-action cleanup
-save flush, verification and lifecycle receipt
-renderer participant registration and resource retirement
-backend capability and static/adaptive quality
-NexusEngine composition and snapshots
+browser shell, canvas, HUD, storage, diagnostics and page lifecycle
+lifecycle classification, suspension, resume and retirement
+runtime session, lifecycle generation, frame and input admission
+save flush, verification, restore and rollback
+renderer participant registration, validation, rebuild and resource retirement
+backend capability, static and adaptive quality
+NexusEngine composition, scheduler, ECS phases and snapshots
 Core Object and Core Transaction Ledger
 world, terrain, Agriculture, Foraging, Inventory and player
-input, interaction, camera, scenario and saves
+input, interaction, camera, scenario and portable saves
 renderer-neutral snapshots
-WebGPU/WebGL2 atmosphere, ocean, foam, clouds, fog and post-processing
+WebGPU/WebGL2 atmosphere, ocean, foam, cloud, fog, lighting, materials and post-processing
 validation, CI, Pages deployment and central tracking
 ```
 
@@ -115,21 +89,18 @@ retained inactive entries: 2
 ordered Core World providers: 9
 ```
 
-The complete per-kit service inventory is in `.agent/trackers/2026-07-13T01-31-36-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
+The complete per-kit service inventory is in `.agent/trackers/2026-07-13T01-40-00-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
 
 ## Missing authority
 
 ```txt
-page lifecycle command ID
-runtime session and lifecycle generation
+page lifecycle command/session/generation
 pagehide persisted-state classification
 Suspend, Resume and Retire plans
-animation-loop lifecycle participant
-input lifecycle participant and new generation
-save-flush write/readback receipt
-complete renderer participant registry
-participant dependency order
-retain/rebuild/dispose results
+animation-loop and input participants
+save write/readback lifecycle receipt
+complete renderer participant registry and dependency order
+retain/validate/rebuild/dispose results
 exactly-once disposal receipt
 stale/duplicate lifecycle-event rejection
 terminal PageLifecycleResult
@@ -143,10 +114,6 @@ browser/backend/Pages lifecycle fixtures
 cozy-island-browser-page-lifecycle-authority-domain
 ```
 
-## Required result
-
-`PageLifecycleResult` must identify command, runtime session, predecessor/successor lifecycle generations, classified transition, participant receipts, save-flush result, incomplete work, terminal phase and first resumed visible-frame ID when applicable.
-
 ## Validation boundary
 
-Documentation only. No runtime, lifecycle, rendering, gameplay, save, dependency, package-script or deployment behavior changed. No BFCache, repeated-navigation, terminal-retirement, backend-parity or Pages lifecycle fixture was run.
+Documentation only. No runtime, lifecycle, rendering, gameplay, save, dependency, package-script or deployment behavior changed. No lifecycle fixture was run.

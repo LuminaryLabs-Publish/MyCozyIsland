@@ -1,45 +1,26 @@
 {
-  "schemaVersion": 85,
-  "lastUpdated": "2026-07-13T01-31-36-04-00",
+  "schemaVersion": 86,
+  "lastUpdated": "2026-07-13T01-40-00-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "browser-page-lifecycle-suspension-retirement-authority-audited",
-  "currentRoute": "index.html -> src/main-adventure.js -> browser lifecycle events -> save/input/frame/render participants -> suspend/resume/retire result -> visible frame",
-  "selectionReason": "All ten accessible Publish repositories were compared; TheCavalryOfRome was excluded; all nine eligible repositories were centrally tracked and had root .agent state; no new, missing or substantively unsynchronized repository took priority; MyCozyIsland had the oldest eligible synchronized ledger timestamp.",
-  "currentFocus": "Browser Page Lifecycle Classification, BFCache Suspension/Resume, Complete Terminal Retirement, Participant Receipts and Resumed Visible-Frame Provenance",
-  "priorFocus": "Adaptive Render Quality Transition Authority",
-  "priorAuditTimestamp": "2026-07-12T23-08-37-04-00",
-  "repoLocalHeadBeforeThisRun": "1f7a02aa108a2277c092868ef03c963d193701fd",
-  "packageVersion": "0.5.0",
-  "dependencyState": {
-    "three": "0.185.0",
-    "nexusEngine": "c5548de504072bf09eb68986b98aca0292903803",
-    "nexusEngineKits": "2218856ccd729744140d153d738ba8db638b3359",
-    "nexusEnginePinned": true,
-    "nexusEngineKitsPinned": true
-  },
+  "status": "browser-page-lifecycle-authority-central-reconciled",
+  "currentFocus": "BFCache-aware page lifecycle classification, suspension, resume, complete terminal retirement, participant receipts and first-resumed-frame provenance",
+  "selectionReason": "MyCozyIsland was selected because its completed 2026-07-13T01-31-36-04-00 repo-local page-lifecycle audit was newer than the central ledger. TheCavalryOfRome was excluded and no new, ledger-missing or root-agent-missing eligible repository took priority.",
   "selection": {
     "inventoryCount": 10,
     "eligibleCount": 9,
     "newEligibleCount": 0,
     "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "substantiveUnsynchronizedCount": 0,
-    "excluded": [
-      "LuminaryLabs-Publish/TheCavalryOfRome"
-    ],
-    "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
-    "ledgerOrder": [
-      "MyCozyIsland:2026-07-12T23-08-37-04-00:selected",
-      "TheUnmappedHouse:2026-07-12T23-20-51-04-00",
-      "AetherVale:2026-07-12T23-40-11-04-00",
-      "TheOpenAbove:2026-07-13T00-00-02-04-00",
-      "IntoTheMeadow:2026-07-13T00-18-48-04-00",
-      "PhantomCommand:2026-07-13T00-40-00-04-00",
-      "PrehistoricRush:2026-07-13T00-58-50-04-00",
-      "HorrorCorridor:2026-07-13T01-08-28-04-00",
-      "ZombieOrchard:2026-07-13T01-18-20-04-00"
-    ]
+    "unsynchronizedRepository": "LuminaryLabs-Publish/MyCozyIsland",
+    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"]
+  },
+  "dependencyState": {
+    "three": "0.185.0",
+    "nexusEngine": "c5548de504072bf09eb68986b98aca0292903803",
+    "nexusEngineKits": "2218856ccd729744140d153d738ba8db638b3359",
+    "nexusEnginePinned": true,
+    "nexusEngineKitsPinned": true
   },
   "kitCounts": {
     "engineInstalledCoreAndAdventure": 13,
@@ -51,163 +32,19 @@
     "orderedCoreWorldProvidersRetained": 9
   },
   "engineInstalledKits": [
-    {
-      "id": "core-object-kit",
-      "domainPath": "n:core-object",
-      "services": [
-        "registration",
-        "lookup",
-        "listing"
-      ]
-    },
-    {
-      "id": "core-transaction-ledger-kit",
-      "domainPath": "n:core-transaction-ledger",
-      "services": [
-        "ledger",
-        "idempotency",
-        "record",
-        "apply-once",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-world-domain-kit",
-      "domainPath": "n:cozy-world",
-      "services": [
-        "seeded-world",
-        "surface-query",
-        "plot-layout",
-        "forage-layout",
-        "render-base",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-input-domain-kit",
-      "domainPath": "n:cozy-input",
-      "services": [
-        "normalization",
-        "command-queue",
-        "frame-admission",
-        "held-actions",
-        "clear",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-inventory-domain-kit",
-      "domainPath": "n:cozy-inventory",
-      "services": [
-        "items",
-        "seed-selection",
-        "transactions",
-        "batch-settlement",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "agriculture-domain-kit",
-      "domainPath": "n:production:agriculture",
-      "services": [
-        "land",
-        "soil",
-        "cultivation",
-        "water",
-        "growth",
-        "harvest",
-        "perennials",
-        "descriptors",
-        "events",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-foraging-domain-kit",
-      "domainPath": "n:cozy-foraging",
-      "services": [
-        "wild-coconut-nodes",
-        "collection",
-        "respawn",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-player-domain-kit",
-      "domainPath": "n:cozy-player",
-      "services": [
-        "movement",
-        "grounding",
-        "view",
-        "stamina",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-scenario-domain-kit",
-      "domainPath": "n:cozy-scenario",
-      "services": [
-        "time",
-        "objective",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-interaction-domain-kit",
-      "domainPath": "n:cozy-interaction",
-      "services": [
-        "targeting",
-        "context-action",
-        "agriculture-settlement",
-        "wild-forage-action",
-        "prompt",
-        "result",
-        "snapshot",
-        "reset"
-      ]
-    },
-    {
-      "id": "cozy-camera-domain-kit",
-      "domainPath": "n:cozy-camera",
-      "services": [
-        "aerial-intro",
-        "first-person-view",
-        "terrain-clearance",
-        "descriptor"
-      ]
-    },
-    {
-      "id": "cozy-save-domain-kit",
-      "domainPath": "n:cozy-save",
-      "services": [
-        "capture",
-        "checksum-validation",
-        "migration",
-        "restore",
-        "rollback",
-        "reset",
-        "diagnostics"
-      ]
-    },
-    {
-      "id": "cozy-render-snapshot-domain-kit",
-      "domainPath": "n:cozy-render-snapshot",
-      "services": [
-        "static-world",
-        "agriculture-descriptors",
-        "frame-snapshot",
-        "hud-descriptor",
-        "debug-descriptor"
-      ]
-    }
+    {"id":"core-object-kit","domainPath":"n:core-object","services":["registration","lookup","listing"]},
+    {"id":"core-transaction-ledger-kit","domainPath":"n:core-transaction-ledger","services":["ledger","idempotency","record","apply-once","snapshot","reset"]},
+    {"id":"cozy-world-domain-kit","domainPath":"n:cozy-world","services":["seeded-world","surface-query","plot-layout","forage-layout","render-base","snapshot","reset"]},
+    {"id":"cozy-input-domain-kit","domainPath":"n:cozy-input","services":["normalization","command-queue","frame-admission","held-actions","clear","snapshot","reset"]},
+    {"id":"cozy-inventory-domain-kit","domainPath":"n:cozy-inventory","services":["items","seed-selection","transactions","batch-settlement","snapshot","reset"]},
+    {"id":"agriculture-domain-kit","domainPath":"n:production:agriculture","services":["land","soil","cultivation","water","growth","harvest","perennials","descriptors","events","snapshot","reset"]},
+    {"id":"cozy-foraging-domain-kit","domainPath":"n:cozy-foraging","services":["wild-coconut-nodes","collection","respawn","snapshot","reset"]},
+    {"id":"cozy-player-domain-kit","domainPath":"n:cozy-player","services":["movement","grounding","view","stamina","snapshot","reset"]},
+    {"id":"cozy-scenario-domain-kit","domainPath":"n:cozy-scenario","services":["time","objective","snapshot","reset"]},
+    {"id":"cozy-interaction-domain-kit","domainPath":"n:cozy-interaction","services":["targeting","context-action","agriculture-settlement","wild-forage-action","prompt","result","snapshot","reset"]},
+    {"id":"cozy-camera-domain-kit","domainPath":"n:cozy-camera","services":["aerial-intro","first-person-view","terrain-clearance","descriptor"]},
+    {"id":"cozy-save-domain-kit","domainPath":"n:cozy-save","services":["capture","checksum-validation","migration","restore","rollback","reset","diagnostics"]},
+    {"id":"cozy-render-snapshot-domain-kit","domainPath":"n:cozy-render-snapshot","services":["static-world","agriculture-descriptors","frame-snapshot","hud-descriptor","debug-descriptor"]}
   ],
   "catalogedKits": [
     "debug-overlay-host-kit",
@@ -261,33 +98,62 @@
     "deterministic-seed-domain-kit",
     "environment-clock-domain-kit"
   ],
+  "catalogedKitServices": {
+    "debug-overlay-host-kit":["draw","toggle","show","hide"],
+    "webgl2-fallback-renderer-kit":["fallback-capability-policy","cpu-volume-source","feature-disable-policy"],
+    "webgpu-compute-atmosphere-renderer-kit":["cloud-volume-generation","fog-volume-generation","cpu-fallback"],
+    "webgpu-foam-renderer-kit":["shoreline-foam-geometry","animation","render-layer-contract"],
+    "webgpu-ocean-renderer-kit":["ocean-geometry","wave-deformation","optics","water-layer-contract"],
+    "webgpu-performance-budget-kit":["frame-sampling","moving-average","fps-state","degrade-callback","recover-callback"],
+    "webgpu-post-processing-renderer-kit":["scene-pass","fog-pass","foam-pass","depth-mask","resolution-scaling","pass-order-readback"],
+    "webgpu-rolling-fog-renderer-kit":["fog-volume","material","step-scaling","readback"],
+    "webgpu-stylized-material-renderer-kit":["material-descriptors","material-construction"],
+    "webgpu-volumetric-cloud-renderer-kit":["cloud-volumes","raymarch-materials","step-scaling","readback"],
+    "camera-rail-sequence-kit":["rail-progression","camera-sequence-descriptors"],
+    "cozy-island-scenario-kit":["scenario-descriptors","sequence-descriptors"],
+    "terrain-surface-domain-kit":["height-query","normal-query","material-query","surface-query"],
+    "vegetation-placement-domain-kit":["deterministic-placement-graph"],
+    "aerial-perspective-domain-kit":["horizon-descriptor","distance-descriptor","atmosphere-descriptor"],
+    "campfire-atmosphere-domain-kit":["campfire-light","smoke-descriptor","heat-descriptor"],
+    "cloud-density-field-domain-kit":["density-recipe","texture-budget"],
+    "cloud-horizon-band-domain-kit":["horizon-placement-descriptors"],
+    "cloud-lighting-domain-kit":["color","shadow","silver-lining"],
+    "cloud-lod-domain-kit":["step-policy","volume-count-policy"],
+    "cloud-shadow-domain-kit":["shadow-projection-descriptors"],
+    "cloud-weather-domain-kit":["coverage","weather-state"],
+    "fog-advection-domain-kit":["direction","speed"],
+    "fog-field-domain-kit":["density-recipe","texture-budget"],
+    "fog-volume-placement-domain-kit":["bounds","readability-mask"],
+    "ground-contact-domain-kit":["terrain-contact","clearance-query"],
+    "illumination-domain-kit":["sun-state","sky-state","ambient-state","exposure-state"],
+    "ocean-caustics-domain-kit":["caustic-projection-descriptors"],
+    "ocean-floor-profile-domain-kit":["seafloor-shape","depth-profile"],
+    "ocean-optics-domain-kit":["color","opacity","transmission","absorption","reflection"],
+    "ocean-wave-domain-kit":["deterministic-wave-components","sea-level"],
+    "prop-archetype-domain-kit":["prop-geometry-archetypes","prop-material-archetypes"],
+    "render-archetype-domain-kit":["renderer-neutral-object-archetypes"],
+    "render-quality-domain-kit":["static-tier-selection","quality-budgets"],
+    "render-snapshot-domain-kit":["renderer-neutral-world-snapshot"],
+    "rock-archetype-domain-kit":["rock-placement-archetypes","rock-presentation-archetypes"],
+    "shoreline-field-domain-kit":["shoreline-classification","distance-field"],
+    "shoreline-foam-domain-kit":["foam-band-descriptors"],
+    "stylized-material-descriptor-domain-kit":["color","roughness","rim","outline"],
+    "sun-glitter-domain-kit":["water-highlight-descriptors"],
+    "terrain-biome-field-domain-kit":["deterministic-biome-classification"],
+    "terrain-lod-domain-kit":["terrain-resolution-policy","distance-policy"],
+    "underwater-atmosphere-domain-kit":["underwater-color","attenuation"],
+    "vegetation-archetype-domain-kit":["tree-archetypes","palm-archetypes","fern-archetypes","bush-archetypes","grass-archetypes"],
+    "vegetation-lod-domain-kit":["density-policy","distance-policy"],
+    "vegetation-wind-domain-kit":["wind-deformation-descriptor"],
+    "weather-state-domain-kit":["weather-state","transitions"],
+    "wind-field-domain-kit":["deterministic-direction","strength"],
+    "deterministic-seed-domain-kit":["seed-derivation","deterministic-random"],
+    "environment-clock-domain-kit":["elapsed-time","environmental-phase"]
+  },
   "additionalRuntimeKitsOutsideCatalog": [
-    {
-      "id": "cozy-ocean-composition-kit",
-      "services": [
-        "logical-render-layer-graph",
-        "pass-order-validation",
-        "transparent-depth-validation",
-        "terrain-handoff-validation",
-        "per-layer-depth-and-blend-contracts"
-      ]
-    }
+    {"id":"cozy-ocean-composition-kit","services":["logical-render-layer-graph","pass-order-validation","transparent-depth-validation","terrain-handoff-validation","per-layer-depth-and-blend-contracts"]}
   ],
-  "retainedInactiveCatalogEntries": [
-    "camera-rail-sequence-kit",
-    "cozy-island-scenario-kit"
-  ],
-  "orderedCoreWorldProvidersRetainedInSource": [
-    "cozy-island-terrain-provider",
-    "cozy-seafloor-terrain-provider",
-    "biome-classification-provider",
-    "shoreline-classification-provider",
-    "seafloor-material-provider",
-    "vegetation-provider",
-    "rock-provider",
-    "prop-provider",
-    "cell-presentation-provider"
-  ],
+  "retainedInactiveCatalogEntries": ["camera-rail-sequence-kit","cozy-island-scenario-kit"],
   "pageLifecycleState": {
     "pagehideListenerOnce": true,
     "pagehidePersistedInspected": false,
@@ -304,78 +170,17 @@
     "typedLifecycleResultExists": false,
     "firstResumedVisibleFrameAckExists": false
   },
-  "candidateLifecycleAuthorityKits": [
-    "page-lifecycle-command-id-kit",
-    "page-lifecycle-generation-kit",
-    "page-lifecycle-event-classifier-kit",
-    "bfcache-persistence-classifier-kit",
-    "page-lifecycle-state-machine-kit",
-    "page-suspend-plan-kit",
-    "page-resume-plan-kit",
-    "page-retirement-plan-kit",
-    "animation-loop-lifecycle-participant-kit",
-    "input-lifecycle-participant-kit",
-    "save-flush-lifecycle-participant-kit",
-    "renderer-lifecycle-participant-registry-kit",
-    "gameplay-renderer-lifecycle-participant-kit",
-    "world-renderer-lifecycle-participant-kit",
-    "atmosphere-resource-lifecycle-participant-kit",
-    "ocean-resource-lifecycle-participant-kit",
-    "foam-resource-lifecycle-participant-kit",
-    "post-pipeline-lifecycle-participant-kit",
-    "sky-texture-lifecycle-participant-kit",
-    "lifecycle-drain-barrier-kit",
-    "resource-disposal-receipt-kit",
-    "stale-lifecycle-event-rejection-kit",
-    "page-lifecycle-result-kit",
-    "page-lifecycle-observation-kit",
-    "page-lifecycle-journal-kit",
-    "first-resumed-frame-ack-kit",
-    "bfcache-roundtrip-fixture-kit",
-    "repeated-pagehide-pageshow-fixture-kit",
-    "terminal-retirement-fixture-kit",
-    "webgpu-webgl2-lifecycle-parity-fixture-kit",
-    "pages-lifecycle-smoke-kit"
-  ],
-  "interactionLoop": [
-    "startup constructs the adventure and every presentation participant then installs browser listeners and the renderer animation loop",
-    "each frame ticks simulation projects Agriculture Foraging camera lighting and HUD then renders and periodically saves",
-    "the once-only pagehide listener writes a save candidate and disposes only the gameplay renderer",
-    "gameplay disposal clears plot forage and crop presentation indexes",
-    "there is no pagehide persisted classification pageshow resume path timing reset or complete terminal retirement",
-    "a retained page can resume simulation and HUD updates against cleared world presentation indexes"
-  ],
-  "domainsInUse": [
-    "browser shell canvas HUD storage page lifecycle and diagnostics",
-    "page lifecycle classification suspension resume and retirement",
-    "runtime session lifecycle generation frame and input admission",
-    "save flush verification and lifecycle receipts",
-    "renderer participant registration retention reconstruction and resource retirement",
-    "backend capability static quality and adaptive quality",
-    "NexusEngine composition ECS phases and snapshots",
-    "Core Object and Core Transaction Ledger",
-    "seeded world terrain Agriculture Foraging Inventory player input interaction camera scenario and saves",
-    "renderer-neutral snapshots",
-    "WebGPU WebGL2 atmosphere ocean foam cloud fog lighting materials and post-processing",
-    "validation CI Pages deployment and central tracking"
-  ],
-  "mainFinding": "The once-only pagehide handler always saves and disposes only gameplayRenderer without inspecting event.persisted or handling pageshow. gameplayRenderer.dispose clears the maps required for later plot forage crop and target-marker updates, while the animation loop and remaining renderer resources have no coordinated suspend resume or retirement result.",
   "plannedParentDomain": "cozy-island-browser-page-lifecycle-authority-domain",
   "latestAuditPaths": [
-    ".agent/START_HERE.md",
-    ".agent/current-audit.md",
-    ".agent/next-steps.md",
-    ".agent/known-gaps.md",
-    ".agent/validation.md",
-    ".agent/kit-registry.json",
-    ".agent/trackers/2026-07-13T01-31-36-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-13T01-31-36-04-00.md",
-    ".agent/architecture-audit/2026-07-13T01-31-36-04-00-browser-page-lifecycle-dsk-map.md",
-    ".agent/render-audit/2026-07-13T01-31-36-04-00-bfcache-resume-visible-state-gap.md",
-    ".agent/gameplay-audit/2026-07-13T01-31-36-04-00-pagehide-dispose-resume-loop.md",
-    ".agent/interaction-audit/2026-07-13T01-31-36-04-00-pagehide-pageshow-admission-map.md",
-    ".agent/lifecycle-audit/2026-07-13T01-31-36-04-00-suspend-resume-retire-contract.md",
-    ".agent/deploy-audit/2026-07-13T01-31-36-04-00-page-lifecycle-browser-fixture-gate.md"
+    ".agent/trackers/2026-07-13T01-40-00-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-13T01-40-00-04-00.md",
+    ".agent/architecture-audit/2026-07-13T01-40-00-04-00-browser-page-lifecycle-central-reconciliation-dsk-map.md",
+    ".agent/render-audit/2026-07-13T01-40-00-04-00-bfcache-visible-state-central-reconciliation-gap.md",
+    ".agent/gameplay-audit/2026-07-13T01-40-00-04-00-pagehide-resume-central-reconciliation-loop.md",
+    ".agent/interaction-audit/2026-07-13T01-40-00-04-00-page-lifecycle-admission-central-reconciliation-map.md",
+    ".agent/lifecycle-audit/2026-07-13T01-40-00-04-00-suspend-resume-retire-central-reconciliation-contract.md",
+    ".agent/deploy-audit/2026-07-13T01-40-00-04-00-page-lifecycle-central-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-13T01-40-00-04-00-repo-ledger-page-lifecycle-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
@@ -386,6 +191,7 @@
     "resourceReceiptFixtures": false,
     "webgpuWebgl2LifecycleParity": false,
     "firstResumedFrameFixture": false,
+    "productionBuildParity": false,
     "pagesLifecycleSmoke": false
   },
   "runtimeSourceChangedDuringDocumentationRun": false,

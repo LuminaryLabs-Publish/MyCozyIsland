@@ -20,6 +20,15 @@ const DEFAULT_COPY = Object.freeze({
   input: "Preparing player controls"
 });
 
+function activeProductPreparation(descriptor) {
+  const byId = new Map((descriptor.preparations ?? []).map((entry) => [entry.id, entry]));
+  const ordered = COZY_STARTUP_PREPARATIONS.map((entry) => byId.get(entry.id)).filter(Boolean);
+  return ordered.find((entry) => entry.status === "working")
+    ?? ordered.find((entry) => entry.status === "waiting")
+    ?? descriptor.activePreparation
+    ?? null;
+}
+
 export function formatCozyStartupDescriptor(descriptor) {
   if (descriptor.failure) {
     return {
@@ -37,7 +46,7 @@ export function formatCozyStartupDescriptor(descriptor) {
       complete: true
     };
   }
-  const active = descriptor.activePreparation;
+  const active = activeProductPreparation(descriptor);
   return {
     label: active?.detail ?? DEFAULT_COPY[active?.id] ?? "Preparing My Cozy Island",
     error: null,

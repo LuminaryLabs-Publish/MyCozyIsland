@@ -1,10 +1,10 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-12T20-40-56-04-00`
+**Timestamp:** `2026-07-12T23-08-37-04-00`
 
 ## Summary
 
-The newest gap is durable-save commit truth. The save DSK can capture, validate, migrate and restore portable state, but browser persistence has no verified commit receipt, predecessor-slot authority or truthful rollback result. The previous browser-input ownership gaps remain unresolved.
+The newest gap is adaptive render-quality transition truth. Degrade and recover do not mutate the same participant set, and no shared revision, verification, rollback or visible-frame receipt proves the applied quality state. Durable-save and browser-input gaps remain unresolved.
 
 ## Plan ledger
 
@@ -12,108 +12,107 @@ The newest gap is durable-save commit truth. The save DSK can capture, validate,
 
 - [ ] Runtime session and run-generation authority.
 - [ ] Browser input surface, focus, gesture and command ownership.
-- [ ] Durable save commit and storage receipt authority.
-- [ ] Restore participant barrier and truthful rollback authority.
-- [ ] Page lifecycle save completion policy.
-- [ ] Save-status visible-frame provenance.
+- [ ] Durable save commit and truthful restore authority.
+- [ ] Adaptive quality transition and render-generation authority.
+- [ ] Renderer participant readback and rollback.
+- [ ] First visible quality-frame provenance.
 - [ ] Agriculture recovery and cross-domain transaction proof.
-- [ ] Adaptive quality transaction and render-generation proof.
-- [ ] Browser and Pages parity fixtures.
+- [ ] Browser, backend and Pages parity fixtures.
 
-## Durable-save gaps
+## Adaptive-quality gaps
 
 ```txt
-candidate capture separated from durable commit: no
-save command ID and commit generation: absent
-storage slot identity and revision: absent
-write result owned by save authority: absent
-write/readback verification: absent
-last-known-good predecessor slot: absent
-storage error classification: absent
-bounded retry/backoff policy: absent
-pagehide completion result: absent
-rollback participant receipts: absent
-post-rollback fingerprint: absent
-truthful rollback failure result: absent
-visible DurableSaveReceipt: absent
-first visible save frame acknowledgement: absent
+transition command ID: absent
+transition source classification: absent
+quality revision: absent
+render-surface generation: absent
+participant registry: absent
+participant capabilities: absent
+current-value readback: incomplete
+detached target plan: absent
+atomic multi-participant commit: absent
+verification: absent
+rollback: absent
+stale transition rejection: absent
+DPR recovery mutation: absent
+actual DPR diagnostics: absent
+actual fog-resolution diagnostics: absent
+terminal transition result: absent
+first visible quality-frame acknowledgement: absent
 ```
 
-## Concrete consequences
+## Concrete consequence
 
-- `cozySave.capture()` marks state `captured` before `localStorage.setItem()` succeeds.
-- The HUD renders `Saved` from `captured`, so quota or security failures can display false success.
-- A failed write leaves the predecessor storage slot unchanged but does not expose that fact in SaveState.
-- Autosave retries because the host fingerprint is not advanced, but retry count and backoff are unbounded and unobserved.
-- Pagehide calls the same synchronous adapter without a completion receipt or policy.
-- If restore and rollback both fail, the caller still receives `rolledBack: true`.
-- No browser or deployed fixture proves durable progress survives reload after a reported save.
+```txt
+level 2 degrade lowers cloud/fog costs and renderer DPR
+  -> sustained recovery lowers budget level to 1 and then 0
+  -> cloud/fog settings recover
+  -> renderer DPR remains at level-2 scale
+  -> debug surface can imply recovered quality without showing actual DPR
+```
 
-## Retained browser-input gaps
+## Retained save gaps
+
+```txt
+candidate capture is not durable commit
+storage write/readback receipt absent
+predecessor slot authority absent
+storage error classification absent
+truthful rollback result absent
+pagehide save receipt absent
+visible durable-save frame acknowledgement absent
+```
+
+## Retained input gaps
 
 ```txt
 global keyboard ownership
-missing editable-target exclusion
-mismatched pointer move/up admission
-missing primary pointer/button policy
-missing lostpointercapture handling
+editable-target exclusion absent
+pointer ID not enforced on move/up
+primary pointer/button policy absent
+lostpointercapture handling absent
 permanent input generation 1
-clear does not close a generation
-duplicate commands accepted
-rejection diagnostics inert
+duplicate command rejection absent
 consumer receipts absent
 first visible input-frame acknowledgement absent
 ```
 
 ## Other retained gaps
 
-### Runtime and lifecycle
-
-- Renderer and browser listeners lack one explicit retirement transaction.
-- Public `globalThis.CozyIsland` exposes raw engine and domain capabilities.
-- Save, input, render and page lifecycle do not share one runtime generation.
-
-### Agriculture and transactions
-
-- Agriculture cutover recovery and failure injection remain incompletely proven in browser/Pages surfaces.
-- Cross-domain Inventory, Agriculture and Foraging settlement still depends on broader transaction fixtures.
-
-### Rendering and quality
-
-- Adaptive-quality changes have no atomic render-generation result.
+- Renderer and browser listeners lack one coordinated retirement transaction.
+- `globalThis.CozyIsland` exposes raw engine and domain capabilities.
+- Agriculture recovery and cross-domain settlement need failure fixtures.
 - WebGPU/WebGL2 and deployed parity evidence remains incomplete.
 
-## Required save fixtures
+## Required quality fixtures
 
 ```txt
-quota failure
-SecurityError
-storage unavailable
-serialization failure
-write/readback corruption
-late commit generation
-last-known-good preservation
-v1 migration durable rewrite
-participant restore failure
-rollback participant failure
-pagehide save result
-HUD Saved withheld until receipt
-reload after reported save
-WebGPU/WebGL2/Pages parity
+level 0 -> 1 degrade
+level 1 -> 2 degrade
+level 2 -> 1 recover
+level 1 -> 0 recover
+DPR and participant readback
+participant failure rollback
+rollback failure reporting
+resize/pagehide during transition
+WebGPU/WebGL2 parity
+first visible matching frame
+source/build/Pages parity
 ```
 
 ## Dependency order
 
 ```txt
-runtime session and run generation
-  -> save command and storage generation
-  -> detached candidate capture
-  -> durable write/readback and predecessor preservation
-  -> restore participant barrier and rollback proof
-  -> visible receipt projection
-  -> browser and Pages parity
+runtime session and render generation
+  -> quality command and expected revision
+  -> detached participant plan
+  -> atomic commit and verification
+  -> rollback and terminal result
+  -> diagnostics from actual readback
+  -> visible-frame acknowledgement
+  -> browser/backend/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim durable autosave, crash safety, truthful rollback, pagehide persistence, visible save correctness or deployed save reliability until the required fixtures pass on `main`.
+Do not claim adaptive-quality recovery, atomic transitions, rollback safety, diagnostic truth, visible-frame correlation or deployed parity until the required fixtures pass on `main`.

@@ -3,97 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#e8a86f">
-  <meta name="description" content="Walk a procedural golden-hour island, tend tropical crops, gather wild coconuts, and build a quiet food garden through NexusEngine domain services.">
-  <title>My Cozy Island — Golden Hour Adventure</title>
+  <meta name="theme-color" content="#e8b47d">
+  <title>My Cozy Island</title>
   <style>
-    :root { color-scheme:dark; font-family:Inter,ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#e8a86f; color:#fffaf0; }
-    * { box-sizing:border-box; }
-    html,body,#app { width:100%; height:100%; margin:0; overflow:hidden; background:#e8a86f; }
-    body { overscroll-behavior:none; }
-    button,input { font:inherit; }
-    #game { position:fixed; inset:0; display:block; width:100%; height:100%; touch-action:none; outline:none; }
-    .glass { border:1px solid rgba(255,255,255,.24); background:rgba(23,51,50,.48); box-shadow:0 18px 48px rgba(23,42,43,.22); backdrop-filter:blur(17px) saturate(1.16); }
-    #top-hud { position:fixed; top:max(14px,env(safe-area-inset-top)); left:max(14px,env(safe-area-inset-left)); z-index:10; width:min(420px,calc(100vw - 28px)); padding:14px 16px; border-radius:18px; pointer-events:none; }
-    #hud-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:7px; }
-    #hud-title strong { font-size:15px; letter-spacing:.02em; }
-    #save-status { color:rgba(255,250,224,.72); font-size:11px; font-weight:750; text-transform:uppercase; letter-spacing:.06em; }
-    #objective { margin:0; color:rgba(255,255,245,.82); font-size:12px; line-height:1.45; }
-    #resource-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-    .resource-pill { display:flex; align-items:center; gap:6px; padding:6px 9px; border-radius:999px; background:rgba(255,255,255,.12); font-size:11px; font-weight:760; }
-    #stamina { width:116px; height:7px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.14); }
-    #stamina-fill { width:100%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#91d376,#f0dc77); transition:width .16s linear; }
-    #interaction-hud { position:fixed; left:50%; bottom:max(112px,calc(env(safe-area-inset-bottom) + 104px)); z-index:11; width:min(520px,calc(100vw - 30px)); transform:translateX(-50%); padding:11px 15px; border-radius:999px; color:#fff9e9; font-size:13px; font-weight:780; text-align:center; letter-spacing:.01em; pointer-events:none; }
-    #bottom-hud { position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); z-index:10; width:min(680px,calc(100vw - 24px)); transform:translateX(-50%); padding:10px; border-radius:22px; pointer-events:none; }
-    #hotbar { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; }
-    .seed-slot { min-width:0; padding:8px 9px; border:1px solid rgba(255,255,255,.13); border-radius:14px; background:rgba(255,255,255,.08); opacity:.7; transition:opacity .2s ease,transform .2s ease,background .2s ease,border-color .2s ease; }
-    .seed-slot.is-selected { opacity:1; transform:translateY(-2px); border-color:rgba(255,242,179,.75); background:rgba(255,225,137,.2); }
-    .seed-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:3px; font-size:10px; font-weight:850; color:rgba(255,255,255,.7); }
-    .seed-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; font-weight:760; }
-    #loader { position:fixed; left:50%; bottom:max(28px,env(safe-area-inset-bottom)); z-index:30; width:min(460px,calc(100vw - 40px)); transform:translateX(-50%); padding:15px 17px 16px; border-radius:20px; transition:opacity .5s ease,transform .5s ease; pointer-events:none; }
-    #loader.is-complete { opacity:0; transform:translate(-50%,12px); }
-    #loader-header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:10px; font-size:12px; font-weight:780; letter-spacing:.045em; text-transform:uppercase; }
-    #loader-kicker { opacity:.65; }
-    #loader-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    #loader-track { height:8px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.17); }
-    #loader-fill { width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#9adbbd,#fff0a8 68%,#ffc78f); box-shadow:0 0 18px rgba(255,239,193,.52); transition:width .25s ease; }
-    #debug { position:fixed; top:max(14px,env(safe-area-inset-top)); right:max(14px,env(safe-area-inset-right)); z-index:20; min-width:270px; max-width:calc(100vw - 28px); padding:12px 14px; border:1px solid rgba(255,255,255,.18); border-radius:14px; background:rgba(15,30,36,.76); color:#effff9; font:600 11px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; white-space:pre-wrap; box-shadow:0 14px 35px rgba(0,0,0,.2); backdrop-filter:blur(15px); pointer-events:none; }
-    #debug[hidden],#error[hidden] { display:none; }
-    #controls { position:fixed; right:max(14px,env(safe-area-inset-right)); bottom:max(14px,env(safe-area-inset-bottom)); z-index:8; max-width:260px; padding:9px 11px; border-radius:14px; background:rgba(22,52,51,.38); color:rgba(255,255,255,.72); font-size:10px; line-height:1.55; letter-spacing:.02em; backdrop-filter:blur(9px); pointer-events:none; }
-    #error { position:fixed; left:16px; right:16px; bottom:16px; z-index:50; max-height:50vh; margin:0; overflow:auto; padding:16px; border:1px solid rgba(255,190,190,.35); border-radius:14px; background:rgba(74,13,19,.94); color:#ffe8e8; font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; white-space:pre-wrap; box-shadow:0 18px 50px rgba(0,0,0,.35); }
-    @media (max-width:760px) { #top-hud { width:calc(100vw - 28px); } #controls { display:none; } #interaction-hud { bottom:max(106px,calc(env(safe-area-inset-bottom) + 98px)); font-size:12px; } #bottom-hud { padding:8px; } .seed-slot { padding:7px 6px; } .seed-name { font-size:9px; } }
-    @media (max-height:590px) { #top-hud { padding:10px 12px; } #objective { display:none; } #resource-row { margin-top:5px; } #interaction-hud { bottom:82px; } #bottom-hud { bottom:8px; } }
-    @media (prefers-reduced-motion:reduce) { #loader,#loader-fill,.seed-slot { transition:none; } }
+    html,body { width:100%; height:100%; margin:0; background:#e8b47d; }
   </style>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
-        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
-        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.tsl.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/",
-        "nexusengine/engine": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/engine.js",
-        "nexusengine/ecs": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/ecs.js",
-        "nexusengine/domain-service-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/domain-service-kit.js",
-        "nexusengine/core-startup": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-startup-kit/index.js",
-        "nexusengine/core-object": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-object-kit/index.js",
-        "nexusengine/core-transaction-ledger": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-transaction-ledger-kit/index.js",
-        "nexusengine/hosts/browser/startup-presentation": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/hosts/browser/browser-startup-presentation-adapter.js",
-        "@luminarylabs/nexusengine-kits/kits/production/agriculture-domain-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine-Kits@2218856ccd729744140d153d738ba8db638b3359/kits/production/agriculture-domain-kit/index.js"
-      }
-    }
+  <script>
+    const target = new URL("./menu.html", location.href);
+    target.search = location.search;
+    target.hash = location.hash;
+    location.replace(target.href);
   </script>
 </head>
-<body>
-  <main id="app">
-    <canvas id="game" role="application" aria-label="Walk, farm, and forage on My Cozy Island" tabindex="0"></canvas>
-    <aside id="top-hud" class="glass" aria-label="Island adventure status">
-      <div id="hud-title"><strong>My Cozy Island</strong><span id="save-status">Auto-save on</span></div>
-      <p id="objective">Prepare a plot, plant island food, water it, and gather wild coconuts while it grows.</p>
-      <div id="resource-row">
-        <span class="resource-pill">Seed · <b id="seed-label">Taro</b> × <b id="seed-count">6</b></span>
-        <span class="resource-pill">Food · <b id="food-count">0</b></span>
-        <span class="resource-pill">Coconuts · <b id="coconut-count">0</b></span>
-        <span class="resource-pill"><span id="stamina"><span id="stamina-fill"></span></span></span>
-      </div>
-    </aside>
-    <div id="interaction-hud" class="glass"><span id="prompt">Walk the island and find an agriculture plot or wild coconut palm.</span></div>
-    <aside id="bottom-hud" class="glass" aria-label="Seed selection">
-      <div id="hotbar">
-        <div class="seed-slot is-selected" data-seed-index="1"><div class="seed-top"><span>1</span><span>× <b data-amount>6</b></span></div><div class="seed-name" data-label>Taro</div></div>
-        <div class="seed-slot" data-seed-index="2"><div class="seed-top"><span>2</span><span>× <b data-amount>5</b></span></div><div class="seed-name" data-label>Sweet Potato</div></div>
-        <div class="seed-slot" data-seed-index="3"><div class="seed-top"><span>3</span><span>× <b data-amount>4</b></span></div><div class="seed-name" data-label>Pineapple</div></div>
-        <div class="seed-slot" data-seed-index="4"><div class="seed-top"><span>4</span><span>× <b data-amount>3</b></span></div><div class="seed-name" data-label>Coconut Palm</div></div>
-      </div>
-    </aside>
-    <section id="loader" class="glass" aria-live="polite">
-      <div id="loader-header"><span id="loader-kicker">My Cozy Island</span><span id="loader-text">Starting NexusEngine</span></div>
-      <div id="loader-track" aria-hidden="true"><div id="loader-fill"></div></div>
-    </section>
-    <aside id="debug" aria-label="NexusEngine diagnostics" hidden></aside>
-    <div id="controls">WASD walk · Shift sprint · drag to look · E contextual agriculture/forage action · Q or 1–4 change seed · Space skips intro · H diagnostics</div>
-    <pre id="error" role="alert" hidden></pre>
-  </main>
-  <script type="module" src="./src/main-adventure.js?v=core-startup-1"></script>
-</body>
+<body></body>
 </html>

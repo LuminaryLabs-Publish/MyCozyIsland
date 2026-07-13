@@ -1,174 +1,179 @@
-# Known gaps: MyCozyIsland Three.js menu presentation lifecycle
+# Known gaps: MyCozyIsland cross-window preload and entry protocol
 
-**Timestamp:** `2026-07-13T14-39-40-04-00`  
-**Publication status:** `threejs-menu-presentation-lifecycle-authority-audited`
+**Timestamp:** `2026-07-13T19-40-56-04-00`  
+**Publication status:** `cross-window-preload-entry-protocol-authority-audited`
 
 ## Summary
 
-The minimal Three.js menu is implemented, but decorative provider and renderer setup gates hidden game preload. Menu frames and resources have no generation or first-frame evidence, and the delayed retirement path does not prove complete callback, listener, geometry, material, renderer, context or canvas retirement.
+The parent menu and hidden game communicate through same-origin `postMessage`, but the protocol is unversioned and not bound to shell, iframe, preload or entry generations. Messages have no identity or sequence, entry can be acknowledged before a visible frame, and the parent can reveal after a timeout without a terminal child result.
 
 ## Plan ledger
 
-**Goal:** keep menu presentation, preload handoff and retained architecture risks dependency ordered and tied to executable proof.
+**Goal:** keep protocol, gameplay, rendering and lifecycle gaps dependency ordered and tied to executable proof.
 
-- [ ] Provider-independent shell and hidden preload start.
-- [ ] Menu attempt, provider, renderer, resource, context and scheduler identities.
-- [ ] Approved provider manifest and WebGL capability result.
-- [ ] Degraded local menu fallback.
-- [ ] First menu frame submission and acknowledgement.
-- [ ] Single stored RAF ownership and stale-callback rejection.
-- [ ] Owned listener registry and exact retirement.
-- [ ] Per-geometry and per-material disposal receipts.
-- [ ] Renderer, context, canvas and reference retirement result.
-- [ ] Explicit menu/game dual-renderer budget and overlap policy.
-- [ ] Composition with player entry and first visible game-frame proof.
-- [ ] Browser, build and Pages fixtures.
-- [ ] Retained preload-handoff, bootstrap, lifecycle, save, input and quality work.
+- [ ] Versioned immutable message envelope.
+- [ ] Shell, frame, preload and entry generations.
+- [ ] Inbound origin plus source-window verification.
+- [ ] Closed payload schemas and fingerprints.
+- [ ] Message IDs, sequence and replay suppression.
+- [ ] Typed malformed/foreign/stale/duplicate/out-of-order results.
+- [ ] Ready-revision-bound entry request.
+- [ ] Idempotent resume and player preparation.
+- [ ] Preparation failure and rollback result.
+- [ ] Renderer-derived entry-frame receipt.
+- [ ] First visible game-frame acknowledgement.
+- [ ] Explicit timeout/degraded policy.
+- [ ] Atomic reveal/history/focus commit.
+- [ ] Timer/port/generation retirement on navigation and page lifecycle.
+- [ ] Browser, build and Pages fixture parity.
 
-## Identity gaps
-
-```txt
-MenuPresentationAttemptId: absent
-MenuProviderGeneration: absent
-MenuCanvasGeneration: absent
-MenuContextGeneration: absent
-MenuRendererGeneration: absent
-MenuResourceGeneration: absent
-MenuSchedulerGeneration: absent
-MenuFrameSequence: anonymous
-FirstMenuFrameAck: absent
-MenuPresentationRetirementResult: absent
-```
-
-## Boot and preload coupling gaps
+## Protocol identity gaps
 
 ```txt
-provider-independent shell bootstrap: absent
-iframe preload before menu provider admission: absent
-approved provider manifest: absent
-provider integrity/API probe: absent
-WebGL capability result: absent
-degraded local presentation result: absent
-menu failure plus game success policy: absent
-terminal shell result: absent
+ProtocolVersion: absent
+ShellGeneration: absent
+FrameGeneration: absent
+PreloadAttemptId: absent
+EntryAttemptId: absent
+MessageId: absent
+MessageSequence: absent
+PayloadFingerprint: absent
+ReadyRevision: absent
+ProtocolRetirementResult: absent
 ```
 
-Current order:
+## Admission gaps
 
 ```txt
-static Three.js import
-  -> WebGLRenderer construction
-  -> scene geometry/material construction
-  -> recursive RAF
-  -> later idle callback starts hidden game preload
+outbound targetOrigin: location.origin on both sides
+expected source-window check: present on both sides
+inbound event.origin check: absent on both sides
+closed message-type registry: absent
+payload schema validation: absent
+size/depth limits: absent
+stale generation rejection: absent
+duplicate/replay rejection: absent
+out-of-order rejection: absent
+unknown-message observation: absent
 ```
 
-A failure before the final step can leave Play disabled at `Preparing 1%` without starting factual game preparation.
+The source-window check is useful, but it does not identify the producing document generation or semantic attempt. A current message cannot be distinguished from a delayed predecessor after iframe reload, shell restoration or future reuse.
 
-## Dual-renderer gaps
+## Preload gaps
 
 ```txt
-menu WebGL renderer generation: absent
-hidden game WebGPU/WebGL2 generation correlation: absent
-concurrent renderer budget: absent
-context count observation: absent
-GPU resource overlap result: absent
-first game-only frame acknowledgement: absent
+protocol HELLO/negotiation: absent
+progress sequence: unversioned
+ready terminal result: unversioned
+failure terminal result: unversioned
+progress after terminal classification: absent
+child timer stops at ready: no
+preload cancellation: absent
+reload supersession result: absent
 ```
 
-The parent menu and hidden game can render concurrently through preload and transition. No receipt states whether that overlap is expected, bounded, throttled or complete.
+The bridge interval continues after readiness until entry or failure, even though ready is already terminal for preparation.
 
-## Menu first-frame gaps
+## Entry gaps
 
 ```txt
-renderer submission result: absent
-canvas generation: absent
-viewport/DPR revision: absent
-visible eligibility: absent
-provider/resource provenance: absent
-first menu frame failure result: absent
+entry request identity: absent
+expected ready revision: absent
+single resume receipt: absent
+player snapshot before/after: absent
+input-clear receipt: absent
+preparation exception terminal result: absent
+rollback to frozen-ready state: absent
+duplicate entry result: absent
+entry commit result: absent
 ```
 
-## Retirement gaps
+`preparePlayerEntry()` catches errors, warns and allows entry acknowledgement to continue.
+
+## Visible-frame gaps
 
 ```txt
-stored RAF ID: absent
-cancelled RAF receipt: absent
-late callback count/rejection: absent
-resize listener retirement: absent
-message listener retirement: absent
-keyboard listener retirement: absent
-Play listener retirement: absent
-sky geometry/material disposal receipt: absent
-trunk geometry/material disposal receipt: absent
-frond geometry/leaf material disposal receipts: absent
-coconut geometry/material disposal receipts: absent
-scene graph clearing receipt: absent
-renderer disposal result: absent
-context retention/release policy: absent
-canvas retirement state: absent
-cleared reference receipt: absent
-partial-retirement result: absent
+post-resume simulation revision: absent
+render snapshot revision: absent
+renderer/device generation: absent
+frame submission ID: absent
+iframe visibility generation: absent
+FirstVisibleGameFrameAck: absent
 ```
 
-`renderer.dispose()` is present. The gap is repository-level evidence for the complete owned resource and callback graph, not a claim about a specific browser driver leak.
+`cozy-game-entered` is posted immediately after resume and state preparation. It does not prove a successor frame was submitted or visible.
+
+## Timeout and fallback gaps
+
+```txt
+entry timeout identity: absent
+timeout cancellation receipt: absent
+fallback policy descriptor: absent
+TimedOut versus Degraded result: absent
+parent/child terminal convergence: absent
+```
+
+The parent reveals after 900 ms when `entering` is still false. This is a product fallback, but it is not represented as a distinguishable terminal result.
+
+## Lifecycle gaps
+
+```txt
+message listener registry: absent
+poll interval generation: absent
+entry timeout generation: absent
+port retirement: absent
+iframe navigation retirement: absent
+pagehide cancellation result: absent
+BFCache restoration policy: absent
+late message count/rejection: absent
+```
 
 ## Validation gaps
 
 ```txt
-provider rejection fixture: absent
-WebGL-disabled fixture: absent
-first-menu-frame fixture: absent
-dual-renderer observation fixture: absent
-resource disposal fixture: absent
-listener retirement fixture: absent
-late callback fixture: absent
-context-loss transition fixture: absent
+wrong-origin fixture: absent
+wrong-source fixture: absent
+malformed-payload fixture: absent
+stale-generation fixture: absent
+duplicate/replay fixture: absent
+out-of-order fixture: absent
+reload-during-preload fixture: absent
+reload-during-entry fixture: absent
+preparation-exception fixture: absent
+timeout/degraded fixture: absent
+first-visible-frame fixture: absent
 pagehide/BFCache fixture: absent
-built-output lifecycle smoke: absent
-Pages lifecycle smoke: absent
-```
-
-## Retained handoff gaps
-
-```txt
-preload/shell generation binding
-simulation and hidden-presentation quiescence leases
-revisioned cross-window protocol
-stale and duplicate message rejection
-entry timeout terminal result
-post-resume renderer submission receipt
-first visible game-frame acknowledgement
-atomic history/focus/menu retirement composition
+built-output protocol smoke: absent
+Pages protocol smoke: absent
 ```
 
 ## Retained architecture gaps
 
 ```txt
-static game-module/provider admission before Core Startup
-renderer-derived game startup first-frame proof
-BFCache-aware complete page lifecycle
-multi-participant resource settlement/recovery
-durable storage receipt and readback
+provider-independent hidden preload
+Three.js menu first-frame and full retirement
+static game-module bootstrap admission
+multi-participant resource settlement
+browser page lifecycle
+portable save durability
+browser input authority
+adaptive render-quality transitions
 bounded public runtime capabilities
-browser input generation/focus authority
-atomic adaptive quality transitions
 ```
 
 ## Dependency order
 
 ```txt
-provider-independent shell
-  -> independent game preload
-  -> menu provider/capability admission
-  -> first menu frame
-  -> preload readiness and player entry
-  -> first visible game frame
-  -> complete menu retirement
-  -> game-only presentation and page lifecycle
-  -> deployment parity
+protocol envelope and generations
+  -> message admission and sequencing
+  -> preload terminal results
+  -> entry attempt and preparation
+  -> post-resume frame acknowledgement
+  -> reveal/history/focus commit
+  -> menu retirement and game-only lifecycle
+  -> build/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim provider-independent preload, menu first-frame readiness, bounded GPU overlap, exact scheduler retirement, complete resource disposal, visible entry completion, lifecycle convergence or production readiness until the relevant fixture matrices pass on `main`.
+Do not claim protocol integrity, stale-message rejection, duplicate suppression, atomic entry, visible-frame completion, BFCache convergence or production readiness until the relevant fixture matrices pass on `main`.

@@ -1,27 +1,27 @@
-# START HERE: MyCozyIsland resource settlement and recovery authority
+# START HERE: MyCozyIsland Core Startup and bootstrap admission
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T08-04-17-04-00`  
-**Status:** `resource-settlement-recovery-authority-audited`  
-**Retained statuses:** `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
+**Aligned:** `2026-07-13T10-41-40-04-00`  
+**Status:** `core-startup-integration-central-reconciliation-pending`  
+**Technical status:** `core-startup-integrated-bootstrap-admission-gap-audited`  
+**Retained statuses:** `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
 
 ## Summary
 
-MyCozyIsland is a NexusEngine-composed procedural island Agriculture and wild-resource adventure with Inventory, portable saves and WebGPU/WebGL2 presentation. The active audit isolates cross-domain resource settlement: Inventory, official Agriculture, wild Foraging and Core Transaction Ledger are valid bounded owners, but product settlement currently coordinates them through sequential writes, nested idempotency records and snapshot restoration rather than one atomic participant transaction.
+MyCozyIsland now uses NexusEngine Core Startup inside the same engine instance as the complete Agriculture adventure. Preparations, continuation, structured pre-playable failure and first-render gating are implemented. The current audit isolates the earlier browser boundary: the static module graph must resolve and evaluate before the startup host can report a typed failure.
 
 ## Plan ledger
 
-**Goal:** make every planting, harvest and wild-forage resource exchange commit one settlement generation across every affected participant, or leave all participants unchanged.
+**Goal:** admit one browser module generation, bind it to one Core Startup launch and prove the first matching visible frame before playable entry.
 
-- [x] Compare the complete Publish inventory against central tracking and root `.agent` state.
+- [x] Compare the full Publish inventory with central tracking and root `.agent` state.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland as the oldest synchronized eligible repository.
-- [x] Trace Agriculture planning, Inventory changes, Foraging collection, ledger recording, save capture and visible projection.
-- [x] Preserve the complete 64-kit and service inventory.
-- [x] Add the `2026-07-13T08-04-17-04-00` tracker and audit family.
-- [x] Refresh required root documents and machine state.
-- [ ] Implement atomic prepare/commit, event buffering, recovery evidence and executable fixtures.
+- [x] Select only MyCozyIsland because runtime was ten commits ahead of central documentation.
+- [x] Reconcile Core Startup, engine reuse, preparations, continuation, first-frame ordering and tests.
+- [x] Update the census to 65 source-backed kit surfaces and two startup adapters.
+- [x] Add the `2026-07-13T10-41-40-04-00` tracker and audit family.
+- [ ] Implement static module admission, renderer-derived first-frame evidence and browser/build/Pages fixtures.
 
 ## Read first
 
@@ -30,33 +30,33 @@ MyCozyIsland is a NexusEngine-composed procedural island Agriculture and wild-re
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/trackers/2026-07-13T08-04-17-04-00/project-breakdown.md
-.agent/architecture-audit/2026-07-13T08-04-17-04-00-resource-settlement-recovery-authority-dsk-map.md
-.agent/resource-settlement-audit/2026-07-13T08-04-17-04-00-inventory-agriculture-foraging-atomicity-contract.md
+.agent/trackers/2026-07-13T10-41-40-04-00/project-breakdown.md
+.agent/architecture-audit/2026-07-13T10-41-40-04-00-core-startup-bootstrap-admission-dsk-map.md
+.agent/startup-audit/2026-07-13T10-41-40-04-00-static-module-bootstrap-contract.md
+.agent/render-audit/2026-07-13T10-41-40-04-00-startup-first-visible-frame-gap.md
 ```
 
 ## Active authority
 
 ```txt
-cozy-island-resource-settlement-recovery-authority-domain
+cozy-island-static-module-bootstrap-admission-authority-domain
 ```
 
 ## Critical finding
 
 ```txt
-Agriculture:
-  Inventory commits
-  -> Agriculture commits and may emit an event
-  -> aggregate product record commits last
-
-Foraging:
-  Inventory additions occur inside an outer Foraging applyOnce
-  -> their receipts are ignored
-  -> node depletion and outer record follow
+index.html static module tag
+  -> resolve Three.js, NexusEngine, Kits and local modules
+  -> parse and evaluate complete module graph
+  -> only then create cozy-startup-host
+  -> only then install error/unhandled-rejection listeners
+  -> only then Core Startup can publish failure
 ```
 
-Core Transaction Ledger supplies repeat-safe operation records, not multi-participant atomic commit. Agriculture recovery currently trusts inner Agriculture evidence without proving Inventory parity.
+Import-map, provider, parse or module-evaluation failure can therefore leave the static loader at `Starting NexusEngine` without a typed terminal result, timeout, retry or fallback.
+
+The first-frame gate proves `postPipeline.render()` was called before `enter()`, but its receipt is caller-authored and does not prove renderer submission or visible canvas presentation.
 
 ## Do not claim
 
-Do not claim atomic Agriculture/Inventory settlement, atomic wild Foraging settlement, event rollback, evidence-complete recovery, settlement-consistent saves or visible settlement provenance until the required source, browser, build and Pages fixture matrix passes on `main`.
+Do not claim provider-independent startup failure handling, retry isolation, renderer submission proof, first-visible-frame acknowledgement, browser/build/Pages parity or production startup readiness until the fixture matrix passes on `main`.

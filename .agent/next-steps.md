@@ -1,56 +1,62 @@
-# Next steps: MyCozyIsland adaptive render-quality authority
+# Next steps: MyCozyIsland browser page-lifecycle authority
 
-**Timestamp:** `2026-07-12T23-08-37-04-00`
+**Timestamp:** `2026-07-13T01-31-36-04-00`
 
 ## Summary
 
-Move adaptive quality out of direct host callbacks and into a composed transaction that plans, commits, verifies and rolls back every registered render participant under one revision.
+Replace the direct once-only `pagehide` effect with a lifecycle coordinator that classifies retained suspension, resume and terminal retirement and waits for complete participant receipts.
 
 ## Plan ledger
 
-**Goal:** replace asymmetric callback mutation with verified quality transitions and visible-frame proof.
+**Goal:** prevent partial disposal and make every lifecycle transition generation-fenced, idempotent and observable.
 
-- [ ] Add runtime-session, quality-revision and render-generation identities.
-- [ ] Define `AdaptiveQualityTransitionCommand` and terminal result types.
-- [ ] Register DPR, cloud steps, fog steps and fog resolution as participants.
-- [ ] Add capability and current-value readback for every participant.
-- [ ] Build detached target plans for degrade and recover.
-- [ ] Apply identical participant coverage in both directions.
-- [ ] Verify actual values after commit.
-- [ ] Roll back every changed participant on failure.
-- [ ] Reject stale transitions after resize, backend or lifecycle generation changes.
-- [ ] Project actual committed DPR, fog resolution and quality revision into diagnostics.
-- [ ] Acknowledge the first visible frame for the committed render generation.
-- [ ] Add WebGPU, WebGL2, source/build and Pages fixtures.
+- [ ] Add runtime-session and page-lifecycle generation identities.
+- [ ] Define `PageLifecycleCommand`, lifecycle phases and terminal result schemas.
+- [ ] Adapt `pagehide`, `pageshow`, visibility and explicit stop into command envelopes.
+- [ ] Classify `pagehide.persisted` before choosing Suspend or Retire.
+- [ ] Register animation loop, input, save and render resources as lifecycle participants.
+- [ ] Implement suspension without destructive renderer disposal.
+- [ ] Implement resume with wall-time reset, a new input generation and participant validation.
+- [ ] Rebuild gameplay presentation only when retention validation fails.
+- [ ] Implement complete terminal retirement in dependency order.
+- [ ] Add save write/readback receipts to suspend and retire barriers.
+- [ ] Reject duplicate and stale lifecycle events.
+- [ ] Revoke `globalThis.CozyIsland` capabilities after retirement.
+- [ ] Publish first resumed visible-frame acknowledgement.
+- [ ] Add WebGPU, WebGL2, source-server and Pages fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. identity and command/result schemas
-2. participant adapters and readback
-3. detached transition planner
-4. admission and stale rejection
-5. atomic commit and verification
-6. rollback
-7. diagnostics projection
-8. visible-frame receipt
-9. browser/backend/Pages fixtures
+1. lifecycle identities, states, commands and results
+2. browser event adapters and classification
+3. participant registry and dependency graph
+4. animation/input/save participant adapters
+5. renderer/resource participant adapters
+6. BFCache-safe suspension
+7. validated resume and timing/input reset
+8. terminal retirement and exactly-once receipts
+9. diagnostics and lifecycle journal
+10. visible resumed-frame acknowledgement
+11. browser/backend/Pages fixtures
 ```
 
 ## Required acceptance cases
 
 ```txt
-0 -> 1 degrade restores all expected values
-1 -> 2 degrade restores all expected values
-2 -> 1 recover restores DPR and atmosphere values
-1 -> 0 recover restores DPR and atmosphere values
-failed participant leaves predecessor intact
-failed verification rolls back all participants
-late transition cannot mutate a newer generation
-diagnostics equal actual readback
-visible frame cites committed revision
+persisted pagehide does not dispose gameplay presentation
+pageshow resumes the same runtime under a new lifecycle/frame generation
+crop and forage visuals match authoritative state after return
+target marker remains coherent after return
+second and third round trips remain idempotent
+terminal retirement stops frame production and detaches listeners
+all registered resources retire exactly once
+save flush failure is reported truthfully
+late predecessor lifecycle events perform zero mutation
+WebGPU and WebGL2 expose equivalent lifecycle results
+Pages behavior matches the audited source
 ```
 
 ## Retained work
 
-Durable-save authority, browser-input ownership, coordinated runtime retirement, Agriculture transaction recovery and deployed parity remain open after this slice.
+Adaptive-quality authority, durable-save commit authority, browser-input ownership, Agriculture transaction recovery and broader deployed parity remain open after this slice.

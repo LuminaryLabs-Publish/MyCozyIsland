@@ -1,25 +1,24 @@
-# Current audit: MyCozyIsland resource settlement and recovery authority
+# Current audit: MyCozyIsland Core Startup and bootstrap admission
 
-**Timestamp:** `2026-07-13T08-04-17-04-00`  
-**Status:** `resource-settlement-recovery-authority-audited`  
+**Timestamp:** `2026-07-13T10-41-40-04-00`  
+**Status:** `core-startup-integrated-bootstrap-admission-gap-audited`  
 **Branch:** `main`
 
 ## Summary
 
-MyCozyIsland uses Core Transaction Ledger for repeat-safe operations and keeps Inventory, Agriculture and Foraging as bounded domains. The product settlement path nevertheless commits participant state sequentially: Agriculture settlement applies Inventory changes, commits Agriculture and emits its event, then records aggregate completion; Foraging invokes nested Inventory additions without checking their receipts before depleting the node. Recovery and visible projection do not prove that every participant adopted one settlement generation.
+Ten commits integrated NexusEngine Core Startup into MyCozyIsland. One engine now owns startup and gameplay; six factual preparations drive the existing loader; save inspection selects new or restored continuation; renderer and atmosphere waits are bounded; structured pre-playable failures are projected; and playable entry is blocked until after one render call. The active gap is earlier: the static browser module graph must load before any of that authority exists.
 
 ## Plan ledger
 
-**Goal:** define one evidence-complete transaction for resource exchange, recovery, save eligibility and visible projection.
+**Goal:** define one evidence chain from document bootstrap through module admission, Core Startup preparation, renderer submission and the first visible playable frame.
 
-- [x] Compare Publish inventory, central ledger and root `.agent` state.
+- [x] Compare all ten Publish repositories with nine eligible central ledgers and root `.agent` state.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland by the oldest eligible documented-selection rule.
-- [x] Read product Agriculture settlement, Inventory, Foraging, Interaction, Save and Render Snapshot domains.
-- [x] Read the pinned Core Transaction Ledger and official Agriculture implementations.
-- [x] Preserve the complete 64-kit/service census.
-- [x] Add architecture, render, gameplay, interaction, settlement, deployment and central-sync audits.
-- [ ] Implement detached participant preparation, event buffering, atomic adoption, recovery evidence and fixtures.
+- [x] Select only MyCozyIsland because its runtime was ten commits ahead of central documentation.
+- [x] Inspect startup host, composition runtime, browser loop, import map, post pipeline, startup smoke and package wiring.
+- [x] Preserve all kit/service mappings and add Core Startup.
+- [x] Add architecture, render, gameplay, interaction, startup, deploy and central-sync audits.
+- [ ] Implement provider-independent bootstrap admission and executable browser/deployment fixtures.
 
 ## Selection comparison
 
@@ -29,18 +28,9 @@ eligible non-Cavalry repositories: 9
 new eligible repositories: 0
 central-ledger-missing eligible repositories: 0
 root-.agent-missing eligible repositories: 0
-repo-local-newer-than-central repositories: 0
-
-MyCozyIsland       2026-07-13T04-21-10-04-00 selected oldest
-TheUnmappedHouse   2026-07-13T04-47-00-04-00
-AetherVale         2026-07-13T05-00-02-04-00
-TheOpenAbove       2026-07-13T05-19-21-04-00
-IntoTheMeadow      2026-07-13T05-40-11-04-00
-PhantomCommand     2026-07-13T05-59-03-04-00
-PrehistoricRush    2026-07-13T06-39-10-04-00
-HorrorCorridor     2026-07-13T07-00-29-04-00
-ZombieOrchard      2026-07-13T07-41-11-04-00
-TheCavalryOfRome   excluded
+runtime-ahead-of-central repositories: 1
+selected repository: LuminaryLabs-Publish/MyCozyIsland
+reason: ten Core Startup source/test/docs commits were newer than the central documentation head
 ```
 
 Only `LuminaryLabs-Publish/MyCozyIsland` is modified in the Publish organization.
@@ -48,101 +38,91 @@ Only `LuminaryLabs-Publish/MyCozyIsland` is modified in the Publish organization
 ## Complete interaction loop
 
 ```txt
-browser event
-  -> cozy-input frame
-  -> player and nearest-target resolution
-  -> contextual interaction derives stable operation ID
-
-Agriculture target
-  -> Agriculture plan with expected plot revision and resourceChanges
-  -> Inventory applyChanges commits
-  -> Agriculture commitPlan commits and emits event
-  -> aggregate cozy-agriculture-actions record commits
-  -> interaction/result/frame/save paths observe successor state
-
-Wild Foraging target
-  -> outer cozy-foraging applyOnce begins
-  -> Inventory coconut addition commits
-  -> optional sprout addition commits
-  -> node depletion commits
-  -> outer Foraging operation record commits
-  -> interaction/result/frame/save paths observe successor state
-
-Recovery
-  -> aggregate Agriculture record absent
-  -> inner Agriculture record found
-  -> result promoted without proving matching Inventory effect
+static HTML loader
+  -> import map resolves remote Three/NexusEngine/Kits providers
+  -> static main-adventure module graph loads and evaluates
+  -> create one Core Startup engine and launch
+  -> mark runtime ready
+  -> initialize renderer under timeout
+  -> reuse startup engine and install complete adventure composition
+  -> inspect save and select continuation
+  -> build world and atmosphere under timeout
+  -> install input adapters
+  -> mark preparations ready
+  -> first animation tick updates gameplay and presentation state
+  -> postPipeline.render()
+  -> publish caller-authored first-frame fact
+  -> enter playable
+  -> steady input/tick/render/save loop
 ```
 
 ## Source-backed findings
 
-- Core Transaction Ledger `applyOnce()` executes its callback before writing the operation record. It supplies idempotency but no participant prepare/commit boundary.
-- Agriculture product settlement snapshots participants, applies Inventory first, commits Agriculture second and records aggregate completion last.
-- Official Agriculture `commitPlan()` writes plot state and emits its domain event inside the inner ledger callback.
-- Catch-based snapshot loading cannot retract an already emitted event or prove that observers never saw intermediate participant state.
-- Agriculture recovery promotes an inner Agriculture result without checking the matching Inventory operation, balance fingerprint or participant revisions.
-- Foraging performs one or two nested Inventory additions, ignores the returned receipts, then depletes the node and reports success.
-- Save capture/restore reads or writes participant snapshots sequentially and carries no settlement generation.
-- Render Snapshot concatenates participant revisions but carries no SettlementId, aggregate ledger sequence, participant receipts or first-visible-settlement acknowledgement.
-- Existing tests prove successful Agriculture, Foraging, save and migration flows only.
+- `createCozyStartupHost()` installs `core-startup-kit`, launches six preparations and connects a renderer-neutral descriptor to product DOM copy.
+- `createCozyAdventure()` accepts the host engine and installs the remaining 13 core/adventure kits, avoiding split startup and gameplay state.
+- Renderer initialization is bounded to 15 seconds and atmosphere preparation to 20 seconds.
+- Save restore result is mapped into Core Startup continuation state before world construction.
+- `enter()` is rejected until a first-frame fact exists; the startup smoke proves that domain rule.
+- `index.html` still statically imports `src/main-adventure.js`, whose complete module graph includes remote Three.js and NexusEngine providers.
+- The startup host and its global failure listeners are created only after that graph resolves, parses and evaluates.
+- `postPipeline.render()` returns no submission result; the first-frame receipt is authored by the host and carries no visible-frame evidence.
+- `startupHost.dispose()` exists but is not called by the current page-retirement path.
 
 ## Domains in use
 
 ```txt
-browser shell, input, animation, HUD, storage, lifecycle and diagnostics
+static HTML/import-map/module-provider bootstrap
+Core Startup launch, preparation, continuation, failure and playable admission
+browser startup descriptor projection and product copy
 NexusEngine composition, scheduler, clock and service graph
-Core Object
-Core Transaction Ledger
-world, terrain, plots and forage descriptors
-Inventory balances and seed selection
-Agriculture land, soil, cultivation, water, growth, harvest, perennials and events
-wild Foraging collection and respawn
-contextual targeting and product settlement
+Core Object and Core Transaction Ledger
+world, terrain, farm plots and forage descriptors
+input, Inventory, Agriculture, Foraging and interaction
 player, scenario and camera
-portable save capture, migration, restore, rollback and reset
-renderer-neutral static/frame/HUD/debug snapshots
-WebGPU/WebGL2 scene, atmosphere, ocean, foam, materials, post and quality
-resource-settlement identity, preparation, commit, recovery, receipts, save eligibility and visible-frame proof
-validation, build, Pages and central tracking
+portable save and renderer-neutral snapshots
+WebGPU/WebGL2 scene, atmosphere, ocean, foam, post and quality
+browser storage, page lifecycle and diagnostics
+bootstrap generation, provider manifest, module admission, retry/fallback,
+renderer submission and visible-frame proof
+validation, Actions, Pages and central tracking
 ```
 
 ## Kit and service census
 
 ```txt
-engine-installed core/adventure kits: 13
+engine-installed core/adventure kits: 14
 cataloged world/render/host kits: 50
 additional composition kit: 1
-source-backed total: 64
-active route surfaces: 62
+source-backed kit surfaces: 65
+active route surfaces: 63
 retained inactive catalog entries: 2
-ordered Core World providers: 9
+startup adapters outside kit census: 2
+ordered Core World providers retained: 9
 ```
 
-The complete per-kit service inventory is preserved in `.agent/trackers/2026-07-13T08-04-17-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
+The complete per-kit service inventory is preserved in `.agent/trackers/2026-07-13T10-41-40-04-00/project-breakdown.md` and `.agent/kit-registry.json`.
 
 ## Missing authority
 
 ```txt
-SettlementId and settlement generation
-expected participant and ledger revisions
-detached Inventory/Agriculture/Foraging candidates
-participant prepare results
-buffered domain events
-atomic participant and aggregate-record adoption
-participant commit and rollback receipts
-partial-attempt classification
-recovery evidence and divergence quarantine
-settlement-consistent save generation
-ResourceSettlementResult
-settlement observation journal
-first visible settlement-frame acknowledgement
-fault-injection and source/build/Pages parity fixtures
+BootstrapAttemptId and bootstrap generation
+immutable provider manifest and provider receipts
+provider-independent static failure projection
+bounded module-load result
+export-contract validation
+stale/duplicate/cancelled attempt rejection
+retry and fallback policy
+Core Startup launch binding to accepted module graph
+renderer-derived first-frame submission result
+visible canvas acknowledgement
+bootstrap observation journal and retirement receipt
+browser/build/Pages parity fixtures
 ```
 
 ## Required parent domain
 
-`cozy-island-resource-settlement-recovery-authority-domain`
+`cozy-island-static-module-bootstrap-admission-authority-domain`
 
 ## Validation boundary
 
-Documentation only. No runtime, gameplay, Inventory, Agriculture, Foraging, ledger, save, rendering, dependency, package-script or deployment behavior changed. No executable settlement fixture was run.
+Documentation only. No runtime, gameplay, render, save, dependency, package-script, workflow or deployment behavior changed. The startup smoke was inspected but not independently run.

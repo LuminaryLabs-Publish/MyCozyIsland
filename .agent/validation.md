@@ -1,87 +1,105 @@
-# Validation: MyCozyIsland browser page-lifecycle reconciliation
+# Validation: MyCozyIsland
 
-**Timestamp:** `2026-07-13T01-40-00-04-00`
+**Timestamp:** `2026-07-13T04-10-37-04-00`
 
-## Summary
+## Scope
 
-This run changes documentation only. It reconciles the repo-local page-lifecycle audit with timestamped routing, machine-readable state and central tracking. Runtime, gameplay, rendering, persistence and deployment behavior are unchanged.
+Documentation-only audit of the browser-global host, raw runtime/presentation references, representative mutating domain services, reset exposure, host lifecycle and visible-frame provenance. Runtime source, dependencies, gameplay, rendering, persistence and deployment configuration are unchanged.
 
 ## Plan ledger
 
-**Goal:** record what was inspected and avoid lifecycle claims unsupported by executable browser evidence.
+**Goal:** record exact source evidence and executable proof required before public-host capability claims are made.
 
-- [x] Compare all ten accessible Publish repositories.
-- [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Select only MyCozyIsland because its repo-local lifecycle audit was newer than central tracking.
-- [x] Inspect pagehide registration and direct effects.
-- [x] Inspect gameplay renderer update and disposal semantics.
-- [x] Inspect animation-loop, listener, resource and global-capability ownership.
-- [x] Preserve the 64-kit/service inventory.
-- [x] Add the timestamped reconciliation family and refresh root documentation.
-- [x] Push directly to `main`; create no branch or pull request.
-- [ ] Implement and run lifecycle fixtures.
+- [x] Read `src/main-adventure.js` startup, animation loop, page lifecycle and `globalThis.CozyIsland` publication.
+- [x] Confirm raw renderer, scene, camera, adventure and engine references are public.
+- [x] Confirm the frozen wrapper does not freeze referenced owners.
+- [x] Read `src/adventure/composition-runtime.js` and confirm the adventure exposes the engine and tick.
+- [x] Read `src/adventure/runtime-domains.js` and confirm public input enqueue/clear and snapshot/reset services.
+- [x] Read `src/adventure/resource-domains.js` and confirm Inventory and Foraging mutation/load/reset services.
+- [x] Read `src/adventure/persistence-render-domains.js` and confirm save restore and multi-domain reset services.
+- [x] Preserve all 64 kit surfaces and services.
+- [x] Add timestamped audits and root routing.
+- [x] Push documentation only to `main` without a branch or pull request.
+- [ ] Implement and run public-capability fixtures.
 
-## Source files inspected
+## Source-backed findings
 
 ```txt
 src/main-adventure.js
-src/adventure/renderer-gameplay.js
-.agent/START_HERE.md
-.agent/current-audit.md
-.agent/known-gaps.md
-.agent/next-steps.md
-.agent/validation.md
-.agent/kit-registry.json
-repo-ledger/LuminaryLabs-Publish/*.md in the central repository
+  -> unconditionally assigns globalThis.CozyIsland
+  -> exposes renderer, scene, camera, adventure and engine
+  -> exposes world, input, player, inventory, agriculture, foraging, interaction and save APIs
+  -> exposes captureSave and resetAdventure
+  -> has no host channel, capability grant, caller identity or revoke path
+
+src/adventure/composition-runtime.js
+  -> returned adventure includes raw engine
+  -> adventure.tick advances engine state
+
+src/adventure/runtime-domains.js
+  -> input API can enqueue key, pointer, wheel and clear commands
+  -> APIs expose loadSnapshot and reset surfaces
+
+src/adventure/resource-domains.js
+  -> Inventory exposes add, remove, applyChanges, loadSnapshot and reset
+  -> Foraging exposes harvest, loadSnapshot and reset
+
+src/adventure/persistence-render-domains.js
+  -> save API exposes restore and resetAll
+  -> resetAll directly resets transaction, world, scenario, Inventory, Agriculture, Foraging, player and interaction participants
 ```
 
-## Confirmed source facts
+## Deterministic observations
 
 ```txt
-pagehide listener once=true: yes
-pagehide event.persisted inspected: no
-pagehide calls storeSave: yes
-pagehide calls gameplayRenderer.dispose: yes
-pageshow handler: absent
-animation loop stopped on pagehide: no
-canvas/window listeners detached: no
-complete renderer/resource retirement: absent
-gameplay dispose clears plotEntries: yes
-gameplay dispose clears forageEntries: yes
-gameplay dispose clears cropGroups: yes
-lifecycle command/generation/result: absent
-first resumed visible-frame acknowledgement: absent
+source-backed kit surfaces: 64
+public host raw participant references: at least 13
+public top-level object frozen: yes
+referenced participant objects deeply frozen: no
+host channel policies: 0
+capability grant types: 0
+typed public command result types: 0
+host revocation results: 0
+visible capability-effect acknowledgements: 0
+production-build capability fixtures: 0
 ```
 
-## Change boundary
+## Required fixtures
+
+```txt
+production read-only projection
+development capability manifest
+grant/expiry/revoke
+raw-owner exclusion
+unknown/stale/duplicate command rejection
+single-writer tick admission
+Inventory/Foraging/save mutation receipts
+reset confirmation and rollback result
+page lifecycle revocation
+first visible capability-effect frame
+source/build/Pages parity
+```
+
+## Validation result
 
 ```txt
 runtime source changed: no
-page lifecycle behavior changed: no
-gameplay changed: no
-rendering changed: no
-save or input behavior changed: no
-dependencies or package scripts changed: no
+dependencies changed: no
+package scripts changed: no
+gameplay behavior changed: no
+input behavior changed: no
+save behavior changed: no
+render behavior changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-```
 
-## Execution boundary
-
-```txt
 npm test: not run
-browser BFCache round trip: not run
-repeated-navigation fixture: unavailable / not run
-terminal-retirement fixture: unavailable / not run
-resource-receipt fixture: unavailable / not run
-first resumed frame fixture: unavailable / not run
-WebGPU/WebGL2 lifecycle parity: unavailable / not run
-production-build parity: not run
-Pages lifecycle smoke: not run
+npm run build: not run
+public-capability fixtures: unavailable / not run
+browser host smoke: unavailable / not run
+production-build host inspection: not run
+Pages host smoke: not run
 ```
 
-## Claim boundary
-
-No BFCache-safety, complete-cleanup, exactly-once-retirement, save-flush-truth, resumed-visible-state, backend parity or production-readiness claim is made.
+No least-authority, safe-public-host, deterministic external-control, revocation, reset-safety or visible-effect claim is made.

@@ -1,88 +1,99 @@
-# START HERE: MyCozyIsland page-lifecycle central reconciliation
+# START HERE: MyCozyIsland public runtime capability audit
 
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T01-40-00-04-00`  
-**Status:** `browser-page-lifecycle-authority-central-reconciled`
+**Aligned:** `2026-07-13T04-10-37-04-00`  
+**Status:** `public-runtime-capability-authority-audited`  
+**Retained statuses:** `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
 
 ## Summary
 
 MyCozyIsland is a NexusEngine-composed procedural island Agriculture and wild-resource adventure with portable saves and WebGPU/WebGL2 presentation.
 
-The active audit is browser page lifecycle ownership. A once-only `pagehide` handler always attempts a save and disposes only `gameplayRenderer`; it does not distinguish BFCache suspension from terminal departure, has no `pageshow` path, and leaves the animation loop, listeners and remaining resources outside one lifecycle transaction. Gameplay disposal clears the plot, forage and crop indexes required by later presentation updates.
+The active audit isolates the browser-global `CozyIsland` host. The top-level object is frozen, but it exposes mutable renderer, scene, camera, engine, adventure and domain-service references plus direct save capture and multi-domain reset. The host has no build-channel admission, capability grant, caller identity, command generation, revocation, bounded result journal or visible-frame correlation.
 
 ## Plan ledger
 
-**Goal:** classify every lifecycle event and commit one generation-fenced Suspend, Resume or Retire result covering runtime, input, save and all render participants.
+**Goal:** replace the raw browser-global ownership graph with a minimal, revocable, revision-bound capability gateway whose commands have typed results and visible-frame provenance.
 
 - [x] Compare the ten-repository Publish inventory with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland because its repo-local lifecycle audit was newer than central tracking.
-- [x] Re-read pagehide, animation-loop, listener and gameplay-disposal source.
-- [x] Preserve all 64 source-backed kit surfaces and their services.
-- [x] Add the `2026-07-13T01-40-00-04-00` reconciliation family.
-- [x] Refresh required root `.agent` documents and machine state.
-- [x] Push directly to `main`; create no branch or pull request.
-- [ ] Implement and execute lifecycle fixtures.
+- [x] Select only `LuminaryLabs-Publish/MyCozyIsland` by the oldest eligible documented-selection rule.
+- [x] Re-read startup, engine composition, input, Inventory, Foraging, save/reset and public-host source.
+- [x] Preserve all 64 source-backed kit surfaces and their offered services.
+- [x] Add the timestamped tracker, turn ledger and capability audit family.
+- [x] Refresh the required root `.agent` documents and machine registry.
+- [x] Push documentation only to `main`; create no branch or pull request.
+- [ ] Runtime gateway implementation and browser/build/Pages fixtures remain future work.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-13T01-40-00-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T01-40-00-04-00.md
+.agent/trackers/2026-07-13T04-10-37-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T04-10-37-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-13T01-40-00-04-00-browser-page-lifecycle-central-reconciliation-dsk-map.md
-.agent/render-audit/2026-07-13T01-40-00-04-00-bfcache-visible-state-central-reconciliation-gap.md
-.agent/gameplay-audit/2026-07-13T01-40-00-04-00-pagehide-resume-central-reconciliation-loop.md
-.agent/interaction-audit/2026-07-13T01-40-00-04-00-page-lifecycle-admission-central-reconciliation-map.md
-.agent/lifecycle-audit/2026-07-13T01-40-00-04-00-suspend-resume-retire-central-reconciliation-contract.md
-.agent/deploy-audit/2026-07-13T01-40-00-04-00-page-lifecycle-central-fixture-gate.md
-.agent/central-sync-audit/2026-07-13T01-40-00-04-00-repo-ledger-page-lifecycle-reconciliation.md
+.agent/architecture-audit/2026-07-13T04-10-37-04-00-public-runtime-capability-dsk-map.md
+.agent/render-audit/2026-07-13T04-10-37-04-00-public-mutation-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-13T04-10-37-04-00-global-host-direct-mutation-loop.md
+.agent/interaction-audit/2026-07-13T04-10-37-04-00-capability-command-admission-result-map.md
+.agent/capability-audit/2026-07-13T04-10-37-04-00-public-host-grant-revoke-contract.md
+.agent/deploy-audit/2026-07-13T04-10-37-04-00-production-host-capability-fixture-gate.md
 ```
 
 ## Interaction loop
 
 ```txt
-startup -> construct adventure and render participants -> install listeners -> start animation loop
-frame -> tick -> project world/Agriculture/Foraging/HUD -> render -> periodic save
-pagehide -> save attempt -> destructive gameplay-only disposal -> no typed result
-retained return -> no pageshow reconstruction -> possible frames against cleared indexes
-terminal departure -> no complete stop, save receipt or ordered resource retirement
+startup
+  -> construct renderer, scene, camera, adventure and domain services
+  -> install browser listeners
+  -> start renderer.setAnimationLoop
+  -> publish globalThis.CozyIsland with raw participant references
+
+normal input
+  -> browser adapter queues input
+  -> animation loop ticks NexusEngine
+  -> world, Agriculture, Foraging, HUD and render participants update
+
+public-host invocation
+  -> console or same-origin script obtains CozyIsland
+  -> directly ticks adventure/engine, mutates renderer/scene/camera,
+     invokes domain services, captures/restores state or resets the adventure
+  -> no capability admission or command receipt
+  -> the next normal frame renders whichever state remains
+
+diagnostics
+  -> getState captures current domain state
+  -> no result identifies the caller, accepted mutation or visible frame
 ```
 
 ## Main finding
 
 ```txt
-pagehide persisted classification: absent
-Suspend versus Retire decision: absent
-pageshow Resume path: absent
-animation-loop and listener lifecycle ownership: absent
-complete renderer participant registry: absent
-save-flush terminal receipt: absent
-exactly-once resource retirement: absent
-first resumed visible-frame acknowledgement: absent
+production/debug channel policy: absent
+public host session and generation: absent
+capability IDs and grants: absent
+read versus mutate separation: absent
+caller/source identity: absent
+command ID and expected revision: absent
+stale/duplicate rejection: absent
+reset confirmation and participant receipt: absent
+public-host revocation: absent
+bounded observation journal: absent
+first visible capability-effect frame acknowledgement: absent
 ```
 
 ## Required parent domain
 
-```txt
-cozy-island-browser-page-lifecycle-authority-domain
-```
+`cozy-island-public-runtime-capability-authority-domain`
 
 ## Guardrails
 
-```txt
-Push only to main.
-Create no branch or pull request.
-Do not work on TheCavalryOfRome.
-Do not treat pagehide as proof of terminal unload.
-Do not destructively dispose retained-page participants during suspension.
-Do not report Retired while mandatory participants remain owned.
-Do not claim lifecycle safety until browser and Pages fixtures pass.
-```
-
-Prior adaptive-quality, durable-save and browser-input audits remain valid in their timestamped families.
+- Keep renderer, simulation, domain and persistence ownership separate.
+- Do not treat `Object.freeze()` on the wrapper as deep immutability or capability control.
+- Do not expose raw `engine`, renderer, scene, camera or mutating domain APIs in a production host.
+- Do not let diagnostics call `tick`, `loadSnapshot`, `reset` or resource mutation directly.
+- Do not claim a safe public gateway until source, build and Pages fixtures prove grant, rejection, revocation and visible-frame correlation.

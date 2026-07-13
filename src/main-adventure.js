@@ -16,6 +16,7 @@ import {
 } from "./kits/index.js";
 import { createCozyAdventure } from "./adventure/composition-runtime.js";
 import { createCozyGameplayRenderer } from "./adventure/renderer-gameplay.js";
+import { createCozyStartupHost } from "./adventure/startup-host.js";
 
 const SAVE_KEY = "my-cozy-island.adventure-save.v1";
 const canvas = document.querySelector("#game");
@@ -34,18 +35,28 @@ const staminaFill = document.querySelector("#stamina-fill");
 const hotbarRoot = document.querySelector("#hotbar");
 const saveRoot = document.querySelector("#save-status");
 
-function setLoad(value, label) {
-  if (loaderFill) loaderFill.style.width = `${Math.max(0, Math.min(100, value))}%`;
-  if (loaderText && label) loaderText.textContent = label;
-}
+const startupHost = createCozyStartupHost({
+  loader,
+  fill: loaderFill,
+  label: loaderText,
+  error: errorPanel
+});
 
 function fail(error) {
   console.error(error);
-  if (errorPanel) {
-    errorPanel.hidden = false;
-    errorPanel.textContent = String(error?.stack ?? error?.message ?? error);
+  try {
+    startupHost.fail(error, {
+      code: error?.code ?? "cozy.startup.unhandled",
+      source: "main-adventure"
+    });
+  } catch (startupError) {
+    console.error("Could not report startup failure", startupError);
+    if (errorPanel) {
+      errorPanel.hidden = false;
+      errorPanel.textContent = String(error?.stack ?? error?.message ?? error);
+    }
+    if (loaderText) loaderText.textContent = "Could not start My Cozy Island";
   }
-  if (loaderText) loaderText.textContent = "Could not start My Cozy Island";
 }
 
 function createSky(illumination) {
@@ -126,14 +137,19 @@ function updateHud(frame) {
 
 async function main() {
   if (!canvas) throw new Error("Missing #game canvas.");
-  setLoad(4, "Starting NexusEngine adventure host");
+
+  startupHost.working("renderer", 0.05, "Starting the presentation backend");
   const renderer = new THREE.WebGPURenderer({
     canvas,
     antialias: true,
     powerPreference: "high-performance",
     trackTimestamp: true
   });
-  await renderer.init();
+  await startupHost.withTimeout(renderer.init(), {
+    milliseconds: 15000,
+    label: "Renderer initialization",
+    code: "cozy.renderer.initialization-timeout"
+  });
   const backend = renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2";
   const quality = chooseRenderQuality({ backend });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality.pixelRatioCap));
@@ -143,14 +159,26 @@ async function main() {
   renderer.toneMappingExposure = 1.08;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  startupHost.ready("renderer", { backend, qualityTier: quality.tier }, `${backend === "webgpu" ? "WebGPU" : "WebGL2"} presentation ready`);
 
-  setLoad(12, "Installing world, input, player, farming, forage, save, and presentation DSKs");
-  const adventure = createCozyAdventure({ quality, backend });
+  startupHost.working("composition", 0.2, "Installing island adventure services");
+  const adventure = createCozyAdventure({
+    quality,
+    backend,
+    engine: startupHost.engine
+  });
+  startupHost.ready("composition", {
+    kitCount: adventure.engine.kits.length,
+    domainPaths: adventure.engine.n.paths().map((entry) => entry.path)
+  }, "Adventure services installed");
+
   const restoreResult = loadSave(adventure);
+  startupHost.selectContinuation(restoreResult);
   const staticSnapshot = adventure.getStaticSnapshot();
   const initialFrame = adventure.getFrameSnapshot();
   renderer.toneMappingExposure = initialFrame.illumination.exposure;
 
+  startupHost.working("world", 0.12, "Building one authoritative island and farm");
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#efc18f");
   scene.fog = new THREE.Fog(
@@ -187,7 +215,6 @@ async function main() {
   sun.shadow.normalBias = 0.04;
   scene.add(sun);
 
-  setLoad(28, "Building one authoritative island, sea floor, friendly forest, and farm");
   const worldRenderer = createStylizedWorldRenderer(staticSnapshot);
   scene.add(worldRenderer.group);
   const gameplayRenderer = createCozyGameplayRenderer(staticSnapshot);
@@ -202,12 +229,20 @@ async function main() {
   scene.add(oceanRenderer.mesh);
   const foamRenderer = createWebGPUFoamRenderer(staticSnapshot.foam);
 
-  setLoad(48, backend === "webgpu" ? "Computing rolling clouds and fog on the GPU" : "Baking reliable fallback atmosphere");
-  const volumeTextures = await createAtmosphereVolumeTextures({
+  startupHost.working(
+    "world",
+    0.52,
+    backend === "webgpu" ? "Computing rolling clouds and fog on the GPU" : "Baking reliable fallback atmosphere"
+  );
+  const volumeTextures = await startupHost.withTimeout(createAtmosphereVolumeTextures({
     renderer,
     cloudRecipe: staticSnapshot.cloudDensity,
     fogRecipe: staticSnapshot.fogDensity,
     backend
+  }), {
+    milliseconds: 20000,
+    label: "Atmosphere preparation",
+    code: "cozy.atmosphere.preparation-timeout"
   });
   const cloudRenderer = createVolumetricCloudRenderer({
     densityTexture: volumeTextures.cloudTexture,
@@ -219,7 +254,7 @@ async function main() {
   assignRenderLayer(cloudRenderer.group, COZY_RENDER_LAYERS.CLOUD_VOLUME, true);
   scene.add(cloudRenderer.group);
 
-  setLoad(72, "Placing readable golden-hour rolling fog");
+  startupHost.working("world", 0.78, "Placing readable golden-hour rolling fog");
   const fogRenderer = createRollingFogRenderer({
     fogTexture: volumeTextures.fogTexture,
     recipe: staticSnapshot.fogDensity,
@@ -289,6 +324,7 @@ async function main() {
   addEventListener("keyup", (event) => input.enqueueKey(event.code, false));
   addEventListener("blur", () => input.clear("window-blur"));
   addEventListener("visibilitychange", () => { if (document.hidden) input.clear("document-hidden"); });
+  startupHost.ready("input", { adapter: "cozy-browser-input" }, "Player controls ready");
 
   function resize() {
     renderer.setSize(innerWidth, innerHeight, false);
@@ -298,14 +334,15 @@ async function main() {
   addEventListener("resize", resize);
   resize();
 
-  setLoad(100, `${backend === "webgpu" ? "WebGPU" : "WebGL2"} · cozy farming adventure ready${restoreResult.ok ? " · save restored" : ""}`);
-  setTimeout(() => {
-    if (loader) loader.classList.add("is-complete");
-    setTimeout(() => { if (loader) loader.hidden = true; }, 520);
-  }, 260);
+  startupHost.ready("world", {
+    snapshotId: staticSnapshot.id ?? "cozy-static-world",
+    atmosphereSource: volumeTextures.source,
+    renderPasses: postPipeline.getPhysicalPassOrder()
+  }, "Island presentation ready");
 
   let last = performance.now();
   let frames = 0;
+  let startupEntered = false;
   let lastSaveFingerprint = adventure.engine.n.cozySave.fingerprint();
   let autoSaveAccumulator = 0;
   renderer.setAnimationLoop((now) => {
@@ -332,6 +369,20 @@ async function main() {
     updateHud(frame);
     performanceBudget.sample(frameMs);
     postPipeline.render();
+
+    if (!startupEntered) {
+      startupEntered = true;
+      startupHost.presentFirstFrame({
+        frameId: `frame:${frames + 1}`,
+        presentationId: "cozy-main",
+        backend,
+        receipt: { renderPasses: postPipeline.getPhysicalPassOrder() }
+      });
+      startupHost.enter({ inputReady: true });
+      setTimeout(() => {
+        if (loader) loader.hidden = true;
+      }, 520);
+    }
 
     autoSaveAccumulator += dt;
     if (autoSaveAccumulator >= 5) {
@@ -371,6 +422,8 @@ async function main() {
     quality,
     adventure,
     engine: adventure.engine,
+    startup: startupHost.startup,
+    startupHost,
     world: adventure.engine.n.cozyWorld,
     input: adventure.engine.n.cozyInput,
     player: adventure.engine.n.cozyPlayer,

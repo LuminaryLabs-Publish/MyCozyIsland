@@ -52,11 +52,13 @@
         "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
         "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.tsl.js",
         "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/",
-        "nexusengine/engine": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/engine.js",
-        "nexusengine/ecs": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/ecs.js",
-        "nexusengine/domain-service-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/domain-service-kit.js",
-        "nexusengine/core-object": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/core-kits/core-object-kit/index.js",
-        "nexusengine/core-transaction-ledger": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@c5548de504072bf09eb68986b98aca0292903803/src/core-kits/core-transaction-ledger-kit/index.js",
+        "nexusengine/engine": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/engine.js",
+        "nexusengine/ecs": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/ecs.js",
+        "nexusengine/domain-service-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/domain-service-kit.js",
+        "nexusengine/core-startup": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-startup-kit/index.js",
+        "nexusengine/core-object": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-object-kit/index.js",
+        "nexusengine/core-transaction-ledger": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/core-kits/core-transaction-ledger-kit/index.js",
+        "nexusengine/hosts/browser/startup-presentation": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@4fac5c2eea315ec6cf439c6a41b8f6ed0faba044/src/hosts/browser/browser-startup-presentation-adapter.js",
         "@luminarylabs/nexusengine-kits/kits/production/agriculture-domain-kit": "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine-Kits@2218856ccd729744140d153d738ba8db638b3359/kits/production/agriculture-domain-kit/index.js"
       }
     }
@@ -85,13 +87,13 @@
       </div>
     </aside>
     <section id="loader" class="glass" aria-live="polite">
-      <div id="loader-header"><span id="loader-kicker">My Cozy Island</span><span id="loader-text">Installing NexusEngine Agriculture services</span></div>
+      <div id="loader-header"><span id="loader-kicker">My Cozy Island</span><span id="loader-text">Starting NexusEngine</span></div>
       <div id="loader-track" aria-hidden="true"><div id="loader-fill"></div></div>
     </section>
     <aside id="debug" aria-label="NexusEngine diagnostics" hidden></aside>
     <div id="controls">WASD walk · Shift sprint · drag to look · E contextual agriculture/forage action · Q or 1–4 change seed · Space skips intro · H diagnostics</div>
     <pre id="error" role="alert" hidden></pre>
   </main>
-  <script type="module" src="./src/main-adventure.js?v=agriculture-cutover-1"></script>
+  <script type="module" src="./src/main-adventure.js?v=core-startup-1"></script>
 </body>
 </html>

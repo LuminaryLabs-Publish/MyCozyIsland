@@ -1,10 +1,11 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-13T04-10-37-04-00`
+**Timestamp:** `2026-07-13T04-21-10-04-00`  
+**Publication status:** `public-runtime-capability-publication-central-reconciled`
 
 ## Summary
 
-The active gap is public runtime capability authority. The browser-global host exposes raw mutable simulation and presentation owners without channel policy, grant, command admission, revocation or visible-frame proof. Page lifecycle, adaptive quality, durable save and browser-input gaps remain unresolved.
+The active gap is public runtime capability authority. The browser-global host exposes raw mutable simulation and presentation owners without channel policy, grant, command admission, revocation or visible-frame proof. Page lifecycle, adaptive quality, durable save, browser input and Agriculture transaction gaps remain unresolved.
 
 ## Plan ledger
 
@@ -32,22 +33,23 @@ raw renderer/scene/camera exposure: present
 raw domain API exposure: present
 caller/source identity: absent
 command ID/sequence/expected revision: absent
-stale/duplicate/revoked rejection: absent
+stale/duplicate/expired/revoked rejection: absent
 reset confirmation and scope: absent
 participant commit/rollback receipts: absent
 bounded observation journal: absent
 public host revocation: absent
 first visible capability-effect frame acknowledgement: absent
+source/build/Pages capability proof: absent
 ```
 
 ## Concrete consequence
 
 ```txt
 external caller obtains globalThis.CozyIsland
-  -> calls adventure.tick or raw engine/domain mutation
+  -> calls adventure.tick, raw engine/domain mutation or direct presentation mutation
   -> normal animation loop remains active
   -> no single-writer admission or capability result exists
-  -> domain and/or presentation state changes
+  -> domain and/or visible state changes
   -> next frame renders the remaining state
   -> getState cannot prove which external operation caused the visible result
 ```
@@ -62,6 +64,7 @@ Suspend versus Retire decision absent
 pageshow resume handler absent
 animation-loop and listener lifecycle ownership absent
 complete resource retirement absent
+public-host revocation on retirement absent
 first resumed visible-frame acknowledgement absent
 ```
 
@@ -104,11 +107,11 @@ first visible input-frame acknowledgement absent
 production host policy
 read-only public projection
 raw-owner exclusion
-capability grant and expiry
+capability grant, expiry and revocation
 unknown/stale/duplicate/revoked command rejection
+single-writer tick rejection
 reset confirmation and participant result
-host retirement and reissue
-second-writer tick rejection
+host retirement and successor-generation reissue
 visible effect correlation
 source/build/Pages parity
 ```

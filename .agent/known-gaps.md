@@ -1,110 +1,110 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-13T10-41-40-04-00`  
-**Publication status:** `core-startup-integrated-bootstrap-admission-gap-audited`
+**Timestamp:** `2026-07-13T12-38-45-04-00`  
+**Publication status:** `menu-game-preload-handoff-scheduler-authority-audited`
 
 ## Summary
 
-Core Startup integration is implemented, but it begins only after the full static browser module graph has loaded. Provider, import-map, parse or evaluation failure can therefore occur before a typed startup result exists. The first-frame fact also proves host call order rather than renderer submission or visible canvas presentation.
+The dedicated menu and background game preload are implemented, but menu presentation, hidden game presentation, simulation quiescence, cross-window entry, history/focus transfer, and visible completion are not governed by one generation-bound authority.
 
 ## Plan ledger
 
-**Goal:** keep startup and retained architecture risks dependency ordered and tied to executable proof.
+**Goal:** keep handoff and retained architecture risks dependency ordered and tied to executable proof.
 
-- [ ] Static bootstrap attempt identity and generation.
-- [ ] Immutable provider manifest and source receipts.
-- [ ] Provider-independent early failure projection.
-- [ ] Bounded module admission result.
-- [ ] Retry, fallback, cancellation and stale-attempt fencing.
-- [ ] Core Startup launch binding to accepted module graph.
-- [ ] Renderer-derived first-frame result.
-- [ ] First visible startup-frame acknowledgement.
-- [ ] Startup/bootstrap lifecycle disposal.
-- [ ] Browser/build/Pages bootstrap fixtures.
-- [ ] Resource settlement and recovery authority.
-- [ ] Public capability, page lifecycle, durable save, input and quality authorities.
+- [ ] Shell, preload, scheduler, and entry identities.
+- [ ] Single menu RAF-chain ownership.
+- [ ] Explicit hidden presentation policy.
+- [ ] Simulation and presentation quiescence leases.
+- [ ] Revisioned cross-window protocol.
+- [ ] Stale, duplicate, timeout, cancellation, and retirement results.
+- [ ] Renderer-derived post-resume submission receipt.
+- [ ] First visible game-frame acknowledgement.
+- [ ] Atomic history, focus, visibility, and menu retirement.
+- [ ] BFCache, pagehide, iframe reload, direct route, build, and Pages fixtures.
+- [ ] Retained static-bootstrap, settlement, save, input, quality, and public-capability work.
 
-## Active startup gaps
+## Active handoff gaps
 
 ```txt
-BootstrapAttemptId: absent
-BootstrapGeneration: absent
-ProviderManifestRevision: absent
-provider receipt and integrity evidence: absent
-static-shell typed failure result: absent
-module-load timeout: absent
-module export contract: absent
-retry and fallback result: absent
-stale predecessor rejection: absent
-Core Startup launch/module binding: absent
-renderer submission ID: absent
-visible startup-frame acknowledgement: absent
-bootstrap retirement receipt: absent
-browser/build/Pages startup fixtures: absent
+MenuShellGeneration: absent
+MenuSchedulerId: absent
+single recursive RAF guard: absent
+PreloadSurfaceGeneration: absent
+hidden presentation policy: implicit
+SimulationQuiescenceLease: absent
+PresentationQuiescenceLease: absent
+cross-window protocol version: absent
+PlayerEntryAttemptId: absent
+stale/duplicate message rejection: absent
+entry timeout result: absent
+post-resume state revision: absent
+renderer submission receipt: absent
+first visible game-frame acknowledgement: absent
+atomic history/focus/menu retirement result: absent
+lifecycle-composed retirement receipt: absent
+browser/build/Pages fixtures: absent
 ```
 
-## Static module consequence
+## Dual-loop consequence
 
 ```txt
-index.html
-  -> static import of src/main-adventure.js
-  -> remote/local dependency graph must resolve, parse and evaluate
-  -> only then createCozyStartupHost()
-  -> only then error and unhandled-rejection listeners exist
+menu RAF
+  -> continues until delayed retirement after reveal
+
+hidden game animation loop
+  -> continues while iframe opacity is zero
+  -> freeze replaces engine tick/step only
+  -> world/gameplay/foam/HUD/quality/post/autosave work continues
 ```
 
-A failure before host creation can leave the static loading shell unchanged with no typed reason or recovery action.
+No receipt explains whether hidden presentation is intentionally running, throttled, paused, or retired.
 
-## First-frame consequence
+## Message and completion consequence
 
 ```txt
-postPipeline.render()
-  -> returns no result
-  -> host authors frame ID and pass-order receipt
-  -> Core Startup accepts first-frame fact
-  -> enter playable
+Play
+  -> send cozy-game-enter
+  -> bridge resumes and posts cozy-game-entered immediately
+  -> parent reveals game
+
+or
+
+900 ms expires without entered
+  -> parent reveals game anyway
 ```
 
-No renderer/device generation, submission result, canvas readback or visible-frame receipt joins that fact to the displayed frame.
+There is no proof that a post-resume game frame was submitted or displayed before the menu loses ownership.
 
-## Retained resource-settlement gaps
+## Visibility consequence
 
-```txt
-multi-participant prepare/commit: absent
-Agriculture event buffering: absent
-Foraging nested Inventory receipt checks: absent
-partial settlement recovery and quarantine: absent
-settlement-consistent save generation: absent
-first visible settlement acknowledgement: absent
-```
+The menu recursive RAF retains its own successor callback. The `visibilitychange` listener requests another callback when the page becomes visible, with no scheduler token proving the predecessor chain is absent.
 
-## Retained lifecycle, capability, save, input and quality gaps
+## Retained gaps
 
 ```txt
-BFCache-aware suspend/resume classification absent
-complete retirement participant registry absent
-startupHost.dispose not called by current page retirement
-raw engine and presentation owners remain publicly exposed
-durable storage write/readback receipt absent
-browser input focus/gesture/generation authority incomplete
-adaptive quality atomic transition and DPR recovery incomplete
-source/build/Pages parity coverage incomplete
+static module/provider admission before Core Startup
+renderer-derived startup first-frame proof
+BFCache-aware complete page lifecycle
+multi-participant resource settlement/recovery
+durable storage receipt and readback
+bounded public runtime capabilities
+browser input generation/focus authority
+atomic adaptive quality transitions
 ```
 
 ## Dependency order
 
 ```txt
 static bootstrap admission
-  -> Core Startup launch binding
-  -> renderer submission result
-  -> visible startup frame
-  -> playable entry
-  -> lifecycle retirement
-  -> deployment parity
-
-then compose retained gameplay, settlement, save, input and quality authorities
+  -> Core Startup readiness
+  -> preload generation and quiescence
+  -> player entry admission
+  -> post-resume render and visible frame
+  -> history/focus/menu retirement
+  -> page lifecycle and deployment parity
+  -> retained gameplay and persistence authorities
 ```
 
 ## Do not claim
 
-Do not claim provider-independent startup handling, retry isolation, first-visible-frame proof, atomic resource settlement, durable lifecycle convergence or production readiness until the relevant fixture matrices pass on `main`.
+Do not claim single-loop scheduling, hidden-render efficiency, deterministic freeze/resume, message race isolation, visible entry completion, lifecycle convergence, or production readiness until the relevant fixture matrices pass on `main`.

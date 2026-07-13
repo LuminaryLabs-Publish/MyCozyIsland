@@ -3,7 +3,7 @@
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
 **Aligned:** `2026-07-13T10-41-40-04-00`  
-**Status:** `core-startup-integration-central-reconciliation-pending`  
+**Status:** `core-startup-integration-central-reconciled`  
 **Technical status:** `core-startup-integrated-bootstrap-admission-gap-audited`  
 **Retained statuses:** `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
 
@@ -21,6 +21,7 @@ MyCozyIsland now uses NexusEngine Core Startup inside the same engine instance a
 - [x] Reconcile Core Startup, engine reuse, preparations, continuation, first-frame ordering and tests.
 - [x] Update the census to 65 source-backed kit surfaces and two startup adapters.
 - [x] Add the `2026-07-13T10-41-40-04-00` tracker and audit family.
+- [x] Reconcile the central repo ledger and internal change log.
 - [ ] Implement static module admission, renderer-derived first-frame evidence and browser/build/Pages fixtures.
 
 ## Read first

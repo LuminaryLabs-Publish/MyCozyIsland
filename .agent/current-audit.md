@@ -1,84 +1,138 @@
-# Current audit: MyCozyIsland browser-input ownership final-head reconciliation
+# Current audit: MyCozyIsland durable save commit authority
 
-**Timestamp:** `2026-07-12T19-00-22-04-00`  
-**Status:** `browser-input-final-head-central-reconciliation-pending`  
+**Timestamp:** `2026-07-12T20-40-56-04-00`  
+**Status:** `durable-save-commit-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-MyCozyIsland remains a NexusEngine-composed procedural island adventure with official Agriculture, Inventory, wild Foraging, first-person movement, contextual interaction, portable saves, renderer-neutral snapshots and WebGPU/WebGL2 presentation.
+MyCozyIsland has a portable, checksummed and migration-aware save DSK, but no authority joins candidate capture to browser storage durability. `cozySave.capture()` updates SaveState to `captured` before `localStorage.setItem()` executes. The HUD renders `Saved` from that intermediate state, so quota, security or storage failures can produce a false success display.
 
-The current technical gap remains browser-input ownership. Browser events enter `cozy-input-domain-kit` without authoritative surface/focus/gesture evidence. Input generation is permanently `1`, duplicate command IDs are accepted, clear does not fence later commands, pointer identity is incompletely enforced, rejection diagnostics are inert and no consumer or visible-frame receipt exists.
-
-This run reconciles the final repo-local documentation head with central tracking. It does not change runtime behavior.
+Restore is also not truthfully atomic. Participant loads happen sequentially. On failure, rollback is attempted, but a rollback failure is only logged and the function still returns `rolledBack: true`.
 
 ## Plan ledger
 
-**Goal:** preserve the complete input breakdown and synchronize the final repo-local head, DSK boundary, kit/service census and proof requirements with the central repository ledger.
+**Goal:** define one durable-save and restore transaction that preserves predecessor state, reports actual outcomes and correlates the visible status with a verified storage receipt.
 
-- [x] Compare all ten accessible Publish repositories.
+- [x] Compare the full Publish inventory with central tracking.
+- [x] Verify root `.agent` coverage for every eligible repository.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Detect MyCozyIsland repo-local documentation newer than the central recorded completion head.
-- [x] Select only `LuminaryLabs-Publish/MyCozyIsland`.
-- [x] Preserve the complete interaction loop and domain map.
-- [x] Preserve all 64 source-backed kit surfaces and offered services.
-- [x] Add the `19-00-22` tracker and architecture/system audit family.
-- [x] Push only to `main`; create no branch or pull request.
-- [ ] Implement and execute browser-input ownership fixtures.
+- [x] Avoid the active partial ZombieOrchard documentation pass.
+- [x] Select only `MyCozyIsland` under the oldest stable synchronized fallback rule.
+- [x] Read composition, save, host adapter, frame loop, HUD and smoke proof.
+- [x] Identify the complete interaction loop, all domains, all 64 kit surfaces and services.
+- [x] Confirm capture precedes durable persistence.
+- [x] Confirm HUD equates captured with Saved.
+- [x] Confirm rollback failure is not reflected in the returned result.
+- [x] Define commit identity, storage receipts, predecessor preservation and visible-frame proof.
+- [ ] Implement and execute save durability fixtures.
 
-## Selection
+## Selection audit
 
 ```txt
-accessible Publish repositories: 10
-eligible non-Cavalry repositories: 9
-new eligible repositories: 0
-central-ledger-missing eligible repositories: 0
-root-.agent-missing eligible repositories: 0
-
-selected: MyCozyIsland
-reason:
-  oldest eligible central timestamp after ZombieOrchard synchronization
-  repo-local final head newer than central recorded completion head
-central recorded completion head: e33098b1d2b7a5de4cb015df5662f134561b03e7
-repo-local head before this run: d7c763e30a9d04b666d46d67481a32417410de16
-excluded: TheCavalryOfRome
+ZombieOrchard      2026-07-12T18-48-07-04-00 active partial 20:31 docs, skipped
+MyCozyIsland       2026-07-12T19-00-22-04-00 selected
+TheUnmappedHouse   2026-07-12T19-11-01-04-00
+AetherVale         2026-07-12T19-21-29-04-00
+TheOpenAbove       2026-07-12T19-31-06-04-00
+IntoTheMeadow      2026-07-12T19-49-41-04-00
+PhantomCommand     2026-07-12T19-58-07-04-00
+PrehistoricRush    2026-07-12T20-10-25-04-00
+HorrorCorridor     2026-07-12T20-20-02-04-00
+TheCavalryOfRome   excluded
 ```
+
+No new, central-ledger-missing or root-`.agent`-missing eligible repository was found.
 
 ## Complete interaction loop
 
 ```txt
-startup
-  -> install 13 core/adventure kits
-  -> restore save when available
-  -> construct deterministic world and visual systems
-  -> attach global keyboard and canvas pointer/wheel adapters
+browser startup
+  -> create WebGPU/WebGL2 renderer
+  -> install 13 engine kits
+  -> localStorage.getItem(SAVE_KEY)
+  -> JSON.parse
+  -> cozySave.restore(snapshot)
+  -> validate checksum
+  -> migrate v1 farming payload to v2 Agriculture when required
+  -> sequentially load world, ledger, scenario, inventory,
+     Agriculture, Foraging and player
+  -> reset interaction
+  -> on failure attempt predecessor rollback
+  -> build and present the world
 
-browser event
-  -> create generation-1 input command
-  -> queue and sequence-sort in cozy-input-domain-kit
-  -> derive held and one-shot InputFrame
-  -> player consumes movement, view, sprint and intro
-  -> interaction consumes seed/context action
-  -> camera derives from committed player state
-  -> render snapshot derives renderer-neutral frame
-  -> WebGPU/WebGL2 host presents visible frame
+runtime frame
+  -> adventure.tick(dt)
+  -> renderer-neutral frame includes SaveState
+  -> HUD maps status captured to Saved
+  -> every five seconds compare durable fingerprint
+  -> when changed call storeSave()
+  -> cozySave.capture() publishes captured state
+  -> localStorage.setItem() attempts durable persistence
+  -> host advances lastSaveFingerprint only on adapter success
 
-blur / visibility loss
-  -> enqueue clear
-  -> later same-generation commands remain admissible
-  -> no focus generation retires predecessor work
+pagehide
+  -> call storeSave()
+  -> ignore completion/failure result
+  -> dispose gameplay renderer
 ```
+
+## Source-backed findings
+
+### Candidate capture is published before persistence
+
+`cozySave.capture()` creates a v2 envelope, computes its checksum and writes:
+
+```txt
+status: captured
+saveCount += 1
+lastHash = candidate checksum
+revision += 1
+```
+
+Only after capture returns does the browser adapter call `localStorage.setItem()`.
+
+### Visible status is based on intermediate state
+
+The HUD displays `Saved` whenever `frame.save.status === "captured"`. A failed `setItem()` returns `{ ok: false }` but does not change SaveState, so the next frame can still display `Saved`.
+
+### Durable storage has no receipt
+
+```txt
+storage slot ID: implicit constant only
+storage generation: absent
+write result in DSK: absent
+readback verification: absent
+last-known-good slot contract: absent
+quota/security classification: absent
+retry budget/backoff: absent
+pagehide completion receipt: absent
+```
+
+### Rollback result can be false
+
+If candidate restore fails, the DSK attempts to reload every predecessor snapshot. A rollback exception is logged, but the returned result remains:
+
+```txt
+ok: false
+rolledBack: true
+```
+
+There is no participant receipt or post-rollback fingerprint proving predecessor restoration.
+
+### Existing proof is in-memory only
+
+`tests/adventure-domains-smoke.mjs` proves v2 capture/restore and v1 migration. It does not instantiate the browser persistence adapter or inject storage and rollback failures.
 
 ## Domains in use
 
 ```txt
-browser document, canvas, HUD and diagnostics
-keyboard, pointer, wheel, blur and visibility adapters
-input surface, focus, gesture, capture and command admission
+browser document, canvas, HUD, localStorage, pagehide and diagnostics
+browser storage capability and durable commit admission
 NexusEngine runtime, ECS phases and snapshots
 Core Object and Core Transaction Ledger
 seeded procedural world and terrain queries
+browser input normalization and frames
 Inventory and seed selection
 official Agriculture
 wild Foraging
@@ -86,68 +140,129 @@ player movement, grounding, view and stamina
 scenario time and objective
 contextual interaction and settlement
 camera intro and first-person projection
-portable save and browser persistence adapter
+portable save capture, validation, migration, restore, rollback and reset
 renderer-neutral static/HUD/debug/frame snapshots
 WebGPU/WebGL2 atmosphere, ocean, cloud, fog, lighting, materials and post-processing
 adaptive quality, validation, CI and Pages deployment
 ```
 
-## Kit and service census
+## Implemented kits
 
 ```txt
-engine-installed core/adventure kits: 13
-cataloged world/render/host kits: 50
-additional composition kit: 1
-source-backed kit surfaces: 64
-active route kit surfaces: 62
-inactive catalog entries: 2
-ordered Core World providers: 9
+13 engine-installed kits
+50 cataloged world/render/host kits
+1 additional ocean-composition kit
+64 total source-backed kit surfaces
 ```
 
-Engine-installed services cover object registration, repeat-safe transactions, seeded world queries, input normalization and frames, Inventory settlement, Agriculture land/soil/cultivation/water/growth/harvest/perennials, wild Foraging, player movement, scenario time, contextual interaction, camera descriptors, portable saves and renderer-neutral snapshots.
-
-Cataloged services cover WebGPU/WebGL2 hosts, atmosphere, ocean, foam, fog, clouds, lighting, materials, post-processing, quality, terrain, vegetation, rocks, props, weather, wind, seed/time, debugging and composition validation.
-
-## Main findings
+Engine-installed kits:
 
 ```txt
-global keyboard ownership: unsafe
-canvas focus admission: absent
-editable-target exclusion: absent
-pointer move/up matching: absent
-primary pointer/button policy: absent
-lost capture handler: absent
-input generation: permanent 1
-clear generation fence: absent
-duplicate command rejection: absent
-rejection diagnostics: inert
-typed admission result: absent
-consumer receipts: absent
-first visible input-frame acknowledgement: absent
-browser/Pages fixture matrix: absent
+core-object-kit
+core-transaction-ledger-kit
+cozy-world-domain-kit
+cozy-input-domain-kit
+cozy-inventory-domain-kit
+agriculture-domain-kit
+cozy-foraging-domain-kit
+cozy-player-domain-kit
+cozy-scenario-domain-kit
+cozy-interaction-domain-kit
+cozy-camera-domain-kit
+cozy-save-domain-kit
+cozy-render-snapshot-domain-kit
 ```
 
-## Required parent domain
+The exact 50-kit catalog and every service remain machine-readable in `.agent/kit-registry.json`.
+
+## Offered services
+
+| Kit group | Services |
+|---|---|
+| runtime/core | Object registration and lookup, repeat-safe transaction ledger, engine composition, ECS ticks and snapshots |
+| world/gameplay | Seeded world queries, Inventory, Agriculture, Foraging, movement, stamina, scenario time and contextual settlement |
+| save | Portable capture, checksum validation, v1 migration, participant restore, rollback attempt, reset and diagnostics |
+| render | Camera descriptors, renderer-neutral snapshots, WebGPU/WebGL2 world, atmosphere, ocean, fog, cloud, material and post-processing services |
+| host/proof | Browser storage adapter, HUD, adaptive quality, Node smoke, CI and Pages deployment |
+
+## Required composed domain
 
 ```txt
-cozy-island-browser-input-ownership-authority-domain
+cozy-island-durable-save-commit-authority-domain
 ```
 
-It owns input sessions, surface revisions, focus generations, primary pointer/button policy, gesture/capture lifecycle, command IDs, duplicate and stale rejection, generation-fenced clear, typed admission results, consumer receipts, bounded observations and first-visible-input-frame acknowledgement.
+## Required transaction
+
+```txt
+SaveCommitCommand
+  -> bind session, run and expected durable fingerprint
+  -> capture detached candidate without publishing success
+  -> validate schema, version and checksum
+  -> allocate slot and commit generation
+  -> write through the host storage adapter
+  -> read back and validate the stored envelope
+  -> atomically publish DurableSaveReceipt
+     or preserve the predecessor and publish typed failure
+  -> derive HUD status from the receipt
+
+RestoreCommand
+  -> read and validate one durable slot
+  -> migrate detached candidate
+  -> capture predecessor participant set
+  -> apply candidate under one restore generation
+  -> validate participant revisions and durable fingerprint
+  -> commit success or perform verified rollback
+  -> report actual rollback success/failure
+  -> acknowledge the first visible matching frame
+```
+
+## Candidate kits
+
+```txt
+save-command-id-kit
+save-session-id-kit
+save-commit-generation-kit
+save-slot-id-kit
+save-candidate-envelope-kit
+save-capture-result-kit
+save-storage-adapter-kit
+save-storage-write-result-kit
+save-storage-readback-kit
+save-storage-error-classifier-kit
+durable-save-receipt-kit
+save-predecessor-slot-kit
+save-restore-command-kit
+save-restore-generation-kit
+save-participant-registry-kit
+save-restore-candidate-kit
+save-restore-validation-kit
+save-rollback-plan-kit
+save-rollback-result-kit
+save-stale-result-rejection-kit
+save-observation-kit
+save-journal-kit
+save-visible-frame-ack-kit
+storage-quota-failure-fixture-kit
+storage-security-failure-fixture-kit
+write-readback-corruption-fixture-kit
+rollback-failure-fixture-kit
+pagehide-save-fixture-kit
+source-dist-pages-save-parity-fixture-kit
+```
 
 ## Latest audit family
 
 ```txt
-.agent/trackers/2026-07-12T19-00-22-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T19-00-22-04-00.md
-.agent/architecture-audit/2026-07-12T19-00-22-04-00-browser-input-final-head-reconciliation-dsk-map.md
-.agent/render-audit/2026-07-12T19-00-22-04-00-input-visible-frame-final-head-gap.md
-.agent/gameplay-audit/2026-07-12T19-00-22-04-00-input-consumption-final-head-loop.md
-.agent/interaction-audit/2026-07-12T19-00-22-04-00-browser-command-final-head-map.md
-.agent/input-system-audit/2026-07-12T19-00-22-04-00-focus-gesture-generation-final-head-contract.md
-.agent/deploy-audit/2026-07-12T19-00-22-04-00-browser-input-final-head-sync-gate.md
+.agent/trackers/2026-07-12T20-40-56-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T20-40-56-04-00.md
+.agent/architecture-audit/2026-07-12T20-40-56-04-00-durable-save-commit-dsk-map.md
+.agent/render-audit/2026-07-12T20-40-56-04-00-save-status-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-12T20-40-56-04-00-capture-before-persist-loop.md
+.agent/interaction-audit/2026-07-12T20-40-56-04-00-save-capture-persist-restore-map.md
+.agent/save-system-audit/2026-07-12T20-40-56-04-00-storage-receipt-rollback-contract.md
+.agent/deploy-audit/2026-07-12T20-40-56-04-00-save-durability-fixture-gate.md
 ```
 
 ## Runtime non-claims
 
-No runtime source, input behavior, gameplay, Agriculture, Inventory, saves, rendering, dependencies or deployment changed. No focus safety, pointer isolation, generation fencing, duplicate suppression, consumer receipt or visible-frame provenance claim is made.
+No runtime source, save schema, browser storage behavior, gameplay, rendering, dependencies or deployment configuration changed. No durable-write, readback, predecessor preservation, truthful rollback, pagehide completion or visible save-receipt claim is made. The prior browser-input ownership audit remains unresolved.

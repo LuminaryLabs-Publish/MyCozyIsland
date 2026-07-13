@@ -23,9 +23,11 @@ index.html
   redirects to the menu route
 
 menu.html
-  owns a lightweight living palm-tree scene
+  renders exactly one Three.js sky
+  renders exactly one Three.js hero palm
+  exposes exactly one Play button
   starts game.html in a hidden same-origin frame
-  shows factual Core Startup progress capped at 99%
+  keeps preparation feedback inside the button
   enables Play only after the full game presents its first frame
 
 game.html
@@ -36,6 +38,52 @@ game.html
 ```
 
 The Play transition does not navigate away and rebuild the world. The menu reveals the already-running `game.html` frame, then updates browser history to the game route. A direct visit or reload of `game.html` still launches the game normally.
+
+## Fifteen-level menu taxonomy
+
+The menu uses a deep semantic taxonomy without creating fifteen executable kits.
+
+```txt
+1  MyCozyIsland
+2  Entry Experience
+3  Main Menu
+4  Menu Scene
+5  Menu Presentation
+6  Minimal Composition
+7  Three-Element Contract
+
+Sky branch
+8  Sky
+9  Sky Volume
+10 Atmospheric Color Field
+11 Vertical Gradient
+12 Horizon Blend
+13 Exposure Response
+14 Renderer Material
+15 Final Sky Descriptor
+
+Palm branch
+8  Palm
+9  Hero Palm
+10 Trunk Assembly
+11 Crown Assembly
+12 Frond Ring
+13 Individual Frond
+14 Wind Pose
+15 Final Palm Descriptor
+
+Play branch
+8  Play
+9  Entry Gate
+10 Background Readiness
+11 Ninety-Nine Percent Hold
+12 Enabled State
+13 Press Intent
+14 Game Reveal
+15 Input Handoff
+```
+
+Only the application, entry, menu, and menu-scene levels are executable ownership boundaries. The lower levels are presentation, composition, object, and state taxonomy.
 
 ## Runtime architecture
 
@@ -70,7 +118,7 @@ NexusEngine Realtime Core
         ↓
 Browser startup, menu, preload, and input adapters
         ↓
-Canvas menu scene and Three.js WebGPU game presentation
+Three.js menu presentation and Three.js WebGPU game presentation
 ```
 
 There is no `cozy-farming-domain-kit` in the installed composition. `n:production` is a catalog family, not an executable parent kit.
@@ -92,9 +140,9 @@ NexusEngine available
 
 The loader cannot disappear merely because JavaScript finished or the renderer object exists. The game becomes playable only after one successful presented frame.
 
-MyCozyIsland owns the human-facing copy such as “Growing your island.” Core Startup contains no product strings, splash ordering, tips, or visual layout. The browser adapter renders the descriptor and exposes structured failures and bounded initialization timeouts.
+MyCozyIsland owns the human-facing copy. Core Startup contains no product strings, splash ordering, tips, or visual layout. The browser adapter renders the descriptor and exposes structured failures and bounded initialization timeouts.
 
-The menu uses the same descriptor but intentionally caps visible progress at `99%`. The final one percent is the player pressing Play and crossing into the already-prepared game.
+The menu caps factual progress at `99%`. The final one percent is the player pressing Play and crossing into the already-prepared game. Progress remains inside the Play button so the visible menu still contains only sky, palm, and button.
 
 ## Ownership
 
@@ -126,8 +174,8 @@ Does not own:
 - World provides the shared procedural island and farm layout.
 - Save migrates `cozy-island-adventure-save/1` farming state into Agriculture schema v2.
 - Render Snapshot publishes Agriculture as the authoritative crop state.
-- Startup Host translates Core Startup facts into product copy and DOM presentation.
-- Menu Scene presents the lightweight palm-tree view and owns the Play gate.
+- Startup Host translates Core Startup facts into product presentation.
+- Menu Scene owns one Three.js sky, one hero palm, and the Play gate.
 - Game Preload Bridge freezes and resumes the prepared game without duplicating world construction.
 
 ## Pinned reusable sources
@@ -163,9 +211,11 @@ Game
 ## Rendering
 
 ```txt
-menu canvas
-→ palm tree, sky, sea, distant island
-→ hidden full game preparation
+minimal menu
+→ one Three.js gradient sky
+→ one Three.js hero palm on the left
+→ one DOM Play button
+→ hidden full-game preparation
 → seamless reveal
 
 full game

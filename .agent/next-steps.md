@@ -1,99 +1,97 @@
-# Next steps: MyCozyIsland Three.js menu presentation lifecycle
+# Next steps: MyCozyIsland cross-window preload and entry protocol
 
-**Timestamp:** `2026-07-13T14-39-40-04-00`  
-**Publication status:** `threejs-menu-presentation-lifecycle-authority-audited`
+**Timestamp:** `2026-07-13T19-40-56-04-00`  
+**Publication status:** `cross-window-preload-entry-protocol-authority-audited`
 
 ## Summary
 
-Keep the minimal Three.js sky, hero palm and Play gate. Move hidden game preload into a provider-independent shell path, then give the menu renderer explicit provider, first-frame, scheduler, resource and retirement results.
+Replace informal type-only parent/iframe messages with one versioned, generation-bound protocol. Keep Core Startup as readiness authority, but require entry preparation and the first visible game frame before reveal/history/focus are committed.
 
 ## Plan ledger
 
-**Goal:** allow factual game preload to proceed even when decorative menu presentation fails, and retire every accepted menu generation exactly once after visible game entry.
+**Goal:** reject stale, duplicate, malformed and out-of-order cross-window work while preserving seamless hidden preload.
 
-- [ ] Add `MenuPresentationAttemptId`, provider, renderer, resource, context and scheduler generations.
-- [ ] Start the hidden game preload from a local provider-independent shell boundary.
-- [ ] Add an immutable Three.js provider manifest and capability probe.
-- [ ] Define a local degraded menu fallback that preserves Play/progress/error access.
-- [ ] Prepare the renderer and scene resource set before adopting it as active.
-- [ ] Publish renderer-derived `MenuFrameSubmissionResult` and `FirstMenuFrameAck`.
-- [ ] Store one RAF ID and reject duplicate or stale successor scheduling.
-- [ ] Register every owned event and media listener.
-- [ ] Dispose every menu geometry and material exactly once.
-- [ ] Clear scene graph, arrays, callbacks, canvas and renderer references.
-- [ ] Define explicit WebGL context retention/release policy and receipt.
-- [ ] Publish terminal menu boot and retirement results.
-- [ ] Compose retirement with accepted player entry and first visible game-frame proof.
-- [ ] Run source, browser, built-output and GitHub Pages fixtures.
+- [ ] Add `ProtocolVersion`, `ShellGeneration`, `FrameGeneration`, `PreloadAttemptId` and `EntryAttemptId`.
+- [ ] Add immutable protocol envelopes with `MessageId`, sequence and payload fingerprint.
+- [ ] Verify both `event.origin` and expected source window.
+- [ ] Validate every message payload against a closed schema.
+- [ ] Establish HELLO/PROGRESS/READY|FAILED ordering.
+- [ ] Return typed admission results for malformed, foreign, stale, duplicate and out-of-order messages.
+- [ ] Bind one entry request to the current ready revision.
+- [ ] Make simulation resume and player preparation idempotent under `EntryAttemptId`.
+- [ ] Return preparation failure instead of warning and continuing.
+- [ ] Add renderer-derived post-resume submission evidence.
+- [ ] Require `FirstVisibleGameFrameAck` before normal entry commit.
+- [ ] Replace the anonymous 900 ms fallback with explicit `TimedOut` or `Degraded` policy.
+- [ ] Atomically commit iframe reveal, history and focus.
+- [ ] Retire timers, message ports and predecessor generations on pagehide/navigation.
+- [ ] Add reload, BFCache, duplicate Play, timeout and deployed parity fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. provider-independent shell bootstrap
-2. shell, menu, provider, canvas and preload generations
-3. game preload starts independently
-4. menu provider manifest and WebGL capability admission
-5. degraded local menu policy
-6. detached renderer and resource candidate
-7. first menu frame submission and acknowledgement
-8. single stored menu RAF scheduler
-9. owned listener registry
-10. accepted player-entry binding
-11. complete resource and renderer retirement
-12. context/canvas/reference retirement receipts
-13. first game-only frame acknowledgement
-14. fixture matrix
+1. protocol envelope and version
+2. shell/frame/preload generations
+3. origin and source-window admission
+4. schema validation and sequence policy
+5. progress/ready/failure terminal results
+6. entry attempt and ready-revision binding
+7. idempotent resume/player preparation
+8. entry prepared result
+9. post-resume renderer submission receipt
+10. first visible game-frame acknowledgement
+11. reveal/history/focus commit
+12. timeout/degraded policy
+13. cancellation and retirement
+14. fixture matrix and Pages parity
 ```
 
 ## Target files
 
 ```txt
-menu.html
 src/menu.js
 src/game-preload-bridge.js
 src/main-adventure.js
 tests/menu-game-shell-smoke.mjs
-tests/menu-presentation-lifecycle-browser.fixture.mjs
+tests/cross-window-protocol-browser.fixture.mjs
 package.json
 .github/workflows/pages.yml
 ```
 
-A small local shell bootstrap module may be added if it can begin iframe preload and project terminal failures without depending on Three.js.
+A small local protocol module should own envelopes, validation, IDs and admission results. Do not turn generic `postMessage` transport into a gameplay domain.
 
 ## Required acceptance cases
 
 ```txt
-game preload begins when Three.js provider is rejected
-game preload begins when WebGL is unavailable
-degraded local menu still exposes progress, failure and Play
-one accepted menu renderer and one RAF chain
-first menu frame cites accepted provider and resource generations
-menu and hidden game renderer overlap is explicit and bounded
-rapid duplicate Play admits one entry attempt
-first visible game frame precedes menu retirement
-all declared menu geometries and materials receive disposal receipts
-all owned listeners are removed
-late RAF callback after retirement is rejected
-duplicate retirement is idempotent
-stale predecessor retirement cannot affect successor menu
-context loss during transition returns a typed result
-pagehide and BFCache do not duplicate or orphan renderers
-direct game route remains functional
-source, built output and Pages return equivalent terminal results
+normal progress/ready/entry/frame/commit
+wrong origin
+wrong source
+wrong protocol version
+malformed payload
+stale iframe generation
+stale preload attempt
+duplicate ready
+duplicate Play
+out-of-order progress after terminal ready
+reload during preload
+reload during entry
+player preparation exception
+entry timeout
+explicit degraded reveal
+late visible frame
+pagehide and BFCache restoration
+direct game route
+source/build/Pages result parity
 ```
 
 ## Ownership constraints
 
-Core Startup owns factual game readiness. The menu shell owns product copy and Play intent. The menu presentation domain owns Three.js provider, WebGL renderer, scene resources, menu frames and retirement. The existing preload-handoff parent owns cross-document entry and consumes menu lifecycle results without absorbing renderer mechanics.
-
-## Taxonomy constraint
-
-The fifteen-level sky, palm and Play taxonomy remains semantic. Do not create fifteen executable kits. Only the application, entry experience, menu and menu-scene levels are executable ownership boundaries.
+Core Startup owns factual readiness. The protocol authority owns cross-window semantic admission and correlation. The game bridge owns freeze/resume and player preparation. The renderer owns frame evidence. The parent shell owns Play intent and commits visibility/history/focus only after a terminal protocol result.
 
 ## Retained work
 
-The preload-handoff scheduler, static game-module bootstrap, resource settlement, public capabilities, browser page lifecycle, durable saves, input and adaptive quality authorities remain open and must compose with this work.
+Menu presentation lifecycle, provider-independent preload, complete renderer/resource retirement, durable saves, input authority, adaptive quality and page lifecycle remain open and must compose with this protocol.
 
 ## Do not claim
 
-Do not claim provider-independent preload, first-menu-frame readiness, bounded dual-renderer usage, complete resource retirement, sole game-surface ownership, visible entry completion, lifecycle convergence or deployed readiness until the matrix passes on `main`.
+Do not claim protocol safety, stale-message fencing, entry atomicity, first-visible-frame completion, BFCache convergence or deployed parity until the fixture matrix passes on `main`.

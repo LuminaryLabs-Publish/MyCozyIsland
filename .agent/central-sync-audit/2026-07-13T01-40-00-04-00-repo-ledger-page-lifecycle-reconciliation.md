@@ -4,7 +4,7 @@
 
 ## Summary
 
-This record binds the repo-local page-lifecycle audit to the central `LuminaryLabs-Dev/LuminaryLabs` ledger update.
+The repo-local page-lifecycle audit, root routing, machine registry, central repository ledger and internal change log now identify the same reconciliation scope.
 
 ## Plan ledger
 
@@ -14,9 +14,12 @@ This record binds the repo-local page-lifecycle audit to the central `LuminaryLa
 - [x] Preserve the source-backed finding and 64-kit inventory.
 - [x] Add the `01-40-00` reconciliation family.
 - [x] Refresh required root `.agent` documents and registry.
-- [ ] Record the final repo-local head in the central ledger and change log.
+- [x] Update `repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md`.
+- [x] Add `internal-change-log/2026-07-13T01-40-00-04-00-my-cozy-island-page-lifecycle-reconciliation.md`.
+- [x] Push both repositories directly to `main`.
+- [x] Create no branch or pull request.
 
-## Expected central records
+## Central records
 
 ```txt
 repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
@@ -25,4 +28,4 @@ internal-change-log/2026-07-13T01-40-00-04-00-my-cozy-island-page-lifecycle-reco
 
 ## Scope boundary
 
-Only `LuminaryLabs-Publish/MyCozyIsland` is modified in the Publish organization. Runtime source, dependencies, gameplay, rendering, persistence behavior and deployment remain unchanged. No branch or pull request is created.
+Only `LuminaryLabs-Publish/MyCozyIsland` was modified in the Publish organization. Runtime source, dependencies, gameplay, rendering, persistence behavior and deployment remain unchanged. No branch or pull request was created.

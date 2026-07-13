@@ -1,6 +1,7 @@
 import { createEngine } from "nexusengine/engine";
 import { defineEvent, defineResource } from "nexusengine/ecs";
 import { defineDomainServiceKit } from "nexusengine/domain-service-kit";
+import { createCoreStartupKit } from "nexusengine/core-startup";
 import { createCoreObjectKit } from "nexusengine/core-object";
 import { createCoreTransactionLedgerKit } from "nexusengine/core-transaction-ledger";
 import { createAgricultureDomainKit } from "@luminarylabs/nexusengine-kits/kits/production/agriculture-domain-kit";
@@ -45,26 +46,29 @@ function initialForageSnapshot(nodes) {
   };
 }
 
-export function createCozyAdventure({ quality, backend = "webgpu" } = {}) {
+export function createCozyAdventure({ quality, backend = "webgpu", engine: providedEngine = null } = {}) {
   if (!quality) throw new TypeError("createCozyAdventure requires a render-quality descriptor.");
 
-  const engine = createEngine({
-    kits: [
-      createCoreObjectKit(),
-      createCoreTransactionLedgerKit(),
-      createCozyWorldDomain({ quality, backend }),
-      createCozyInputDomain(),
-      createCozyInventoryDomain(),
-      createAgricultureDomainKit(AGRICULTURE_NEXUS_RUNTIME, createTropicalAgricultureConfig()),
-      createCozyForagingDomain(),
-      createCozyPlayerDomain(),
-      createCozyScenarioDomain(),
-      createCozyInteractionDomain(),
-      createCozyCameraDomain(),
-      createCozySaveDomain(),
-      createCozyRenderSnapshotDomain()
-    ]
-  });
+  const engine = providedEngine ?? createEngine({ kits: [createCoreStartupKit()] });
+  if (!engine.n?.coreStartup) engine.installKit(createCoreStartupKit());
+
+  for (const kit of [
+    createCoreObjectKit(),
+    createCoreTransactionLedgerKit(),
+    createCozyWorldDomain({ quality, backend }),
+    createCozyInputDomain(),
+    createCozyInventoryDomain(),
+    createAgricultureDomainKit(AGRICULTURE_NEXUS_RUNTIME, createTropicalAgricultureConfig()),
+    createCozyForagingDomain(),
+    createCozyPlayerDomain(),
+    createCozyScenarioDomain(),
+    createCozyInteractionDomain(),
+    createCozyCameraDomain(),
+    createCozySaveDomain(),
+    createCozyRenderSnapshotDomain()
+  ]) {
+    engine.installKit(kit);
+  }
 
   engine.n.cozyForaging.loadSnapshot(initialForageSnapshot(engine.n.cozyWorld.getForageNodes()));
 
@@ -88,6 +92,7 @@ export function createCozyAdventure({ quality, backend = "webgpu" } = {}) {
     getFrameSnapshot: () => engine.n.cozyRenderSnapshot.getFrameSnapshot(),
     getState() {
       return Object.freeze({
+        startup: engine.n.coreStartup.getDescriptor(),
         world: engine.n.cozyWorld.getState(),
         player: engine.n.cozyPlayer.getState(),
         inventory: engine.n.cozyInventory.getState(),

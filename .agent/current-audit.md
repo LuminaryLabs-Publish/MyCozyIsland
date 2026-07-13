@@ -1,23 +1,27 @@
-# Current audit: MyCozyIsland menu/game preload handoff
+# Current audit: MyCozyIsland Three.js menu presentation lifecycle
 
-**Timestamp:** `2026-07-13T12-38-45-04-00`  
-**Status:** `menu-game-preload-handoff-scheduler-authority-audited`  
+**Timestamp:** `2026-07-13T14-39-40-04-00`  
+**Status:** `threejs-menu-presentation-lifecycle-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-Ten commits added a living menu, dedicated game route, hidden full-game preload, Core Startup progress bridge, simulation freeze/resume, seamless Play reveal, failure projection, tests, deployment copy, and documentation. The shell is functional, but no single authority owns its two presentation schedulers or proves a terminal player-entry frame.
+Four commits replaced the Canvas2D menu with a minimal Three.js composition containing one semantic sky, one hero palm and one Play gate. The menu remains the parent document while the full NexusEngine adventure preloads in a hidden same-origin iframe.
+
+The new boundary is menu presentation lifecycle authority. The menu's remote Three.js import and module-scope WebGL construction must succeed before hidden game preload is scheduled. After player entry, the parent stops a boolean loop flag and calls `renderer.dispose()`, but records no provider, renderer, resource, frame, listener, scheduler, context or terminal retirement result.
 
 ## Plan ledger
 
-**Goal:** define one evidence chain from menu boot through preload quiescence, player entry, scheduler transfer, and the first visible post-resume game frame.
+**Goal:** preserve the minimal menu while making provider admission, first-frame readiness, active scheduling and complete retirement explicit and independently recoverable.
 
-- [x] Compare the full Publish inventory, central ledgers, root `.agent` state, and current heads.
+- [x] Compare the full Publish inventory, central ledgers, root `.agent` state and current repository heads.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only MyCozyIsland because runtime was ten commits ahead of central documentation.
-- [x] Inspect all changed source, test, workflow, package, and documentation files.
-- [x] Preserve the 65 DSK/kit inventory and add three menu/preload adapters to the existing two startup adapters.
-- [x] Add architecture, render, gameplay, interaction, preload-handoff, deploy, and central-sync audits.
+- [x] Select only MyCozyIsland because four commits were newer than central tracking.
+- [x] Inspect the complete four-commit diff and current menu, game, test and package surfaces.
+- [x] Preserve the 65 DSK/kit inventory and five browser/product adapters.
+- [x] Record that the fifteen-level menu taxonomy is semantic rather than fifteen executable kits.
+- [x] Add architecture, render, startup, interaction, menu-renderer, deploy and central-sync audits.
+- [x] Change documentation only.
 - [ ] Implement and execute the authority and fixture matrix.
 
 ## Selection comparison
@@ -27,75 +31,77 @@ accessible Publish repositories: 10
 eligible non-Cavalry repositories: 9
 central ledger entries: 9
 root .agent folders: 9
-new or missing eligible repositories: 0
+new eligible repositories: 0
+central-ledger-missing repositories: 0
+root-agent-missing repositories: 0
 runtime-ahead repositories: 1
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior documentation head: 74ca9b222da21cfec3a474472c93e66c74e267f6
-reviewed runtime head: a696b1b67f2c3bd783c0ebabe8aa5623a6206763
-commits reconciled: 10
+prior repo-local documentation head: 6ea85e2c457315164cf12bdade7dabdca1c5d420
+reviewed runtime head: a0077808c0344b52850c2cd4c5c787c521ee61db
+commits reconciled: 4
+changed files: 4
 ```
 
 ## Complete interaction loop
 
 ```txt
 index.html
-  -> preserve query/hash and replace route with menu.html
+  -> preserve query/hash and route to menu.html
 
-menu.html + src/menu.js
-  -> start procedural Canvas2D menu RAF
-  -> idle-schedule game.html?preload=1 in hidden iframe
-  -> project progress and failures
+menu.html
+  -> parse import map for Three.js 0.185.0
+  -> load src/menu.js
 
-game.html + main-adventure.js
-  -> load providers/modules
-  -> execute Core Startup and construct one adventure
-  -> start WebGPU/WebGL2 animation loop
-  -> render first frame and enter Core Startup playable
+menu module
+  -> import remote Three.js
+  -> create low-power WebGLRenderer
+  -> construct gradient sky shader, lights and procedural palm
+  -> size renderer and camera
+  -> submit recursive menu RAF frames
+  -> only then idle-schedule game.html?preload=1
 
-preload bridge
-  -> poll descriptor every 120 ms
-  -> replace engine.tick/step with no-op functions
-  -> announce ready
+hidden game
+  -> resolve WebGPU/NexusEngine providers and local modules
+  -> execute Core Startup
+  -> construct one adventure and game renderer
+  -> start hidden game animation loop
+  -> freeze simulation at factual readiness
+  -> post progress and ready messages
 
 Play
-  -> send unversioned cozy-game-enter
-  -> restore engine tick/step
-  -> reset player intro snapshot and clear input
-  -> announce entered immediately
-  -> reveal iframe, rewrite history and transfer focus
-  -> stop menu animation after transition
-  -> reveal after 900 ms even if entered acknowledgement is absent
+  -> send cozy-game-enter
+  -> resume simulation and prepare authored intro state
+  -> receive entered or reach 900 ms fallback
+  -> reveal iframe and rewrite history
+  -> after 820 ms set sceneRunning false, focus the game and call renderer.dispose()
+
+steady game
+  -> game iframe is visible
+  -> menu document remains the parent shell
 ```
-
-## Source-backed findings
-
-- The menu owns a recursive Canvas2D RAF.
-- The hidden iframe owns an independent `renderer.setAnimationLoop`.
-- `freezeSimulation()` affects engine tick/step only; hidden presentation continues.
-- The hidden game still updates renderer participants, HUD, quality sampling, post-processing, autosave checks, and diagnostics.
-- Messages validate `event.source` and same-origin target, but carry no protocol revision or generation.
-- `cozy-game-entered` is posted before a post-resume render submission or visible-frame acknowledgement.
-- The menu fallback reveals the game after 900 ms without a terminal game result.
-- Returning to visibility requests another menu RAF callback without a chain token.
-- Existing tests inspect syntax and source markers, not browser scheduling, quiescence, races, or visibility.
 
 ## Domains in use
 
 ```txt
-root routing and navigation
-menu artwork, Canvas2D rendering and reduced-motion policy
-menu input, progress and error projection
-iframe preload surface and same-origin ownership
-cross-window messaging
-Core Startup and continuation
+root routing and browser navigation
+menu module/provider resolution
+menu WebGL context and Three.js renderer
+sky shader and atmospheric color composition
+procedural palm geometry, materials and wind pose
+menu resize, DPR and reduced-motion policy
+menu RAF scheduling and first-frame presentation
+Play input, progress and failure projection
+same-origin iframe preload and cross-window messaging
+Core Startup readiness, continuation and failure
 NexusEngine simulation and service composition
-world, Inventory, Agriculture, Foraging, interaction, player, scenario and camera
-save migration, browser storage and autosave
-WebGPU/WebGL2 world, atmosphere, ocean, foam, post-processing and quality
+Core Object and transaction idempotency
+world, Inventory, Agriculture, Foraging and interaction
+player, scenario, camera, portable saves and snapshots
+WebGPU/WebGL2 game presentation and adaptive quality
 simulation and presentation quiescence
-history, focus, accessibility and visible-frame transfer
-visibility, pagehide and retirement
-validation, Actions, Pages and central tracking
+history, focus, visibility and entry handoff
+menu resource retirement and game surface adoption
+page lifecycle, validation, Actions, Pages and central tracking
 ```
 
 ## Kit and service census
@@ -111,32 +117,64 @@ browser/product adapters: 5
 total documented kit and adapter surfaces: 70
 ```
 
-The complete kit and service inventory is in the timestamped project breakdown and `.agent/kit-registry.json`.
+The installed kits provide Core Startup, object registration, idempotent transactions, deterministic world queries, input, Inventory, Agriculture, Foraging, movement, scenario, interaction, camera, portable saves and renderer-neutral snapshots.
 
-## Missing authority
+The cataloged kits provide terrain, biome, vegetation, atmosphere, clouds, fog, ocean, shoreline, materials, archetypes, quality budgets, WebGPU/WebGL2 passes, deterministic seeds, weather, wind and environment time.
 
-```txt
-MenuShellGeneration
-MenuSchedulerId and single-chain guard
-PreloadSurfaceGeneration
-Core Startup/preload binding
-SimulationQuiescenceLease
-PresentationQuiescenceLease
-revisioned cross-window protocol
-PlayerEntryAttemptId
-stale and duplicate result rejection
-post-resume state/presentation revision
-renderer submission receipt
-first visible game-frame acknowledgement
-atomic history/focus/menu-retirement result
-page lifecycle composition
-source/browser/build/Pages fixtures
-```
+The five adapters provide startup projection, product startup orchestration, Three.js menu presentation, iframe preload/Play gating and game preload freeze/resume. The complete per-surface service inventory remains in `.agent/kit-registry.json`.
+
+## Source-backed findings
+
+### Menu provider gates game preload
+
+`src/menu.js` imports Three.js and constructs its renderer and scene graph at module scope. `startPreload()` is scheduled only after renderer setup and an initial RAF callback. A provider, module, WebGL or scene-construction failure can therefore occur before the iframe receives a source URL.
+
+### Two GPU renderers coexist
+
+The parent menu owns a Three.js WebGL renderer while the hidden game independently owns a WebGPU/WebGL2 renderer and animation loop. No shared device/context budget, surface generation or dual-renderer policy is published.
+
+### First menu frame is anonymous
+
+The RAF calls `renderer.render(scene, camera)` but returns no renderer-derived submission result or first-menu-frame acknowledgement.
+
+### Retirement is incomplete and anonymous
+
+Entry eventually sets `sceneRunning = false` and calls `renderer.dispose()`. The source stores no RAF ID, does not remove owned listeners, does not dispose each scene geometry/material, does not clear scene references or canvas ownership, and returns no terminal retirement receipt.
+
+### Existing test is structural
+
+The menu smoke validates syntax and source markers for Three.js, one sky, one palm, one Play gate and the absence of 2D/terrain code. It does not execute provider failures, browser WebGL, first frame, concurrent renderers, resource disposal, listener retirement or route lifecycle.
 
 ## Required parent domain
 
-`cozy-island-menu-game-preload-handoff-scheduler-authority-domain`
+```txt
+cozy-island-threejs-menu-presentation-lifecycle-authority-domain
+```
+
+## Required transactions
+
+```txt
+MenuPresentationBootCommand
+  -> allocate menu, provider, renderer, resource and scheduler generations
+  -> start game preload from a provider-independent shell boundary
+  -> admit provider and WebGL capability
+  -> prepare detached renderer and scene resources
+  -> submit and acknowledge the first menu frame
+  -> publish Ready, Degraded, Failed, Cancelled or Stale
+
+MenuPresentationRetireCommand
+  -> bind accepted menu and player-entry generations
+  -> stop exactly one RAF scheduler
+  -> reject late callbacks
+  -> remove owned listeners
+  -> dispose every geometry, material and renderer resource
+  -> apply explicit context-retention/release policy
+  -> clear scene references and canvas ownership
+  -> publish Retired, Partial, Failed, Stale or AlreadyRetired
+```
+
+The existing preload-handoff authority consumes these terminal results. It remains responsible for game readiness, player entry, history/focus transfer and first visible game-frame completion.
 
 ## Validation boundary
 
-Documentation only. No runtime, gameplay, rendering, dependency, package, workflow, or deployment behavior changed. Existing test sources and commit status were inspected; tests were not independently executed.
+Documentation only. Runtime JavaScript, HTML, CSS, gameplay, rendering, dependencies, package scripts, tests, workflows and deployment were not changed. Source and test files were inspected; no executable browser, build or Pages fixture was run.

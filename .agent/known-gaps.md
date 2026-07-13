@@ -1,10 +1,10 @@
 # Known gaps: MyCozyIsland
 
-**Timestamp:** `2026-07-13T01-31-36-04-00`
+**Timestamp:** `2026-07-13T01-40-00-04-00`
 
 ## Summary
 
-The newest gap is browser page lifecycle truth. `pagehide` conflates retained-page suspension with terminal departure, disposes only one renderer subtree, clears gameplay presentation indexes and has no `pageshow` recovery path. Adaptive-quality, durable-save and browser-input gaps remain unresolved.
+The active gap is browser page-lifecycle truth. `pagehide` conflates retained suspension with terminal departure, disposes only one renderer subtree, clears gameplay presentation indexes and has no `pageshow` recovery path. Adaptive-quality, durable-save and browser-input gaps remain unresolved.
 
 ## Plan ledger
 
@@ -17,25 +17,21 @@ The newest gap is browser page lifecycle truth. `pagehide` conflates retained-pa
 - [ ] Durable save commit and truthful lifecycle flush authority.
 - [ ] Adaptive quality transition and render-generation authority.
 - [ ] Agriculture recovery and cross-domain transaction proof.
-- [ ] Browser, backend and Pages parity fixtures.
+- [ ] Browser, backend, build and Pages parity fixtures.
 
 ## Page-lifecycle gaps
 
 ```txt
-page lifecycle command ID: absent
-runtime session and lifecycle generation: absent
+page lifecycle command ID/session/generation: absent
 pagehide persisted-state classification: absent
 Suspend versus Retire decision: absent
 pageshow resume handler: absent
 animation-loop pause/stop receipt: absent
 wall-time baseline reset on resume: absent
 input-generation close/reopen: absent
-complete render participant registry: absent
-participant dependency order: absent
-retained participant validation: absent
-reconstruction result: absent
-complete resource disposal: absent
-exactly-once retirement receipt: absent
+complete render participant registry and dependency order: absent
+retained participant validation/reconstruction result: absent
+complete and exactly-once resource disposal: absent
 stale/duplicate lifecycle-event rejection: absent
 first resumed visible-frame acknowledgement: absent
 BFCache and terminal-retirement fixtures: absent
@@ -44,14 +40,14 @@ BFCache and terminal-retirement fixtures: absent
 ## Concrete consequence
 
 ```txt
-pagehide for retained navigation
-  -> save candidate is written
-  -> gameplayRenderer.dispose clears plot/forage/crop indexes
-  -> page returns with no pageshow reconstruction
+retained pagehide
+  -> save candidate attempted
+  -> gameplay renderer disposed
+  -> plot/forage/crop maps cleared
+  -> retained page returns without pageshow reconstruction
   -> simulation and HUD can resume
-  -> gameplay world updates cannot resolve cleared indexes
-  -> target marker lookup can disappear
-  -> once-only pagehide listener cannot handle a later departure
+  -> visible Agriculture/Foraging state and target lookup can remain stale
+  -> once-only pagehide listener cannot process a later departure
 ```
 
 ## Retained adaptive-quality gaps
@@ -81,20 +77,12 @@ visible durable-save frame acknowledgement absent
 ```txt
 global keyboard ownership
 editable-target exclusion absent
-pointer ID not enforced on move/up
-primary pointer/button policy absent
+pointer ID and primary-button admission incomplete
 lostpointercapture handling absent
 permanent input generation 1
-duplicate command rejection absent
-consumer receipts absent
+duplicate command rejection and consumer receipts absent
 first visible input-frame acknowledgement absent
 ```
-
-## Other retained gaps
-
-- `globalThis.CozyIsland` exposes raw engine, renderer and domain capabilities without lifecycle revocation.
-- Agriculture recovery and cross-domain settlement need failure fixtures.
-- WebGPU/WebGL2 and deployed parity evidence remains incomplete.
 
 ## Required lifecycle fixtures
 
@@ -103,27 +91,12 @@ BFCache round trip after Agriculture mutation
 BFCache round trip after Foraging mutation
 round trip with active interaction target
 repeated back/forward navigation
-pagehide during save activity
-pagehide during quality transition
+pagehide during save or quality transition
 explicit terminal stop
 partial-construction failure retirement
 WebGPU/WebGL2 lifecycle parity
 source/build/Pages parity
 first resumed matching frame
-```
-
-## Dependency order
-
-```txt
-runtime session and lifecycle generation
-  -> lifecycle event admission
-  -> suspend/resume/retire plan
-  -> input/frame and save participants
-  -> renderer participant registry
-  -> retain/rebuild/dispose receipts
-  -> terminal result
-  -> first resumed visible-frame acknowledgement
-  -> browser/backend/Pages parity
 ```
 
 ## Do not claim

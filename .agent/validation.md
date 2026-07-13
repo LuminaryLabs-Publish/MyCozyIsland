@@ -1,47 +1,50 @@
-# Validation: MyCozyIsland Three.js menu presentation lifecycle
+# Validation: MyCozyIsland cross-window preload and entry protocol
 
-**Timestamp:** `2026-07-13T14-39-40-04-00`
+**Timestamp:** `2026-07-13T19-40-56-04-00`
 
 ## Scope
 
-Documentation-only review of the four-commit menu presentation change across `README.md`, `menu.html`, `src/menu.js` and `tests/menu-game-shell-smoke.mjs`, plus the retained hidden-game preload, entry handoff, package wiring and deployed route boundary.
+Documentation-only review of the active parent-menu/hidden-game messaging boundary in `src/menu.js` and `src/game-preload-bridge.js`, plus package test wiring and retained menu, startup, rendering and lifecycle documentation.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and the executable proof required before menu-provider independence and complete presentation retirement are claimed.
+**Goal:** distinguish source-backed protocol facts from unimplemented or unexecuted safety claims.
 
-- [x] Compare the prior repo-local documentation head with the current runtime head.
-- [x] Inspect the four intervening commits and four changed files.
-- [x] Read current `menu.html`, `src/menu.js`, `game.html`, README taxonomy and menu smoke.
-- [x] Read retained preload-handoff and game renderer ownership.
-- [x] Inspect package test wiring and current commit status checks.
-- [x] Preserve 65 DSK/kit surfaces and five browser/product adapters.
-- [x] Update the menu adapter from Canvas2D to Three.js services.
-- [ ] Run source, browser, built-output and Pages lifecycle fixtures.
+- [x] Compare the full Publish inventory and central ledger.
+- [x] Confirm MyCozyIsland is the oldest eligible synchronized repository.
+- [x] Inspect both cross-window message handlers and producers.
+- [x] Inspect entry timeout, simulation resume and player preparation.
+- [x] Inspect package test wiring.
+- [x] Preserve 65 DSK/kit surfaces and five adapters.
+- [x] Define required protocol and visible-frame fixtures.
+- [ ] Run executable source, browser, build and Pages fixtures.
 
 ## Source-backed observations
 
 ```txt
-commits ahead of prior documentation: 4
-changed files: 4
-reviewed runtime head: a0077808c0344b52850c2cd4c5c787c521ee61db
-Three.js menu provider: jsDelivr three@0.185.0
-menu renderer: one low-power THREE.WebGLRenderer
-menu visual contract: one semantic sky, one hero palm, one Play gate
-palm fronds: 11
-palm coconuts: 4
-menu frame loop: recursive requestAnimationFrame
-hidden game loop: independent renderer.setAnimationLoop
-preload scheduling: after menu module construction and first RAF scheduling
-stored menu RAF ID: no
-first menu frame acknowledgement: no
-entry fallback reveal: 900 ms
-menu retirement delay: 820 ms
-explicit menu scene-resource disposal: no
-renderer.dispose call: yes
-listener retirement: no
-context/canvas retirement receipt: no
-combined commit status checks reported: none
+parent outbound targetOrigin: location.origin
+child outbound targetOrigin: location.origin
+parent inbound source-window check: yes
+child inbound source-window check: yes
+parent inbound event.origin check: no
+child inbound event.origin check: no
+message types: informal string discriminators
+protocol version: no
+message ID: no
+sequence: no
+shell/frame/preload/entry generations: no
+payload schema validation: no
+replay/duplicate classification: no
+stale/out-of-order classification: no
+child poll interval: 120 ms
+parent entry fallback: 900 ms
+child ready announcement: once
+child poll stops at ready: no
+simulation freeze: engine tick/step replacement
+simulation resume: restore retained function references
+player preparation errors: console warning, entry continues
+entry acknowledgement timing: before post-resume visible-frame proof
+first visible game-frame acknowledgement: no
 ```
 
 ## Existing executable coverage
@@ -54,36 +57,36 @@ tests/startup-domain-smoke.mjs
 tests/adventure-domains-smoke.mjs
 ```
 
-The menu smoke verifies syntax and source markers for routing, one Three.js canvas, one Play gate, one hidden game iframe, Three.js import, sky and palm construction, stable palm identity, absence of Canvas2D/island/terrain menu code, 99 percent progress cap, ready/enter messages, history replacement, freeze/resume markers and Pages HTML copying.
+The current menu smoke checks source markers for route, iframe, progress, ready/enter message names, history replacement and freeze/resume behavior. It does not create a parent/iframe browser pair or test semantic message admission, ordering, reload, timeout, BFCache or visible-frame correlation.
 
-It does not instantiate a browser, intercept the Three.js provider, disable WebGL, compile/render the shader, count GPU contexts, acknowledge the first menu frame, inspect concurrent menu/game renderer work, dispatch real entry input, dispose scene resources, inspect listeners, test late callbacks, force context loss, exercise BFCache or validate deployed lifecycle results.
-
-## Required fixtures
+## Required protocol fixtures
 
 ```txt
-provider-independent iframe preload start
-Three.js provider rejection
-CSP or MIME rejection
-WebGL-disabled/constructor rejection
-shader/resource preparation failure
-normal first menu frame
-reduced-motion first menu frame
-resize and DPR before/after first frame
-explicit dual-renderer overlap policy
-rapid duplicate Play
-entry timeout preserving menu
-first visible game frame before retirement
-one stopped RAF chain
-late callback rejection
-owned listener retirement
-geometry/material disposal receipts
-renderer and context policy receipt
-canvas/reference retirement
-partial retirement reporting
-context loss during transition
-pagehide/BFCache lifecycle
-fresh built root/menu/direct-game routes
-GitHub Pages parity
+normal HELLO/progress/ready/entry/frame/commit
+wrong origin
+wrong source window
+unsupported protocol version
+unknown message type
+malformed payload
+oversized/deep payload
+stale shell generation
+stale frame generation
+stale preload attempt
+stale entry attempt
+duplicate message ID
+replayed ready result
+out-of-order progress after ready
+duplicate Play request
+iframe reload during preload
+iframe reload during entry
+player preparation exception
+entry timeout with explicit TimedOut result
+explicit Degraded reveal policy
+late frame acknowledgement
+pagehide during preload/entry
+BFCache restore with predecessor timers/messages
+direct game route
+source/build/Pages terminal-result parity
 ```
 
 ## Validation result
@@ -102,13 +105,12 @@ branch created: no
 pull request created: no
 
 source files inspected: yes
-menu shell smoke source inspected: yes
 package test wiring inspected: yes
-commit status checks reported: none
+combined status checks reported: none
 npm test independently run: no
-browser menu lifecycle smoke: not run
-built-output menu lifecycle smoke: not run
-Pages menu lifecycle smoke: not run
+browser protocol smoke: not run
+built-output protocol smoke: not run
+Pages protocol smoke: not run
 ```
 
-No provider-independent preload, menu first-frame, bounded dual-renderer use, complete resource retirement, visible entry, lifecycle parity or production-readiness claim is made.
+No protocol integrity, stale-message fencing, duplicate suppression, entry rollback, visible-frame completion, BFCache convergence, deployment parity or production-readiness claim is made.

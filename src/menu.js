@@ -1,4 +1,15 @@
-import * as THREE from "three";
+import * as THREE from "three/webgpu";
+import {
+  color,
+  float,
+  mix,
+  pass,
+  positionLocal,
+  smoothstep,
+  time,
+  vec3
+} from "three/tsl";
+import { bloom } from "three/addons/tsl/display/BloomNode.js";
 
 const canvas = document.querySelector("#menu-scene");
 const frame = document.querySelector("#game-preload");
@@ -10,80 +21,94 @@ let entering = false;
 let preloadStarted = false;
 let lastProgress = 0.01;
 let sceneRunning = true;
+let renderer = null;
+let renderPipeline = null;
+let environmentTarget = null;
 
 if (!canvas) throw new Error("Missing #menu-scene canvas.");
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: false,
-  powerPreference: "low-power"
-});
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
-camera.position.set(0.25, 1.2, 9.5);
-camera.lookAt(-1.35, 0.85, 0);
-
 function createSky() {
-  const geometry = new THREE.SphereGeometry(36, 32, 18);
-  const material = new THREE.ShaderMaterial({
+  const material = new THREE.MeshBasicNodeMaterial({
     side: THREE.BackSide,
     depthWrite: false,
-    uniforms: {
-      topColor: { value: new THREE.Color("#ed9473") },
-      middleColor: { value: new THREE.Color("#f4c491") },
-      bottomColor: { value: new THREE.Color("#71b7aa") }
-    },
-    vertexShader: `
-      varying vec3 vDirection;
-      void main() {
-        vDirection = normalize(position);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 topColor;
-      uniform vec3 middleColor;
-      uniform vec3 bottomColor;
-      varying vec3 vDirection;
-      void main() {
-        float h = clamp(vDirection.y * 0.5 + 0.5, 0.0, 1.0);
-        vec3 lower = mix(bottomColor, middleColor, smoothstep(0.0, 0.62, h));
-        vec3 color = mix(lower, topColor, smoothstep(0.55, 1.0, h));
-        gl_FragColor = vec4(color, 1.0);
-      }
-    `
+    fog: false
   });
-  const sky = new THREE.Mesh(geometry, material);
+
+  const height = positionLocal.normalize().y.mul(0.5).add(0.5);
+  const lower = mix(
+    color("#ffe2bf"),
+    color("#c9eee1"),
+    smoothstep(float(0.08), float(0.6), height)
+  );
+  material.colorNode = mix(
+    lower,
+    color("#78c7d5"),
+    smoothstep(float(0.58), float(1), height)
+  );
+
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(40, 48, 24), material);
   sky.name = "menu-sky";
+  sky.frustumCulled = false;
+  sky.renderOrder = -20;
   return sky;
 }
 
-function createFrondGeometry(length = 2.65, width = 0.48, droop = 0.58) {
-  const segments = 9;
+function createSkyGlow() {
+  const glowMaterial = new THREE.MeshBasicNodeMaterial({
+    transparent: true,
+    opacity: 0.34,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide
+  });
+  glowMaterial.colorNode = color("#fff0b8").mul(3.4);
+
+  const glow = new THREE.Mesh(new THREE.CircleGeometry(1.4, 64), glowMaterial);
+  glow.name = "menu-sky-glow";
+  glow.position.set(-5.2, 4.4, -10);
+  glow.scale.set(1.25, 1.25, 1);
+  return glow;
+}
+
+function createFrondLeafletsGeometry(ribCurve, leafletCount = 17) {
   const positions = [];
   const indices = [];
   const uvs = [];
 
-  for (let index = 0; index <= segments; index += 1) {
-    const t = index / segments;
-    const x = length * t;
-    const y = -droop * t * t;
-    const halfWidth = Math.sin(Math.PI * t) * width * 0.5 * (1 - t * 0.38);
-    positions.push(x, y, -halfWidth, x, y, halfWidth);
-    uvs.push(t, 0, t, 1);
-  }
+  for (let leafletIndex = 2; leafletIndex < leafletCount; leafletIndex += 1) {
+    const t = leafletIndex / leafletCount;
+    const center = ribCurve.getPoint(t);
+    const tangent = ribCurve.getTangent(t).normalize();
+    const size = Math.sin(Math.PI * t);
+    const leafletLength = (0.58 + size * 0.48) * (0.92 + (leafletIndex % 3) * 0.04);
+    const leafletWidth = 0.11 + size * 0.075;
 
-  for (let index = 0; index < segments; index += 1) {
-    const a = index * 2;
-    const b = a + 1;
-    const c = a + 2;
-    const d = a + 3;
-    indices.push(a, c, b, b, c, d);
+    for (const side of [-1, 1]) {
+      const baseIndex = positions.length / 3;
+      const sideVector = new THREE.Vector3(0, 0, side);
+      const root = center.clone();
+      const mid = center.clone()
+        .addScaledVector(tangent, leafletLength * 0.28)
+        .addScaledVector(sideVector, leafletLength * 0.62);
+      mid.y -= 0.04 + t * 0.12;
+      const tip = center.clone()
+        .addScaledVector(tangent, leafletLength * 0.38)
+        .addScaledVector(sideVector, leafletLength);
+      tip.y -= 0.08 + t * 0.18;
+      const across = new THREE.Vector3(0, leafletWidth * 0.6, side * leafletWidth * 0.18);
+
+      positions.push(
+        root.x, root.y, root.z,
+        mid.x + across.x, mid.y + across.y, mid.z + across.z,
+        tip.x, tip.y, tip.z,
+        mid.x - across.x, mid.y - across.y, mid.z - across.z
+      );
+      uvs.push(0, 0.5, 0.46, 1, 1, 0.5, 0.46, 0);
+      indices.push(
+        baseIndex, baseIndex + 1, baseIndex + 2,
+        baseIndex, baseIndex + 2, baseIndex + 3
+      );
+    }
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -91,100 +116,231 @@ function createFrondGeometry(length = 2.65, width = 0.48, droop = 0.58) {
   geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
   return geometry;
+}
+
+function createWindMaterial({
+  phase,
+  length,
+  baseColor,
+  tipColor,
+  strength = 0.11,
+  roughness = 0.68,
+  emissive = "#183d20"
+}) {
+  const material = new THREE.MeshPhysicalNodeMaterial({
+    side: THREE.DoubleSide,
+    roughness,
+    metalness: 0,
+    clearcoat: 0.05,
+    clearcoatRoughness: 0.82,
+    sheen: 0.12,
+    sheenColor: new THREE.Color("#d9ef9b"),
+    sheenRoughness: 0.8
+  });
+
+  const along = positionLocal.x.div(length).clamp(0, 1);
+  const gust = time
+    .mul(0.72)
+    .add(phase)
+    .sin()
+    .add(time.mul(0.23).add(phase * 1.73).sin().mul(0.35))
+    .mul(strength)
+    .mul(along.pow(1.45));
+
+  material.positionNode = positionLocal.add(vec3(
+    gust.mul(0.08),
+    gust.mul(0.1),
+    gust.mul(0.34)
+  ));
+  material.colorNode = mix(
+    color(baseColor),
+    color(tipColor),
+    along.mul(0.78).add(positionLocal.z.mul(1.7).sin().abs().mul(0.08))
+  );
+  material.roughnessNode = float(roughness).add(
+    positionLocal.x.mul(8).sin().abs().mul(0.1)
+  );
+  material.emissiveNode = color(emissive).mul(along.mul(0.08).add(0.025));
+  return material;
+}
+
+function createFrond(index) {
+  const phase = index * 0.73;
+  const length = 2.75 + (index % 3) * 0.18;
+  const droop = 0.46 + (index % 2) * 0.1;
+  const group = new THREE.Group();
+  group.name = `menu-palm-frond-${index}`;
+
+  const ribCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(length * 0.28, 0.04, 0),
+    new THREE.Vector3(length * 0.62, -droop * 0.28, 0),
+    new THREE.Vector3(length, -droop, 0)
+  ]);
+
+  const ribMaterial = createWindMaterial({
+    phase,
+    length,
+    baseColor: "#507f38",
+    tipColor: "#7fad51",
+    strength: 0.075,
+    roughness: 0.76
+  });
+  const rib = new THREE.Mesh(
+    new THREE.TubeGeometry(ribCurve, 24, 0.035, 7, false),
+    ribMaterial
+  );
+  rib.name = `menu-palm-rib-${index}`;
+  rib.castShadow = true;
+  group.add(rib);
+
+  const leafColors = [
+    ["#3f874e", "#8bcf69"],
+    ["#4b9658", "#9bd474"],
+    ["#397b48", "#78bd60"]
+  ];
+  const [baseColor, tipColor] = leafColors[index % leafColors.length];
+  const leafMaterial = createWindMaterial({
+    phase,
+    length,
+    baseColor,
+    tipColor,
+    strength: 0.13 + (index % 3) * 0.012,
+    roughness: 0.62,
+    emissive: "#1f5429"
+  });
+
+  const leaflets = new THREE.Mesh(
+    createFrondLeafletsGeometry(ribCurve, 17),
+    leafMaterial
+  );
+  leaflets.name = `menu-palm-leaflets-${index}`;
+  leaflets.castShadow = true;
+  group.add(leaflets);
+
+  return group;
+}
+
+function createTrunkMaterial() {
+  const material = new THREE.MeshStandardNodeMaterial({
+    roughness: 0.9,
+    metalness: 0
+  });
+  const height = positionLocal.y.div(5.5).clamp(0, 1);
+  const rings = positionLocal.y.mul(11).add(positionLocal.x.mul(3)).sin().mul(0.5).add(0.5);
+  const fibers = positionLocal.x.mul(19).add(positionLocal.z.mul(13)).sin().abs();
+
+  material.colorNode = mix(
+    color("#6d4128"),
+    color("#b07847"),
+    rings.mul(0.52).add(height.mul(0.23))
+  );
+  material.roughnessNode = float(0.75)
+    .add(rings.mul(0.13))
+    .add(fibers.mul(0.07));
+  const sway = time
+    .mul(0.38)
+    .sin()
+    .mul(height.pow(2))
+    .mul(reducedMotion ? 0 : 0.045);
+  material.positionNode = positionLocal.add(vec3(
+    sway,
+    float(0),
+    sway.mul(0.28)
+  ));
+  return material;
 }
 
 function createPalm() {
   const palm = new THREE.Group();
   palm.name = "menu-hero-palm";
-  palm.position.set(-2.15, -2.85, 0);
+  palm.position.set(-1.75, -2.75, 0);
   palm.rotation.y = 0.16;
 
   const trunkCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0.08, 1.2, 0.02),
-    new THREE.Vector3(0.28, 2.7, 0),
-    new THREE.Vector3(0.62, 4.2, -0.04),
-    new THREE.Vector3(0.98, 5.35, 0)
+    new THREE.Vector3(0.04, 0.8, 0.03),
+    new THREE.Vector3(0.1, 1.75, -0.02),
+    new THREE.Vector3(0.3, 2.8, 0.02),
+    new THREE.Vector3(0.55, 3.85, -0.03),
+    new THREE.Vector3(0.82, 4.75, 0)
   ]);
+
   const trunk = new THREE.Mesh(
-    new THREE.TubeGeometry(trunkCurve, 36, 0.24, 9, false),
-    new THREE.MeshStandardMaterial({ color: "#8a6040", roughness: 0.92, metalness: 0 })
+    new THREE.TubeGeometry(trunkCurve, 56, 0.28, 12, false),
+    createTrunkMaterial()
   );
   trunk.name = "menu-palm-trunk";
+  trunk.castShadow = true;
+  trunk.receiveShadow = true;
   palm.add(trunk);
+
+  const baseFlare = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.38, 0.48, 0.72, 14, 4),
+    createTrunkMaterial()
+  );
+  baseFlare.name = "menu-palm-base-flare";
+  baseFlare.position.set(0, 0.34, 0);
+  baseFlare.castShadow = true;
+  palm.add(baseFlare);
 
   const crown = new THREE.Group();
   crown.name = "menu-palm-crown";
   crown.position.copy(trunkCurve.getPoint(1));
   palm.add(crown);
 
-  const leafMaterials = [
-    new THREE.MeshStandardMaterial({ color: "#4d9a62", roughness: 0.88, side: THREE.DoubleSide }),
-    new THREE.MeshStandardMaterial({ color: "#63ae69", roughness: 0.88, side: THREE.DoubleSide }),
-    new THREE.MeshStandardMaterial({ color: "#78b86e", roughness: 0.88, side: THREE.DoubleSide })
-  ];
+  const sheathMaterial = new THREE.MeshStandardNodeMaterial({
+    color: "#755037",
+    roughness: 0.86,
+    metalness: 0
+  });
+  const sheath = new THREE.Mesh(
+    new THREE.SphereGeometry(0.43, 18, 12),
+    sheathMaterial
+  );
+  sheath.scale.set(1.1, 0.78, 1);
+  sheath.position.y = -0.03;
+  sheath.castShadow = true;
+  crown.add(sheath);
 
-  const fronds = [];
-  for (let index = 0; index < 11; index += 1) {
-    const angle = index / 11 * Math.PI * 2;
-    const frond = new THREE.Mesh(
-      createFrondGeometry(2.35 + (index % 3) * 0.18, 0.46, 0.48 + (index % 2) * 0.12),
-      leafMaterials[index % leafMaterials.length]
+  const frondCount = 12;
+  for (let index = 0; index < frondCount; index += 1) {
+    const frond = createFrond(index);
+    const angle = index / frondCount * Math.PI * 2;
+    const age = index % 4;
+    frond.rotation.set(
+      -0.16 + age * 0.075,
+      angle,
+      -0.08 + Math.sin(angle) * 0.08
     );
-    frond.name = `menu-palm-frond-${index}`;
-    frond.rotation.set(-0.14 + (index % 3) * 0.08, angle, -0.08 + Math.sin(angle) * 0.12);
-    frond.userData.baseRotation = frond.rotation.clone();
-    frond.userData.phase = index * 0.71;
     crown.add(frond);
-    fronds.push(frond);
   }
 
-  const coconutMaterial = new THREE.MeshStandardMaterial({ color: "#6e4c32", roughness: 0.95 });
-  for (let index = 0; index < 4; index += 1) {
-    const angle = index / 4 * Math.PI * 2 + 0.42;
-    const coconut = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), coconutMaterial);
-    coconut.scale.set(0.88, 1.12, 0.88);
-    coconut.position.set(Math.cos(angle) * 0.28, -0.17 - (index % 2) * 0.05, Math.sin(angle) * 0.28);
+  const coconutMaterial = new THREE.MeshStandardNodeMaterial({
+    color: "#765038",
+    roughness: 0.94,
+    metalness: 0
+  });
+  for (let index = 0; index < 6; index += 1) {
+    const angle = index / 6 * Math.PI * 2 + 0.35;
+    const coconut = new THREE.Mesh(
+      new THREE.SphereGeometry(0.19 + (index % 2) * 0.025, 14, 10),
+      coconutMaterial
+    );
+    coconut.name = `menu-palm-coconut-${index}`;
+    coconut.scale.set(0.88, 1.13, 0.9);
+    coconut.position.set(
+      Math.cos(angle) * 0.31,
+      -0.18 - (index % 3) * 0.055,
+      Math.sin(angle) * 0.31
+    );
+    coconut.castShadow = true;
     crown.add(coconut);
   }
 
-  return { palm, crown, fronds };
-}
-
-scene.add(createSky());
-scene.add(new THREE.HemisphereLight(0xffefd1, 0x356f68, 2.15));
-const sunlight = new THREE.DirectionalLight(0xffd69a, 2.4);
-sunlight.position.set(-5, 8, 6);
-scene.add(sunlight);
-
-const { palm, crown, fronds } = createPalm();
-scene.add(palm);
-
-function resize() {
-  const width = Math.max(1, innerWidth);
-  const height = Math.max(1, innerHeight);
-  const ratio = Math.min(devicePixelRatio || 1, 1.75);
-  renderer.setPixelRatio(ratio);
-  renderer.setSize(width, height, false);
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
-}
-
-function render(time = 0) {
-  if (!sceneRunning) return;
-  const seconds = time * 0.001;
-  if (!reducedMotion) {
-    palm.rotation.z = Math.sin(seconds * 0.38) * 0.012;
-    crown.rotation.z = Math.sin(seconds * 0.54) * 0.035;
-    for (const frond of fronds) {
-      const base = frond.userData.baseRotation;
-      frond.rotation.x = base.x + Math.sin(seconds * 0.72 + frond.userData.phase) * 0.025;
-      frond.rotation.z = base.z + Math.sin(seconds * 0.88 + frond.userData.phase) * 0.04;
-    }
-  }
-  renderer.render(scene, camera);
-  requestAnimationFrame(render);
+  return palm;
 }
 
 function setProgress(progress) {
@@ -233,8 +389,11 @@ function revealGame() {
     sceneRunning = false;
     frame.contentWindow?.focus();
     frame.contentDocument?.querySelector("#game")?.focus?.();
-    renderer.dispose();
-  }, reducedMotion ? 0 : 820);
+    renderer?.setAnimationLoop(null);
+    renderPipeline?.dispose();
+    environmentTarget?.dispose?.();
+    renderer?.dispose();
+  }, reducedMotion ? 0 : 780);
 }
 
 function requestEntry() {
@@ -270,13 +429,97 @@ addEventListener("keydown", (event) => {
     requestEntry();
   }
 });
-addEventListener("resize", resize);
 
-resize();
-requestAnimationFrame(render);
-requestAnimationFrame(() => {
-  const schedule = globalThis.requestIdleCallback
-    ? (callback) => requestIdleCallback(callback, { timeout: 450 })
-    : (callback) => setTimeout(callback, 80);
-  schedule(startPreload);
-});
+async function main() {
+  renderer = new THREE.WebGPURenderer({
+    canvas,
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance",
+    outputBufferType: THREE.HalfFloatType
+  });
+  await renderer.init();
+
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.96;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color("#a8d9d5");
+
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 90);
+  camera.position.set(0.15, 1.1, 10.5);
+  camera.lookAt(-1.55, 0.35, 0);
+
+  scene.add(createSky());
+  scene.add(createSkyGlow());
+
+  const hemisphere = new THREE.HemisphereLight(0xe6fff8, 0x81966d, 2.15);
+  scene.add(hemisphere);
+
+  const sun = new THREE.DirectionalLight(0xffedc8, 3.25);
+  sun.position.set(-4.5, 7.5, 6);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -7;
+  sun.shadow.camera.right = 7;
+  sun.shadow.camera.top = 7;
+  sun.shadow.camera.bottom = -7;
+  sun.shadow.camera.near = 0.1;
+  sun.shadow.camera.far = 30;
+  sun.shadow.bias = -0.00015;
+  sun.shadow.normalBias = 0.025;
+  scene.add(sun);
+
+  const rim = new THREE.DirectionalLight(0xd9fff1, 1.2);
+  rim.position.set(5, 5, -4);
+  scene.add(rim);
+
+  const palm = createPalm();
+  scene.add(palm);
+
+  renderPipeline = new THREE.RenderPipeline(renderer);
+  const scenePass = pass(scene, camera);
+  const sceneColor = scenePass.getTextureNode("output");
+  const bloomPass = bloom(sceneColor, 0.2, 0.34, 1.12);
+  bloomPass.setResolutionScale(0.5);
+  renderPipeline.outputNode = sceneColor.add(bloomPass);
+
+  function resize() {
+    const width = Math.max(1, innerWidth);
+    const height = Math.max(1, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+
+  function render() {
+    if (!sceneRunning) return;
+    renderPipeline.render();
+  }
+
+  addEventListener("resize", resize);
+  resize();
+  renderer.setAnimationLoop(render);
+
+  globalThis.CozyMenu = Object.freeze({
+    renderer,
+    scene,
+    camera,
+    palm,
+    backend: renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2",
+    getProgress: () => lastProgress
+  });
+
+  requestAnimationFrame(() => {
+    const schedule = globalThis.requestIdleCallback
+      ? (callback) => requestIdleCallback(callback, { timeout: 450 })
+      : (callback) => setTimeout(callback, 80);
+    schedule(startPreload);
+  });
+}
+
+main().catch(reportFailure);

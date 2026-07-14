@@ -1,179 +1,159 @@
-# Known gaps: MyCozyIsland cross-window preload and entry protocol
+# Known gaps: MyCozyIsland dual-surface GPU handoff and retirement
 
-**Timestamp:** `2026-07-13T19-40-56-04-00`  
-**Publication status:** `cross-window-preload-entry-protocol-authority-audited`
+**Timestamp:** `2026-07-13T23-58-48-04-00`  
+**Publication status:** `dual-surface-gpu-handoff-retirement-authority-audited`
 
 ## Summary
 
-The parent menu and hidden game communicate through same-origin `postMessage`, but the protocol is unversioned and not bound to shell, iframe, preload or entry generations. Messages have no identity or sequence, entry can be acknowledged before a visible frame, and the parent can reveal after a timeout without a terminal child result.
+The product now owns two WebGPU-first presentation stacks during preload and entry. Readiness and source markers exist, but the runtime lacks presentation generations, backend/device correlation, typed sleep/resume leases, overlap policy, complete menu retirement receipts and first resumed game-frame proof.
 
 ## Plan ledger
 
-**Goal:** keep protocol, gameplay, rendering and lifecycle gaps dependency ordered and tied to executable proof.
+**Goal:** keep the open work dependency ordered and separate source facts from unimplemented guarantees.
 
-- [ ] Versioned immutable message envelope.
-- [ ] Shell, frame, preload and entry generations.
-- [ ] Inbound origin plus source-window verification.
-- [ ] Closed payload schemas and fingerprints.
-- [ ] Message IDs, sequence and replay suppression.
-- [ ] Typed malformed/foreign/stale/duplicate/out-of-order results.
-- [ ] Ready-revision-bound entry request.
-- [ ] Idempotent resume and player preparation.
-- [ ] Preparation failure and rollback result.
-- [ ] Renderer-derived entry-frame receipt.
-- [ ] First visible game-frame acknowledgement.
-- [ ] Explicit timeout/degraded policy.
-- [ ] Atomic reveal/history/focus commit.
-- [ ] Timer/port/generation retirement on navigation and page lifecycle.
-- [ ] Browser, build and Pages fixture parity.
+- [ ] Surface, backend and device/context generations.
+- [ ] Menu, sleeping-game and active-game presentation leases.
+- [ ] Resource manifests for compute, pipeline, scene, listeners, timers and public capability.
+- [ ] Attempt-bound game resume and rollback.
+- [ ] First resumed game-frame acknowledgement.
+- [ ] Bounded overlap and explicit degraded policy.
+- [ ] Complete menu retirement result.
+- [ ] Browser WebGPU/WebGL2 fixtures and deployment parity.
 
-## Protocol identity gaps
+## Identity and lease gaps
 
 ```txt
-ProtocolVersion: absent
-ShellGeneration: absent
-FrameGeneration: absent
-PreloadAttemptId: absent
-EntryAttemptId: absent
-MessageId: absent
-MessageSequence: absent
-PayloadFingerprint: absent
-ReadyRevision: absent
-ProtocolRetirementResult: absent
+MenuSurfaceGeneration: absent
+GameSurfaceGeneration: absent
+BackendGeneration: absent
+DeviceContextGeneration: absent
+MenuPresentationLease: absent
+SleepingGamePresentationLease: implicit only
+ActiveGamePresentationLease: implicit only
+PresentationHandoffId: absent
+OverlapGeneration: absent
 ```
 
-## Admission gaps
+## Game resume gaps
 
 ```txt
-outbound targetOrigin: location.origin on both sides
-expected source-window check: present on both sides
-inbound event.origin check: absent on both sides
-closed message-type registry: absent
-payload schema validation: absent
-size/depth limits: absent
-stale generation rejection: absent
-duplicate/replay rejection: absent
-out-of-order rejection: absent
-unknown-message observation: absent
+ExpectedReadyRevision: absent
+GameResumeAttemptId: absent
+simulation freeze receipt: absent
+presentation sleep receipt: absent
+resume preparation result: absent
+player before/after fingerprint: absent
+input clear receipt: absent
+rollback to sleeping-ready: absent
+first resumed game frame: absent
 ```
 
-The source-window check is useful, but it does not identify the producing document generation or semantic attempt. A current message cannot be distinguished from a delayed predecessor after iframe reload, shell restoration or future reuse.
+The bridge restores engine functions and the animation callback, catches player-preparation errors as warnings and posts entered immediately.
 
-## Preload gaps
+## Overlap gaps
 
 ```txt
-protocol HELLO/negotiation: absent
-progress sequence: unversioned
-ready terminal result: unversioned
-failure terminal result: unversioned
-progress after terminal classification: absent
-child timer stops at ready: no
-preload cancellation: absent
-reload supersession result: absent
+overlap budget: absent
+menu/game active-frame counters: absent
+overlap start/end result: absent
+GPU time or pressure evidence: absent
+entry fallback classification: absent
 ```
 
-The bridge interval continues after readiness until entry or failure, even though ready is already terminal for preparation.
+The normal fade keeps the menu active for up to 780 ms after the game resumes. The parent also has a separate 900 ms reveal fallback.
 
-## Entry gaps
+## Menu retirement gaps
 
 ```txt
-entry request identity: absent
-expected ready revision: absent
-single resume receipt: absent
-player snapshot before/after: absent
-input-clear receipt: absent
-preparation exception terminal result: absent
-rollback to frozen-ready state: absent
-duplicate entry result: absent
-entry commit result: absent
+application resource manifest: absent
+compute stop receipt: absent
+frame stop receipt: absent
+scene traversal disposal: absent
+geometry/material receipt: absent
+wind storage/compute receipt: absent
+listener registry and removal: absent
+timer registry and cancellation: absent
+CozyMenu capability revocation: absent
+terminal retirement result: absent
 ```
 
-`preparePlayerEntry()` catches errors, warns and allows entry acknowledgement to continue.
+`renderPipeline.dispose()` and `renderer.dispose()` exist, but the application does not prove the terminal state of every resource participant.
 
-## Visible-frame gaps
+## Public capability gaps
 
 ```txt
-post-resume simulation revision: absent
-render snapshot revision: absent
-renderer/device generation: absent
-frame submission ID: absent
-iframe visibility generation: absent
-FirstVisibleGameFrameAck: absent
+CozyMenu exposes raw renderer: yes
+CozyMenu exposes raw scene: yes
+CozyMenu exposes raw camera: yes
+CozyMenu exposes raw palm: yes
+retired descriptor: absent
+capability generation: absent
+revocation result: absent
 ```
 
-`cozy-game-entered` is posted immediately after resume and state preparation. It does not prove a successor frame was submitted or visible.
-
-## Timeout and fallback gaps
+## Browser lifecycle gaps
 
 ```txt
-entry timeout identity: absent
-timeout cancellation receipt: absent
-fallback policy descriptor: absent
-TimedOut versus Degraded result: absent
-parent/child terminal convergence: absent
-```
-
-The parent reveals after 900 ms when `entering` is still false. This is a product fallback, but it is not represented as a distinguishable terminal result.
-
-## Lifecycle gaps
-
-```txt
-message listener registry: absent
-poll interval generation: absent
-entry timeout generation: absent
-port retirement: absent
-iframe navigation retirement: absent
-pagehide cancellation result: absent
+resize after retirement fencing: absent
+message/keydown/click listener retirement: absent
+late timeout fencing: absent
+pagehide handoff cancellation: absent
 BFCache restoration policy: absent
-late message count/rejection: absent
+stale animation callback classification: absent
 ```
 
 ## Validation gaps
 
 ```txt
-wrong-origin fixture: absent
-wrong-source fixture: absent
-malformed-payload fixture: absent
-stale-generation fixture: absent
-duplicate/replay fixture: absent
-out-of-order fixture: absent
-reload-during-preload fixture: absent
-reload-during-entry fixture: absent
-preparation-exception fixture: absent
-timeout/degraded fixture: absent
-first-visible-frame fixture: absent
-pagehide/BFCache fixture: absent
-built-output protocol smoke: absent
-Pages protocol smoke: absent
+real WebGPU menu fixture: absent
+real WebGL2 fallback fixture: absent
+two-surface preload fixture: absent
+sleep/resume fixture: absent
+first resumed frame fixture: absent
+overlap-budget fixture: absent
+compute-stop fixture: absent
+partial-retirement fixture: absent
+post-retirement resize fixture: absent
+capability-revocation fixture: absent
+source/build/Pages parity fixture: absent
+```
+
+## Retained protocol gaps
+
+```txt
+protocol version and envelopes
+inbound event.origin checks
+message IDs and sequences
+shell, iframe, preload and entry generations
+payload schemas and replay suppression
+explicit timeout/degraded result
+atomic reveal/history/focus commit
 ```
 
 ## Retained architecture gaps
 
 ```txt
-provider-independent hidden preload
-Three.js menu first-frame and full retirement
-static game-module bootstrap admission
-multi-participant resource settlement
 browser page lifecycle
+adaptive render-quality transitions
 portable save durability
 browser input authority
-adaptive render-quality transitions
 bounded public runtime capabilities
+provider-independent hidden preload
 ```
 
 ## Dependency order
 
 ```txt
-protocol envelope and generations
-  -> message admission and sequencing
-  -> preload terminal results
-  -> entry attempt and preparation
-  -> post-resume frame acknowledgement
-  -> reveal/history/focus commit
-  -> menu retirement and game-only lifecycle
-  -> build/Pages parity
+protocol and presentation generations
+  -> resource manifests and leases
+  -> game resume preparation
+  -> first resumed frame
+  -> overlap policy
+  -> menu retirement
+  -> reveal/history/focus settlement
+  -> browser/build/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim protocol integrity, stale-message rejection, duplicate suppression, atomic entry, visible-frame completion, BFCache convergence or production readiness until the relevant fixture matrices pass on `main`.
+Do not claim complete cleanup, bounded overlap, stale-callback fencing, capability revocation, first-frame entry completion or production readiness until the relevant fixtures pass on `main`.

@@ -1,159 +1,161 @@
-# Known gaps: MyCozyIsland dual-surface GPU handoff and retirement
+# Known gaps: MyCozyIsland shell startup fault isolation
 
-**Timestamp:** `2026-07-13T23-58-48-04-00`  
-**Publication status:** `dual-surface-gpu-handoff-retirement-authority-audited`
+**Timestamp:** `2026-07-14T05-02-03-04-00`  
+**Publication status:** `menu-failure-game-bootstrap-fallback-authority-audited`
 
 ## Summary
 
-The product now owns two WebGPU-first presentation stacks during preload and entry. Readiness and source markers exist, but the runtime lacks presentation generations, backend/device correlation, typed sleep/resume leases, overlap policy, complete menu retirement receipts and first resumed game-frame proof.
+The primary game route is still launched only after successful menu rendering preparation. The shell has no independent preload lane, menu-failure classification, degraded loading state, retry isolation or first visible fallback-game-frame result.
 
 ## Plan ledger
 
-**Goal:** keep the open work dependency ordered and separate source facts from unimplemented guarantees.
+**Goal:** keep the open work dependency ordered and distinguish confirmed source behavior from unimplemented fallback guarantees.
 
-- [ ] Surface, backend and device/context generations.
-- [ ] Menu, sleeping-game and active-game presentation leases.
-- [ ] Resource manifests for compute, pipeline, scene, listeners, timers and public capability.
-- [ ] Attempt-bound game resume and rollback.
-- [ ] First resumed game-frame acknowledgement.
-- [ ] Bounded overlap and explicit degraded policy.
-- [ ] Complete menu retirement result.
-- [ ] Browser WebGPU/WebGL2 fixtures and deployment parity.
+- [ ] Independent shell-owned game preload.
+- [ ] Shell, menu and game attempt identity.
+- [ ] Menu provider and renderer preparation results.
+- [ ] Menu failure timeout and classification.
+- [ ] DOM-only degraded progress and controls.
+- [ ] Isolated menu and game retries.
+- [ ] Current-revision direct game entry.
+- [ ] First fallback-game-frame acknowledgement.
+- [ ] Partial menu-candidate retirement.
+- [ ] Stale and duplicate result fencing.
+- [ ] Browser/build/Pages fault-injection proof.
 
-## Identity and lease gaps
+## Bootstrap identity gaps
 
 ```txt
-MenuSurfaceGeneration: absent
-GameSurfaceGeneration: absent
-BackendGeneration: absent
-DeviceContextGeneration: absent
-MenuPresentationLease: absent
-SleepingGamePresentationLease: implicit only
-ActiveGamePresentationLease: implicit only
-PresentationHandoffId: absent
-OverlapGeneration: absent
+ShellGeneration: absent
+MenuPresentationAttemptId: absent
+GamePreloadAttemptId: absent
+EntryAttemptId: absent
+ShellProjectionRevision: absent
+TerminalShellBootstrapResult: absent
 ```
 
-## Game resume gaps
+## Lane-isolation gaps
 
 ```txt
-ExpectedReadyRevision: absent
-GameResumeAttemptId: absent
-simulation freeze receipt: absent
-presentation sleep receipt: absent
-resume preparation result: absent
-player before/after fingerprint: absent
-input clear receipt: absent
-rollback to sleeping-ready: absent
-first resumed game frame: absent
+iframe src before menu success: absent
+shell-owned preload launch: absent
+menu/game parallel preparation contract: absent
+primary-game capability policy: absent
+menu failure classified as recoverable: absent
+game preload retained during menu retry: absent
+menu retained during game retry: absent
 ```
 
-The bridge restores engine functions and the animation callback, catches player-preparation errors as warnings and posts entered immediately.
-
-## Overlap gaps
+## Menu preparation gaps
 
 ```txt
-overlap budget: absent
-menu/game active-frame counters: absent
-overlap start/end result: absent
-GPU time or pressure evidence: absent
-entry fallback classification: absent
+static provider import result: absent
+static provider import application error handler: absent
+renderer initialization result: absent
+renderer initialization timeout: absent
+scene preparation result: absent
+RenderPipeline preparation result: absent
+menu first-frame acknowledgement: absent
+partial-candidate resource manifest: absent
+partial-candidate retirement result: absent
 ```
 
-The normal fade keeps the menu active for up to 780 ms after the game resumes. The parent also has a separate 900 ms reveal fallback.
-
-## Menu retirement gaps
+## Degraded projection gaps
 
 ```txt
-application resource manifest: absent
-compute stop receipt: absent
-frame stop receipt: absent
-scene traversal disposal: absent
-geometry/material receipt: absent
-wind storage/compute receipt: absent
-listener registry and removal: absent
-timer registry and cancellation: absent
-CozyMenu capability revocation: absent
-terminal retirement result: absent
+DOM-only loading fallback: absent
+degraded-menu mode: absent
+game progress after menu failure: absent
+accessible menu retry: absent
+accessible game retry: absent
+direct game entry control: absent
+failure-specific copy: absent
 ```
 
-`renderPipeline.dispose()` and `renderer.dispose()` exist, but the application does not prove the terminal state of every resource participant.
+`reportFailure()` disables Play and writes `Could Not Start`. It does not distinguish menu-only failure from game failure and does not start the game lane.
 
-## Public capability gaps
+## Game-entry gaps
 
 ```txt
-CozyMenu exposes raw renderer: yes
-CozyMenu exposes raw scene: yes
-CozyMenu exposes raw camera: yes
-CozyMenu exposes raw palm: yes
-retired descriptor: absent
-capability generation: absent
-revocation result: absent
+direct entry bound to GamePreloadAttemptId: absent
+expected Core Startup revision: absent
+first fallback-game-frame acknowledgement: absent
+fallback entry terminal result: absent
+late child result rejection: absent
+repeated fallback Play idempotency: absent
 ```
 
-## Browser lifecycle gaps
+## Provider-sharing gaps
+
+Both menu and game import Three.js from the same CDN revision. A network or CDN failure may affect both lanes, but the shell cannot currently distinguish:
 
 ```txt
-resize after retirement fencing: absent
-message/keydown/click listener retirement: absent
-late timeout fencing: absent
-pagehide handoff cancellation: absent
-BFCache restoration policy: absent
-stale animation callback classification: absent
+menu-only preparation failure
+shared provider failure
+game-only NexusEngine or Agriculture provider failure
+recoverable transient failure
+terminal incompatibility
 ```
 
 ## Validation gaps
 
 ```txt
-real WebGPU menu fixture: absent
-real WebGL2 fallback fixture: absent
-two-surface preload fixture: absent
-sleep/resume fixture: absent
-first resumed frame fixture: absent
-overlap-budget fixture: absent
-compute-stop fixture: absent
-partial-retirement fixture: absent
-post-retirement resize fixture: absent
-capability-revocation fixture: absent
+menu module import interception: absent
+TSL/Bloom import failure fixture: absent
+renderer init rejection fixture: absent
+renderer init timeout fixture: absent
+scene construction failure fixture: absent
+pipeline construction failure fixture: absent
+menu-failure/game-success fixture: absent
+game-failure/menu-success fixture: absent
+both-fail fixture: absent
+retry isolation fixture: absent
+first fallback frame fixture: absent
 source/build/Pages parity fixture: absent
 ```
 
-## Retained protocol gaps
+## Retained GPU handoff gaps
 
 ```txt
-protocol version and envelopes
-inbound event.origin checks
-message IDs and sequences
-shell, iframe, preload and entry generations
-payload schemas and replay suppression
-explicit timeout/degraded result
-atomic reveal/history/focus commit
+presentation surface generations
+menu and game leases
+first resumed normal-game frame
+bounded overlap
+complete menu resource retirement
+listener/timer retirement
+CozyMenu capability revocation
 ```
 
-## Retained architecture gaps
+Fault isolation does not replace those requirements. A healthy or degraded shell still needs correct presentation handoff and cleanup.
+
+## Retained protocol and lifecycle gaps
 
 ```txt
-browser page lifecycle
-adaptive render-quality transitions
+versioned cross-window envelopes
+origin and sequence admission
+pagehide and BFCache policy
+stale callbacks
+adaptive quality transitions
 portable save durability
 browser input authority
-bounded public runtime capabilities
-provider-independent hidden preload
+bounded public capabilities
 ```
 
 ## Dependency order
 
 ```txt
-protocol and presentation generations
-  -> resource manifests and leases
-  -> game resume preparation
-  -> first resumed frame
-  -> overlap policy
-  -> menu retirement
-  -> reveal/history/focus settlement
+shell-owned preload launch
+  -> shell and attempt identity
+  -> independent menu/game results
+  -> menu fault classification
+  -> degraded progress and controls
+  -> retry isolation
+  -> direct entry against current game revision
+  -> first fallback-game-frame acknowledgement
+  -> GPU handoff and retirement settlement
   -> browser/build/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim complete cleanup, bounded overlap, stale-callback fencing, capability revocation, first-frame entry completion or production readiness until the relevant fixtures pass on `main`.
+Do not claim menu fault tolerance, independent game startup, degraded entry, retry safety, fallback-frame proof or production readiness until the relevant fixtures pass on `main`.

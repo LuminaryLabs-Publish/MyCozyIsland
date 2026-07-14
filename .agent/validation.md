@@ -1,55 +1,49 @@
-# Validation: MyCozyIsland cross-window preload and entry protocol
+# Validation: MyCozyIsland dual-surface GPU handoff and retirement
 
-**Timestamp:** `2026-07-13T19-40-56-04-00`
+**Timestamp:** `2026-07-13T23-58-48-04-00`
 
 ## Scope
 
-Documentation-only review of the active parent-menu/hidden-game messaging boundary in `src/menu.js` and `src/game-preload-bridge.js`, plus package test wiring and retained menu, startup, rendering and lifecycle documentation.
+Documentation-only review of seven runtime commits that introduced the WebGPU/TSL menu, physical palm lighting, bloom, hidden game presentation sleep and WebGPU compute wind. Inspected the menu and game presentation loops, preload bridge, static tests, package scripts and existing audit state.
 
 ## Plan ledger
 
-**Goal:** distinguish source-backed protocol facts from unimplemented or unexecuted safety claims.
+**Goal:** distinguish confirmed source behavior from unimplemented GPU handoff and cleanup guarantees.
 
 - [x] Compare the full Publish inventory and central ledger.
-- [x] Confirm MyCozyIsland is the oldest eligible synchronized repository.
-- [x] Inspect both cross-window message handlers and producers.
-- [x] Inspect entry timeout, simulation resume and player preparation.
-- [x] Inspect package test wiring.
+- [x] Detect MyCozyIsland as the sole runtime-ahead repository.
+- [x] Compare prior documentation head with current runtime head.
+- [x] Inspect all changed runtime and test files.
+- [x] Inspect game renderer and startup loop dependencies.
 - [x] Preserve 65 DSK/kit surfaces and five adapters.
-- [x] Define required protocol and visible-frame fixtures.
-- [ ] Run executable source, browser, build and Pages fixtures.
+- [x] Define required WebGPU/WebGL2 handoff and retirement fixtures.
+- [ ] Run executable browser, build and Pages fixtures.
 
 ## Source-backed observations
 
 ```txt
-parent outbound targetOrigin: location.origin
-child outbound targetOrigin: location.origin
-parent inbound source-window check: yes
-child inbound source-window check: yes
-parent inbound event.origin check: no
-child inbound event.origin check: no
-message types: informal string discriminators
-protocol version: no
-message ID: no
-sequence: no
-shell/frame/preload/entry generations: no
-payload schema validation: no
-replay/duplicate classification: no
-stale/out-of-order classification: no
-child poll interval: 120 ms
-parent entry fallback: 900 ms
-child ready announcement: once
-child poll stops at ready: no
-simulation freeze: engine tick/step replacement
-simulation resume: restore retained function references
-player preparation errors: console warning, entry continues
-entry acknowledgement timing: before post-resume visible-frame proof
-first visible game-frame acknowledgement: no
+prior repo-local documentation head: 500aa3f5ffc69beefd98443bafc834468d43e679
+reviewed runtime head: 9416ecd21622e2a5b940ee27aac6224b09979dba
+runtime commits reconciled: 7
+changed files: menu.html game.html src/menu.js src/game-preload-bridge.js tests/menu-game-shell-smoke.mjs
+menu renderer: WebGPURenderer
+menu WebGPU compute: present
+menu WebGL2 fallback path: present through renderer backend selection
+menu render pipeline and bloom: present
+hidden game renderer: independent WebGPURenderer
+hidden game presentation sleep: setAnimationLoop(null)
+hidden game simulation freeze: tick/step replacement
+entry acknowledgement before resumed-frame proof: yes
+menu/game fade overlap: up to 780 ms
+parent fallback reveal: 900 ms
+menu scene traversal retirement: not found
+menu listener/timer retirement registry: not found
+CozyMenu revocation: not found
 ```
 
 ## Existing executable coverage
 
-`npm test` runs:
+`npm test` is configured to run:
 
 ```txt
 tests/menu-game-shell-smoke.mjs
@@ -57,42 +51,34 @@ tests/startup-domain-smoke.mjs
 tests/adventure-domains-smoke.mjs
 ```
 
-The current menu smoke checks source markers for route, iframe, progress, ready/enter message names, history replacement and freeze/resume behavior. It does not create a parent/iframe browser pair or test semantic message admission, ordering, reload, timeout, BFCache or visible-frame correlation.
+The menu smoke runs `node --check` and source-pattern assertions for WebGPU imports, TSL, RenderPipeline, bloom, compute wind and hidden presentation sleep. It does not create a real browser GPU device/context, two presentation surfaces or a retirement lifecycle.
 
-## Required protocol fixtures
+## Required fixtures
 
 ```txt
-normal HELLO/progress/ready/entry/frame/commit
-wrong origin
-wrong source window
-unsupported protocol version
-unknown message type
-malformed payload
-oversized/deep payload
-stale shell generation
-stale frame generation
-stale preload attempt
-stale entry attempt
-duplicate message ID
-replayed ready result
-out-of-order progress after ready
-duplicate Play request
-iframe reload during preload
-iframe reload during entry
-player preparation exception
-entry timeout with explicit TimedOut result
-explicit Degraded reveal policy
-late frame acknowledgement
-pagehide during preload/entry
-BFCache restore with predecessor timers/messages
-direct game route
-source/build/Pages terminal-result parity
+WebGPU menu initialization
+WebGL2 menu fallback
+hidden game initialization and readiness
+presentation sleeping after readiness
+simulation frozen while waiting
+single resume under repeated Play
+first resumed game-frame acknowledgement
+bounded overlap measurement
+compute and frame stop receipts
+complete resource retirement
+post-retirement resize and stale callback
+capability revocation
+WebGPU device loss
+WebGL2 context loss
+pagehide and reduced-motion paths
+source/build/Pages semantic parity
 ```
 
 ## Validation result
 
 ```txt
-runtime source changed by this audit: no
+documentation changed: yes
+runtime JavaScript changed by this audit: no
 HTML or CSS changed by this audit: no
 gameplay changed by this audit: no
 render behavior changed by this audit: no
@@ -106,11 +92,11 @@ pull request created: no
 
 source files inspected: yes
 package test wiring inspected: yes
-combined status checks reported: none
+combined status checks reported on reviewed runtime head: none
 npm test independently run: no
-browser protocol smoke: not run
-built-output protocol smoke: not run
-Pages protocol smoke: not run
+browser GPU handoff smoke: not run
+built-output GPU handoff smoke: not run
+Pages GPU handoff smoke: not run
 ```
 
-No protocol integrity, stale-message fencing, duplicate suppression, entry rollback, visible-frame completion, BFCache convergence, deployment parity or production-readiness claim is made.
+No bounded-overlap, complete-retirement, capability-revocation, first-resumed-frame, device/context convergence, deployment-parity or production-readiness claim is made.

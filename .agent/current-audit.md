@@ -1,28 +1,28 @@
-# Current audit: MyCozyIsland shell startup fault isolation
+# Current audit: MyCozyIsland postcard-menu atlas and frame admission
 
-**Timestamp:** `2026-07-14T05-02-03-04-00`  
-**Status:** `menu-failure-game-bootstrap-fallback-authority-audited`  
+**Timestamp:** `2026-07-14T09-39-44-04-00`  
+**Status:** `menu-postcard-atlas-frame-admission-audited`  
 **Branch:** `main`  
-**Reviewed pre-audit repository head:** `b7edce0ac6c7fc7005be56f649141e31690e4eee`
+**Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`
 
 ## Summary
 
-MyCozyIsland’s parent shell contains a WebGPU-first palm menu and a hidden game iframe. The iframe is initially inert. `src/menu.js` assigns `game.html?preload=1` only from `startPreload()`, and `startPreload()` is scheduled only after the menu has successfully imported Three.js/TSL, initialized `WebGPURenderer`, created the palm scene, constructed `RenderPipeline` and installed its animation loop.
+MyCozyIsland is the sole runtime-ahead eligible Publish repository in this run. Three commits replaced the menu palm's modeled leaflet/rib meshes with eight five-segment alpha-cut frond cards using a deterministic four-cell canvas atlas, added three flower cards, one animated water strip, shoreline haze, new camera framing and a source-pattern test update.
 
-`main().catch(reportFailure)` disables Play and does not start the game. A static module import failure occurs before even that catch path exists. The optional menu presentation is therefore a single point of failure for the primary game route, despite the game having its own Core Startup timeout, WebGPU/WebGL2 backend result, failure projection and first-frame admission.
+The new path is lighter and avoids blended frond sorting, but its visual truth is not admitted through a browser frame. Frond and flower UVs touch exact atlas-cell boundaries while linear mip filtering is enabled and no gutters are authored. The source tests cannot rule out adjacent-cell or transparent-edge contamination. The reveal path also disposes only the pipeline and renderer, leaving explicit scene traversal, atlas, compute, listener and public-capability retirement unproved.
 
 ## Plan ledger
 
-**Goal:** define one shell-startup transaction that runs menu preparation and game preload independently, classifies menu failure as degraded when the game remains viable and proves the first visible fallback game frame.
+**Goal:** define one transaction from deterministic atlas generation through an exact admitted postcard frame and complete menu-resource retirement.
 
 - [x] Compare 11 Publish repositories and ten eligible central ledgers.
 - [x] Exclude TheCavalryOfRome.
-- [x] Confirm all eligible heads match their documented heads.
-- [x] Select MyCozyIsland by the oldest eligible timestamp.
-- [x] Inspect root, menu, game, bridge, startup and test paths.
-- [x] Map the interaction loop, domains, kits and services.
-- [x] Preserve 65 source-backed kits and five adapters.
-- [x] Define commands, attempts, failure classes and terminal results.
+- [x] Confirm no new, ledger-missing or root-agent-missing eligible repository.
+- [x] Select MyCozyIsland as the sole runtime-ahead repository.
+- [x] Inspect the runtime diff, menu source, smoke test and retained audits.
+- [x] Map the interaction loop, domains, all kits and all offered services.
+- [x] Preserve 65 source-backed kit surfaces and five adapters.
+- [x] Define frame-admission and retirement commands/results.
 - [x] Change documentation only.
 - [ ] Implement and execute the authority.
 
@@ -34,41 +34,50 @@ eligible repositories: 10
 central ledger entries: 10
 root .agent folders: 10
 new eligible repositories: 0
-ledger-missing eligible repositories: 0
-root-agent-missing eligible repositories: 0
-runtime-ahead eligible repositories: 0
+ledger-missing repositories: 0
+root-agent-missing repositories: 0
+runtime-ahead repositories: 1
 selected: LuminaryLabs-Publish/MyCozyIsland
-selection basis: oldest eligible central timestamp
-previous central timestamp: 2026-07-13T23-58-48-04-00
-reviewed repository head: b7edce0ac6c7fc7005be56f649141e31690e4eee
+prior repo-local documentation head: 8fbc1617418f4a0701c76928e4b5da3956812e13
+reviewed runtime head: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
+```
+
+## Runtime delta
+
+```txt
+cbef80b
+  -> four-cell procedural frond atlas
+  -> eight curved alpha-cut frond cards
+  -> three-cell flower atlas and cards
+  -> water strip, shoreline, fog and postcard camera
+  -> compute storage reduced from 12 to 8 values
+
+aff9e65
+  -> menu description, background and cache key updated
+
+6c5e465
+  -> static smoke rewritten around the alpha-card postcard source shape
 ```
 
 ## Complete interaction loop
 
 ```txt
 index redirects to menu
-  -> menu module imports WebGPU/TSL providers
-  -> menu renderer initializes
-  -> menu sky, palm, wind, lights and pipeline prepare
-  -> menu loop starts
-  -> hidden game iframe preload is finally scheduled
-  -> game Core Startup prepares renderer, domains, save, world and input
-  -> game first frame makes startup playable
-  -> bridge sleeps game simulation and presentation
+  -> import Three.js WebGPU, TSL and Bloom
+  -> initialize renderer/backend
+  -> generate frond and flower canvas atlases
+  -> build trunk, hub, eight frond cards and three flower cards
+  -> build sky, glow, water, shoreline, fog and lighting
+  -> create compute wind on WebGPU
+  -> create RenderPipeline and begin frames
+  -> schedule hidden game preload
+  -> game Core Startup prepares world/save/input and first frame
+  -> bridge sleeps hidden game
   -> parent enables Play
-  -> Play resumes game and reveals iframe
+  -> Play requests entry
+  -> acknowledge or timeout fallback reveals game
+  -> parent stops menu loop and disposes pipeline/renderer
   -> player walks, farms, forages and auto-saves
-```
-
-Current failure loop:
-
-```txt
-menu import/init/scene/pipeline failure
-  -> no independent game-preload attempt
-  -> iframe remains without src
-  -> no Core Startup result
-  -> no save restore, world, input or gameplay frame
-  -> Play remains disabled
 ```
 
 ## Domains in use
@@ -76,19 +85,19 @@ menu import/init/scene/pipeline failure
 ```txt
 routing, history, focus and page lifecycle
 module/import-map provider admission
-menu shell and accessible controls
-menu WebGPU/WebGL2 rendering, TSL, palm compute wind and bloom
+menu shell and controls
+WebGPU/WebGL2 backend admission
+procedural Canvas2D atlas generation
+alpha-cut card geometry and sampling
+TSL materials, storage compute and vertex deformation
+postcard camera, atmosphere, water, shoreline, lighting and bloom
+menu frame evidence and resource retirement
 iframe preload and same-origin messaging
-Core Startup readiness, continuation and first frame
-NexusEngine object and transaction services
+Core Startup, objects and transactions
 world, input, Inventory, Agriculture, Foraging and interaction
-player, camera, scenario, save and render snapshots
-game WebGPU/WebGL2 world, atmosphere, ocean and post-processing
-adaptive quality and presentation sleep/resume
-shell attempt identity and fault classification
-primary-game capability policy
-degraded-menu progress, retry and direct entry
-first fallback-game-frame settlement
+player, scenario, camera, saves and render snapshots
+game WebGPU/WebGL2 presentation and adaptive quality
+simulation/presentation sleep and resume
 validation, build, Pages and central tracking
 ```
 
@@ -98,58 +107,58 @@ validation, build, Pages and central tracking
 engine-installed core/adventure kits: 14
 cataloged world/render/host kits: 50
 additional composition kit: 1
-source-backed DSK/kit surfaces: 65
+source-backed kit surfaces: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned startup-fallback surfaces: 24
+planned postcard authority surfaces: 23
 ```
 
-Installed services cover Core Startup, objects, transactions, deterministic world queries, input, Inventory, Agriculture, Foraging, player movement, scenario, interaction, camera, saves and renderer-neutral snapshots.
-
-Cataloged services cover terrain, vegetation, atmosphere, cloud/fog/ocean presentation, materials, render archetypes, LOD, quality budgets, deterministic seeds, weather, wind, environment time and WebGPU/WebGL2 render passes.
-
-Adapters cover startup DOM projection, product startup orchestration, menu presentation, iframe/Play shell handling and game preload sleep/resume.
+The exact kit-by-kit service inventory is in `.agent/kit-registry.json` and the timestamped project breakdown.
 
 ## Source-backed findings
 
 ```txt
-iframe src in menu.html: absent
-only iframe src assignment: startPreload()
-preload scheduling: after successful menu main()
-menu renderer init timeout: absent
-menu import failure application handler: absent
-reportFailure starts game: no
-menu retry: absent
-direct game fallback: absent
-game Core Startup timeout: present
-game backend classification: webgpu or webgl2
-game first-frame admission: present
-degraded-menu result: absent
-menu-failure/game-success browser fixture: absent
+frond count: 8
+frond variants: 4
+frond card segments: 5
+alpha test: 0.48
+frond transparent sorting: disabled
+frond/flower mipmaps: enabled
+frond/flower atlas gutters: absent
+UV cell boundaries: exact
+browser frame capture: absent
+backend image parity: absent
+scene traversal disposal: absent
+atlas disposal receipt: absent
+resize listener removal: absent
+CozyMenu revocation: absent
 ```
+
+The atlas concern is recorded as an unverified risk, not a confirmed visible defect.
 
 ## Required authority
 
 ```txt
-cozy-island-shell-startup-fault-isolation-authority-domain
+cozy-island-menu-postcard-atlas-frame-admission-authority-domain
 ```
 
-## Required transaction
-
 ```txt
-ShellBootstrapCommand
-  -> bind shell, menu and game attempt identities
-  -> launch game preload independently from menu success
-  -> prepare menu provider, renderer, scene and pipeline separately
-  -> publish MenuPresentationResult and GamePreloadResult
-  -> classify recoverable menu failures as degraded
-  -> preserve progress, Play, retry and direct-entry projection
-  -> reject stale, duplicate or superseded results
-  -> admit entry against the current playable game revision
-  -> publish FirstFallbackGameFrameAck
-  -> publish terminal ShellBootstrapResult
+MenuPostcardFrameAdmissionCommand
+  -> bind visual, provider, backend, viewport, DPR and reduced-motion revisions
+  -> generate and fingerprint atlas candidates
+  -> validate cell bounds, gutters, UV interiors, alpha occupancy and mip policy
+  -> prepare scene, cards, compute and pipeline
+  -> submit and capture one exact frame
+  -> publish MenuPostcardFrameResult and FirstMenuPostcardFrameAck
+
+MenuPostcardRetirementCommand
+  -> stop frame admission
+  -> remove listeners and callbacks
+  -> dispose scene, textures, storage, pipeline and renderer
+  -> revoke CozyMenu
+  -> publish participant receipts and terminal retirement result
 ```
 
 ## Validation boundary
 
-Documentation only. No runtime, test, dependency, script, workflow or deployment behavior changed. The current tests are source-pattern checks and do not execute menu-failure/game-success browser paths.
+Documentation only. No runtime, test, dependency, script, workflow or deployment behavior changed. No browser, build or Pages proof was executed.

@@ -2,10 +2,13 @@ import * as THREE from "three/webgpu";
 import {
   color,
   float,
+  Fn,
+  instanceIndex,
   mix,
   pass,
   positionLocal,
   smoothstep,
+  storage,
   time,
   vec3
 } from "three/tsl";
@@ -24,6 +27,8 @@ let sceneRunning = true;
 let renderer = null;
 let renderPipeline = null;
 let environmentTarget = null;
+let windStorage = null;
+let windCompute = null;
 
 if (!canvas) throw new Error("Missing #menu-scene canvas.");
 
@@ -120,7 +125,23 @@ function createFrondLeafletsGeometry(ribCurve, leafletCount = 17) {
   return geometry;
 }
 
+function createWindField() {
+  const buffer = new THREE.StorageBufferAttribute(12, 1);
+  const values = storage(buffer, "float", 12);
+  const compute = Fn(() => {
+    const phase = float(instanceIndex).mul(0.73);
+    const gust = time
+      .mul(0.72)
+      .add(phase)
+      .sin()
+      .add(time.mul(0.23).add(phase.mul(1.73)).sin().mul(0.35));
+    values.element(instanceIndex).assign(gust);
+  })().compute(12).setName("Menu Palm Wind Field");
+  return { buffer, values, compute };
+}
+
 function createWindMaterial({
+  index,
   phase,
   length,
   baseColor,
@@ -141,11 +162,14 @@ function createWindMaterial({
   });
 
   const along = positionLocal.x.div(length).clamp(0, 1);
-  const gust = time
-    .mul(0.72)
-    .add(phase)
-    .sin()
-    .add(time.mul(0.23).add(phase * 1.73).sin().mul(0.35))
+  const windSignal = windStorage
+    ? windStorage.element(index)
+    : time
+      .mul(0.72)
+      .add(phase)
+      .sin()
+      .add(time.mul(0.23).add(phase * 1.73).sin().mul(0.35));
+  const gust = windSignal
     .mul(strength)
     .mul(along.pow(1.45));
 
@@ -181,6 +205,7 @@ function createFrond(index) {
   ]);
 
   const ribMaterial = createWindMaterial({
+    index,
     phase,
     length,
     baseColor: "#507f38",
@@ -203,6 +228,7 @@ function createFrond(index) {
   ];
   const [baseColor, tipColor] = leafColors[index % leafColors.length];
   const leafMaterial = createWindMaterial({
+    index,
     phase,
     length,
     baseColor,
@@ -440,6 +466,12 @@ async function main() {
   });
   await renderer.init();
 
+  if (renderer.backend?.isWebGPUBackend) {
+    const windField = createWindField();
+    windStorage = windField.values;
+    windCompute = windField.compute;
+  }
+
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.96;
@@ -498,6 +530,7 @@ async function main() {
 
   function render() {
     if (!sceneRunning) return;
+    if (windCompute) renderer.compute(windCompute);
     renderPipeline.render();
   }
 
@@ -511,6 +544,7 @@ async function main() {
     camera,
     palm,
     backend: renderer.backend?.isWebGPUBackend ? "webgpu" : "webgl2",
+    computeWind: Boolean(windCompute),
     getProgress: () => lastProgress
   });
 

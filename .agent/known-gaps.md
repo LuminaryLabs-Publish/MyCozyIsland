@@ -1,94 +1,128 @@
-# Known gaps: MyCozyIsland postcard-menu atlas and frame admission
+# Known gaps: MyCozyIsland preload suspension lease and resumed-frame authority
 
-**Timestamp:** `2026-07-14T09-39-44-04-00`  
-**Publication status:** `menu-postcard-atlas-frame-admission-audited`
+**Timestamp:** `2026-07-14T15-01-54-04-00`  
+**Publication status:** `preload-suspension-lease-resume-frame-authority-audited`
 
 ## Summary
 
-The new postcard menu is source-backed but not browser-proven. Atlas cells, frame identity and complete resource retirement lack typed evidence. Retained shell-startup, cross-window and game-entry gaps remain active.
+The hidden game is source-backed and intentionally sleeps after Core Startup reaches playable, but suspension and restoration have no lease identity, participant receipts, rollback, or first resumed-frame proof. The parent can also reveal after a fixed delay without knowing whether restoration succeeded.
 
 ## Plan ledger
 
-**Goal:** distinguish confirmed implementation from unproved visual and lifecycle guarantees.
+**Goal:** separate confirmed sleeping-preload implementation from unproved restoration and visible-entry guarantees.
 
-- [ ] Atlas and visual revision identity.
-- [ ] Cell manifests, gutters and interior UVs.
-- [ ] Alpha occupancy and mip isolation validation.
-- [ ] Exact first menu-frame acknowledgement.
-- [ ] WebGPU/WebGL2 image parity.
-- [ ] Scene, texture, compute and listener retirement receipts.
+- [ ] Suspension and entry identities.
+- [ ] Exact engine, scheduler, renderer and callback participant manifests.
+- [ ] Atomic suspension and restoration results.
+- [ ] Stale, duplicate and superseded command rejection.
+- [ ] Restoration rollback.
+- [ ] First resumed tick and frame evidence.
+- [ ] Classified timeout and recovery behavior.
+- [ ] Origin, schema, sequence and revision message admission.
 - [ ] Browser/build/Pages artifact parity.
 
-## Atlas gaps
+## Suspension gaps
 
 ```txt
-FrondAtlasRevision: absent
-FlowerAtlasRevision: absent
-AtlasCellManifest: absent
-cell gutters: absent
-edge extrusion: absent
-interior UV policy: absent
-alpha occupancy result: absent
-mip isolation result: absent
-atlas content hash: absent
+PreloadGeneration: absent
+SuspensionAttemptId: absent
+SuspensionLeaseId: absent
+EngineRevision: absent
+SchedulerRevision: absent
+RendererRevision: absent
+AnimationLoopRevision: absent
+InputRevision: absent
+PlayerRevision: absent
+PreloadSuspensionPreparationResult: absent
+PreloadSuspensionResult: absent
+participant receipts: absent
 ```
 
-Frond UVs use exact four-cell boundaries. Flower UVs use exact three-cell boundaries. Both atlases generate mipmaps. The repository cannot currently rule out neighboring-cell or transparent-edge contamination.
+The bridge directly replaces `engine.tick` and `engine.step` and directly clears the renderer animation loop. This is confirmed implementation, not proof that every engine or renderer participant has accepted the same suspension generation.
 
-## Frame gaps
+## Restoration gaps
 
 ```txt
-VisualRevision: absent
-SceneRevision: absent
-MenuFrameId: absent
-backend/device receipt: absent
-viewport/DPR receipt: absent
-scene manifest hash: absent
-screenshot/readback hash: absent
-FirstMenuPostcardFrameAck: absent
-WebGPU/WebGL2 visual equivalence result: absent
+EntryAttemptId: absent
+expected SuspensionLeaseId: absent
+stale participant rejection: absent
+duplicate entry result: absent
+superseded attempt rejection: absent
+atomic restoration: absent
+restore rollback: absent
+engine replacement detection: absent
+renderer replacement detection: absent
+callback ownership validation: absent
+GameEntryResult: absent
 ```
 
-## Retirement gaps
+## Visible-frame gaps
 
 ```txt
-resize-listener removal: absent
-pending idle/timer cancellation: absent
-scene traversal disposal: absent
-frond atlas disposal receipt: absent
-flower atlas disposal receipt: absent
-per-card geometry/material disposal: absent
-compute storage retirement receipt: absent
-CozyMenu revocation: absent
-terminal MenuPostcardRetirementResult: absent
+resumed simulation-step receipt: absent
+resumed render-submission receipt: absent
+GameFrameId: absent
+startup-to-frame revision correlation: absent
+entry-to-frame revision correlation: absent
+FirstResumedGameFrameAck: absent
+iframe visibility receipt: absent
 ```
 
-`revealGame()` stops the animation loop and disposes the pipeline and renderer, but that is not a complete participant settlement.
+`cozy-game-entered` is posted synchronously after restoration calls. It is not evidence that the restored callback executed or that the iframe displayed a matching game frame.
+
+## Timeout and fallback gaps
+
+```txt
+900 ms fallback classification: absent
+transport-timeout result: absent
+restore-timeout result: absent
+render-timeout result: absent
+retry-entry command: absent
+reload-game command: absent
+direct-route recovery result: absent
+fallback-visible-frame acknowledgement: absent
+```
+
+Elapsed time alone can cause the parent to reveal the iframe even when no accepted child result exists.
+
+## Protocol gaps
+
+```txt
+message schema version: absent
+event.origin validation: absent
+message sequence: absent
+shell generation: absent
+startup revision: absent
+suspension lease: absent
+entry revision: absent
+replay or duplicate policy: absent
+```
+
+Both listeners check `event.source`, which is useful but incomplete for a revisioned command/result protocol.
 
 ## Validation gaps
 
 ```txt
-deterministic atlas hash fixture: absent
-UV/gutter source fixture: absent
-browser WebGPU frame fixture: absent
-browser WebGL2 frame fixture: absent
-alpha halo probe: absent
-neighbor-cell probe: absent
-mip-distance probe: absent
-resize/reduced-motion fixture: absent
-retirement resource-count fixture: absent
-built-output parity: absent
-Pages parity: absent
+real browser engine suspension fixture: absent
+real browser renderer suspension fixture: absent
+engine replacement fault: absent
+renderer replacement fault: absent
+restore exception fault: absent
+message delay/reorder fixture: absent
+wrong-origin fixture: absent
+first resumed tick fixture: absent
+first resumed frame fixture: absent
+source/build/Pages parity: absent
 ```
 
-## Retained shell and gameplay gaps
+The existing smoke checks source text only.
+
+## Retained gaps
 
 ```txt
+postcard atlas isolation and backend image parity
+complete menu scene, texture, compute and listener retirement
 independent game preload after menu failure
-versioned cross-window envelopes
-origin and sequence admission
-first resumed game-frame acknowledgement
-900 ms fallback classification
 pagehide and BFCache policy
 adaptive quality transitions
 portable save durability
@@ -99,13 +133,16 @@ bounded public capabilities
 ## Dependency order
 
 ```txt
-atlas identity and cell policy
-  -> frame admission and artifact evidence
-  -> menu retirement receipts
-  -> normal/degraded shell composition
+revisioned message envelope
+  -> suspension participant manifest
+  -> atomic suspension result
+  -> correlated entry restoration
+  -> rollback and timeout classification
+  -> resumed tick and frame acknowledgement
+  -> shell reveal
   -> source/build/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim atlas isolation, frame parity, complete cleanup, graceful menu fallback or production readiness until the relevant fixtures pass on `main`.
+Do not claim suspension atomicity, exact restoration, timeout safety, visible entry, browser parity, or production readiness until the relevant fixtures pass on `main`.

@@ -1,26 +1,28 @@
-# Current audit: MyCozyIsland cross-window preload and entry protocol
+# Current audit: MyCozyIsland dual-surface GPU handoff and retirement
 
-**Timestamp:** `2026-07-13T19-40-56-04-00`  
-**Status:** `cross-window-preload-entry-protocol-authority-audited`  
-**Branch:** `main`
+**Timestamp:** `2026-07-13T23-58-48-04-00`  
+**Status:** `dual-surface-gpu-handoff-retirement-authority-audited`  
+**Branch:** `main`  
+**Reviewed runtime head:** `9416ecd21622e2a5b940ee27aac6224b09979dba`
 
 ## Summary
 
-MyCozyIsland uses a parent Three.js menu and hidden same-origin game iframe. The child polls Core Startup, reports progress/readiness/failure, freezes simulation, then accepts an entry request and immediately reports entry after restoring simulation and preparing player state.
+MyCozyIsland now renders its menu through a WebGPU-first Three.js `WebGPURenderer`, TSL node materials, a `RenderPipeline`, bloom and a twelve-value compute wind field. In parallel, a hidden game iframe initializes a second WebGPU/WebGL2 renderer, the full island scene and post-processing stack. The bridge sleeps the game simulation and animation loop only after Core Startup reports playable readiness.
 
-Both directions use `location.origin` as `targetOrigin` and check the expected `event.source`. Inbound `event.origin`, protocol version, payload schema, message identity, sequence, shell generation, iframe generation, preload attempt and entry attempt are absent. The parent also has an independent 900 ms reveal fallback, and no result proves the first post-resume game frame became visible.
+On Play, the game resumes and reports entered before any post-resume frame acknowledgement. The parent then crossfades both surfaces for up to 780 ms and disposes the menu pipeline and renderer. No shared generation, presentation lease, overlap policy, complete resource manifest, retirement result or public-capability revocation joins those operations.
 
 ## Plan ledger
 
-**Goal:** define one generation-bound cross-window protocol without moving startup, gameplay or rendering ownership into ad hoc message handlers.
+**Goal:** define one presentation handoff transaction that admits the ready game surface, proves its resumed frame, bounds overlap and retires the predecessor menu surface completely.
 
-- [x] Compare the full Publish inventory with the central ledger.
+- [x] Compare all Publish repositories and central ledger entries.
 - [x] Exclude TheCavalryOfRome.
-- [x] Select MyCozyIsland by the oldest eligible timestamp.
-- [x] Inspect `src/menu.js` and `src/game-preload-bridge.js`.
-- [x] Map the complete interaction loop and domains.
-- [x] Preserve the 65-kit plus five-adapter inventory.
-- [x] Define command/result, generation, sequence and fixture requirements.
+- [x] Select MyCozyIsland as the sole runtime-ahead repository.
+- [x] Reconcile seven runtime commits after the prior documentation head.
+- [x] Inspect the two renderer loops, compute work, freeze/resume bridge and tests.
+- [x] Map the full interaction loop and domain ownership.
+- [x] Preserve 65 kit surfaces plus five adapters.
+- [x] Define command, participant and terminal result requirements.
 - [x] Change documentation only.
 - [ ] Implement and execute the authority.
 
@@ -34,47 +36,51 @@ root .agent folders: 9
 new eligible repositories: 0
 ledger-missing eligible repositories: 0
 root-agent-missing eligible repositories: 0
-runtime-ahead eligible repositories: 0
+runtime-ahead eligible repositories: 1
 selected: LuminaryLabs-Publish/MyCozyIsland
-selection basis: oldest eligible central timestamp
-prior central timestamp: 2026-07-13T14-39-40-04-00
+selection basis: sole runtime-ahead repository
+prior central timestamp: 2026-07-13T19-40-56-04-00
+prior repo-local documentation head: 500aa3f5ffc69beefd98443bafc834468d43e679
+reviewed runtime head: 9416ecd21622e2a5b940ee27aac6224b09979dba
 ```
 
 ## Complete interaction loop
 
 ```txt
-index -> menu route
-menu -> Three.js provider, renderer, sky, palm, RAF
-menu -> hidden game iframe preload
-game -> Core Startup and independent game renderer
-bridge -> poll startup descriptor every 120 ms
-bridge -> progress messages
-bridge -> freeze engine tick/step at playable readiness
+index -> menu.html
+menu -> WebGPURenderer init and backend selection
+menu -> TSL palm, compute wind, bloom and animation loop
+menu -> idle-scheduled hidden game iframe preload
+game -> WebGPURenderer, NexusEngine composition and world presentation
+game -> animation loop and Core Startup first-frame/playable entry
+bridge -> poll readiness every 120 ms
+bridge -> replace engine tick/step and stop game animation loop
 bridge -> ready message
-Play -> parent posts entry request
-bridge -> resume engine, prepare intro state, clear input
-bridge -> entered message immediately
-parent -> reveal, history replacement, focus transfer
-parent fallback -> reveal after 900 ms without entered message
-parent -> delayed menu renderer disposal
+Play -> entry message
+bridge -> restore simulation and game animation loop
+bridge -> prepare player intro and clear input
+bridge -> entered message before resumed-frame proof
+parent -> reveal and crossfade
+menu and game -> concurrent GPU work during fade
+parent -> delayed pipeline/renderer disposal
 ```
 
 ## Domains in use
 
 ```txt
-routing and navigation
-menu provider, WebGL renderer, scene and RAF lifecycle
-same-origin iframe and document generation
-cross-window protocol versioning, source/origin admission and sequencing
-Core Startup readiness, failure and continuation
+routing history focus and page lifecycle
+same-origin iframe and cross-window protocol
+Core Startup readiness and continuation
 simulation freeze/resume and player-entry preparation
-input clearing, visibility, history and focus transfer
-first visible game-frame correlation
-NexusEngine object, transaction, world and input
-Inventory, Agriculture, Foraging and interaction
-player, scenario, camera, saves and snapshots
-WebGPU/WebGL2 game rendering and adaptive quality
-page lifecycle, validation, build and Pages deployment
+NexusEngine object transaction world input inventory agriculture foraging player scenario interaction save and render snapshot
+menu WebGPU/WebGL2 backend admission
+TSL materials procedural palm compute wind lighting bloom and tone mapping
+game WebGPU/WebGL2 world atmosphere ocean post-processing and adaptive quality
+dual-surface presentation leases and overlap policy
+GPU resource manifests and retirement
+first visible game-frame settlement
+browser input resize visibility and public capabilities
+static validation build Pages and central tracking
 ```
 
 ## Kit and service census
@@ -88,50 +94,53 @@ browser/product adapters: 5
 total documented surfaces: 70
 ```
 
-Installed services cover Core Startup, object registration, idempotent transactions, deterministic world queries, input, Inventory, Agriculture, Foraging, player movement, scenario progression, contextual interaction, camera, portable saves and renderer-neutral snapshots.
+Installed services cover Core Startup, object registration, idempotent transactions, deterministic world queries, input, Inventory, Agriculture, Foraging, movement, scenario, contextual interaction, camera, portable saves and renderer-neutral snapshots.
 
 Cataloged services cover terrain, biome, vegetation, atmosphere, clouds, fog, ocean, shoreline, materials, archetypes, quality budgets, WebGPU/WebGL2 passes, deterministic seeds, weather, wind and environmental time.
 
-Adapters cover startup DOM projection, product startup orchestration, Three.js menu presentation, iframe/Play shell handling and game preload freeze/resume.
+Adapters cover startup projection, product startup orchestration, WebGPU menu presentation, iframe/Play shell handling and hidden-game simulation/presentation sleep and resume.
 
 ## Source-backed findings
 
 ```txt
-outbound targetOrigin restricted: yes
-expected source-window check: yes
-inbound event.origin check: no
-protocol version: no
-message IDs: no
-monotonic sequence: no
-shell/frame/preload/entry generation: no
-payload schema/fingerprint: no
-stale/duplicate/out-of-order classification: no
-entry timeout terminal result: no
-post-resume renderer receipt: no
-first visible game frame acknowledgement: no
+menu backend: WebGPU-first with WebGL2 fallback
+menu compute: 12-value storage field, dispatched each active WebGPU frame
+menu post-processing: RenderPipeline plus bloom
+hidden game: independent WebGPU/WebGL2 renderer and post pipeline
+game sleep: after Core Startup playable readiness
+entry acknowledgement: before post-resume frame proof
+menu/game overlap: up to 780 ms
+fallback reveal: 900 ms
+menu scene traversal disposal: absent
+compute/storage retirement receipt: absent
+listener/timer retirement registry: absent
+CozyMenu capability revocation: absent
+browser GPU fixtures: absent
 ```
-
-The child timer continues polling after readiness until entry or failure. Entry preparation catches errors only to `console.warn`, then still posts entered. The parent timeout reveals without a correlated terminal child result.
 
 ## Required authority
 
 ```txt
-cozy-island-cross-window-preload-entry-protocol-authority-domain
+cozy-island-dual-surface-gpu-handoff-retirement-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-open protocol under shell/frame/preload generations
-  -> admit versioned sequenced progress/ready/failure
-  -> reject malformed, foreign, stale, duplicate and out-of-order messages
-  -> bind one entry request to current ready revision
-  -> resume and prepare once
-  -> acknowledge post-resume visible frame
-  -> atomically commit reveal/history/focus
-  -> return Entered, Degraded, Failed, TimedOut, Cancelled, Stale or Retired
+PresentationHandoffCommand
+  -> bind shell iframe menu game backend and device generations
+  -> admit one current playable revision
+  -> prepare simulation and game-presentation resume
+  -> reject stale duplicate or failed work
+  -> acknowledge the first resumed game frame
+  -> begin a bounded overlap window
+  -> stop menu compute and frame submission
+  -> retire pipeline scene compute renderer listeners timers and public capability
+  -> publish MenuPresentationRetirementResult
+  -> commit reveal history and focus
+  -> publish PresentationHandoffResult
 ```
 
 ## Validation boundary
 
-Documentation only. No runtime, tests, dependencies, scripts, workflow or deployment behavior changed. No executable browser, build or Pages protocol fixture was run.
+Documentation only. No runtime, test, dependency, script, workflow or deployment behavior changed. Existing checks are source-marker tests rather than browser GPU handoff or retirement proof.

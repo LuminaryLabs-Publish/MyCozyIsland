@@ -8,6 +8,8 @@ let entered = !embeddedPreload;
 let frozenEngine = null;
 let originalTick = null;
 let originalStep = null;
+let frozenRenderer = null;
+let originalAnimationLoop = null;
 
 function post(type, payload = {}) {
   if (!embeddedPreload || window.parent === window) return;
@@ -55,6 +57,24 @@ function resumeSimulation() {
   originalStep = null;
 }
 
+function freezePresentation() {
+  if (!embeddedPreload || frozenRenderer || !globalThis.CozyIsland?.renderer) return;
+  const renderer = globalThis.CozyIsland.renderer;
+  if (typeof renderer.getAnimationLoop !== "function" || typeof renderer.setAnimationLoop !== "function") return;
+  const animationLoop = renderer.getAnimationLoop();
+  if (typeof animationLoop !== "function") return;
+  frozenRenderer = renderer;
+  originalAnimationLoop = animationLoop;
+  renderer.setAnimationLoop(null);
+}
+
+function resumePresentation() {
+  if (!frozenRenderer || typeof originalAnimationLoop !== "function") return;
+  frozenRenderer.setAnimationLoop(originalAnimationLoop);
+  frozenRenderer = null;
+  originalAnimationLoop = null;
+}
+
 function preparePlayerEntry() {
   const game = globalThis.CozyIsland;
   if (!game) return;
@@ -83,6 +103,7 @@ function enterGame() {
   if (!announcedReady) return;
   entered = true;
   resumeSimulation();
+  resumePresentation();
   preparePlayerEntry();
   document.documentElement.dataset.menuEntered = "true";
   post("cozy-game-entered");
@@ -108,13 +129,15 @@ function inspect() {
 
   if (descriptor?.playable) {
     freezeSimulation();
+    freezePresentation();
     if (!announcedReady) {
       announcedReady = true;
       post("cozy-game-progress", { progress: 0.99, label: "Island ready" });
       post("cozy-game-ready", {
         progress: 0.99,
         label: descriptor.continuation?.mode === "restored" ? "Island ready · save restored" : "Island ready",
-        continuation: descriptor.continuation
+        continuation: descriptor.continuation,
+        presentationSleeping: Boolean(frozenRenderer)
       });
     }
     return;

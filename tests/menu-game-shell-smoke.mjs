@@ -38,6 +38,8 @@ assert.match(files["src/menu.js"], /ACESFilmicToneMapping/, "menu uses ACES tone
 assert.match(files["src/menu.js"], /toneMappingExposure = 0\.96/, "menu has authored exposure");
 assert.match(files["src/menu.js"], /MeshPhysicalNodeMaterial/, "fronds use physical node materials");
 assert.match(files["src/menu.js"], /material\.positionNode/, "wind deformation runs in the GPU vertex stage");
+assert.match(files["src/menu.js"], /StorageBufferAttribute\(12, 1\)/, "WebGPU path allocates a compact frond wind storage buffer");
+assert.match(files["src/menu.js"], /renderer\.compute\(windCompute\)/, "WebGPU path dispatches palm wind compute before rendering");
 assert.match(files["src/menu.js"], /createFrondLeafletsGeometry/, "fronds contain layered leaflet geometry");
 assert.match(files["src/menu.js"], /TubeGeometry\(trunkCurve, 56/, "trunk has a high-resolution curved silhouette");
 assert.match(files["src/menu.js"], /function createSky/, "menu renders one sky composition");
@@ -61,4 +63,4 @@ assert.match(files["src/game-preload-bridge.js"], /descriptor\?\.playable/, "Cor
 
 assert.match(files[".github/workflows/pages.yml"], /cp \.\/\*\.html dist\//, "Pages deploys index, menu, and game pages");
 
-console.log("menu/game shell smoke: WebGPU palm depth, GPU wind, bloom, exposure, sleeping preload, and seamless entry verified");
+console.log("menu/game shell smoke: WebGPU palm depth, compute wind, bloom, exposure, sleeping preload, and seamless entry verified");

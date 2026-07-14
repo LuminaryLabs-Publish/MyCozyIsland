@@ -1,93 +1,82 @@
-# Next steps: MyCozyIsland shell startup fault isolation
+# Next steps: MyCozyIsland postcard-menu atlas and frame admission
 
-**Timestamp:** `2026-07-14T05-02-03-04-00`  
-**Publication status:** `menu-failure-game-bootstrap-fallback-authority-audited`
+**Timestamp:** `2026-07-14T09-39-44-04-00`  
+**Publication status:** `menu-postcard-atlas-frame-admission-audited`
 
 ## Summary
 
-Move game-preload launch into a dependency-free shell bootstrap so the primary route starts even when the optional WebGPU menu cannot import, initialize or render. Keep the existing menu, Core Startup, preload bridge and handoff work, but connect them through independent attempt results.
+Keep the eight-card postcard menu, but add deterministic atlas manifests, interior UV bounds, first-frame evidence and complete resource retirement. Do not restructure NexusEngine or move adventure truth into the menu.
 
 ## Plan ledger
 
-**Goal:** remove the menu presentation lane from the game-startup critical path with the smallest targeted change.
+**Goal:** prove the new menu visual and retire it cleanly with the smallest targeted changes.
 
-- [ ] Add `ShellGeneration`, `MenuPresentationAttemptId` and `GamePreloadAttemptId`.
-- [ ] Move iframe `src` assignment out of successful menu `main()`.
-- [ ] Start the game preload from shell-owned code before or alongside menu preparation.
-- [ ] Add a bounded menu provider/renderer/pipeline preparation timeout.
-- [ ] Publish typed menu ready, degraded, failed and superseded results.
-- [ ] Preserve game progress projection when the menu is degraded.
-- [ ] Keep Play disabled only until the current game attempt is playable.
-- [ ] Add an accessible DOM-only degraded state.
-- [ ] Add menu retry without recreating a healthy game attempt.
-- [ ] Add game retry without recreating a healthy menu attempt.
-- [ ] Add direct fallback entry bound to the current game startup revision.
-- [ ] Require `FirstFallbackGameFrameAck` before fallback entry succeeds.
-- [ ] Dispose partial menu candidates after preparation failure.
-- [ ] Fence stale child and menu results.
-- [ ] Compose with presentation leases, overlap and retirement receipts.
-- [ ] Add source, browser, built-output and Pages fixture coverage.
+- [ ] Add `VisualRevision`, `AtlasRevision`, `SceneRevision` and `MenuFrameId`.
+- [ ] Return deterministic frond and flower `AtlasCellManifest` values.
+- [ ] Add per-cell gutters or edge extrusion.
+- [ ] Remap card UVs to interior cell bounds.
+- [ ] Validate alpha occupancy and mip isolation.
+- [ ] Bind compute storage and fallback wind to the visual revision.
+- [ ] Publish `MenuPostcardPreparationResult`.
+- [ ] Submit and acknowledge one exact menu frame.
+- [ ] Capture backend, viewport, DPR, reduced-motion and artifact hashes.
+- [ ] Add scene traversal disposal.
+- [ ] Dispose frond and flower atlases explicitly.
+- [ ] Retire compute storage and pending callbacks.
+- [ ] Remove the resize listener.
+- [ ] Revoke `globalThis.CozyMenu`.
+- [ ] Publish `MenuPostcardRetirementResult` with participant receipts.
+- [ ] Preserve independent game-preload and degraded-menu work from the retained startup audit.
+- [ ] Add source, browser, built-output and Pages parity fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. dependency-free shell bootstrap
-2. shell and attempt identities
-3. independent game iframe preload
-4. menu preparation result and timeout
-5. degraded DOM projection
-6. current game progress/readiness projection
-7. menu and game retry commands
-8. direct fallback entry
-9. first fallback-game-frame acknowledgement
-10. partial menu candidate retirement
-11. stale/duplicate result fencing
-12. browser/build/Pages fault matrix
+1. atlas and visual identities
+2. cell manifests and gutters
+3. interior UV remapping
+4. alpha/mip validation
+5. frame submission result
+6. screenshot/readback artifact
+7. traversal and texture disposal
+8. listener, callback and public-capability retirement
+9. WebGPU/WebGL2 browser matrix
+10. build and Pages parity
 ```
 
 ## Target files
 
 ```txt
-menu.html
-src/shell-bootstrap.js
 src/menu.js
-src/game-preload-bridge.js
-src/main-adventure.js
+menu.html
 tests/menu-game-shell-smoke.mjs
-tests/shell-startup-fault-isolation-browser.fixture.mjs
+tests/menu-postcard-browser.fixture.mjs
 package.json
 .github/workflows/pages.yml
 ```
 
-## Required acceptance cases
+## Acceptance matrix
 
 ```txt
-normal WebGPU menu and game
-normal WebGL2 fallback menu and game
-menu Three.js import blocked while game succeeds
-menu TSL or Bloom import blocked while game succeeds
-menu renderer initialization rejection
-menu renderer initialization timeout
-menu scene construction failure
-menu RenderPipeline failure
-menu first-frame failure
-menu failure before game progress
-menu failure after game progress
-menu retry with healthy game retained
-game retry with healthy menu retained
-both lanes fail
-repeated Play during degraded state
-late ready after retry
-pagehide and BFCache restore
-reduced-motion path
-first visible fallback game frame
-source/build/Pages semantic parity
+WebGPU and WebGL2
+DPR 1 and 1.5
+wide, square and narrow viewports
+reduced motion
+near and mip-sensitive camera distances
+frond alpha halo and neighbor-cell probes
+flower transparency probe
+resize before first frame
+normal Play handoff
+900 ms fallback reveal
+pagehide and BFCache
+complete resource retirement
+source/build/Pages artifact parity
 ```
 
 ## Ownership constraints
 
-The shell authority owns attempt identity, lane independence, fault classification and terminal settlement. The menu adapter owns menu-local GPU preparation and cleanup. Core Startup owns game readiness. The preload bridge owns local sleep/resume. The game renderer owns frame receipts. Existing protocol, GPU handoff, page lifecycle and public-capability audits remain active.
+The menu authority owns postcard assets, frames and retirement. The shell-startup authority owns independent preload and degraded fallback. Core Startup owns game readiness. The preload bridge owns game sleep/resume. Adventure kits own gameplay truth.
 
 ## Do not claim
 
-Do not claim independent game startup, graceful menu degradation, retry isolation, direct fallback entry or deployed parity until the executable matrix passes on `main`.
+Do not claim atlas isolation, exact postcard appearance, backend parity, complete menu cleanup or deployed readiness until the executable matrix passes on `main`.

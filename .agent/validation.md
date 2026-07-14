@@ -1,53 +1,49 @@
-# Validation: MyCozyIsland postcard-menu atlas and frame admission
+# Validation: MyCozyIsland preload suspension lease and resumed-frame authority
 
-**Timestamp:** `2026-07-14T09-39-44-04-00`
+**Timestamp:** `2026-07-14T15-01-54-04-00`
 
 ## Scope
 
-Documentation-only reconciliation of the alpha-card postcard-menu runtime, source-pattern smoke, render evidence boundary and resource-retirement path. No runtime behavior was modified or executed by this audit.
+Documentation-only inspection of the hidden game preload bridge, parent reveal path, source smoke, participant ownership, and first resumed-frame proof boundary. No runtime behavior was modified or executed.
 
 ## Plan ledger
 
-**Goal:** distinguish confirmed source implementation from unproved browser-visible atlas, frame and lifecycle guarantees.
+**Goal:** distinguish confirmed source implementation from unproved suspension, restoration, timeout and visible-entry guarantees.
 
 - [x] Compare the full Publish inventory with the central ledger.
-- [x] Select MyCozyIsland as the sole runtime-ahead eligible repository.
-- [x] Inspect the three runtime/test commits and current menu source.
-- [x] Preserve 65 source-backed kits and five adapters.
+- [x] Confirm every eligible repository head matches its recorded documentation head.
+- [x] Select MyCozyIsland through the oldest synchronized timestamp rule.
+- [x] Inspect the parent shell and child preload bridge.
 - [x] Inspect source-pattern test coverage.
+- [x] Preserve 65 source-backed kits and five adapters.
 - [x] Query combined commit status.
 - [ ] Run `npm test` independently.
-- [ ] Execute browser WebGPU and WebGL2 fixtures.
+- [ ] Execute real-browser suspension and restoration fixtures.
 - [ ] Execute built-output and Pages fixtures.
 
 ## Source-backed observations
 
 ```txt
-reviewed runtime head: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
-frond cards: 8
-frond variants: 4
-frond card segments: 5
-frond atlas: 1280 x 256, four 320 x 256 cells
-flower atlas: 384 x 128, three 128 x 128 cells
-frond alphaTest: 0.48
-frond transparent sorting: disabled
-frond/flower mipmaps: enabled
-frond/flower cell gutters: absent
-frond/flower UV cell boundaries: exact
-menu backend policy: WebGPU preferred, WebGL2 fallback
-menu frame identity: absent
-browser screenshot/readback artifact: absent
-scene traversal disposal: absent
-atlas disposal receipts: absent
-resize listener removal: absent
-CozyMenu revocation: absent
+reviewed runtime revision: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
+reviewed pre-audit repository head: fc5a119eefc7aad5e062b15df6325e2dc28a421a
+hidden game readiness source: Core Startup descriptor.playable
+simulation sleep: replace engine.tick and engine.step
+presentation sleep: capture animation callback and setAnimationLoop(null)
+entry restoration: restore captured methods and callback
+entry acknowledgement: posted synchronously after restoration calls
+parent fallback reveal: 900 ms
+suspension lease identity: absent
+participant revisions: absent
+atomic restoration result: absent
+restore rollback receipt: absent
+first resumed simulation receipt: absent
+FirstResumedGameFrameAck: absent
+message origin/schema/sequence admission: absent
 ```
-
-The atlas-cell concern is an unverified risk. No visible defect is claimed without browser evidence.
 
 ## Existing executable coverage
 
-`npm test` is configured to include:
+`npm test` is configured to run:
 
 ```txt
 tests/menu-game-shell-smoke.mjs
@@ -55,31 +51,35 @@ tests/startup-domain-smoke.mjs
 tests/adventure-domains-smoke.mjs
 ```
 
-The menu smoke performs syntax and source-pattern assertions. It confirms constants, function names and wiring for the alpha-card implementation, but it does not import the modules in a browser, initialize a GPU backend, inspect atlas pixels, render a frame, capture an image or observe resource retirement.
+The shell smoke parses source files and checks regular-expression markers. It confirms that freeze and resume functions exist, the hidden renderer loop is cleared, and `cozy-game-entered` is referenced. It does not instantiate a browser engine or renderer, execute the message protocol, replace participants, inject restoration failure, or capture a resumed frame.
 
 ## Required fixtures
 
 ```txt
-deterministic frond and flower atlas hashes
-atlas cell bounds, gutters and UV interiors
-alpha occupancy and transparent-edge checks
-mip-sensitive adjacent-cell contamination probe
-normal WebGPU first frame
-normal WebGL2 fallback first frame
-DPR 1 and 1.5
-wide, square and narrow viewports
+normal WebGPU suspension and entry
+normal WebGL2 suspension and entry
+engine tick/step identity before and after entry
+renderer and animation callback identity before and after entry
+first resumed simulation step
+first resumed render submission
+first visible iframe frame
+repeated Play and duplicate entry
+stale suspension lease
+engine replacement while suspended
+renderer replacement while suspended
+missing or changed animation callback
+restore exception and rollback
+message delay, duplication and reordering
+wrong origin and wrong source
+900 ms timeout classification
+pagehide and BFCache during suspension
 reduced-motion path
-resize before and after first frame
-frame and screenshot artifact correlation
-normal game entry and 900 ms fallback reveal
-menu scene, texture, compute and listener retirement
-public CozyMenu revocation
 source/build/Pages semantic parity
 ```
 
 ## Combined status
 
-The GitHub combined-status endpoint returned no status entries for runtime head `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`.
+The GitHub combined-status endpoint returned no status entries for pre-audit repository head `fc5a119eefc7aad5e062b15df6325e2dc28a421a`.
 
 ## Validation result
 
@@ -98,14 +98,15 @@ branch created: no
 pull request created: no
 
 source files inspected: yes
-runtime diff inspected: yes
+repository selection compared: yes
 package test wiring inspected: yes
 combined status checks reported: none
 npm test independently run: no
-browser WebGPU fixture: not run
-browser WebGL2 fixture: not run
+browser suspension fixture: not run
+browser restoration fixture: not run
+first resumed-frame fixture: not run
 built-output smoke: not run
 Pages smoke: not run
 ```
 
-No atlas-isolation, exact visible-frame, backend-parity, complete-retirement, deployed-parity or production-readiness claim is made.
+No suspension atomicity, restoration coherence, timeout safety, visible-frame convergence, deployed parity, or production-readiness claim is made.

@@ -1,49 +1,50 @@
-# Next steps: MyCozyIsland cross-window preload and entry protocol
+# Next steps: MyCozyIsland dual-surface GPU handoff and retirement
 
-**Timestamp:** `2026-07-13T19-40-56-04-00`  
-**Publication status:** `cross-window-preload-entry-protocol-authority-audited`
+**Timestamp:** `2026-07-13T23-58-48-04-00`  
+**Publication status:** `dual-surface-gpu-handoff-retirement-authority-audited`
 
 ## Summary
 
-Replace informal type-only parent/iframe messages with one versioned, generation-bound protocol. Keep Core Startup as readiness authority, but require entry preparation and the first visible game frame before reveal/history/focus are committed.
+Implement one narrow presentation authority above the existing cross-window protocol and renderer adapters. It should prove the resumed game frame, bound menu/game overlap and retire every menu-owned compute, render, listener, timer and public-capability participant.
 
 ## Plan ledger
 
-**Goal:** reject stale, duplicate, malformed and out-of-order cross-window work while preserving seamless hidden preload.
+**Goal:** move from timer-driven overlap and partial cleanup to typed, idempotent presentation leases and terminal results.
 
-- [ ] Add `ProtocolVersion`, `ShellGeneration`, `FrameGeneration`, `PreloadAttemptId` and `EntryAttemptId`.
-- [ ] Add immutable protocol envelopes with `MessageId`, sequence and payload fingerprint.
-- [ ] Verify both `event.origin` and expected source window.
-- [ ] Validate every message payload against a closed schema.
-- [ ] Establish HELLO/PROGRESS/READY|FAILED ordering.
-- [ ] Return typed admission results for malformed, foreign, stale, duplicate and out-of-order messages.
-- [ ] Bind one entry request to the current ready revision.
-- [ ] Make simulation resume and player preparation idempotent under `EntryAttemptId`.
+- [ ] Add `PresentationSurfaceGeneration` for menu and game.
+- [ ] Add `BackendGeneration` and `DeviceContextGeneration`.
+- [ ] Register menu and game presentation leases.
+- [ ] Register menu compute, pipeline, scene, listener, timer and capability manifests.
+- [ ] Convert hidden game sleep/resume into typed lease results.
+- [ ] Bind resume to the current Core Startup ready revision and entry attempt.
 - [ ] Return preparation failure instead of warning and continuing.
-- [ ] Add renderer-derived post-resume submission evidence.
-- [ ] Require `FirstVisibleGameFrameAck` before normal entry commit.
-- [ ] Replace the anonymous 900 ms fallback with explicit `TimedOut` or `Degraded` policy.
-- [ ] Atomically commit iframe reveal, history and focus.
-- [ ] Retire timers, message ports and predecessor generations on pagehide/navigation.
-- [ ] Add reload, BFCache, duplicate Play, timeout and deployed parity fixtures.
+- [ ] Publish `FirstResumedGameFrameAck` from the game renderer.
+- [ ] Add an explicit overlap budget and crossfade generation.
+- [ ] Stop menu compute and frame submission before retirement.
+- [ ] Traverse and retire application-owned menu scene resources.
+- [ ] Remove resize, message, keyboard and click listeners.
+- [ ] Cancel or fence entry and fade timers.
+- [ ] Revoke or replace `globalThis.CozyMenu` after retirement.
+- [ ] Publish `MenuPresentationRetirementResult`.
+- [ ] Publish one terminal `PresentationHandoffResult`.
+- [ ] Add WebGPU and WebGL2 browser fixtures.
+- [ ] Add source, built-output and Pages parity checks.
 
 ## Minimal implementation order
 
 ```txt
-1. protocol envelope and version
-2. shell/frame/preload generations
-3. origin and source-window admission
-4. schema validation and sequence policy
-5. progress/ready/failure terminal results
-6. entry attempt and ready-revision binding
-7. idempotent resume/player preparation
-8. entry prepared result
-9. post-resume renderer submission receipt
-10. first visible game-frame acknowledgement
-11. reveal/history/focus commit
-12. timeout/degraded policy
-13. cancellation and retirement
-14. fixture matrix and Pages parity
+1. presentation surface and backend generations
+2. menu/game presentation leases
+3. resource manifests
+4. attempt-bound game resume preparation
+5. first resumed game frame acknowledgement
+6. bounded overlap policy
+7. menu compute and frame stop results
+8. scene, pipeline, compute and renderer retirement
+9. listener and timer retirement
+10. public capability revocation
+11. reveal/history/focus terminal commit
+12. browser/build/Pages fixture matrix
 ```
 
 ## Target files
@@ -52,46 +53,44 @@ Replace informal type-only parent/iframe messages with one versioned, generation
 src/menu.js
 src/game-preload-bridge.js
 src/main-adventure.js
+src/presentation-handoff.js
 tests/menu-game-shell-smoke.mjs
-tests/cross-window-protocol-browser.fixture.mjs
+tests/dual-surface-gpu-handoff-browser.fixture.mjs
 package.json
 .github/workflows/pages.yml
 ```
 
-A small local protocol module should own envelopes, validation, IDs and admission results. Do not turn generic `postMessage` transport into a gameplay domain.
-
 ## Required acceptance cases
 
 ```txt
-normal progress/ready/entry/frame/commit
-wrong origin
-wrong source
-wrong protocol version
-malformed payload
-stale iframe generation
-stale preload attempt
-duplicate ready
-duplicate Play
-out-of-order progress after terminal ready
-reload during preload
-reload during entry
-player preparation exception
-entry timeout
+WebGPU menu plus WebGPU game
+WebGL2 fallback menu plus WebGL2 game
+mixed backend generations when supported
+normal sleeping-ready entry
+repeated Play
+resume preparation failure
+first-frame timeout
+bounded overlap success
 explicit degraded reveal
-late visible frame
-pagehide and BFCache restoration
-direct game route
-source/build/Pages result parity
+compute stop failure
+pipeline disposal failure
+scene participant disposal failure
+resize after retirement
+late animation callback
+pagehide during fade
+reduced-motion zero-delay path
+CozyMenu read after retirement
+source/build/Pages semantic parity
 ```
 
 ## Ownership constraints
 
-Core Startup owns factual readiness. The protocol authority owns cross-window semantic admission and correlation. The game bridge owns freeze/resume and player preparation. The renderer owns frame evidence. The parent shell owns Play intent and commits visibility/history/focus only after a terminal protocol result.
+Core Startup owns factual readiness. The protocol authority owns parent/child message admission. The preload bridge owns local simulation and animation-loop manipulation. Renderers own local frame and resource receipts. The new authority owns cross-surface lease composition, overlap and terminal settlement. The parent shell commits reveal, history and focus only after consuming that result.
 
 ## Retained work
 
-Menu presentation lifecycle, provider-independent preload, complete renderer/resource retirement, durable saves, input authority, adaptive quality and page lifecycle remain open and must compose with this protocol.
+The prior cross-window protocol, page lifecycle, adaptive quality, portable-save durability, input authority and bounded public runtime capability audits remain open and must compose with this work.
 
 ## Do not claim
 
-Do not claim protocol safety, stale-message fencing, entry atomicity, first-visible-frame completion, BFCache convergence or deployed parity until the fixture matrix passes on `main`.
+Do not claim bounded overlap, complete retirement, frame-correlated entry, device/context convergence or deployed parity until the executable matrix passes on `main`.

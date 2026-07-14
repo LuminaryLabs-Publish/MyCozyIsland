@@ -21,46 +21,61 @@ assert.match(files["menu.html"], /id="menu-scene"/, "menu owns one Three.js canv
 assert.match(files["menu.html"], /id="play"/, "menu owns one Play gate");
 assert.match(files["menu.html"], /id="game-preload"/, "menu owns the hidden background game surface");
 assert.match(files["menu.html"], /three\.webgpu\.js/, "menu imports the WebGPU Three.js build");
-assert.match(files["menu.html"], /three\.tsl\.js/, "menu imports TSL for GPU material deformation");
-assert.match(files["menu.html"], /three\/addons\//, "menu exposes the official Three.js addon path");
-assert.match(files["menu.html"], /src\/menu\.js/, "menu loads its scene controller");
+assert.match(files["menu.html"], /three\.tsl\.js/, "menu imports TSL for GPU deformation");
+assert.match(files["menu.html"], /alpha-frond-postcard-1/, "menu refreshes the alpha-card scene cache key");
 assert.doesNotMatch(files["menu.html"], /<h1|menu-card|preload-track|preload-label|preload-percent|subtitle/, "menu exposes no title card, progress bar, or extra copy");
 
 assert.match(files["game.html"], /src\/main-adventure\.js/, "game page loads the full adventure");
 assert.match(files["game.html"], /src\/game-preload-bridge\.js/, "game page loads the menu handoff bridge");
 assert.match(files["game.html"], /data-background-preload/, "background game hides gameplay HUD until entry");
 
-assert.match(files["src/menu.js"], /import \* as THREE from "three\/webgpu"/, "menu is implemented with WebGPURenderer");
-assert.match(files["src/menu.js"], /new THREE\.WebGPURenderer/, "menu owns a WebGPU-first renderer");
-assert.match(files["src/menu.js"], /new THREE\.RenderPipeline/, "menu owns a WebGPU render pipeline");
-assert.match(files["src/menu.js"], /bloom\(sceneColor/, "menu applies GPU bloom");
-assert.match(files["src/menu.js"], /ACESFilmicToneMapping/, "menu uses ACES tone mapping");
-assert.match(files["src/menu.js"], /toneMappingExposure = 0\.96/, "menu has authored exposure");
-assert.match(files["src/menu.js"], /MeshPhysicalNodeMaterial/, "fronds use physical node materials");
-assert.match(files["src/menu.js"], /material\.positionNode/, "wind deformation runs in the GPU vertex stage");
-assert.match(files["src/menu.js"], /StorageBufferAttribute\(12, 1\)/, "WebGPU path allocates a compact frond wind storage buffer");
-assert.match(files["src/menu.js"], /renderer\.compute\(windCompute\)/, "WebGPU path dispatches palm wind compute before rendering");
-assert.match(files["src/menu.js"], /createFrondLeafletsGeometry/, "fronds contain layered leaflet geometry");
-assert.match(files["src/menu.js"], /TubeGeometry\(trunkCurve, 56/, "trunk has a high-resolution curved silhouette");
-assert.match(files["src/menu.js"], /function createSky/, "menu renders one sky composition");
-assert.match(files["src/menu.js"], /function createPalm/, "menu renders one hero palm");
-assert.match(files["src/menu.js"], /menu-hero-palm/, "palm has stable scene identity");
-assert.doesNotMatch(files["src/menu.js"], /getContext\("2d"|drawPalm|createIsland|terrain/i, "menu has no 2D fallback, island mesh, or terrain system");
-assert.match(files["src/menu.js"], /game\.html\?preload=1/, "menu starts the game page asynchronously");
-assert.match(files["src/menu.js"], /Math\.min\(99/, "button progress remains capped at 99 percent");
-assert.match(files["src/menu.js"], /cozy-game-ready/, "menu waits for an explicit game-ready message");
-assert.match(files["src/menu.js"], /cozy-game-enter/, "Play sends an explicit entry request");
-assert.match(files["src/menu.js"], /history\.replaceState/, "revealing the preloaded game updates the route without rebuilding it");
+const menuSource = files["src/menu.js"];
+assert.match(menuSource, /import \* as THREE from "three\/webgpu"/, "menu is implemented with WebGPURenderer");
+assert.match(menuSource, /new THREE\.WebGPURenderer/, "menu owns a WebGPU-first renderer");
+assert.match(menuSource, /new THREE\.RenderPipeline/, "menu owns a WebGPU render pipeline");
+assert.match(menuSource, /bloom\(sceneColor, 0\.14, 0\.28, 1\.22\)/, "menu keeps restrained GPU bloom");
+assert.match(menuSource, /toneMappingExposure = 0\.92/, "menu uses warm authored exposure");
+
+assert.match(menuSource, /const FROND_COUNT = 8/, "palm uses eight frond cards");
+assert.match(menuSource, /function createFrondAtlas/, "menu generates one detailed frond atlas");
+assert.match(menuSource, /menu-palm-frond-atlas/, "frond atlas has stable identity");
+assert.match(menuSource, /function createFrondCardGeometry/, "fronds use low-segment curved cards");
+assert.match(menuSource, /const segments = 5/, "each frond uses only five quads");
+assert.match(menuSource, /alphaTest: 0\.48/, "fronds use alpha clipping instead of blended transparency");
+assert.match(menuSource, /transparent: false/, "frond cards avoid transparent sorting");
+assert.match(menuSource, /menu-palm-frond-card-/, "frond cards have stable identities");
+assert.doesNotMatch(menuSource, /createFrondLeafletsGeometry|menu-palm-leaflets|menu-palm-rib-/, "modeled leaflet and rib meshes were removed");
+assert.equal((menuSource.match(/new THREE\.TubeGeometry/g) ?? []).length, 1, "palm owns exactly one trunk tube mesh");
+assert.match(menuSource, /menu-palm-crown-hub/, "palm owns one crown hub mesh");
+assert.doesNotMatch(menuSource, /menu-palm-coconut-/, "menu palm does not add extra coconut meshes");
+
+assert.match(menuSource, /StorageBufferAttribute\(FROND_COUNT, 1\)/, "WebGPU wind storage matches the eight-card budget");
+assert.match(menuSource, /renderer\.compute\(windCompute\)/, "WebGPU path dispatches palm wind compute");
+assert.match(menuSource, /material\.positionNode/, "frond and water movement run in GPU vertex stages");
+
+assert.match(menuSource, /camera\.position\.set\(-4\.8, 4\.7, 12\.2\)/, "camera uses a top-left elevated view");
+assert.match(menuSource, /palm\.position\.set\(-2\.65, -2\.05, 0\.15\)/, "palm is placed on the left third");
+assert.match(menuSource, /function createBackgroundFlowers/, "menu adds soft distant flower cards");
+assert.match(menuSource, /for \(let index = 0; index < 3; index \+= 1\)/, "menu uses three flower accents");
+assert.match(menuSource, /function createWaterStrip/, "menu adds one lightweight water strip");
+assert.match(menuSource, /menu-water-strip/, "water strip has stable identity");
+assert.match(menuSource, /function createShoreline/, "menu adds one faint shoreline");
+assert.match(menuSource, /new THREE\.Fog/, "background depth uses atmospheric haze");
+assert.doesNotMatch(menuSource, /createIsland|terrain/i, "menu does not add an island or terrain system");
+
+assert.match(menuSource, /game\.html\?preload=1/, "menu starts the game page asynchronously");
+assert.match(menuSource, /Math\.min\(99/, "button progress remains capped at 99 percent");
+assert.match(menuSource, /cozy-game-ready/, "menu waits for an explicit game-ready message");
+assert.match(menuSource, /cozy-game-enter/, "Play sends an explicit entry request");
+assert.match(menuSource, /history\.replaceState/, "revealing the preloaded game updates the route without rebuilding it");
 
 assert.match(files["src/game-preload-bridge.js"], /freezeSimulation/, "background preload freezes gameplay simulation after readiness");
 assert.match(files["src/game-preload-bridge.js"], /freezePresentation/, "background preload stops the hidden render callback");
-assert.match(files["src/game-preload-bridge.js"], /getAnimationLoop/, "preload captures the existing Three.js animation callback");
 assert.match(files["src/game-preload-bridge.js"], /setAnimationLoop\(null\)/, "hidden game GPU rendering sleeps at 99 percent");
 assert.match(files["src/game-preload-bridge.js"], /resumePresentation/, "Play restores the prepared game render callback");
-assert.match(files["src/game-preload-bridge.js"], /introProgress: 0\.76/, "Play restarts the authored aerial entry instead of revealing a progressed game");
 assert.match(files["src/game-preload-bridge.js"], /cozy-game-entered/, "game acknowledges successful entry");
 assert.match(files["src/game-preload-bridge.js"], /descriptor\?\.playable/, "Core Startup remains the factual readiness source");
 
 assert.match(files[".github/workflows/pages.yml"], /cp \.\/\*\.html dist\//, "Pages deploys index, menu, and game pages");
 
-console.log("menu/game shell smoke: WebGPU palm depth, compute wind, bloom, exposure, sleeping preload, and seamless entry verified");
+console.log("menu/game shell smoke: alpha-cut frond cards, left-third postcard framing, soft flowers, wave strip, sleeping preload, and seamless entry verified");

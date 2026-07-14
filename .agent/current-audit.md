@@ -1,28 +1,32 @@
-# Current audit: MyCozyIsland postcard-menu atlas and frame admission
+# Current audit: MyCozyIsland preload suspension lease and resumed-frame authority
 
-**Timestamp:** `2026-07-14T09-39-44-04-00`  
-**Status:** `menu-postcard-atlas-frame-admission-audited`  
+**Timestamp:** `2026-07-14T15-01-54-04-00`  
+**Status:** `preload-suspension-lease-resume-frame-authority-audited`  
 **Branch:** `main`  
-**Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`
+**Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
+**Reviewed pre-audit repository head:** `fc5a119eefc7aad5e062b15df6325e2dc28a421a`
 
 ## Summary
 
-MyCozyIsland is the sole runtime-ahead eligible Publish repository in this run. Three commits replaced the menu palm's modeled leaflet/rib meshes with eight five-segment alpha-cut frond cards using a deterministic four-cell canvas atlas, added three flower cards, one animated water strip, shoreline haze, new camera framing and a source-pattern test update.
+MyCozyIsland was selected through the oldest synchronized documentation rule. Every eligible Publish repository already had central-ledger and root `.agent` coverage, and every current repository head matched its recorded repo-local documentation head.
 
-The new path is lighter and avoids blended frond sorting, but its visual truth is not admitted through a browser frame. Frond and flower UVs touch exact atlas-cell boundaries while linear mip filtering is enabled and no gutters are authored. The source tests cannot rule out adjacent-cell or transparent-edge contamination. The reveal path also disposes only the pipeline and renderer, leaving explicit scene traversal, atlas, compute, listener and public-capability retirement unproved.
+The current audit isolates the hidden game suspension boundary. Once Core Startup reports `descriptor.playable`, `src/game-preload-bridge.js` replaces `engine.tick` and `engine.step`, captures the current Three.js animation callback, and calls `renderer.setAnimationLoop(null)`. When Play arrives, it restores those references, prepares the intro, sets a DOM flag, and posts `cozy-game-entered` immediately. The parent treats that message as reveal authority, while also retaining a 900 ms unconditional fallback reveal.
+
+No runtime defect is asserted. The gap is that suspension and restoration are implicit object mutation rather than a revisioned application result. The repository cannot prove that the resumed engine, scheduler, renderer, callback, player state and visible frame belong to the same accepted preload generation.
 
 ## Plan ledger
 
-**Goal:** define one transaction from deterministic atlas generation through an exact admitted postcard frame and complete menu-resource retirement.
+**Goal:** preserve sleeping preload performance while making suspension, restoration, fallback, and visible entry one atomic, observable transaction.
 
-- [x] Compare 11 Publish repositories and ten eligible central ledgers.
+- [x] Compare the complete 11-repository Publish inventory.
 - [x] Exclude TheCavalryOfRome.
-- [x] Confirm no new, ledger-missing or root-agent-missing eligible repository.
-- [x] Select MyCozyIsland as the sole runtime-ahead repository.
-- [x] Inspect the runtime diff, menu source, smoke test and retained audits.
-- [x] Map the interaction loop, domains, all kits and all offered services.
+- [x] Confirm ten eligible central ledger entries and root `.agent` states.
+- [x] Confirm zero new, missing, undocumented, root-agent-missing, or runtime-ahead eligible repositories.
+- [x] Select MyCozyIsland as the oldest synchronized eligible repository.
+- [x] Inspect `menu.html`, `game.html`, `src/menu.js`, `src/game-preload-bridge.js`, package scripts, source smoke, and current audit state.
+- [x] Identify the interaction loop, domains, all kits, all adapters, and all offered services.
 - [x] Preserve 65 source-backed kit surfaces and five adapters.
-- [x] Define frame-admission and retirement commands/results.
+- [x] Define a 24-surface suspension and resumed-frame authority family.
 - [x] Change documentation only.
 - [ ] Implement and execute the authority.
 
@@ -30,74 +34,63 @@ The new path is lighter and avoids blended frond sorting, but its visual truth i
 
 ```txt
 accessible Publish repositories: 11
-eligible repositories: 10
+eligible after Cavalry exclusion: 10
 central ledger entries: 10
-root .agent folders: 10
+root .agent states: 10
 new eligible repositories: 0
-ledger-missing repositories: 0
-root-agent-missing repositories: 0
-runtime-ahead repositories: 1
+ledger-missing eligible repositories: 0
+root-agent-missing eligible repositories: 0
+runtime-ahead eligible repositories: 0
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior repo-local documentation head: 8fbc1617418f4a0701c76928e4b5da3956812e13
-reviewed runtime head: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
-```
-
-## Runtime delta
-
-```txt
-cbef80b
-  -> four-cell procedural frond atlas
-  -> eight curved alpha-cut frond cards
-  -> three-cell flower atlas and cards
-  -> water strip, shoreline, fog and postcard camera
-  -> compute storage reduced from 12 to 8 values
-
-aff9e65
-  -> menu description, background and cache key updated
-
-6c5e465
-  -> static smoke rewritten around the alpha-card postcard source shape
+selection reason: oldest synchronized central documentation timestamp
+prior central timestamp: 2026-07-14T09-39-44-04-00
+reviewed repository head: fc5a119eefc7aad5e062b15df6325e2dc28a421a
 ```
 
 ## Complete interaction loop
 
 ```txt
-index redirects to menu
-  -> import Three.js WebGPU, TSL and Bloom
-  -> initialize renderer/backend
-  -> generate frond and flower canvas atlases
-  -> build trunk, hub, eight frond cards and three flower cards
-  -> build sky, glow, water, shoreline, fog and lighting
-  -> create compute wind on WebGPU
-  -> create RenderPipeline and begin frames
-  -> schedule hidden game preload
-  -> game Core Startup prepares world/save/input and first frame
-  -> bridge sleeps hidden game
+root route
+  -> redirects to menu.html
+  -> menu imports Three.js WebGPU, TSL and Bloom
+  -> menu prepares the postcard scene and render loop
+  -> menu schedules game.html?preload=1 in a hidden iframe
+  -> game route initializes Core Startup, world, save, input and renderer
+  -> preload bridge polls startupHost.getDescriptor()
+  -> descriptor.playable becomes true
+  -> freezeSimulation captures engine and replaces tick/step
+  -> freezePresentation captures animation callback and clears it
+  -> bridge posts progress and ready
   -> parent enables Play
-  -> Play requests entry
-  -> acknowledge or timeout fallback reveals game
-  -> parent stops menu loop and disposes pipeline/renderer
+  -> Play posts cozy-game-enter
+  -> resumeSimulation restores captured methods
+  -> resumePresentation restores captured callback
+  -> preparePlayerEntry loads intro state, clears input and focuses canvas
+  -> bridge posts cozy-game-entered before a resumed frame
+  -> parent reveals immediately, or after 900 ms without the acknowledgement
+  -> menu rendering stops after the crossfade
   -> player walks, farms, forages and auto-saves
 ```
 
 ## Domains in use
 
 ```txt
-routing, history, focus and page lifecycle
-module/import-map provider admission
-menu shell and controls
-WebGPU/WebGL2 backend admission
-procedural Canvas2D atlas generation
-alpha-cut card geometry and sampling
-TSL materials, storage compute and vertex deformation
-postcard camera, atmosphere, water, shoreline, lighting and bloom
-menu frame evidence and resource retirement
-iframe preload and same-origin messaging
-Core Startup, objects and transactions
-world, input, Inventory, Agriculture, Foraging and interaction
-player, scenario, camera, saves and render snapshots
-game WebGPU/WebGL2 presentation and adaptive quality
-simulation/presentation sleep and resume
+browser routing, history and focus
+menu shell, progress and Play admission
+optional postcard presentation
+same-origin iframe preload
+cross-window command and result messaging
+Core Startup readiness, continuation and first game preparation
+engine world, tick and step ownership
+scheduler and render-loop ownership
+hidden-preload suspension and restoration
+player intro state and input clearing
+entry fallback timing and reveal
+first resumed simulation/frame evidence
+stale, duplicate and superseded attempt handling
+WebGPU/WebGL2 backend and renderer presentation
+world, player, camera, Inventory, Agriculture, Foraging and interaction
+save capture, validation, migration, restore and rollback
 validation, build, Pages and central tracking
 ```
 
@@ -110,55 +103,94 @@ additional composition kit: 1
 source-backed kit surfaces: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned postcard authority surfaces: 23
+planned suspension authority surfaces: 24
 ```
 
-The exact kit-by-kit service inventory is in `.agent/kit-registry.json` and the timestamped project breakdown.
+The complete per-kit service inventory is in the timestamped tracker and remains machine-readable in `.agent/kit-registry.json`.
 
 ## Source-backed findings
 
+### Suspension mutates live providers
+
+`freezeSimulation()` captures `globalThis.CozyIsland.engine`, saves its `tick` and `step` functions, then replaces both methods on the live engine object. The replacement returns the current world without advancing simulation.
+
+`freezePresentation()` captures `globalThis.CozyIsland.renderer`, reads its current animation callback, and calls `setAnimationLoop(null)`.
+
+There is no:
+
 ```txt
-frond count: 8
-frond variants: 4
-frond card segments: 5
-alpha test: 0.48
-frond transparent sorting: disabled
-frond/flower mipmaps: enabled
-frond/flower atlas gutters: absent
-UV cell boundaries: exact
-browser frame capture: absent
-backend image parity: absent
-scene traversal disposal: absent
-atlas disposal receipt: absent
-resize listener removal: absent
-CozyMenu revocation: absent
+PreloadGeneration
+SuspensionAttemptId
+EngineRevision
+SchedulerRevision
+RendererRevision
+AnimationLoopRevision
+SuspensionLease
+SuspensionPreparationResult
+participant receipt
+atomic adoption result
 ```
 
-The atlas concern is recorded as an unverified risk, not a confirmed visible defect.
+### Restoration is not correlated
+
+`resumeSimulation()` and `resumePresentation()` restore the captured references without checking whether the public engine or renderer has been replaced, whether Core Startup has advanced, whether the callback still belongs to the accepted renderer generation, or whether a newer entry attempt superseded the current one.
+
+### Entry acknowledgement precedes frame evidence
+
+`enterGame()` restores participants, prepares player state, sets `data-menu-entered`, and posts `cozy-game-entered` in the same synchronous call stack. It does not wait for:
+
+```txt
+one resumed engine tick
+one accepted renderer callback
+one successful render submission
+one visible iframe frame
+one frame tied to the current startup and entry revisions
+```
+
+### Parent fallback can reveal an unproved successor
+
+The parent schedules `revealGame()` 900 ms after sending the entry request. That fallback does not classify why acknowledgement was absent and does not prove the game resumed. A missing, stale, rejected, or failed entry can therefore be visually treated the same as a slow but successful entry.
+
+### Message envelopes lack revision identity
+
+Both sides check `event.source`, but neither side checks `event.origin`, schema version, attempt ID, sequence, startup revision, suspension lease, or entry revision. These retained protocol gaps directly affect suspension restoration.
+
+### Existing validation is structural only
+
+`tests/menu-game-shell-smoke.mjs` parses source and matches strings such as `freezeSimulation`, `setAnimationLoop(null)`, `resumePresentation`, and `cozy-game-entered`. It does not create a browser, initialize an engine or renderer, execute suspension, replace participants, inject restore failure, or capture the first resumed frame.
 
 ## Required authority
 
 ```txt
-cozy-island-menu-postcard-atlas-frame-admission-authority-domain
+cozy-island-preload-suspension-lease-resume-frame-authority-domain
 ```
 
 ```txt
-MenuPostcardFrameAdmissionCommand
-  -> bind visual, provider, backend, viewport, DPR and reduced-motion revisions
-  -> generate and fingerprint atlas candidates
-  -> validate cell bounds, gutters, UV interiors, alpha occupancy and mip policy
-  -> prepare scene, cards, compute and pipeline
-  -> submit and capture one exact frame
-  -> publish MenuPostcardFrameResult and FirstMenuPostcardFrameAck
+PreloadSuspensionCommand
+  -> bind shell, startup, game, engine, scheduler, renderer and frame revisions
+  -> validate the current playable Core Startup descriptor
+  -> prepare detached simulation and presentation suspension candidates
+  -> capture exact participant identities and callbacks
+  -> stop hidden simulation and presentation atomically
+  -> publish PreloadSuspensionResult and SuspensionLease
 
-MenuPostcardRetirementCommand
-  -> stop frame admission
-  -> remove listeners and callbacks
-  -> dispose scene, textures, storage, pipeline and renderer
-  -> revoke CozyMenu
-  -> publish participant receipts and terminal retirement result
+GameEntryCommand
+  -> bind the accepted SuspensionLease and expected entry revision
+  -> reject stale, duplicate, missing or superseded work
+  -> prepare engine, scheduler, renderer, input and intro restoration
+  -> restore all participants atomically or preserve the suspended predecessor
+  -> execute one resumed simulation step and one render probe
+  -> publish GameEntryResult and participant receipts
+  -> publish FirstResumedGameFrameAck
+  -> allow the parent to commit reveal and history
+
+failure or timeout
+  -> classify transport, restore, render or acknowledgement failure
+  -> keep the suspended predecessor coherent
+  -> expose explicit retry, reload or direct-route recovery
+  -> never treat elapsed time alone as visible-entry proof
 ```
 
 ## Validation boundary
 
-Documentation only. No runtime, test, dependency, script, workflow or deployment behavior changed. No browser, build or Pages proof was executed.
+Documentation only. Runtime JavaScript, HTML, CSS, tests, dependencies, scripts, workflows and deployment behavior were not changed. No browser, build, artifact or Pages proof was executed.

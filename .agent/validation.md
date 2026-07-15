@@ -1,61 +1,74 @@
-# Validation: MyCozyIsland device-control action coverage
+# Validation: MyCozyIsland host-clock fixed-step simulation
 
-**Timestamp:** `2026-07-15T01-04-57-04-00`
+**Timestamp:** `2026-07-15T05-00-28-04-00`
 
 ## Scope
 
-Documentation-only inspection of responsive game markup, browser keyboard/pointer adapters, normalized input-frame construction, player/camera/interaction consumption and existing Node smoke coverage. No runtime behavior was modified or executed.
+Documentation-only inspection of the browser RAF host, composition tick boundary, scenario clock, player movement/stamina, Foraging respawn, autosave cadence, package scripts and existing Node smoke coverage. No runtime behavior was modified or executed.
 
 ## Plan ledger
 
-**Goal:** distinguish confirmed keyboard and pointer behavior from unproved touch action coverage and visible action-effect evidence.
+**Goal:** distinguish confirmed delta clipping and deterministic domain consumption from unproved fixed-step pacing, overload policy and clock-aligned frame evidence.
 
 - [x] Compare the full Publish inventory and central ledgers.
 - [x] Compare every eligible current head with its documented head.
 - [x] Select MyCozyIsland by the oldest synchronized timestamp.
-- [x] Inspect `game.html`, `src/main-adventure.js` and `src/adventure/runtime-domains.js`.
+- [x] Inspect `src/main-adventure.js`.
+- [x] Inspect `src/adventure/composition-runtime.js`.
+- [x] Inspect `src/adventure/runtime-domains.js`.
+- [x] Inspect `src/adventure/resource-domains.js`.
+- [x] Inspect tests and package scripts.
 - [x] Preserve the 65-kit, one-composition-kit and five-adapter inventory.
 - [ ] Run `npm test` independently.
-- [ ] Execute device-control browser fixtures.
+- [ ] Execute host-clock browser fixtures.
 - [ ] Execute built-output and Pages fixtures.
 
 ## Confirmed observations
 
 ```txt
 reviewed runtime revision: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
-reviewed pre-audit head: eac42511d9c462fb2e68604288810687d12f9bbf
-narrow written controls: hidden below 760px
-hotbar pointer policy: pointer-events:none
-seed controls: div elements
-pointer command meaning: camera look only
-movement source: keyboard codes only
-sprint source: Shift only
-interaction source: KeyE only
-seed source: KeyQ and Digit1-Digit4 only
-intro-skip source: Space or Enter only
-DeviceControlAdmissionResult: absent
-FirstDeviceControlSurfaceFrameAck: absent
-FirstDeviceActionEffectFrameAck: absent
+reviewed pre-audit head: a8733b506ecbd43190a280942790cdaa0bd1b983
+RAF frame-gap cap: 100 ms
+host simulation-delta cap: 50 ms
+composition simulation-delta cap: 50 ms
+engine ticks per RAF callback: one
+fixed-step accumulator: absent
+bounded catch-up result: absent
+discarded-time receipt: absent
+interpolation alpha: absent
+HostClockFrameResult: absent
+FirstClockAlignedFrameAck: absent
+```
+
+## Source-backed consumers
+
+```txt
+scenario/environment elapsed time
+player intro progress
+player movement and distance
+sprint stamina drain and recovery
+Agriculture growth and perennials
+Foraging respawn
+host autosave accumulator
 ```
 
 ## Existing executable coverage
 
-`npm test` invokes three Node smoke scripts. These inspect source/domain behavior but do not instantiate phone or tablet browser contexts, synthesize multi-touch input, inspect semantic controls or capture matching touch action-effect frames.
+`npm test` invokes three Node smoke scripts. The adventure-domain smoke supplies deltas directly to `adventure.tick()` and proves deterministic state outcomes. It does not instantiate RAF, throttle callback rates, classify lifecycle gaps, exercise a fixed-step accumulator or capture a clock-aligned rendered frame.
 
 ## Required fixtures
 
 ```txt
-desktop keyboard/mouse baseline
-phone portrait touch
-phone landscape touch
-tablet touch
-hybrid touch/keyboard
-multi-touch movement and look
-interact while moving
-sprint hold, cancel and blur cleanup
-seed cycle and direct selection
-intro skip
-orientation and safe-area changes
+60/30/20 FPS baseline
+10/5 FPS overload
+100/250/500/2000 ms gaps
+preload suspend/resume
+visibility hidden/resume
+BFCache pagehide/pageshow
+clock generation rollover
+scenario/player/agriculture/foraging pacing
+autosave cadence policy
+WebGPU/WebGL2 frame correlation
 source/build/Pages parity
 ```
 
@@ -65,7 +78,7 @@ source/build/Pages parity
 documentation changed: yes
 runtime JavaScript changed: no
 HTML or CSS changed: no
-input behavior changed: no
+simulation behavior changed: no
 gameplay changed: no
 render behavior changed: no
 dependencies or package scripts changed: no
@@ -77,9 +90,9 @@ pull request created: no
 source inspection: completed
 repository comparison: completed
 npm test: not run
-device browser fixtures: unavailable
+host-clock browser fixtures: unavailable
 built-output smoke: not run
 Pages smoke: not run
 ```
 
-No mobile or touch playability, semantic control coverage, gesture safety, first-action frame convergence, artifact parity or production readiness is claimed.
+No fixed-step correctness, real-time pacing, overload recovery, interpolation, clock-aligned frame convergence, artifact parity or production readiness is claimed.

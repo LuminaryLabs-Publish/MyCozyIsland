@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 99,
-  "lastUpdated": "2026-07-15T05-00-28-04-00",
+  "schemaVersion": 100,
+  "lastUpdated": "2026-07-15T10-01-08-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "host-clock-fixed-step-simulation-authority-audited",
-  "technicalStatus": "host-clock-fixed-step-simulation-authority-audited",
+  "status": "game-audio-event-projection-authority-audited",
+  "technicalStatus": "game-audio-event-projection-authority-audited",
   "retainedStatuses": [
+    "host-clock-fixed-step-simulation-authority-audited",
     "device-control-surface-action-coverage-authority-audited",
     "embed-context-route-admission-authority-audited",
     "preload-suspension-lease-resume-frame-authority-audited",
@@ -23,7 +24,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "monotonic RAF timestamp admission through a bounded fixed-step accumulator with explicit overload receipts, domain clock binding and first clock-aligned frame proof",
+  "currentFocus": "accepted semantic gameplay and environment results projected through one browser-audio generation with unlock, deduplication, preferences, spatial binding, lifecycle settlement and audible/audiovisual acknowledgements",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -34,8 +35,8 @@
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
     "reason": "oldest synchronized central documentation timestamp after all higher-priority classes were cleared",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "priorCentralTimestamp": "2026-07-15T01-04-57-04-00",
-    "priorRepoLocalDocumentationHead": "a8733b506ecbd43190a280942790cdaa0bd1b983",
+    "priorCentralTimestamp": "2026-07-15T05-00-28-04-00",
+    "priorRepoLocalDocumentationHead": "cefc24184fc86d431a70fcce4a342d26b3b3a3d7",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -51,7 +52,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedHostClockSurfaces": 20
+    "plannedGameAudioSurfaces": 22
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","waiting","working","ready","failure","retry-fallback-descriptor","continuation-selection","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -131,39 +132,62 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress-projection","play-gate","entry-request","crossfade","history-transition","focus-transfer","fallback-reveal","error-display"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["startup-descriptor-polling","embed-context-classification","parent-messaging","simulation-freeze","simulation-resume","presentation-sleep","presentation-resume","player-entry-preparation","entry-acknowledgement"]}
   ],
-  "hostClockState": {
-    "rafGapCapMilliseconds": 100,
-    "hostDeltaCapSeconds": 0.05,
-    "compositionDeltaCapSeconds": 0.05,
-    "engineTicksPerRafCallback": 1,
-    "fixedStepAccumulator": "missing",
-    "boundedCatchUpResult": "missing",
-    "discardedTimeReceipt": "missing",
-    "pauseOverloadClassification": "missing",
-    "interpolationAlpha": "missing",
-    "hostClockFrameResult": "missing",
-    "firstClockAlignedFrameAck": "missing"
+  "gameAudioState": {
+    "audioContextOwner": "missing",
+    "htmlAudioOwner": "missing",
+    "semanticCueRegistry": "missing",
+    "masterCategoryVolume": "missing",
+    "mutePreference": "missing",
+    "listenerPoseProjection": "missing",
+    "spatialSourceProjection": "missing",
+    "ambienceLifecycle": "missing",
+    "cueDeduplication": "missing",
+    "voiceBudgetPool": "missing",
+    "audioProjectionResult": "missing",
+    "firstAudibleCueAck": "missing",
+    "firstAudioVisualConvergenceAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-host-clock-fixed-step-simulation-authority-domain",
+  "plannedParentDomain": "cozy-island-game-audio-event-projection-authority-domain",
   "plannedKits": [
-    "host-clock-manifest-kit","raf-timestamp-adapter-kit","elapsed-time-classifier-kit","fixed-step-accumulator-kit","step-budget-policy-kit","catch-up-policy-kit","dropped-time-receipt-kit","pause-suspension-classifier-kit","simulation-clock-generation-kit","clock-admission-kit","clock-step-result-kit","interpolation-alpha-kit","scenario-clock-binding-kit","player-clock-binding-kit","agriculture-clock-binding-kit","foraging-clock-binding-kit","autosave-wall-clock-policy-kit","first-clock-aligned-frame-ack-kit","clock-browser-fixture-kit","source-build-pages-clock-parity-kit"
+    "browser-audio-capability-kit",
+    "user-gesture-audio-unlock-kit",
+    "audio-context-generation-kit",
+    "audio-policy-descriptor-kit",
+    "semantic-audio-event-kit",
+    "cozy-cue-registry-kit",
+    "ui-cue-projection-kit",
+    "movement-footstep-cue-kit",
+    "surface-footstep-material-kit",
+    "agriculture-cue-projection-kit",
+    "foraging-cue-projection-kit",
+    "ocean-ambience-kit",
+    "wind-ambience-kit",
+    "listener-pose-projection-kit",
+    "spatial-source-projection-kit",
+    "cue-deduplication-kit",
+    "audio-bus-preference-kit",
+    "voice-budget-pool-kit",
+    "audio-lifecycle-settlement-kit",
+    "first-audible-cue-ack-kit",
+    "first-audiovisual-convergence-ack-kit",
+    "browser-build-pages-audio-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-15T05-00-28-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-15T05-00-28-04-00.md",
-    ".agent/architecture-audit/2026-07-15T05-00-28-04-00-host-clock-fixed-step-simulation-dsk-map.md",
-    ".agent/render-audit/2026-07-15T05-00-28-04-00-clock-aligned-render-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-15T05-00-28-04-00-low-fps-slow-simulation-loop.md",
-    ".agent/interaction-audit/2026-07-15T05-00-28-04-00-host-clock-command-result-map.md",
-    ".agent/simulation-clock-audit/2026-07-15T05-00-28-04-00-raf-delta-accumulator-contract.md",
-    ".agent/deploy-audit/2026-07-15T05-00-28-04-00-host-clock-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-15T05-00-28-04-00-oldest-selection-host-clock-reconciliation.md"
+    ".agent/trackers/2026-07-15T10-01-08-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-15T10-01-08-04-00.md",
+    ".agent/architecture-audit/2026-07-15T10-01-08-04-00-game-audio-event-projection-dsk-map.md",
+    ".agent/render-audit/2026-07-15T10-01-08-04-00-silent-game-audiovisual-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-15T10-01-08-04-00-silent-farming-foraging-movement-loop.md",
+    ".agent/interaction-audit/2026-07-15T10-01-08-04-00-audio-projection-command-result-map.md",
+    ".agent/audio-audit/2026-07-15T10-01-08-04-00-browser-unlock-ambience-cue-lifecycle-contract.md",
+    ".agent/deploy-audit/2026-07-15T10-01-08-04-00-game-audio-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-15T10-01-08-04-00-oldest-selection-game-audio-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "hostClockBrowserFixturesRun": false,
+    "browserAudioFixturesRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false,

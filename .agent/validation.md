@@ -1,74 +1,83 @@
-# Validation: MyCozyIsland host-clock fixed-step simulation
+# Validation: MyCozyIsland game-audio event projection
 
-**Timestamp:** `2026-07-15T05-00-28-04-00`
+**Timestamp:** `2026-07-15T10-01-08-04-00`
 
 ## Scope
 
-Documentation-only inspection of the browser RAF host, composition tick boundary, scenario clock, player movement/stamina, Foraging respawn, autosave cadence, package scripts and existing Node smoke coverage. No runtime behavior was modified or executed.
+Documentation-only inspection of the menu/game routes, preload bridge, normalized input, player movement and surface state, interaction results, Agriculture and Foraging ownership, visual frame host, package scripts and current kit registry. No runtime behavior was modified or executed.
 
 ## Plan ledger
 
-**Goal:** distinguish confirmed delta clipping and deterministic domain consumption from unproved fixed-step pacing, overload policy and clock-aligned frame evidence.
+**Goal:** distinguish confirmed absence of an owned game-audio projection path from unproved browser unlock, cue, spatial, lifecycle and audiovisual behavior.
 
 - [x] Compare the full Publish inventory and central ledgers.
-- [x] Compare every eligible current head with its documented head.
+- [x] Confirm all eligible root `.agent` states.
 - [x] Select MyCozyIsland by the oldest synchronized timestamp.
-- [x] Inspect `src/main-adventure.js`.
-- [x] Inspect `src/adventure/composition-runtime.js`.
-- [x] Inspect `src/adventure/runtime-domains.js`.
-- [x] Inspect `src/adventure/resource-domains.js`.
-- [x] Inspect tests and package scripts.
+- [x] Inspect `menu.html`, `game.html`, `src/menu.js`, `src/game-preload-bridge.js` and `src/main-adventure.js`.
+- [x] Inspect `src/adventure/runtime-domains.js` and the active kit registry.
 - [x] Preserve the 65-kit, one-composition-kit and five-adapter inventory.
 - [ ] Run `npm test` independently.
-- [ ] Execute host-clock browser fixtures.
+- [ ] Execute browser audio fixtures.
 - [ ] Execute built-output and Pages fixtures.
 
 ## Confirmed observations
 
 ```txt
 reviewed runtime revision: 6c5e465b7b431ff6758f78e7ceb25d0f763f658f
-reviewed pre-audit head: a8733b506ecbd43190a280942790cdaa0bd1b983
-RAF frame-gap cap: 100 ms
-host simulation-delta cap: 50 ms
-composition simulation-delta cap: 50 ms
-engine ticks per RAF callback: one
-fixed-step accumulator: absent
-bounded catch-up result: absent
-discarded-time receipt: absent
-interpolation alpha: absent
-HostClockFrameResult: absent
-FirstClockAlignedFrameAck: absent
+reviewed pre-audit documentation head: cefc24184fc86d431a70fcce4a342d26b3b3a3d7
+implemented surfaces: 70
+AudioContext owner in active game host: absent
+HTMLAudio owner in active game host: absent
+semantic game cue registry: absent
+master/category volume state: absent
+mute preference: absent
+listener/source projection: absent
+ambience lifecycle: absent
+cue deduplication: absent
+voice budget/pool: absent
+FirstAudibleCueAck: absent
+FirstAudioVisualConvergenceAck: absent
 ```
 
-## Source-backed consumers
+## Source-backed producers available to future audio projection
 
 ```txt
-scenario/environment elapsed time
-player intro progress
-player movement and distance
-sprint stamina drain and recovery
-Agriculture growth and perennials
-Foraging respawn
-host autosave accumulator
+accepted input command IDs
+player movement revision
+accepted traveled distance
+sprint and stamina state
+surface kind
+selected seed revision
+interaction target and lastAction result
+Agriculture events/results
+Foraging harvest and respawn results
+scenario/environment phase
+camera descriptor revision
+save result
+preload entry/sleep/resume lifecycle
 ```
 
 ## Existing executable coverage
 
-`npm test` invokes three Node smoke scripts. The adventure-domain smoke supplies deltas directly to `adventure.tick()` and proves deterministic state outcomes. It does not instantiate RAF, throttle callback rates, classify lifecycle gaps, exercise a fixed-step accumulator or capture a clock-aligned rendered frame.
+`npm test` invokes three Node smoke scripts for menu shell markers, startup and adventure domains. These do not instantiate browser audio, unlock a context, project cues, test hidden-preload silence, exercise lifecycle retirement or capture an audiovisual convergence receipt.
 
 ## Required fixtures
 
 ```txt
-60/30/20 FPS baseline
-10/5 FPS overload
-100/250/500/2000 ms gaps
-preload suspend/resume
-visibility hidden/resume
-BFCache pagehide/pageshow
-clock generation rollover
-scenario/player/agriculture/foraging pacing
-autosave cadence policy
-WebGPU/WebGL2 frame correlation
+AudioContext capability and Play-gesture unlock
+unsupported or denied capability
+hidden-preload silence
+accepted and rejected Agriculture/Foraging cue ordering
+movement distance and surface footstep policy
+snapshot duplicate suppression
+listener/camera revision correlation
+mute and category-volume persistence
+voice budget and pool retirement
+visibility suspend/resume
+pagehide exact retirement
+FirstAudibleCueAck
+FirstAudioVisualConvergenceAck
+WebGPU/WebGL2 visual correlation
 source/build/Pages parity
 ```
 
@@ -81,6 +90,7 @@ HTML or CSS changed: no
 simulation behavior changed: no
 gameplay changed: no
 render behavior changed: no
+audio behavior changed: no
 dependencies or package scripts changed: no
 tests or workflows changed: no
 deployment changed: no
@@ -90,9 +100,9 @@ pull request created: no
 source inspection: completed
 repository comparison: completed
 npm test: not run
-host-clock browser fixtures: unavailable
+browser audio fixtures: unavailable
 built-output smoke: not run
 Pages smoke: not run
 ```
 
-No fixed-step correctness, real-time pacing, overload recovery, interpolation, clock-aligned frame convergence, artifact parity or production readiness is claimed.
+No audible gameplay, unlock reliability, cue correctness, spatial correctness, lifecycle settlement, audiovisual convergence, artifact parity or production readiness is claimed.

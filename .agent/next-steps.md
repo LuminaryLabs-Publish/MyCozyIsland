@@ -1,54 +1,62 @@
-# Next steps: MyCozyIsland device-control action coverage
+# Next steps: MyCozyIsland host-clock fixed-step simulation
 
-**Timestamp:** `2026-07-15T01-04-57-04-00`  
-**Status:** `device-control-surface-action-coverage-authority-audited`
+**Timestamp:** `2026-07-15T05-00-28-04-00`  
+**Status:** `host-clock-fixed-step-simulation-authority-audited`
 
 ## Summary
 
-Add a semantic touch-control layer that emits the same normalized action meanings as keyboard input. Do not add a second gameplay path or mutate player state directly from DOM events.
+Add one application-owned fixed-step accumulator between RAF timestamps and NexusEngine ticks. Preserve all existing gameplay DSKs and route accepted fixed steps through the current engine schedule.
 
 ## Plan ledger
 
-**Goal:** deliver complete keyboard, mouse and touch action coverage through one `cozyInput` authority.
+**Goal:** deliver stable wall-time pacing, bounded overload handling and clock-aligned presentation without adding a second simulation path.
 
-- [ ] Add a device-capability and viewport-control manifest.
-- [ ] Define the required action map: move, look, sprint, interact, cycle/select seed and skip intro.
-- [ ] Add a left movement stick and a separate right look region.
-- [ ] Add semantic interact, sprint and intro-skip buttons.
-- [ ] Convert seed slots into actionable, labelled controls.
-- [ ] Bind every control to a `ControlSurfaceGeneration`.
-- [ ] Arbitrate multi-touch pointer ownership without look/movement crossover.
-- [ ] Route all accepted actions through `cozyInput`.
-- [ ] Clear held touch actions on pointer cancel, blur, hidden, suspension and surface retirement.
-- [ ] Publish `DeviceControlAdmissionResult`.
-- [ ] Publish `FirstDeviceControlSurfaceFrameAck`.
-- [ ] Publish `FirstDeviceActionEffectFrameAck`.
-- [ ] Preserve keyboard and mouse behavior.
+- [ ] Define a versioned host-clock manifest.
+- [ ] Choose and document `fixedStepSeconds`.
+- [ ] Choose and document `maxStepsPerFrame`.
+- [ ] Choose and document `maxAccumulatedSeconds`.
+- [ ] Classify active, suspended, resumed, overload and invalid intervals.
+- [ ] Add a monotonic RAF timestamp adapter.
+- [ ] Add a fixed-step accumulator with residual retention.
+- [ ] Execute zero or more fixed engine steps per RAF callback.
+- [ ] Publish explicit discarded-time receipts when policy drops elapsed time.
+- [ ] Roll the clock generation on lifecycle suspension and resume.
+- [ ] Reject stale, duplicate and non-monotonic clock commands.
+- [ ] Bind scenario, player, Agriculture and Foraging to accepted simulation revisions.
+- [ ] Declare whether autosave cadence uses wall time or simulation time.
+- [ ] Publish `HostClockFrameResult`.
+- [ ] Publish interpolation alpha for presentation.
+- [ ] Publish `FirstClockAlignedFrameAck`.
+- [ ] Preserve preload suspension and direct-play behavior.
+- [ ] Preserve deterministic Node-domain tests.
 - [ ] Add source, built-output and Pages browser fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. action-map descriptor
-2. device and viewport classifier
-3. semantic touch-control DOM
-4. pointer-region ownership
-5. normalized axis, held and edge commands
-6. responsive safe-area layout
-7. control-surface admission result
-8. first control and action-effect frame acknowledgements
-9. browser device matrix
-10. source/build/Pages parity
+1. host-clock manifest
+2. timestamp and lifecycle classifier
+3. fixed-step accumulator
+4. bounded step budget
+5. clock command/result identity
+6. domain simulation revision binding
+7. autosave time-source policy
+8. render interpolation descriptor
+9. FirstClockAlignedFrameAck
+10. browser timing matrix
+11. source/build/Pages parity
 ```
 
 ## Target files
 
 ```txt
-game.html
 src/main-adventure.js
+src/adventure/composition-runtime.js
 src/adventure/runtime-domains.js
+src/adventure/resource-domains.js
 src/adventure/persistence-render-domains.js
-tests/device-controls-browser.fixture.mjs
+src/adventure/host-clock-domain.js
+tests/host-clock-browser.fixture.mjs
 tests/adventure-domains-smoke.mjs
 package.json
 .github/workflows/pages.yml
@@ -57,22 +65,24 @@ package.json
 ## Acceptance matrix
 
 ```txt
-desktop keyboard + mouse
-phone portrait touch
-phone landscape touch
-tablet touch
-hybrid touch + keyboard
-multi-touch move + look
-interact while moving
-sprint hold/cancel
-seed cycle/direct selection
-intro skip
-orientation change
-safe-area insets
-blur/hidden/suspend cleanup
+60 FPS steady state
+30 FPS steady state
+20 FPS clamp boundary
+10 FPS bounded catch-up
+5 FPS overload policy
+100 ms callback gap
+250 ms callback gap
+500 ms callback gap
+2000 ms callback gap
+preload suspension/resume
+visibility hidden/resume
+BFCache pagehide/pageshow
+clock generation rollover
+autosave cadence
+WebGPU/WebGL2 frame correlation
 source/build/Pages parity
 ```
 
 ## Ownership constraints
 
-The browser adapter owns event capture and semantic control projection. `cozyInput` owns normalized ordering and frame admission. Player, camera, Inventory, Agriculture, Foraging and interaction domains retain gameplay truth. Renderer and HUD surfaces only project accepted revisions.
+The browser host owns timestamp capture and lifecycle events. The host-clock authority owns elapsed-time admission, step extraction and overload receipts. NexusEngine and existing product DSKs retain simulation truth. The renderer only projects accepted revisions and interpolation descriptors.

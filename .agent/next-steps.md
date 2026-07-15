@@ -1,55 +1,55 @@
-# Next steps: MyCozyIsland embed-context route admission
+# Next steps: MyCozyIsland device-control action coverage
 
-**Timestamp:** `2026-07-14T20-05-56-04-00`  
-**Status:** `embed-context-route-admission-authority-audited`
+**Timestamp:** `2026-07-15T01-04-57-04-00`  
+**Status:** `device-control-surface-action-coverage-authority-audited`
 
 ## Summary
 
-Replace the boolean preload heuristic with a typed three-way context decision. Only an authenticated menu shell should be able to acquire the sleeping-preload lease.
+Add a semantic touch-control layer that emits the same normalized action meanings as keyboard input. Do not add a second gameplay path or mutate player state directly from DOM events.
 
 ## Plan ledger
 
-**Goal:** add the smallest authority that preserves direct play, authenticates shell preload and prevents silent frozen embeds.
+**Goal:** deliver complete keyboard, mouse and touch action coverage through one `cozyInput` authority.
 
-- [ ] Add `DocumentGeneration`, `EmbedContextId`, `ShellGeneration`, `PreloadToken` and `ParentOrigin`.
-- [ ] Parse query intent separately from window hierarchy.
-- [ ] Define `DirectPlay`, `ShellPreload` and `UnsupportedEmbed` outcomes.
-- [ ] Require a shell nonce and exact parent origin for preload mode.
-- [ ] Validate message schema, source, origin, sequence and replay.
-- [ ] Reject top-level `preload=1` without a parent shell.
-- [ ] Reject implicit iframe preload without a shell manifest.
-- [ ] Keep direct-play simulation, HUD, input and rendering active.
-- [ ] Give unsupported embeds an explicit standalone or visible failure policy.
-- [ ] Bind suspension and entry leases to the admitted context.
-- [ ] Publish `EmbedContextAdmissionResult`.
-- [ ] Publish `FirstContextAdmittedGameFrameAck`.
-- [ ] Preserve existing Core Startup, suspension, postcard, save and gameplay ownership.
+- [ ] Add a device-capability and viewport-control manifest.
+- [ ] Define the required action map: move, look, sprint, interact, cycle/select seed and skip intro.
+- [ ] Add a left movement stick and a separate right look region.
+- [ ] Add semantic interact, sprint and intro-skip buttons.
+- [ ] Convert seed slots into actionable, labelled controls.
+- [ ] Bind every control to a `ControlSurfaceGeneration`.
+- [ ] Arbitrate multi-touch pointer ownership without look/movement crossover.
+- [ ] Route all accepted actions through `cozyInput`.
+- [ ] Clear held touch actions on pointer cancel, blur, hidden, suspension and surface retirement.
+- [ ] Publish `DeviceControlAdmissionResult`.
+- [ ] Publish `FirstDeviceControlSurfaceFrameAck`.
+- [ ] Publish `FirstDeviceActionEffectFrameAck`.
+- [ ] Preserve keyboard and mouse behavior.
 - [ ] Add source, built-output and Pages browser fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. route-intent parser
-2. window-hierarchy classifier
-3. shell manifest and nonce
-4. parent-origin policy
-5. context admission result
-6. typed message channel
-7. context-bound suspension lease
-8. direct and unsupported policies
-9. first context-admitted frame
-10. browser and artifact parity matrix
+1. action-map descriptor
+2. device and viewport classifier
+3. semantic touch-control DOM
+4. pointer-region ownership
+5. normalized axis, held and edge commands
+6. responsive safe-area layout
+7. control-surface admission result
+8. first control and action-effect frame acknowledgements
+9. browser device matrix
+10. source/build/Pages parity
 ```
 
 ## Target files
 
 ```txt
-src/game-preload-bridge.js
-src/menu.js
-menu.html
 game.html
-tests/menu-game-shell-smoke.mjs
-tests/embed-context-browser.fixture.mjs
+src/main-adventure.js
+src/adventure/runtime-domains.js
+src/adventure/persistence-render-domains.js
+tests/device-controls-browser.fixture.mjs
+tests/adventure-domains-smoke.mjs
 package.json
 .github/workflows/pages.yml
 ```
@@ -57,23 +57,22 @@ package.json
 ## Acceptance matrix
 
 ```txt
-top-level game.html
-top-level game.html?preload=1
-admitted same-origin menu preload
-same-origin arbitrary iframe
-cross-origin iframe
-missing shell manifest
-wrong origin
-wrong source
-stale shell generation
-reused nonce
-duplicate/reordered message
-direct-play first frame
-preload resumed first frame
-unsupported-embed visible recovery
+desktop keyboard + mouse
+phone portrait touch
+phone landscape touch
+tablet touch
+hybrid touch + keyboard
+multi-touch move + look
+interact while moving
+sprint hold/cancel
+seed cycle/direct selection
+intro skip
+orientation change
+safe-area insets
+blur/hidden/suspend cleanup
 source/build/Pages parity
 ```
 
 ## Ownership constraints
 
-The context authority decides host relationship only. Core Startup remains the playable-readiness owner. The suspension authority owns engine and renderer sleep. Adventure kits own gameplay. The shell owns progress, Play, reveal, focus and history.
+The browser adapter owns event capture and semantic control projection. `cozyInput` owns normalized ordering and frame admission. Player, camera, Inventory, Agriculture, Foraging and interaction domains retain gameplay truth. Renderer and HUD surfaces only project accepted revisions.

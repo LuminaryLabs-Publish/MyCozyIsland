@@ -12,8 +12,10 @@
 - [x] Confirm zero higher-priority repositories.
 - [x] Select only MyCozyIsland by the oldest synchronized timestamp.
 - [x] Add the repo-local `2026-07-15T10-01-08-04-00` audit family.
-- [ ] Update the central MyCozyIsland ledger with the final repo-local documentation head.
-- [ ] Add the central internal change-log entry.
+- [x] Update the central MyCozyIsland ledger.
+- [x] Add the central internal change-log entry.
+- [x] Push both repositories only to `main`.
+- [x] Create no branch or pull request.
 
 ## Selection
 
@@ -24,12 +26,23 @@ reason: oldest synchronized eligible repository after new/missing/undocumented/r
 excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
-## Finding to reconcile
+## Reconciled finding
 
 The active adventure projects accepted simulation and interaction state into Three.js and DOM surfaces but has no owned game-audio domain, cue registry, unlock policy, preference state, spatial projection, lifecycle settlement or audible/audiovisual acknowledgement.
 
-## Target central status
+## Central records
+
+```txt
+repo-ledger/LuminaryLabs-Publish/MyCozyIsland.md
+internal-change-log/2026-07-15T10-01-08-04-00-my-cozy-island-game-audio-event-projection.md
+```
+
+## Central status
 
 ```txt
 game-audio-event-projection-authority-central-reconciled
 ```
+
+## Validation boundary
+
+Documentation only. No runtime, audio, gameplay, rendering, dependency, workflow or deployment behavior changed.

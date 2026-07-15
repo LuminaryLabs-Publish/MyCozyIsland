@@ -1,29 +1,29 @@
-# Current audit: MyCozyIsland device-control action coverage
+# Current audit: MyCozyIsland host-clock fixed-step simulation
 
-**Timestamp:** `2026-07-15T01-04-57-04-00`  
-**Status:** `device-control-surface-action-coverage-authority-audited`  
+**Timestamp:** `2026-07-15T05-00-28-04-00`  
+**Status:** `host-clock-fixed-step-simulation-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit repository head:** `eac42511d9c462fb2e68604288810687d12f9bbf`
+**Reviewed pre-audit repository head:** `a8733b506ecbd43190a280942790cdaa0bd1b983`
 
 ## Summary
 
-MyCozyIsland was selected as the oldest synchronized eligible repository after all higher-priority classes were cleared. The current source renders a responsive full-screen adventure and accepts pointer drag, but only keyboard commands can produce movement, sprint, interaction, seed control and intro skipping.
+MyCozyIsland was selected as the oldest synchronized eligible repository after all higher-priority classes were cleared. The browser RAF host converts each callback gap into one simulation delta capped at `0.05`; the composition runtime caps the value to `0.05` again before `engine.tick()`.
 
-On viewports below `760px`, the written controls are hidden. The bottom hotbar has `pointer-events:none`, seed entries are non-actionable `div` elements, and canvas pointer handling emits only look deltas. A touch player can wait through the time-driven intro and rotate the camera, but cannot traverse the island or perform Agriculture and Foraging actions.
+Scenario time, intro progress, player movement, stamina, Agriculture growth, Foraging respawn and the autosave accumulator consume admitted simulation time. Below 20 FPS, excess wall time is discarded rather than accumulated, so the adventure enters implicit slow motion without an explicit host-clock result.
 
 ## Plan ledger
 
-**Goal:** admit one complete device action map before a device class is considered playable.
+**Goal:** make elapsed-time admission, deterministic fixed steps, overload handling, time-consumer binding and visible-frame proof one coherent authority.
 
 - [x] Compare 11 Publish repositories.
 - [x] Exclude TheCavalryOfRome.
 - [x] Confirm ten eligible ledgers and root `.agent` states.
 - [x] Confirm all eligible heads match documented heads.
 - [x] Select only MyCozyIsland.
-- [x] Identify the full interaction loop and domains.
+- [x] Identify the complete clock interaction loop and all time consumers.
 - [x] Preserve all kits, adapters and offered services.
-- [x] Define 21 device-control surfaces.
+- [x] Define 20 host-clock authority surfaces.
 - [x] Change documentation only.
 - [ ] Implement and execute the authority.
 
@@ -38,60 +38,51 @@ new or ledger-missing: 0
 root-agent-missing: 0
 runtime-ahead: 0
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior central timestamp: 2026-07-14T20-05-56-04-00
+prior central timestamp: 2026-07-15T01-04-57-04-00
+next oldest: IntoTheMeadow at 2026-07-15T01-39-38-04-00
 ```
 
 ## Source-backed finding
 
-`game.html` defines a focusable application canvas with `touch-action:none`. Its narrow-layout media rule hides `#controls`. The seed hotbar is visually present but sits inside a `pointer-events:none` HUD and uses non-focusable `div` slots.
-
-`main-adventure.js` maps pointer events to camera drag and maps global keyboard events to `cozyInput`. `runtime-domains.js` derives:
+`src/main-adventure.js` computes:
 
 ```txt
-movement: KeyW/KeyA/KeyS/KeyD
-sprint: ShiftLeft/ShiftRight
-interact: KeyE
-cycle seed: KeyQ
-select seed: Digit1-Digit4
-intro skip: Space/Enter
-look: pointer deltas
+frameMs = min(100, max(0, now - last))
+dt = min(0.05, frameMs / 1000)
 ```
 
-No touch command carries movement axes or action semantics.
+It executes one adventure tick and adds that same `dt` to the autosave accumulator.
+
+`src/adventure/composition-runtime.js` clamps `deltaSeconds` to `0.05` again before calling `engine.tick()`.
+
+`src/adventure/runtime-domains.js` uses `world.__nexusClock.delta` for the scenario clock, intro, movement, distance and stamina. `src/adventure/resource-domains.js` uses it for wild-resource respawn. Agriculture growth is installed into the same engine simulation schedule.
+
+At 10 FPS, 100 ms wall intervals become 50 ms engine intervals. Ten callbacks advance about 0.5 simulation seconds during one wall second.
 
 ## Interaction loop
 
 ```txt
-menu and preload
-  -> game entry
-  -> keyboard/pointer browser adapter
-  -> cozyInput queue and deterministic input frame
-  -> player, camera and interaction systems
-  -> render snapshot, HUD and auto-save
-```
-
-Touch loop:
-
-```txt
-pointerdown/pointermove
-  -> camera-look command only
-  -> no movement or action command
-  -> intro eventually ends from elapsed time
-  -> first-person player remains unable to complete the game loop
+RAF timestamp
+  -> local frame-gap clamp
+  -> local simulation-delta clamp
+  -> composition delta clamp
+  -> NexusEngine tick
+  -> input, scenario, player, Agriculture, Foraging
+  -> interaction, camera and render snapshot
+  -> physical render passes
+  -> autosave accumulator
 ```
 
 ## Domains and census
 
 ```txt
-device capability and viewport policy
-control-surface identity, semantics and responsive layout
-gesture arbitration and pointer capture
-normalized input queue and frame admission
-player movement, sprint stamina and intro
-camera look and first-person view
-interaction, Inventory, Agriculture and Foraging
-HUD, rendering and frame acknowledgements
-save, validation, build, Pages and central tracking
+browser RAF and lifecycle
+host-clock admission and fixed-step policy
+Core Startup, Object and Transaction Ledger
+world, input, Inventory, Agriculture and Foraging
+player, scenario, interaction, camera and save
+render snapshots, atmosphere, ocean and post processing
+menu, preload, HUD, diagnostics, validation and Pages
 
 engine-installed kits: 14
 cataloged kits: 50
@@ -99,7 +90,7 @@ additional composition kits: 1
 source-backed kit surfaces: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned device-control surfaces: 21
+planned host-clock surfaces: 20
 ```
 
 The complete kit-by-kit service inventory is preserved in the timestamped tracker and `.agent/kit-registry.json`.
@@ -107,29 +98,27 @@ The complete kit-by-kit service inventory is preserved in the timestamped tracke
 ## Required authority
 
 ```txt
-cozy-island-device-control-surface-action-coverage-authority-domain
+cozy-island-host-clock-fixed-step-simulation-authority-domain
 ```
 
 ```txt
-DeviceControlAdmissionCommand
-  -> bind document, viewport, device capability,
-     control generation and action-map revision
-  -> resolve the required gameplay action set
-  -> require move, look, sprint, interact,
-     seed cycle/select and intro-skip producers
-  -> prepare semantic keyboard, pointer and touch surfaces
-  -> arbitrate movement, look and action gestures
-  -> route every action through cozyInput
-  -> reject stale, duplicate or conflicting control work
-  -> publish DeviceControlAdmissionResult
-  -> publish FirstDeviceControlSurfaceFrameAck
-  -> publish FirstDeviceActionEffectFrameAck
+HostClockFrameCommand
+  -> bind document, runtime, RAF and clock generations
+  -> admit a monotonic timestamp interval
+  -> classify active, suspended, resumed and overload states
+  -> accumulate elapsed time
+  -> execute bounded deterministic fixed steps
+  -> retain residual time or publish a discarded-time receipt
+  -> publish HostClockFrameResult
+  -> bind scenario, player, Agriculture, Foraging and save consumers
+  -> render the accepted simulation revision
+  -> publish FirstClockAlignedFrameAck
 ```
 
 ## Existing proof boundary
 
-The package runs Node source and domain smokes. No current fixture launches a coarse-pointer browser, exercises touch controls, validates semantic hit targets or proves a touch action reaches authoritative gameplay and the next frame.
+Node smokes call `adventure.tick(dt)` directly and prove deterministic domain outcomes for caller-selected deltas. They do not launch RAF, throttle callback frequency, test long gaps, validate catch-up policy, inspect clock receipts or prove a matching rendered frame.
 
 ## Validation boundary
 
-Documentation only. Runtime JavaScript, HTML, CSS, input behavior, gameplay, rendering, tests, dependencies, workflow and deployment behavior were not changed.
+Documentation only. Runtime JavaScript, HTML, CSS, simulation behavior, gameplay, rendering, tests, dependencies, workflows and deployment behavior were not changed.

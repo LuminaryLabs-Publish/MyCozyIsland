@@ -1,29 +1,29 @@
-# Current audit: MyCozyIsland host-clock fixed-step simulation
+# Current audit: MyCozyIsland game-audio event projection
 
-**Timestamp:** `2026-07-15T05-00-28-04-00`  
-**Status:** `host-clock-fixed-step-simulation-authority-audited`  
+**Timestamp:** `2026-07-15T10-01-08-04-00`  
+**Status:** `game-audio-event-projection-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit repository head:** `a8733b506ecbd43190a280942790cdaa0bd1b983`
+**Reviewed pre-audit documentation head:** `cefc24184fc86d431a70fcce4a342d26b3b3a3d7`
 
 ## Summary
 
-MyCozyIsland was selected as the oldest synchronized eligible repository after all higher-priority classes were cleared. The browser RAF host converts each callback gap into one simulation delta capped at `0.05`; the composition runtime caps the value to `0.05` again before `engine.tick()`.
+MyCozyIsland was selected after the full Publish comparison found no new, missing, undocumented, root-agent-missing or runtime-ahead eligible repository. Its active gameplay loop has deterministic movement and interaction state, Agriculture and Foraging results, renderer-neutral snapshots, Three.js presentation, HUD, preload and lifecycle adapters, but no owned game-audio projection boundary.
 
-Scenario time, intro progress, player movement, stamina, Agriculture growth, Foraging respawn and the autosave accumulator consume admitted simulation time. Below 20 FPS, excess wall time is discarded rather than accumulated, so the adventure enters implicit slow motion without an explicit host-clock result.
+The browser game host renders accepted state and publishes `globalThis.CozyIsland`. It creates no AudioContext or HTMLAudio owner and publishes no semantic cue, audible result or audiovisual convergence acknowledgement.
 
 ## Plan ledger
 
-**Goal:** make elapsed-time admission, deterministic fixed steps, overload handling, time-consumer binding and visible-frame proof one coherent authority.
+**Goal:** make game audio a result-driven, lifecycle-safe projection of accepted simulation state.
 
 - [x] Compare 11 Publish repositories.
 - [x] Exclude TheCavalryOfRome.
 - [x] Confirm ten eligible ledgers and root `.agent` states.
-- [x] Confirm all eligible heads match documented heads.
+- [x] Confirm all eligible repositories remain synchronized.
 - [x] Select only MyCozyIsland.
-- [x] Identify the complete clock interaction loop and all time consumers.
-- [x] Preserve all kits, adapters and offered services.
-- [x] Define 20 host-clock authority surfaces.
+- [x] Identify the complete menu, preload, gameplay, render and lifecycle loop.
+- [x] Preserve all kits, adapters and services.
+- [x] Define 22 game-audio authority surfaces.
 - [x] Change documentation only.
 - [ ] Implement and execute the authority.
 
@@ -36,89 +36,89 @@ central ledgers: 10
 root .agent states: 10
 new or ledger-missing: 0
 root-agent-missing: 0
+undocumented: 0
 runtime-ahead: 0
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior central timestamp: 2026-07-15T01-04-57-04-00
-next oldest: IntoTheMeadow at 2026-07-15T01-39-38-04-00
+prior central timestamp: 2026-07-15T05-00-28-04-00
 ```
 
 ## Source-backed finding
 
-`src/main-adventure.js` computes:
+`src/adventure/runtime-domains.js` exposes accepted input frames, player movement and surface state, contextual target state and `lastAction` results. Agriculture and Foraging settle reusable domain outcomes. `src/main-adventure.js` consumes camera, illumination, gameplay, HUD and save descriptors and renders the complete frame. Neither it nor the active registry defines a game-audio owner.
 
 ```txt
-frameMs = min(100, max(0, now - last))
-dt = min(0.05, frameMs / 1000)
+AudioContext owner: absent
+HTMLAudio owner: absent
+semantic cue registry: absent
+master/category volume: absent
+mute preference: absent
+listener/source projection: absent
+ambience lifecycle: absent
+cue deduplication: absent
+voice budget/pool: absent
+FirstAudibleCueAck: absent
+FirstAudioVisualConvergenceAck: absent
 ```
-
-It executes one adventure tick and adds that same `dt` to the autosave accumulator.
-
-`src/adventure/composition-runtime.js` clamps `deltaSeconds` to `0.05` again before calling `engine.tick()`.
-
-`src/adventure/runtime-domains.js` uses `world.__nexusClock.delta` for the scenario clock, intro, movement, distance and stamina. `src/adventure/resource-domains.js` uses it for wild-resource respawn. Agriculture growth is installed into the same engine simulation schedule.
-
-At 10 FPS, 100 ms wall intervals become 50 ms engine intervals. Ten callbacks advance about 0.5 simulation seconds during one wall second.
 
 ## Interaction loop
 
 ```txt
-RAF timestamp
-  -> local frame-gap clamp
-  -> local simulation-delta clamp
-  -> composition delta clamp
-  -> NexusEngine tick
-  -> input, scenario, player, Agriculture, Foraging
-  -> interaction, camera and render snapshot
-  -> physical render passes
-  -> autosave accumulator
+accepted user input
+  -> cozy input frame
+  -> player, scenario, Agriculture, Foraging and interaction settlement
+  -> camera, HUD and render snapshots
+  -> visual frame and save cadence
+  -> no game-audio event or audible receipt
 ```
 
 ## Domains and census
 
 ```txt
-browser RAF and lifecycle
-host-clock admission and fixed-step policy
+browser routes, iframe, messaging, focus, input, RAF, resize and lifecycle
 Core Startup, Object and Transaction Ledger
-world, input, Inventory, Agriculture and Foraging
-player, scenario, interaction, camera and save
-render snapshots, atmosphere, ocean and post processing
-menu, preload, HUD, diagnostics, validation and Pages
+world, Inventory, Agriculture, Foraging, player, scenario and interaction
+camera, save and render snapshots
+WebGPU/WebGL2 world, atmosphere, ocean and post processing
+menu, preload, HUD and diagnostics
+browser audio capability, unlock, semantic cues, ambience, spatial projection and retirement
+validation, build, Pages and central tracking
 
 engine-installed kits: 14
 cataloged kits: 50
 additional composition kits: 1
 source-backed kit surfaces: 65
 browser/product adapters: 5
-total documented surfaces: 70
-planned host-clock surfaces: 20
+total implemented surfaces: 70
+planned game-audio surfaces: 22
 ```
 
-The complete kit-by-kit service inventory is preserved in the timestamped tracker and `.agent/kit-registry.json`.
+The complete kit-by-kit service inventory is preserved in the timestamped tracker and existing machine registry.
 
 ## Required authority
 
 ```txt
-cozy-island-host-clock-fixed-step-simulation-authority-domain
+cozy-island-game-audio-event-projection-authority-domain
 ```
 
 ```txt
-HostClockFrameCommand
-  -> bind document, runtime, RAF and clock generations
-  -> admit a monotonic timestamp interval
-  -> classify active, suspended, resumed and overload states
-  -> accumulate elapsed time
-  -> execute bounded deterministic fixed steps
-  -> retain residual time or publish a discarded-time receipt
-  -> publish HostClockFrameResult
-  -> bind scenario, player, Agriculture, Foraging and save consumers
-  -> render the accepted simulation revision
-  -> publish FirstClockAlignedFrameAck
+AudioProjectionAdmissionCommand
+  -> bind document, runtime, simulation, camera and audio-policy revisions
+  -> observe capability and accepted user-gesture unlock
+  -> consume accepted semantic results rather than raw input
+  -> resolve stable UI, movement, Agriculture, Foraging, ambience and transition cues
+  -> deduplicate repeated snapshots and replayed results
+  -> project listener and source transforms
+  -> enforce mute, volume, pooling, priority and voice budgets
+  -> suspend, resume or retire on preload, visibility, pagehide and route replacement
+  -> publish AudioProjectionResult
+  -> publish FirstAudibleCueAck
+  -> publish FirstAudioVisualConvergenceAck
 ```
 
 ## Existing proof boundary
 
-Node smokes call `adventure.tick(dt)` directly and prove deterministic domain outcomes for caller-selected deltas. They do not launch RAF, throttle callback frequency, test long gaps, validate catch-up policy, inspect clock receipts or prove a matching rendered frame.
+Node smoke tests validate deterministic domain outcomes. They do not instantiate browser audio, unlock a context, verify semantic cue ordering, test hidden-preload silence, inspect lifecycle retirement or correlate an audible result with a rendered frame.
 
 ## Validation boundary
 
-Documentation only. Runtime JavaScript, HTML, CSS, simulation behavior, gameplay, rendering, tests, dependencies, workflows and deployment behavior were not changed.
+Documentation only. Runtime JavaScript, HTML, CSS, gameplay, rendering, audio, tests, dependencies, workflows and deployment were not changed.

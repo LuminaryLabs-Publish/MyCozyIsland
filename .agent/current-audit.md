@@ -1,32 +1,31 @@
-# Current audit: MyCozyIsland embed-context route admission
+# Current audit: MyCozyIsland device-control action coverage
 
-**Timestamp:** `2026-07-14T20-05-56-04-00`  
-**Status:** `embed-context-route-admission-authority-audited`  
+**Timestamp:** `2026-07-15T01-04-57-04-00`  
+**Status:** `device-control-surface-action-coverage-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit repository head:** `4a382d17d13425a7a5f01ef7933248ba9e0058b1`
+**Reviewed pre-audit repository head:** `eac42511d9c462fb2e68604288810687d12f9bbf`
 
 ## Summary
 
-MyCozyIsland was selected by the oldest synchronized documentation timestamp after the full Publish inventory, central ledger coverage, root `.agent` state and current heads were compared. The active finding is that the game decides background-preload ownership from `preload=1 OR window.parent !== window` before proving shell identity or transport.
+MyCozyIsland was selected as the oldest synchronized eligible repository after all higher-priority classes were cleared. The current source renders a responsive full-screen adventure and accepts pointer drag, but only keyboard commands can produce movement, sprint, interaction, seed control and intro skipping.
 
-A top-level `game.html?preload=1` document has no parent shell but can still freeze once Core Startup becomes playable. Any iframe is also treated as a preload even without a shell request. The child posts to `location.origin`, which assumes a same-origin parent, while inbound commands validate source but not origin, schema, nonce or generation.
+On viewports below `760px`, the written controls are hidden. The bottom hotbar has `pointer-events:none`, seed entries are non-actionable `div` elements, and canvas pointer handling emits only look deltas. A touch player can wait through the time-driven intro and rotate the camera, but cannot traverse the island or perform Agriculture and Foraging actions.
 
 ## Plan ledger
 
-**Goal:** make route and embed-context admission the prerequisite for shell-controlled sleep, direct play or recoverable unsupported embedding.
+**Goal:** admit one complete device action map before a device class is considered playable.
 
-- [x] Compare all 11 Publish repositories.
+- [x] Compare 11 Publish repositories.
 - [x] Exclude TheCavalryOfRome.
 - [x] Confirm ten eligible ledgers and root `.agent` states.
-- [x] Confirm all eligible heads match their documented heads.
-- [x] Select only MyCozyIsland as the oldest synchronized repository.
-- [x] Inspect shell, bridge, route, startup and source-test files.
-- [x] Identify the complete interaction loop and all domains.
-- [x] Preserve 65 kits and five adapters with their service inventory.
-- [x] Define 22 context-admission surfaces.
+- [x] Confirm all eligible heads match documented heads.
+- [x] Select only MyCozyIsland.
+- [x] Identify the full interaction loop and domains.
+- [x] Preserve all kits, adapters and offered services.
+- [x] Define 21 device-control surfaces.
 - [x] Change documentation only.
-- [ ] Implement and run the authority.
+- [ ] Implement and execute the authority.
 
 ## Selection comparison
 
@@ -39,127 +38,98 @@ new or ledger-missing: 0
 root-agent-missing: 0
 runtime-ahead: 0
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior central timestamp: 2026-07-14T15-01-54-04-00
+prior central timestamp: 2026-07-14T20-05-56-04-00
 ```
 
 ## Source-backed finding
 
-`src/game-preload-bridge.js` derives:
+`game.html` defines a focusable application canvas with `touch-action:none`. Its narrow-layout media rule hides `#controls`. The seed hotbar is visually present but sits inside a `pointer-events:none` HUD and uses non-focusable `div` slots.
+
+`main-adventure.js` maps pointer events to camera drag and maps global keyboard events to `cozyInput`. `runtime-domains.js` derives:
 
 ```txt
-embeddedPreload = query preload=1 OR framed window
+movement: KeyW/KeyA/KeyS/KeyD
+sprint: ShiftLeft/ShiftRight
+interact: KeyE
+cycle seed: KeyQ
+select seed: Digit1-Digit4
+intro skip: Space/Enter
+look: pointer deltas
 ```
 
-It sets background-preload DOM state, polls startup, and freezes the engine and renderer whenever `descriptor.playable` is true. Entry depends on a parent message. No context result proves that the parent exists, shares an admitted origin, has the expected shell generation or owns the matching preload request.
-
-### Top-level preload query
-
-```txt
-game.html?preload=1
-  -> embeddedPreload true
-  -> window.parent === window
-  -> outgoing post() returns
-  -> playable game freezes
-  -> no shell receives ready
-  -> no normal mechanism sends enter
-```
-
-### Implicit iframe preload
-
-```txt
-iframe src=game.html
-  -> window.parent !== window
-  -> embeddedPreload true without query intent
-  -> playable game freezes
-  -> arbitrary parent is treated as shell-shaped
-```
-
-### Cross-origin parent
-
-```txt
-child targetOrigin = child location.origin
-cross-origin parent origin differs
-  -> readiness posts are not delivered to that parent
-  -> child still classifies itself as preload
-  -> inbound source-only admission is incomplete
-```
+No touch command carries movement axes or action semantics.
 
 ## Interaction loop
 
 ```txt
-root redirect
-  -> postcard menu
-  -> hidden iframe game startup
-  -> playable readiness
-  -> context-blind sleep
-  -> parent entry message
-  -> restore and reveal
-  -> walk, farm, forage, grow, harvest and save
+menu and preload
+  -> game entry
+  -> keyboard/pointer browser adapter
+  -> cozyInput queue and deterministic input frame
+  -> player, camera and interaction systems
+  -> render snapshot, HUD and auto-save
 ```
 
-## Domains and kit census
+Touch loop:
 
 ```txt
-route intent and document generation
-window hierarchy and iframe embedding
-shell identity, parent origin and nonce
-message schema, sequence and replay
-Core Startup and continuation
-engine/scheduler suspension
-renderer-loop suspension
-menu progress, Play, focus, history and reveal
-first context-admitted frame
-world/player/camera/input/interaction
-Inventory/Agriculture/Foraging
-save capture/validation/migration/restore/rollback
-WebGPU/WebGL2 presentation and quality
-validation/build/Pages/central tracking
+pointerdown/pointermove
+  -> camera-look command only
+  -> no movement or action command
+  -> intro eventually ends from elapsed time
+  -> first-person player remains unable to complete the game loop
+```
+
+## Domains and census
+
+```txt
+device capability and viewport policy
+control-surface identity, semantics and responsive layout
+gesture arbitration and pointer capture
+normalized input queue and frame admission
+player movement, sprint stamina and intro
+camera look and first-person view
+interaction, Inventory, Agriculture and Foraging
+HUD, rendering and frame acknowledgements
+save, validation, build, Pages and central tracking
 
 engine-installed kits: 14
 cataloged kits: 50
-additional composition kit: 1
-source-backed kits: 65
+additional composition kits: 1
+source-backed kit surfaces: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned authority surfaces: 22
+planned device-control surfaces: 21
 ```
 
-The complete per-kit service inventory is in the timestamped tracker and `.agent/kit-registry.json`.
+The complete kit-by-kit service inventory is preserved in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Required authority
 
 ```txt
-cozy-island-embed-context-route-admission-authority-domain
+cozy-island-device-control-surface-action-coverage-authority-domain
 ```
 
 ```txt
-EmbedContextAdmissionCommand
-  -> bind URL, query, window hierarchy and document generation
-  -> resolve parent window, origin, shell manifest and nonce
-  -> classify DirectPlay, ShellPreload or UnsupportedEmbed
-  -> reject impossible or stale combinations
-  -> publish EmbedContextAdmissionResult
-
-ShellPreloadAccepted
-  -> establish the revisioned channel
-  -> bind Core Startup and suspension to the shell generation
-  -> permit sleep and correlated entry
-
-DirectPlayAccepted
-  -> keep simulation, input, HUD and rendering active
-
-UnsupportedEmbedResolved
-  -> apply an explicit standalone or visible failure policy
-  -> never silently freeze
-
-all accepted contexts
-  -> publish FirstContextAdmittedGameFrameAck
+DeviceControlAdmissionCommand
+  -> bind document, viewport, device capability,
+     control generation and action-map revision
+  -> resolve the required gameplay action set
+  -> require move, look, sprint, interact,
+     seed cycle/select and intro-skip producers
+  -> prepare semantic keyboard, pointer and touch surfaces
+  -> arbitrate movement, look and action gestures
+  -> route every action through cozyInput
+  -> reject stale, duplicate or conflicting control work
+  -> publish DeviceControlAdmissionResult
+  -> publish FirstDeviceControlSurfaceFrameAck
+  -> publish FirstDeviceActionEffectFrameAck
 ```
 
 ## Existing proof boundary
 
-The shell smoke parses source and checks regex markers. It does not launch a browser or execute top-level preload, arbitrary iframe, cross-origin iframe, wrong-origin, missing-parent, handshake, recovery or first-frame cases.
+The package runs Node source and domain smokes. No current fixture launches a coarse-pointer browser, exercises touch controls, validates semantic hit targets or proves a touch action reaches authoritative gameplay and the next frame.
 
 ## Validation boundary
 
-Documentation only. Runtime JavaScript, HTML, CSS, gameplay, rendering, tests, dependencies, scripts, workflows and deployment behavior were not changed.
+Documentation only. Runtime JavaScript, HTML, CSS, input behavior, gameplay, rendering, tests, dependencies, workflow and deployment behavior were not changed.

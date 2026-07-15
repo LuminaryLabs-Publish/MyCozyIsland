@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 97,
-  "lastUpdated": "2026-07-14T20-05-56-04-00",
+  "schemaVersion": 98,
+  "lastUpdated": "2026-07-15T01-04-57-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "embed-context-route-admission-authority-audited",
-  "technicalStatus": "embed-context-route-admission-authority-audited",
+  "status": "device-control-surface-action-coverage-authority-audited",
+  "technicalStatus": "device-control-surface-action-coverage-authority-audited",
   "retainedStatuses": [
+    "embed-context-route-admission-authority-audited",
     "preload-suspension-lease-resume-frame-authority-audited",
     "menu-postcard-atlas-frame-admission-audited",
     "menu-failure-game-bootstrap-fallback-authority-audited",
@@ -21,7 +22,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "explicit direct-play, admitted-shell-preload and unsupported-embed context settlement before suspension, with parent-origin handshake and first context-admitted frame proof",
+  "currentFocus": "complete semantic keyboard, pointer and touch action coverage through one normalized cozyInput path, with gesture arbitration and first control/action frame proof",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -32,8 +33,8 @@
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
     "reason": "oldest synchronized central documentation timestamp after all higher-priority classes were cleared",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "priorCentralTimestamp": "2026-07-14T15-01-54-04-00",
-    "priorRepoLocalDocumentationHead": "4a382d17d13425a7a5f01ef7933248ba9e0058b1",
+    "priorCentralTimestamp": "2026-07-14T20-05-56-04-00",
+    "priorRepoLocalDocumentationHead": "eac42511d9c462fb2e68604288810687d12f9bbf",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -49,7 +50,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedEmbedContextSurfaces": 22
+    "plannedDeviceControlSurfaces": 21
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","waiting","working","ready","failure","retry-fallback-descriptor","continuation-selection","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -129,39 +130,41 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress-projection","play-gate","entry-request","crossfade","history-transition","focus-transfer","fallback-reveal","error-display"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["startup-descriptor-polling","embed-context-classification","parent-messaging","simulation-freeze","simulation-resume","presentation-sleep","presentation-resume","player-entry-preparation","entry-acknowledgement"]}
   ],
-  "embedContextState": {
-    "classifier": "preload-query-or-any-iframe",
-    "topLevelPreloadTransport": "missing",
-    "implicitIframePreload": true,
-    "outgoingTargetOrigin": "child-location-origin",
-    "inboundOriginValidation": "missing",
-    "shellHandshake": "missing",
-    "contextAdmissionResult": "missing",
-    "directPlayResult": "missing",
-    "unsupportedEmbedResult": "missing",
-    "firstContextAdmittedGameFrameAck": "missing"
+  "deviceControlState": {
+    "narrowControlInstructions": "hidden-below-760px",
+    "hotbarPointerPolicy": "pointer-events-none",
+    "seedControlSemantics": "non-actionable-divs",
+    "touchLook": true,
+    "touchMovement": false,
+    "touchSprint": false,
+    "touchInteract": false,
+    "touchSeedCycle": false,
+    "touchSeedSelect": false,
+    "touchIntroSkip": false,
+    "deviceControlAdmissionResult": "missing",
+    "firstDeviceControlSurfaceFrameAck": "missing",
+    "firstDeviceActionEffectFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-embed-context-route-admission-authority-domain",
+  "plannedParentDomain": "cozy-island-device-control-surface-action-coverage-authority-domain",
   "plannedKits": [
-    "embed-context-manifest-kit","route-intent-parser-kit","window-hierarchy-classifier-kit","shell-origin-policy-kit","shell-nonce-kit","parent-window-identity-kit","embed-context-admission-kit","direct-play-admission-kit","shell-preload-admission-kit","unsupported-embed-policy-kit","message-channel-handshake-kit","message-schema-kit","message-sequence-kit","preload-token-kit","context-bound-suspension-kit","context-bound-entry-kit","context-failure-projection-kit","direct-route-recovery-kit","first-context-frame-ack-kit","embed-context-diagnostics-kit","embed-context-browser-fixture-kit","source-build-pages-context-parity-kit"
+    "device-capability-manifest-kit","viewport-control-policy-kit","action-map-descriptor-kit","touch-control-layout-kit","virtual-movement-stick-kit","touch-look-surface-kit","touch-sprint-action-kit","touch-interact-action-kit","touch-seed-cycle-action-kit","touch-seed-select-action-kit","touch-intro-skip-action-kit","semantic-control-surface-kit","pointer-gesture-arbitration-kit","control-generation-kit","device-control-admission-kit","normalized-control-command-kit","stale-control-rejection-kit","first-control-surface-frame-ack-kit","first-device-action-frame-ack-kit","device-control-browser-fixture-kit","source-build-pages-device-parity-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-14T20-05-56-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-14T20-05-56-04-00.md",
-    ".agent/architecture-audit/2026-07-14T20-05-56-04-00-embed-context-route-admission-dsk-map.md",
-    ".agent/render-audit/2026-07-14T20-05-56-04-00-frozen-embedded-game-visible-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-14T20-05-56-04-00-unadmitted-embed-preload-entry-loop.md",
-    ".agent/interaction-audit/2026-07-14T20-05-56-04-00-embed-context-command-result-map.md",
-    ".agent/embed-context-audit/2026-07-14T20-05-56-04-00-top-level-query-iframe-parent-contract.md",
-    ".agent/deploy-audit/2026-07-14T20-05-56-04-00-embed-context-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-14T20-05-56-04-00-oldest-selection-embed-context-reconciliation.md"
+    ".agent/trackers/2026-07-15T01-04-57-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-15T01-04-57-04-00.md",
+    ".agent/architecture-audit/2026-07-15T01-04-57-04-00-device-control-surface-action-coverage-dsk-map.md",
+    ".agent/render-audit/2026-07-15T01-04-57-04-00-touch-controls-visible-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-15T01-04-57-04-00-touch-player-immobility-loop.md",
+    ".agent/interaction-audit/2026-07-15T01-04-57-04-00-device-control-command-result-map.md",
+    ".agent/device-control-audit/2026-07-15T01-04-57-04-00-touch-action-layout-gesture-contract.md",
+    ".agent/deploy-audit/2026-07-15T01-04-57-04-00-device-control-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-15T01-04-57-04-00-oldest-selection-device-control-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
-    "combinedStatusChecksReported": 0,
     "npmTestRun": false,
-    "browserContextFixturesRun": false,
+    "deviceBrowserFixturesRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false,

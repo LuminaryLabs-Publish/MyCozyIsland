@@ -1,62 +1,67 @@
-# Next steps: MyCozyIsland host-clock fixed-step simulation
+# Next steps: MyCozyIsland game-audio event projection
 
-**Timestamp:** `2026-07-15T05-00-28-04-00`  
-**Status:** `host-clock-fixed-step-simulation-authority-audited`
+**Timestamp:** `2026-07-15T10-01-08-04-00`  
+**Status:** `game-audio-event-projection-authority-audited`
 
 ## Summary
 
-Add one application-owned fixed-step accumulator between RAF timestamps and NexusEngine ticks. Preserve all existing gameplay DSKs and route accepted fixed steps through the current engine schedule.
+Add one semantic audio domain between accepted gameplay results and a lifecycle-owned WebAudio adapter. Do not trigger success sounds directly from keyboard, pointer or touch handlers.
 
 ## Plan ledger
 
-**Goal:** deliver stable wall-time pacing, bounded overload handling and clock-aligned presentation without adding a second simulation path.
+**Goal:** deliver audible gameplay with deterministic cue identity, browser lifecycle safety and audiovisual frame evidence.
 
-- [ ] Define a versioned host-clock manifest.
-- [ ] Choose and document `fixedStepSeconds`.
-- [ ] Choose and document `maxStepsPerFrame`.
-- [ ] Choose and document `maxAccumulatedSeconds`.
-- [ ] Classify active, suspended, resumed, overload and invalid intervals.
-- [ ] Add a monotonic RAF timestamp adapter.
-- [ ] Add a fixed-step accumulator with residual retention.
-- [ ] Execute zero or more fixed engine steps per RAF callback.
-- [ ] Publish explicit discarded-time receipts when policy drops elapsed time.
-- [ ] Roll the clock generation on lifecycle suspension and resume.
-- [ ] Reject stale, duplicate and non-monotonic clock commands.
-- [ ] Bind scenario, player, Agriculture and Foraging to accepted simulation revisions.
-- [ ] Declare whether autosave cadence uses wall time or simulation time.
-- [ ] Publish `HostClockFrameResult`.
-- [ ] Publish interpolation alpha for presentation.
-- [ ] Publish `FirstClockAlignedFrameAck`.
-- [ ] Preserve preload suspension and direct-play behavior.
-- [ ] Preserve deterministic Node-domain tests.
+- [ ] Define `AudioPolicyDescriptor` and versioned audio generation identity.
+- [ ] Define browser capability and user-gesture unlock results.
+- [ ] Define stable semantic event IDs for UI, movement, Agriculture, Foraging and transitions.
+- [ ] Add a cue registry with category, priority, overlap and spatial policy.
+- [ ] Project movement cues from accepted traveled distance and surface kind.
+- [ ] Project Agriculture and Foraging cues from accepted results/events.
+- [ ] Add ocean, wind and foliage ambience descriptors.
+- [ ] Bind listener transforms to accepted camera revisions.
+- [ ] Add duplicate suppression for repeated snapshots and replayed results.
+- [ ] Add master, interface, player, world and ambience buses.
+- [ ] Add mute and category-volume persistence.
+- [ ] Add pooled one-shot voices and bounded category budgets.
+- [ ] Keep hidden preload silent.
+- [ ] Suspend or reduce audio on hidden-document policy.
+- [ ] Retire all sources and nodes exactly once on pagehide or route replacement.
+- [ ] Publish `AudioProjectionResult`.
+- [ ] Publish `FirstAudibleCueAck`.
+- [ ] Publish `FirstAudioVisualConvergenceAck`.
 - [ ] Add source, built-output and Pages browser fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. host-clock manifest
-2. timestamp and lifecycle classifier
-3. fixed-step accumulator
-4. bounded step budget
-5. clock command/result identity
-6. domain simulation revision binding
-7. autosave time-source policy
-8. render interpolation descriptor
-9. FirstClockAlignedFrameAck
-10. browser timing matrix
-11. source/build/Pages parity
+1. audio capability and policy descriptors
+2. unlock command/result
+3. semantic event identity
+4. cue registry
+5. WebAudio context and bus adapter
+6. UI and transition cues
+7. movement and surface footsteps
+8. Agriculture and Foraging cues
+9. ocean/wind ambience
+10. listener and source transforms
+11. deduplication and voice budgets
+12. lifecycle suspension and retirement
+13. audible and audiovisual acknowledgements
+14. source/build/Pages fixture matrix
 ```
 
 ## Target files
 
 ```txt
-src/main-adventure.js
+src/adventure/audio-domains.js
 src/adventure/composition-runtime.js
 src/adventure/runtime-domains.js
 src/adventure/resource-domains.js
 src/adventure/persistence-render-domains.js
-src/adventure/host-clock-domain.js
-tests/host-clock-browser.fixture.mjs
+src/main-adventure.js
+src/game-preload-bridge.js
+src/audio/browser-audio-adapter.js
+tests/game-audio-browser.fixture.mjs
 tests/adventure-domains-smoke.mjs
 package.json
 .github/workflows/pages.yml
@@ -65,24 +70,22 @@ package.json
 ## Acceptance matrix
 
 ```txt
-60 FPS steady state
-30 FPS steady state
-20 FPS clamp boundary
-10 FPS bounded catch-up
-5 FPS overload policy
-100 ms callback gap
-250 ms callback gap
-500 ms callback gap
-2000 ms callback gap
-preload suspension/resume
-visibility hidden/resume
-BFCache pagehide/pageshow
-clock generation rollover
-autosave cadence
-WebGPU/WebGL2 frame correlation
+Play-gesture unlock
+unsupported or denied capability
+hidden preload silence
+one admitted game audio generation
+movement on each authored surface kind
+sprint and stamina transitions
+till, plant, water, harvest and forage accepted/rejected results
+repeated snapshot cue suppression
+listener/camera revision binding
+mute and category-volume persistence
+visibility suspend/resume
+pagehide retirement
+WebGPU and WebGL2 visual correlation
 source/build/Pages parity
 ```
 
 ## Ownership constraints
 
-The browser host owns timestamp capture and lifecycle events. The host-clock authority owns elapsed-time admission, step extraction and overload receipts. NexusEngine and existing product DSKs retain simulation truth. The renderer only projects accepted revisions and interpolation descriptors.
+Simulation and existing DSKs own gameplay truth. The semantic audio domain owns cue descriptors and admission. The browser adapter owns WebAudio nodes and lifecycle. Renderers do not decide whether a cue is valid.

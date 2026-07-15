@@ -1,88 +1,88 @@
-# Known gaps: MyCozyIsland embed-context route admission
+# Known gaps: MyCozyIsland device-control action coverage
 
-**Timestamp:** `2026-07-14T20-05-56-04-00`  
-**Status:** `embed-context-route-admission-authority-audited`
+**Timestamp:** `2026-07-15T01-04-57-04-00`  
+**Status:** `device-control-surface-action-coverage-authority-audited`
 
 ## Summary
 
-Route intent, iframe presence and parent-shell ownership are currently collapsed into one boolean. There is no typed context result, shell handshake or guaranteed direct/unsupported behavior before simulation and rendering can be suspended.
+The source does not expose a complete touch action surface. Rendering and camera drag can work on touch devices while core traversal and farming actions remain unreachable.
 
 ## Plan ledger
 
-**Goal:** separate confirmed source behavior from unproved context safety, transport trust and visible-frame guarantees.
+**Goal:** separate confirmed keyboard/pointer behavior from unproved touch playability, semantic controls and action-effect convergence.
 
-- [ ] Route and document generation identity.
-- [ ] Parent window and origin identity.
-- [ ] Shell manifest, nonce and preload token.
-- [ ] Direct, shell-preload and unsupported results.
-- [ ] Context-bound suspension and entry.
-- [ ] Browser/build/Pages fixture parity.
+- [ ] Device capability and viewport policy.
+- [ ] Complete action-map descriptors.
+- [ ] Semantic touch-control surfaces.
+- [ ] Gesture ownership and cancellation.
+- [ ] Device admission and visible-frame results.
+- [ ] Browser/build/Pages device parity.
 
-## Admission gaps
+## Action coverage gaps
 
 ```txt
-DocumentGeneration: absent
-EmbedContextId: absent
-RouteIntent: heuristic
-ParentWindowIdentity: implicit
-ParentOriginPolicy: absent
-ShellGeneration: absent
-ShellNonce: absent
-PreloadToken: absent
-EmbedContextAdmissionResult: absent
+touch movement axes: absent
+touch sprint: absent
+touch interact: absent
+touch seed cycle: absent
+touch direct seed selection: absent
+touch intro skip: absent
+complete DeviceActionMap: absent
+DeviceControlAdmissionResult: absent
 ```
 
-## Context behavior gaps
+## Presentation gaps
 
 ```txt
-top-level preload rejection/recovery: absent
-implicit iframe policy: absent
-cross-origin embed policy: absent
-direct-play result: absent
-unsupported-embed result: absent
-visible context failure projection: absent
+narrow-screen control instructions: hidden
+movement control surface: absent
+interaction control surface: absent
+sprint control surface: absent
+seed slots: non-actionable divs
+hotbar pointer policy: pointer-events:none
+semantic labels and focus behavior: absent for touch actions
+safe-area control layout receipt: absent
 ```
 
-## Protocol gaps
+## Gesture gaps
 
 ```txt
-message schema version: absent
-event.origin validation: absent
-message ID and sequence: absent
-nonce verification: absent
-replay/duplicate policy: absent
-context and shell revisions: absent
+movement-stick pointer owner: absent
+look-region pointer owner: implicit full canvas
+multi-touch arbitration: absent
+control generation identity: absent
+stale gesture rejection: absent
+pointer-cancel held-action settlement: absent
+viewport/orientation retirement result: absent
 ```
 
-## Suspension and frame gaps
+## Frame gaps
 
 ```txt
-context-bound SuspensionLease: absent
-context-bound GameEntryResult: absent
-stale context rejection: absent
-first direct-play frame acknowledgement: absent
-first shell-resumed frame acknowledgement: absent
-first unsupported/recovery frame acknowledgement: absent
-FirstContextAdmittedGameFrameAck: absent
+FirstDeviceControlSurfaceFrameAck: absent
+FirstDeviceActionEffectFrameAck: absent
+device/action revision correlation: absent
+semantic control artifact: absent
+mobile HUD/world action artifact: absent
 ```
 
 ## Validation gaps
 
 ```txt
-top-level preload browser fixture: absent
-same-origin arbitrary iframe fixture: absent
-cross-origin iframe fixture: absent
-missing/wrong shell fixture: absent
-nonce and replay fixture: absent
-direct-play frame artifact: absent
-unsupported recovery artifact: absent
-built-output parity: absent
-Pages parity: absent
+coarse-pointer browser fixture: absent
+phone portrait fixture: absent
+phone landscape fixture: absent
+tablet fixture: absent
+hybrid-input fixture: absent
+multi-touch movement/look fixture: absent
+touch interaction and seed fixture: absent
+source/build/Pages parity: absent
 ```
 
 ## Retained gaps
 
 ```txt
+embed-context route admission
 preload suspension lease and resumed-frame authority
 postcard atlas cell and backend parity
 menu startup failure fallback
@@ -90,19 +90,20 @@ complete menu resource/listener retirement
 pagehide and BFCache policy
 adaptive quality transitions
 portable save durability
-browser input authority
+browser input generation authority
 bounded public capabilities
 ```
 
 ## Dependency order
 
 ```txt
-route/window classification
-  -> shell identity and origin handshake
-  -> EmbedContextAdmissionResult
-  -> context-bound suspension/entry
-  -> first admitted frame
+action map and device capability
+  -> semantic control layout
+  -> gesture arbitration
+  -> normalized command production
+  -> DeviceControlAdmissionResult
+  -> control/action frame acknowledgements
   -> source/build/Pages parity
 ```
 
-No context safety or production-readiness claim is made.
+No mobile, touch-control or production-readiness claim is made.

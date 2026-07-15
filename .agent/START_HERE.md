@@ -1,71 +1,65 @@
-# START HERE: MyCozyIsland preload suspension lease and resumed-frame authority
+# START HERE: MyCozyIsland embed-context route admission
 
-**Last updated:** `2026-07-14T15-01-54-04-00`  
+**Last updated:** `2026-07-14T20-05-56-04-00`  
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit repository head:** `fc5a119eefc7aad5e062b15df6325e2dc28a421a`  
-**Status:** `preload-suspension-lease-resume-frame-authority-audited`
+**Reviewed pre-audit repository head:** `4a382d17d13425a7a5f01ef7933248ba9e0058b1`  
+**Status:** `embed-context-route-admission-authority-audited`
 
-**Retained statuses:** `menu-postcard-atlas-frame-admission-audited`, `menu-failure-game-bootstrap-fallback-authority-audited`, `dual-surface-gpu-handoff-retirement-authority-audited`, `cross-window-preload-entry-protocol-authority-audited`, `threejs-menu-presentation-lifecycle-authority-central-reconciled`, `menu-game-preload-handoff-scheduler-authority-central-reconciled`, `core-startup-integration-central-reconciled`, `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
+**Retained statuses:** `preload-suspension-lease-resume-frame-authority-audited`, `menu-postcard-atlas-frame-admission-audited`, `menu-failure-game-bootstrap-fallback-authority-audited`, `dual-surface-gpu-handoff-retirement-authority-audited`, `cross-window-preload-entry-protocol-authority-audited`, `threejs-menu-presentation-lifecycle-authority-central-reconciled`, `menu-game-preload-handoff-scheduler-authority-central-reconciled`, `core-startup-integration-central-reconciled`, `resource-settlement-recovery-authority-central-reconciled`, `public-runtime-capability-publication-central-reconciled`, `browser-page-lifecycle-authority-central-reconciled`, `adaptive-render-quality-transition-authority-audited`, `durable-save-commit-authority-audited`, `browser-input-authority-audited`
 
 ## Summary
 
-The hidden game is intentionally put to sleep after Core Startup reports it playable. The bridge currently does this by replacing `engine.tick` and `engine.step`, capturing the renderer animation callback, and setting the animation loop to `null`. Entry then restores those references and immediately posts `cozy-game-entered`, before any resumed simulation step or visible game frame is proven. The parent also reveals the iframe after 900 ms even when that acknowledgement never arrives.
-
-This is a useful performance optimization, but it has no application-owned suspension lease, participant revision, restoration result, stale-object rejection, rollback, or `FirstResumedGameFrameAck`.
+The bridge currently treats `?preload=1` or any iframe as proof that a parent shell owns the game. Once playable, it can freeze simulation and rendering before proving that a compatible parent, origin or message channel exists. Top-level preload URLs and arbitrary embeds can therefore become prepared but permanently sleeping games.
 
 ## Plan ledger
 
-**Goal:** preserve the sleeping-preload optimization while turning freeze, resume, fallback reveal, and first visible game presentation into one revisioned transaction.
+**Goal:** admit route and embed context before allowing shell-owned preload suspension, while preserving direct play and explicit recovery for unsupported embeds.
 
-- [x] Compare all 11 accessible Publish repositories with the ten eligible central ledgers.
-- [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
-- [x] Confirm no eligible repository is new, ledger-missing, root-agent-missing, or runtime-ahead.
-- [x] Select only MyCozyIsland through the oldest synchronized documentation timestamp.
-- [x] Inspect the parent shell, preload bridge, Core Startup evidence path, source smoke, and retained audit state.
-- [x] Identify the complete interaction loop, domains, kits, adapters, and offered services.
-- [x] Preserve 65 source-backed kit surfaces and five browser/product adapters.
-- [x] Add the `2026-07-14T15-01-54-04-00` audit family.
-- [ ] Implement suspension leases, participant receipts, restoration rollback, and first resumed-frame evidence.
-- [ ] Execute real-browser, built-output, and Pages fixtures.
+- [x] Compare all 11 Publish repositories and ten eligible central ledgers.
+- [x] Exclude TheCavalryOfRome.
+- [x] Confirm no new, missing, undocumented or runtime-ahead eligible repository.
+- [x] Select only MyCozyIsland through the oldest synchronized timestamp rule.
+- [x] Inspect route, shell, bridge, startup and source-test paths.
+- [x] Preserve all 65 source-backed kit surfaces and five adapters.
+- [x] Add the `2026-07-14T20-05-56-04-00` audit family.
+- [ ] Implement context admission, channel handshake and browser fixtures.
 
 ## Interaction loop
 
 ```txt
-index redirects to menu
-  -> menu initializes postcard renderer
-  -> menu starts hidden game iframe
-  -> Core Startup prepares engine, world, save, input and first game frame
-  -> bridge observes descriptor.playable
-  -> bridge replaces engine.tick and engine.step
-  -> bridge captures renderer animation loop and sets it to null
-  -> bridge posts ready
-  -> Play posts cozy-game-enter
-  -> bridge restores methods and renderer callback
-  -> bridge resets intro/player focus
-  -> bridge posts cozy-game-entered immediately
-  -> parent reveals on acknowledgement or after 900 ms
-  -> menu retires after the crossfade
-  -> adventure gameplay continues
+index -> menu postcard -> hidden game preload
+  -> Core Startup playable
+  -> shell-owned sleep
+  -> Play entry
+  -> visible adventure
+  -> walk, farm, forage and save
+```
+
+Current classification also admits unintended loops:
+
+```txt
+top-level game.html?preload=1 -> sleep without parent
+any iframe game.html -> implicit preload ownership
+cross-origin iframe -> child messages target the wrong parent origin
 ```
 
 ## Domains
 
 ```txt
-routing, history, focus and browser lifecycle
-menu shell and optional postcard presentation
-same-origin iframe preload and cross-window messaging
-Core Startup readiness and continuation selection
-engine tick and step ownership
-renderer animation-loop ownership
-hidden-preload suspension and resume
-player intro preparation and input clearing
-entry acknowledgement and fallback reveal
-first resumed simulation and visible-frame evidence
-resource restoration, rollback and stale-attempt rejection
-adventure world, Inventory, Agriculture, Foraging and saves
-WebGPU/WebGL2 presentation and adaptive quality
+route/query classification
+window hierarchy and iframe embedding
+shell identity, parent origin and nonce admission
+cross-window protocol
+Core Startup readiness
+suspension and entry leases
+menu progress, focus, history and reveal
+engine scheduler and renderer-loop ownership
+first context-admitted frame evidence
+WebGPU/WebGL2 presentation
+world, player, camera, interaction, Inventory, Agriculture and Foraging
+save capture, migration, restore and rollback
 validation, build, Pages and central tracking
 ```
 
@@ -78,31 +72,31 @@ additional composition kit: 1
 source-backed kit surfaces: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned preload-suspension authority surfaces: 24
+planned embed-context authority surfaces: 22
 ```
 
 ## Active authority
 
 ```txt
-cozy-island-preload-suspension-lease-resume-frame-authority-domain
+cozy-island-embed-context-route-admission-authority-domain
 ```
 
-It must admit one suspension candidate, bind the exact engine, scheduler, renderer, animation callback, player state and startup revision, publish a typed suspension result, restore or roll back every participant atomically, reject stale entry commands, and publish the first resumed game frame before the parent commits reveal.
+It must publish `DirectPlayAccepted`, `ShellPreloadAccepted` or `UnsupportedEmbedResolved` before suspension, bind exact parent identity and origin for shell mode, reject top-level preload without transport, and publish `FirstContextAdmittedGameFrameAck`.
 
 ## Read this run first
 
 1. `current-audit.md`
-2. `known-gaps.md`
-3. `trackers/2026-07-14T15-01-54-04-00/project-breakdown.md`
-4. `architecture-audit/2026-07-14T15-01-54-04-00-preload-suspension-lease-dsk-map.md`
-5. `render-audit/2026-07-14T15-01-54-04-00-resume-before-visible-frame-gap.md`
-6. `preload-suspension-audit/2026-07-14T15-01-54-04-00-engine-renderer-lease-restoration-contract.md`
-7. `gameplay-audit/2026-07-14T15-01-54-04-00-frozen-preload-entry-loop.md`
-8. `interaction-audit/2026-07-14T15-01-54-04-00-preload-suspend-resume-command-result-map.md`
-9. `deploy-audit/2026-07-14T15-01-54-04-00-preload-suspension-browser-fixture-gate.md`
-10. `next-steps.md`
+2. `trackers/2026-07-14T20-05-56-04-00/project-breakdown.md`
+3. `architecture-audit/2026-07-14T20-05-56-04-00-embed-context-route-admission-dsk-map.md`
+4. `embed-context-audit/2026-07-14T20-05-56-04-00-top-level-query-iframe-parent-contract.md`
+5. `render-audit/2026-07-14T20-05-56-04-00-frozen-embedded-game-visible-frame-gap.md`
+6. `gameplay-audit/2026-07-14T20-05-56-04-00-unadmitted-embed-preload-entry-loop.md`
+7. `interaction-audit/2026-07-14T20-05-56-04-00-embed-context-command-result-map.md`
+8. `deploy-audit/2026-07-14T20-05-56-04-00-embed-context-browser-fixture-gate.md`
+9. `next-steps.md`
+10. `known-gaps.md`
 11. `validation.md`
 
 ## Do not claim
 
-Do not claim atomic suspension, exact participant restoration, fallback safety, first resumed-frame convergence, browser parity, or production readiness until the matching executable fixtures pass on `main`.
+Do not claim safe embed classification, authenticated shell ownership, direct-route recovery, visible-frame convergence, artifact parity or production readiness until executable fixtures pass on `main`.

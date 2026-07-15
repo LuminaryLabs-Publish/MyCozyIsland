@@ -1,196 +1,165 @@
-# Current audit: MyCozyIsland preload suspension lease and resumed-frame authority
+# Current audit: MyCozyIsland embed-context route admission
 
-**Timestamp:** `2026-07-14T15-01-54-04-00`  
-**Status:** `preload-suspension-lease-resume-frame-authority-audited`  
+**Timestamp:** `2026-07-14T20-05-56-04-00`  
+**Status:** `embed-context-route-admission-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit repository head:** `fc5a119eefc7aad5e062b15df6325e2dc28a421a`
+**Reviewed pre-audit repository head:** `4a382d17d13425a7a5f01ef7933248ba9e0058b1`
 
 ## Summary
 
-MyCozyIsland was selected through the oldest synchronized documentation rule. Every eligible Publish repository already had central-ledger and root `.agent` coverage, and every current repository head matched its recorded repo-local documentation head.
+MyCozyIsland was selected by the oldest synchronized documentation timestamp after the full Publish inventory, central ledger coverage, root `.agent` state and current heads were compared. The active finding is that the game decides background-preload ownership from `preload=1 OR window.parent !== window` before proving shell identity or transport.
 
-The current audit isolates the hidden game suspension boundary. Once Core Startup reports `descriptor.playable`, `src/game-preload-bridge.js` replaces `engine.tick` and `engine.step`, captures the current Three.js animation callback, and calls `renderer.setAnimationLoop(null)`. When Play arrives, it restores those references, prepares the intro, sets a DOM flag, and posts `cozy-game-entered` immediately. The parent treats that message as reveal authority, while also retaining a 900 ms unconditional fallback reveal.
-
-No runtime defect is asserted. The gap is that suspension and restoration are implicit object mutation rather than a revisioned application result. The repository cannot prove that the resumed engine, scheduler, renderer, callback, player state and visible frame belong to the same accepted preload generation.
+A top-level `game.html?preload=1` document has no parent shell but can still freeze once Core Startup becomes playable. Any iframe is also treated as a preload even without a shell request. The child posts to `location.origin`, which assumes a same-origin parent, while inbound commands validate source but not origin, schema, nonce or generation.
 
 ## Plan ledger
 
-**Goal:** preserve sleeping preload performance while making suspension, restoration, fallback, and visible entry one atomic, observable transaction.
+**Goal:** make route and embed-context admission the prerequisite for shell-controlled sleep, direct play or recoverable unsupported embedding.
 
-- [x] Compare the complete 11-repository Publish inventory.
+- [x] Compare all 11 Publish repositories.
 - [x] Exclude TheCavalryOfRome.
-- [x] Confirm ten eligible central ledger entries and root `.agent` states.
-- [x] Confirm zero new, missing, undocumented, root-agent-missing, or runtime-ahead eligible repositories.
-- [x] Select MyCozyIsland as the oldest synchronized eligible repository.
-- [x] Inspect `menu.html`, `game.html`, `src/menu.js`, `src/game-preload-bridge.js`, package scripts, source smoke, and current audit state.
-- [x] Identify the interaction loop, domains, all kits, all adapters, and all offered services.
-- [x] Preserve 65 source-backed kit surfaces and five adapters.
-- [x] Define a 24-surface suspension and resumed-frame authority family.
+- [x] Confirm ten eligible ledgers and root `.agent` states.
+- [x] Confirm all eligible heads match their documented heads.
+- [x] Select only MyCozyIsland as the oldest synchronized repository.
+- [x] Inspect shell, bridge, route, startup and source-test files.
+- [x] Identify the complete interaction loop and all domains.
+- [x] Preserve 65 kits and five adapters with their service inventory.
+- [x] Define 22 context-admission surfaces.
 - [x] Change documentation only.
-- [ ] Implement and execute the authority.
+- [ ] Implement and run the authority.
 
 ## Selection comparison
 
 ```txt
 accessible Publish repositories: 11
 eligible after Cavalry exclusion: 10
-central ledger entries: 10
+central ledgers: 10
 root .agent states: 10
-new eligible repositories: 0
-ledger-missing eligible repositories: 0
-root-agent-missing eligible repositories: 0
-runtime-ahead eligible repositories: 0
+new or ledger-missing: 0
+root-agent-missing: 0
+runtime-ahead: 0
 selected: LuminaryLabs-Publish/MyCozyIsland
-selection reason: oldest synchronized central documentation timestamp
-prior central timestamp: 2026-07-14T09-39-44-04-00
-reviewed repository head: fc5a119eefc7aad5e062b15df6325e2dc28a421a
+prior central timestamp: 2026-07-14T15-01-54-04-00
 ```
 
-## Complete interaction loop
+## Source-backed finding
+
+`src/game-preload-bridge.js` derives:
 
 ```txt
-root route
-  -> redirects to menu.html
-  -> menu imports Three.js WebGPU, TSL and Bloom
-  -> menu prepares the postcard scene and render loop
-  -> menu schedules game.html?preload=1 in a hidden iframe
-  -> game route initializes Core Startup, world, save, input and renderer
-  -> preload bridge polls startupHost.getDescriptor()
-  -> descriptor.playable becomes true
-  -> freezeSimulation captures engine and replaces tick/step
-  -> freezePresentation captures animation callback and clears it
-  -> bridge posts progress and ready
-  -> parent enables Play
-  -> Play posts cozy-game-enter
-  -> resumeSimulation restores captured methods
-  -> resumePresentation restores captured callback
-  -> preparePlayerEntry loads intro state, clears input and focuses canvas
-  -> bridge posts cozy-game-entered before a resumed frame
-  -> parent reveals immediately, or after 900 ms without the acknowledgement
-  -> menu rendering stops after the crossfade
-  -> player walks, farms, forages and auto-saves
+embeddedPreload = query preload=1 OR framed window
 ```
 
-## Domains in use
+It sets background-preload DOM state, polls startup, and freezes the engine and renderer whenever `descriptor.playable` is true. Entry depends on a parent message. No context result proves that the parent exists, shares an admitted origin, has the expected shell generation or owns the matching preload request.
+
+### Top-level preload query
 
 ```txt
-browser routing, history and focus
-menu shell, progress and Play admission
-optional postcard presentation
-same-origin iframe preload
-cross-window command and result messaging
-Core Startup readiness, continuation and first game preparation
-engine world, tick and step ownership
-scheduler and render-loop ownership
-hidden-preload suspension and restoration
-player intro state and input clearing
-entry fallback timing and reveal
-first resumed simulation/frame evidence
-stale, duplicate and superseded attempt handling
-WebGPU/WebGL2 backend and renderer presentation
-world, player, camera, Inventory, Agriculture, Foraging and interaction
-save capture, validation, migration, restore and rollback
-validation, build, Pages and central tracking
+game.html?preload=1
+  -> embeddedPreload true
+  -> window.parent === window
+  -> outgoing post() returns
+  -> playable game freezes
+  -> no shell receives ready
+  -> no normal mechanism sends enter
 ```
 
-## Kit and service census
+### Implicit iframe preload
 
 ```txt
-engine-installed core/adventure kits: 14
-cataloged world/render/host kits: 50
+iframe src=game.html
+  -> window.parent !== window
+  -> embeddedPreload true without query intent
+  -> playable game freezes
+  -> arbitrary parent is treated as shell-shaped
+```
+
+### Cross-origin parent
+
+```txt
+child targetOrigin = child location.origin
+cross-origin parent origin differs
+  -> readiness posts are not delivered to that parent
+  -> child still classifies itself as preload
+  -> inbound source-only admission is incomplete
+```
+
+## Interaction loop
+
+```txt
+root redirect
+  -> postcard menu
+  -> hidden iframe game startup
+  -> playable readiness
+  -> context-blind sleep
+  -> parent entry message
+  -> restore and reveal
+  -> walk, farm, forage, grow, harvest and save
+```
+
+## Domains and kit census
+
+```txt
+route intent and document generation
+window hierarchy and iframe embedding
+shell identity, parent origin and nonce
+message schema, sequence and replay
+Core Startup and continuation
+engine/scheduler suspension
+renderer-loop suspension
+menu progress, Play, focus, history and reveal
+first context-admitted frame
+world/player/camera/input/interaction
+Inventory/Agriculture/Foraging
+save capture/validation/migration/restore/rollback
+WebGPU/WebGL2 presentation and quality
+validation/build/Pages/central tracking
+
+engine-installed kits: 14
+cataloged kits: 50
 additional composition kit: 1
-source-backed kit surfaces: 65
+source-backed kits: 65
 browser/product adapters: 5
 total documented surfaces: 70
-planned suspension authority surfaces: 24
+planned authority surfaces: 22
 ```
 
-The complete per-kit service inventory is in the timestamped tracker and remains machine-readable in `.agent/kit-registry.json`.
-
-## Source-backed findings
-
-### Suspension mutates live providers
-
-`freezeSimulation()` captures `globalThis.CozyIsland.engine`, saves its `tick` and `step` functions, then replaces both methods on the live engine object. The replacement returns the current world without advancing simulation.
-
-`freezePresentation()` captures `globalThis.CozyIsland.renderer`, reads its current animation callback, and calls `setAnimationLoop(null)`.
-
-There is no:
-
-```txt
-PreloadGeneration
-SuspensionAttemptId
-EngineRevision
-SchedulerRevision
-RendererRevision
-AnimationLoopRevision
-SuspensionLease
-SuspensionPreparationResult
-participant receipt
-atomic adoption result
-```
-
-### Restoration is not correlated
-
-`resumeSimulation()` and `resumePresentation()` restore the captured references without checking whether the public engine or renderer has been replaced, whether Core Startup has advanced, whether the callback still belongs to the accepted renderer generation, or whether a newer entry attempt superseded the current one.
-
-### Entry acknowledgement precedes frame evidence
-
-`enterGame()` restores participants, prepares player state, sets `data-menu-entered`, and posts `cozy-game-entered` in the same synchronous call stack. It does not wait for:
-
-```txt
-one resumed engine tick
-one accepted renderer callback
-one successful render submission
-one visible iframe frame
-one frame tied to the current startup and entry revisions
-```
-
-### Parent fallback can reveal an unproved successor
-
-The parent schedules `revealGame()` 900 ms after sending the entry request. That fallback does not classify why acknowledgement was absent and does not prove the game resumed. A missing, stale, rejected, or failed entry can therefore be visually treated the same as a slow but successful entry.
-
-### Message envelopes lack revision identity
-
-Both sides check `event.source`, but neither side checks `event.origin`, schema version, attempt ID, sequence, startup revision, suspension lease, or entry revision. These retained protocol gaps directly affect suspension restoration.
-
-### Existing validation is structural only
-
-`tests/menu-game-shell-smoke.mjs` parses source and matches strings such as `freezeSimulation`, `setAnimationLoop(null)`, `resumePresentation`, and `cozy-game-entered`. It does not create a browser, initialize an engine or renderer, execute suspension, replace participants, inject restore failure, or capture the first resumed frame.
+The complete per-kit service inventory is in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Required authority
 
 ```txt
-cozy-island-preload-suspension-lease-resume-frame-authority-domain
+cozy-island-embed-context-route-admission-authority-domain
 ```
 
 ```txt
-PreloadSuspensionCommand
-  -> bind shell, startup, game, engine, scheduler, renderer and frame revisions
-  -> validate the current playable Core Startup descriptor
-  -> prepare detached simulation and presentation suspension candidates
-  -> capture exact participant identities and callbacks
-  -> stop hidden simulation and presentation atomically
-  -> publish PreloadSuspensionResult and SuspensionLease
+EmbedContextAdmissionCommand
+  -> bind URL, query, window hierarchy and document generation
+  -> resolve parent window, origin, shell manifest and nonce
+  -> classify DirectPlay, ShellPreload or UnsupportedEmbed
+  -> reject impossible or stale combinations
+  -> publish EmbedContextAdmissionResult
 
-GameEntryCommand
-  -> bind the accepted SuspensionLease and expected entry revision
-  -> reject stale, duplicate, missing or superseded work
-  -> prepare engine, scheduler, renderer, input and intro restoration
-  -> restore all participants atomically or preserve the suspended predecessor
-  -> execute one resumed simulation step and one render probe
-  -> publish GameEntryResult and participant receipts
-  -> publish FirstResumedGameFrameAck
-  -> allow the parent to commit reveal and history
+ShellPreloadAccepted
+  -> establish the revisioned channel
+  -> bind Core Startup and suspension to the shell generation
+  -> permit sleep and correlated entry
 
-failure or timeout
-  -> classify transport, restore, render or acknowledgement failure
-  -> keep the suspended predecessor coherent
-  -> expose explicit retry, reload or direct-route recovery
-  -> never treat elapsed time alone as visible-entry proof
+DirectPlayAccepted
+  -> keep simulation, input, HUD and rendering active
+
+UnsupportedEmbedResolved
+  -> apply an explicit standalone or visible failure policy
+  -> never silently freeze
+
+all accepted contexts
+  -> publish FirstContextAdmittedGameFrameAck
 ```
+
+## Existing proof boundary
+
+The shell smoke parses source and checks regex markers. It does not launch a browser or execute top-level preload, arbitrary iframe, cross-origin iframe, wrong-origin, missing-parent, handshake, recovery or first-frame cases.
 
 ## Validation boundary
 
-Documentation only. Runtime JavaScript, HTML, CSS, tests, dependencies, scripts, workflows and deployment behavior were not changed. No browser, build, artifact or Pages proof was executed.
+Documentation only. Runtime JavaScript, HTML, CSS, gameplay, rendering, tests, dependencies, scripts, workflows and deployment behavior were not changed.

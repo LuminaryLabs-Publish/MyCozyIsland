@@ -1,50 +1,44 @@
-# Next steps: MyCozyIsland preload suspension lease and resumed-frame authority
+# Next steps: MyCozyIsland embed-context route admission
 
-**Timestamp:** `2026-07-14T15-01-54-04-00`  
-**Publication status:** `preload-suspension-lease-resume-frame-authority-audited`
+**Timestamp:** `2026-07-14T20-05-56-04-00`  
+**Status:** `embed-context-route-admission-authority-audited`
 
 ## Summary
 
-Keep the sleeping hidden game, but stop mutating engine and renderer ownership without a typed lease. Entry should restore one exact participant generation, execute a probe step and frame, then allow reveal only after a matching resumed-frame acknowledgement.
+Replace the boolean preload heuristic with a typed three-way context decision. Only an authenticated menu shell should be able to acquire the sleeping-preload lease.
 
 ## Plan ledger
 
-**Goal:** add the smallest targeted authority that makes preload suspension safe, retryable, and visibly proven.
+**Goal:** add the smallest authority that preserves direct play, authenticates shell preload and prevents silent frozen embeds.
 
-- [ ] Add `PreloadGeneration`, `SuspensionAttemptId`, `SuspensionLeaseId`, `EntryAttemptId`, and `GameFrameId`.
-- [ ] Bind the Core Startup descriptor revision to the suspension request.
-- [ ] Capture engine, scheduler, renderer, callback, input and player participant identities.
-- [ ] Replace direct method mutation with explicit suspend/resume services where available.
-- [ ] Publish `PreloadSuspensionPreparationResult` before changing live participants.
-- [ ] Commit suspension atomically and publish `PreloadSuspensionResult`.
-- [ ] Reject stale, duplicate, missing and superseded entry requests.
-- [ ] Validate that the engine and renderer still match the accepted suspension lease.
-- [ ] Restore simulation, presentation, input and intro state as one transaction.
-- [ ] Roll back to the coherent suspended predecessor when restoration fails.
-- [ ] Execute one resumed simulation step and render probe.
-- [ ] Publish `GameEntryResult` and `FirstResumedGameFrameAck`.
-- [ ] Make the parent reveal depend on the matching frame acknowledgement.
-- [ ] Replace the 900 ms reveal with a classified timeout result and explicit recovery controls.
-- [ ] Add schema, origin, sequence and revision admission to both message listeners.
-- [ ] Cancel interval and timeout work through owned lifecycle handles.
-- [ ] Preserve the retained postcard, startup-fallback, save, input and menu-retirement work.
-- [ ] Add source, browser, built-output and Pages fixtures.
+- [ ] Add `DocumentGeneration`, `EmbedContextId`, `ShellGeneration`, `PreloadToken` and `ParentOrigin`.
+- [ ] Parse query intent separately from window hierarchy.
+- [ ] Define `DirectPlay`, `ShellPreload` and `UnsupportedEmbed` outcomes.
+- [ ] Require a shell nonce and exact parent origin for preload mode.
+- [ ] Validate message schema, source, origin, sequence and replay.
+- [ ] Reject top-level `preload=1` without a parent shell.
+- [ ] Reject implicit iframe preload without a shell manifest.
+- [ ] Keep direct-play simulation, HUD, input and rendering active.
+- [ ] Give unsupported embeds an explicit standalone or visible failure policy.
+- [ ] Bind suspension and entry leases to the admitted context.
+- [ ] Publish `EmbedContextAdmissionResult`.
+- [ ] Publish `FirstContextAdmittedGameFrameAck`.
+- [ ] Preserve existing Core Startup, suspension, postcard, save and gameplay ownership.
+- [ ] Add source, built-output and Pages browser fixtures.
 
 ## Minimal implementation order
 
 ```txt
-1. revision and lease identities
-2. typed message envelopes
-3. suspension preparation and participant manifest
-4. atomic suspension result
-5. correlated entry admission
-6. atomic restoration and rollback
-7. resumed simulation probe
-8. resumed render probe
-9. first visible-frame acknowledgement
-10. timeout classification and recovery controls
-11. browser fault matrix
-12. build and Pages parity
+1. route-intent parser
+2. window-hierarchy classifier
+3. shell manifest and nonce
+4. parent-origin policy
+5. context admission result
+6. typed message channel
+7. context-bound suspension lease
+8. direct and unsupported policies
+9. first context-admitted frame
+10. browser and artifact parity matrix
 ```
 
 ## Target files
@@ -52,11 +46,10 @@ Keep the sleeping hidden game, but stop mutating engine and renderer ownership w
 ```txt
 src/game-preload-bridge.js
 src/menu.js
-src/main-adventure.js
 menu.html
 game.html
 tests/menu-game-shell-smoke.mjs
-tests/preload-suspension-browser.fixture.mjs
+tests/embed-context-browser.fixture.mjs
 package.json
 .github/workflows/pages.yml
 ```
@@ -64,30 +57,23 @@ package.json
 ## Acceptance matrix
 
 ```txt
-normal WebGPU preload and entry
-normal WebGL2 preload and entry
-repeated Play command
-stale entry attempt
-entry after engine replacement
-entry after renderer replacement
-missing animation callback
-renderer restore exception
-player intro preparation exception
-parent acknowledgement timeout
-child message delay and reordering
-wrong origin and wrong source
-pagehide during suspension
-BFCache restore while suspended
-reduced-motion zero-duration crossfade
-first resumed tick identity
-first resumed frame identity
+top-level game.html
+top-level game.html?preload=1
+admitted same-origin menu preload
+same-origin arbitrary iframe
+cross-origin iframe
+missing shell manifest
+wrong origin
+wrong source
+stale shell generation
+reused nonce
+duplicate/reordered message
+direct-play first frame
+preload resumed first frame
+unsupported-embed visible recovery
 source/build/Pages parity
 ```
 
 ## Ownership constraints
 
-Core Startup remains the factual playable-readiness owner. The preload-suspension authority owns sleep and restoration leases. The shell owns reveal, history and recovery controls. Adventure kits retain gameplay truth. Renderer adapters perform frame submission but do not decide gameplay readiness.
-
-## Do not claim
-
-Do not claim coherent suspension, exact restoration, safe timeout fallback, visible entry, artifact parity, or deployed readiness until the executable matrix passes on `main`.
+The context authority decides host relationship only. Core Startup remains the playable-readiness owner. The suspension authority owns engine and renderer sleep. Adventure kits own gameplay. The shell owns progress, Play, reveal, focus and history.

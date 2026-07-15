@@ -1,128 +1,92 @@
-# Known gaps: MyCozyIsland preload suspension lease and resumed-frame authority
+# Known gaps: MyCozyIsland embed-context route admission
 
-**Timestamp:** `2026-07-14T15-01-54-04-00`  
-**Publication status:** `preload-suspension-lease-resume-frame-authority-audited`
+**Timestamp:** `2026-07-14T20-05-56-04-00`  
+**Status:** `embed-context-route-admission-authority-audited`
 
 ## Summary
 
-The hidden game is source-backed and intentionally sleeps after Core Startup reaches playable, but suspension and restoration have no lease identity, participant receipts, rollback, or first resumed-frame proof. The parent can also reveal after a fixed delay without knowing whether restoration succeeded.
+Route intent, iframe presence and parent-shell ownership are currently collapsed into one boolean. There is no typed context result, shell handshake or guaranteed direct/unsupported behavior before simulation and rendering can be suspended.
 
 ## Plan ledger
 
-**Goal:** separate confirmed sleeping-preload implementation from unproved restoration and visible-entry guarantees.
+**Goal:** separate confirmed source behavior from unproved context safety, transport trust and visible-frame guarantees.
 
-- [ ] Suspension and entry identities.
-- [ ] Exact engine, scheduler, renderer and callback participant manifests.
-- [ ] Atomic suspension and restoration results.
-- [ ] Stale, duplicate and superseded command rejection.
-- [ ] Restoration rollback.
-- [ ] First resumed tick and frame evidence.
-- [ ] Classified timeout and recovery behavior.
-- [ ] Origin, schema, sequence and revision message admission.
-- [ ] Browser/build/Pages artifact parity.
+- [ ] Route and document generation identity.
+- [ ] Parent window and origin identity.
+- [ ] Shell manifest, nonce and preload token.
+- [ ] Direct, shell-preload and unsupported results.
+- [ ] Context-bound suspension and entry.
+- [ ] Browser/build/Pages fixture parity.
 
-## Suspension gaps
+## Admission gaps
 
 ```txt
-PreloadGeneration: absent
-SuspensionAttemptId: absent
-SuspensionLeaseId: absent
-EngineRevision: absent
-SchedulerRevision: absent
-RendererRevision: absent
-AnimationLoopRevision: absent
-InputRevision: absent
-PlayerRevision: absent
-PreloadSuspensionPreparationResult: absent
-PreloadSuspensionResult: absent
-participant receipts: absent
+DocumentGeneration: absent
+EmbedContextId: absent
+RouteIntent: heuristic
+ParentWindowIdentity: implicit
+ParentOriginPolicy: absent
+ShellGeneration: absent
+ShellNonce: absent
+PreloadToken: absent
+EmbedContextAdmissionResult: absent
 ```
 
-The bridge directly replaces `engine.tick` and `engine.step` and directly clears the renderer animation loop. This is confirmed implementation, not proof that every engine or renderer participant has accepted the same suspension generation.
-
-## Restoration gaps
+## Context behavior gaps
 
 ```txt
-EntryAttemptId: absent
-expected SuspensionLeaseId: absent
-stale participant rejection: absent
-duplicate entry result: absent
-superseded attempt rejection: absent
-atomic restoration: absent
-restore rollback: absent
-engine replacement detection: absent
-renderer replacement detection: absent
-callback ownership validation: absent
-GameEntryResult: absent
+top-level preload rejection/recovery: absent
+implicit iframe policy: absent
+cross-origin embed policy: absent
+direct-play result: absent
+unsupported-embed result: absent
+visible context failure projection: absent
 ```
-
-## Visible-frame gaps
-
-```txt
-resumed simulation-step receipt: absent
-resumed render-submission receipt: absent
-GameFrameId: absent
-startup-to-frame revision correlation: absent
-entry-to-frame revision correlation: absent
-FirstResumedGameFrameAck: absent
-iframe visibility receipt: absent
-```
-
-`cozy-game-entered` is posted synchronously after restoration calls. It is not evidence that the restored callback executed or that the iframe displayed a matching game frame.
-
-## Timeout and fallback gaps
-
-```txt
-900 ms fallback classification: absent
-transport-timeout result: absent
-restore-timeout result: absent
-render-timeout result: absent
-retry-entry command: absent
-reload-game command: absent
-direct-route recovery result: absent
-fallback-visible-frame acknowledgement: absent
-```
-
-Elapsed time alone can cause the parent to reveal the iframe even when no accepted child result exists.
 
 ## Protocol gaps
 
 ```txt
 message schema version: absent
 event.origin validation: absent
-message sequence: absent
-shell generation: absent
-startup revision: absent
-suspension lease: absent
-entry revision: absent
-replay or duplicate policy: absent
+message ID and sequence: absent
+nonce verification: absent
+replay/duplicate policy: absent
+context and shell revisions: absent
 ```
 
-Both listeners check `event.source`, which is useful but incomplete for a revisioned command/result protocol.
+## Suspension and frame gaps
+
+```txt
+context-bound SuspensionLease: absent
+context-bound GameEntryResult: absent
+stale context rejection: absent
+first direct-play frame acknowledgement: absent
+first shell-resumed frame acknowledgement: absent
+first unsupported/recovery frame acknowledgement: absent
+FirstContextAdmittedGameFrameAck: absent
+```
 
 ## Validation gaps
 
 ```txt
-real browser engine suspension fixture: absent
-real browser renderer suspension fixture: absent
-engine replacement fault: absent
-renderer replacement fault: absent
-restore exception fault: absent
-message delay/reorder fixture: absent
-wrong-origin fixture: absent
-first resumed tick fixture: absent
-first resumed frame fixture: absent
-source/build/Pages parity: absent
+top-level preload browser fixture: absent
+same-origin arbitrary iframe fixture: absent
+cross-origin iframe fixture: absent
+missing/wrong shell fixture: absent
+nonce and replay fixture: absent
+direct-play frame artifact: absent
+unsupported recovery artifact: absent
+built-output parity: absent
+Pages parity: absent
 ```
-
-The existing smoke checks source text only.
 
 ## Retained gaps
 
 ```txt
-postcard atlas isolation and backend image parity
-complete menu scene, texture, compute and listener retirement
-independent game preload after menu failure
+preload suspension lease and resumed-frame authority
+postcard atlas cell and backend parity
+menu startup failure fallback
+complete menu resource/listener retirement
 pagehide and BFCache policy
 adaptive quality transitions
 portable save durability
@@ -133,16 +97,12 @@ bounded public capabilities
 ## Dependency order
 
 ```txt
-revisioned message envelope
-  -> suspension participant manifest
-  -> atomic suspension result
-  -> correlated entry restoration
-  -> rollback and timeout classification
-  -> resumed tick and frame acknowledgement
-  -> shell reveal
+route/window classification
+  -> shell identity and origin handshake
+  -> EmbedContextAdmissionResult
+  -> context-bound suspension/entry
+  -> first admitted frame
   -> source/build/Pages parity
 ```
 
-## Do not claim
-
-Do not claim suspension atomicity, exact restoration, timeout safety, visible entry, browser parity, or production readiness until the relevant fixtures pass on `main`.
+No context safety or production-readiness claim is made.

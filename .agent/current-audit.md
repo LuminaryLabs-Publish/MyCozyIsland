@@ -1,30 +1,24 @@
-# Current audit: MyCozyIsland game-audio event projection
+# Current audit: MyCozyIsland save-writer lease and revision admission
 
-**Timestamp:** `2026-07-15T10-01-08-04-00`  
-**Status:** `game-audio-event-projection-authority-audited`  
+**Timestamp:** `2026-07-15T15-01-22-04-00`  
+**Status:** `save-writer-lease-revision-admission-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit documentation head:** `cefc24184fc86d431a70fcce4a342d26b3b3a3d7`
+**Reviewed pre-audit documentation head:** `e6947c349442520aaddf7e8a0788cfd4fb56f97e`
 
 ## Summary
 
-MyCozyIsland was selected after the full Publish comparison found no new, missing, undocumented, root-agent-missing or runtime-ahead eligible repository. Its active gameplay loop has deterministic movement and interaction state, Agriculture and Foraging results, renderer-neutral snapshots, Three.js presentation, HUD, preload and lifecycle adapters, but no owned game-audio projection boundary.
-
-The browser game host renders accepted state and publishes `globalThis.CozyIsland`. It creates no AudioContext or HTMLAudio owner and publishes no semantic cue, audible result or audiovisual convergence acknowledgement.
+MyCozyIsland was selected after the full Publish comparison found no higher-priority undocumented repository. The active save path has portable checksums and rollback, but durable persistence remains a last-writer-wins host effect shared by all same-origin documents.
 
 ## Plan ledger
 
-**Goal:** make game audio a result-driven, lifecycle-safe projection of accepted simulation state.
+**Goal:** prevent valid but stale documents from regressing the durable adventure slot.
 
-- [x] Compare 11 Publish repositories.
-- [x] Exclude TheCavalryOfRome.
-- [x] Confirm ten eligible ledgers and root `.agent` states.
-- [x] Confirm all eligible repositories remain synchronized.
-- [x] Select only MyCozyIsland.
-- [x] Identify the complete menu, preload, gameplay, render and lifecycle loop.
-- [x] Preserve all kits, adapters and services.
-- [x] Define 22 game-audio authority surfaces.
-- [x] Change documentation only.
+- [x] Confirm selection and synchronization.
+- [x] Inspect load, autosave, pagehide, hidden preload and save payload code.
+- [x] Identify the missing writer/slot authority.
+- [x] Preserve all kits and services.
+- [x] Define 20 coordinating surfaces.
 - [ ] Implement and execute the authority.
 
 ## Selection comparison
@@ -32,93 +26,105 @@ The browser game host renders accepted state and publishes `globalThis.CozyIslan
 ```txt
 accessible Publish repositories: 11
 eligible after Cavalry exclusion: 10
-central ledgers: 10
+central ledger entries: 10
 root .agent states: 10
 new or ledger-missing: 0
 root-agent-missing: 0
 undocumented: 0
 runtime-ahead: 0
+
 selected: LuminaryLabs-Publish/MyCozyIsland
-prior central timestamp: 2026-07-15T05-00-28-04-00
+selection rule: oldest synchronized central timestamp
+prior timestamp: 2026-07-15T10-01-08-04-00
+next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T10-40-17-04-00
+excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
 ## Source-backed finding
 
-`src/adventure/runtime-domains.js` exposes accepted input frames, player movement and surface state, contextual target state and `lastAction` results. Agriculture and Foraging settle reusable domain outcomes. `src/main-adventure.js` consumes camera, illumination, gameplay, HUD and save descriptors and renders the complete frame. Neither it nor the active registry defines a game-audio owner.
+`src/main-adventure.js` owns one fixed key, loads it once during startup, writes every five admitted simulation seconds after a fingerprint change, and writes again unconditionally on `pagehide`.
+
+`src/game-preload-bridge.js` allows any same-origin menu document to fully start and restore the game before freezing its simulation and presentation. That frozen document remains a potential writer because the host-level `pagehide` handler is still installed.
+
+`src/adventure/persistence-render-domains.js` checks payload integrity but the envelope contains no durable commit revision, writer/document identity, base revision, timestamp, lease, or compare-and-swap token. The save-domain `revision` is in-memory diagnostic state and is not a storage-head revision.
+
+Permitted conflict:
 
 ```txt
-AudioContext owner: absent
-HTMLAudio owner: absent
-semantic cue registry: absent
-master/category volume: absent
-mute preference: absent
-listener/source projection: absent
-ambience lifecycle: absent
-cue deduplication: absent
-voice budget/pool: absent
-FirstAudibleCueAck: absent
-FirstAudioVisualConvergenceAck: absent
+tab A restores save R1 and starts playing
+  -> tab B or a hidden menu preload also restores R1
+  -> tab A progresses and writes R2
+  -> stale tab/preload B later receives pagehide
+  -> B captures its older state and overwrites the same key
+  -> next startup validates B's checksum and accepts the regression
 ```
+
+No `storage` event observer, BroadcastChannel, Web Lock, writer heartbeat, head readback, conflict result, or stale-writer rejection was found. This is a source-backed concurrency path, not a reproduced browser incident.
 
 ## Interaction loop
 
 ```txt
-accepted user input
-  -> cozy input frame
-  -> player, scenario, Agriculture, Foraging and interaction settlement
-  -> camera, HUD and render snapshots
-  -> visual frame and save cadence
-  -> no game-audio event or audible receipt
+menu
+  -> create a same-origin hidden game iframe
+  -> game restores the shared localStorage save once
+  -> startup reaches playable
+  -> preload bridge freezes simulation and presentation
+  -> Play resumes that document
+
+adventure
+  -> input, simulation, Agriculture and Foraging settle
+  -> render/HUD snapshots update
+  -> every five admitted simulation seconds, changed state is captured
+  -> the host writes the snapshot to one shared localStorage key
+
+document exit
+  -> pagehide captures and writes unconditionally
+  -> no writer lease, slot-head comparison or stale-write rejection occurs
 ```
 
 ## Domains and census
 
 ```txt
-browser routes, iframe, messaging, focus, input, RAF, resize and lifecycle
+static menu and game routes
+same-origin iframe preload and cross-window entry messaging
+browser document identity, localStorage, storage events and page lifecycle
 Core Startup, Object and Transaction Ledger
-world, Inventory, Agriculture, Foraging, player, scenario and interaction
-camera, save and render snapshots
-WebGPU/WebGL2 world, atmosphere, ocean and post processing
-menu, preload, HUD and diagnostics
-browser audio capability, unlock, semantic cues, ambience, spatial projection and retirement
-validation, build, Pages and central tracking
-
-engine-installed kits: 14
-cataloged kits: 50
-additional composition kits: 1
-source-backed kit surfaces: 65
-browser/product adapters: 5
-total implemented surfaces: 70
-planned game-audio surfaces: 22
+seeded world, input, Inventory, Agriculture and Foraging
+player, scenario, interaction and camera
+portable save capture, checksum, migration, restore and rollback
+save-slot head revision, writer lease, conflict arbitration and durable commit
+renderer-neutral snapshots and WebGPU/WebGL2 presentation
+terrain, vegetation, atmosphere, ocean, foam and post processing
+HUD, diagnostics, adaptive quality, validation, build and Pages
 ```
 
-The complete kit-by-kit service inventory is preserved in the timestamped tracker and existing machine registry.
+```txt
+implemented surfaces: 70
+planned save-writer surfaces: 20
+```
 
 ## Required authority
 
 ```txt
-cozy-island-game-audio-event-projection-authority-domain
+cozy-island-save-writer-lease-revision-authority-domain
 ```
 
 ```txt
-AudioProjectionAdmissionCommand
-  -> bind document, runtime, simulation, camera and audio-policy revisions
-  -> observe capability and accepted user-gesture unlock
-  -> consume accepted semantic results rather than raw input
-  -> resolve stable UI, movement, Agriculture, Foraging, ambience and transition cues
-  -> deduplicate repeated snapshots and replayed results
-  -> project listener and source transforms
-  -> enforce mute, volume, pooling, priority and voice budgets
-  -> suspend, resume or retire on preload, visibility, pagehide and route replacement
-  -> publish AudioProjectionResult
-  -> publish FirstAudibleCueAck
-  -> publish FirstAudioVisualConvergenceAck
+SaveCommitCommand
+  -> bind SaveSlotId, DocumentId, WriterSessionId and CommitId
+  -> bind candidate base revision and durable fingerprint
+  -> classify active player, hidden preload, suspended and retiring writers
+  -> require an admitted writer lease before mutation
+  -> read and verify the current slot head
+  -> compare-and-swap one new monotonic commit revision
+  -> reject stale, duplicate, expired, read-only and superseded writers
+  -> preserve the predecessor and verify write/readback identity
+  -> publish SaveCommitResult or SaveConflictResult
+  -> synchronize other documents through storage/head-change observation
+  -> release the lease on pagehide, retirement or expiry
+  -> publish FirstDurableSaveFrameAck
 ```
 
 ## Existing proof boundary
 
-Node smoke tests validate deterministic domain outcomes. They do not instantiate browser audio, unlock a context, verify semantic cue ordering, test hidden-preload silence, inspect lifecycle retirement or correlate an audible result with a rendered frame.
-
-## Validation boundary
-
-Documentation only. Runtime JavaScript, HTML, CSS, gameplay, rendering, audio, tests, dependencies, workflows and deployment were not changed.
+Current Node tests can prove deterministic capture, checksum validation, migration and restore. They do not create two same-origin browser documents, arbitrate a shared slot, force stale pagehide, observe storage changes or prove the visible save label matches the durable head.

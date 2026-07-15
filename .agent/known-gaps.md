@@ -1,87 +1,89 @@
-# Known gaps: MyCozyIsland device-control action coverage
+# Known gaps: MyCozyIsland host-clock fixed-step simulation
 
-**Timestamp:** `2026-07-15T01-04-57-04-00`  
-**Status:** `device-control-surface-action-coverage-authority-audited`
+**Timestamp:** `2026-07-15T05-00-28-04-00`  
+**Status:** `host-clock-fixed-step-simulation-authority-audited`
 
 ## Summary
 
-The source does not expose a complete touch action surface. Rendering and camera drag can work on touch devices while core traversal and farming actions remain unreachable.
+The browser host has no explicit host-clock authority. One clipped variable step is executed per RAF callback, and discarded elapsed time is not reported.
 
 ## Plan ledger
 
-**Goal:** separate confirmed keyboard/pointer behavior from unproved touch playability, semantic controls and action-effect convergence.
+**Goal:** separate confirmed deterministic domain behavior from unproved real-time pacing, overload handling and clock-aligned presentation.
 
-- [ ] Device capability and viewport policy.
-- [ ] Complete action-map descriptors.
-- [ ] Semantic touch-control surfaces.
-- [ ] Gesture ownership and cancellation.
-- [ ] Device admission and visible-frame results.
-- [ ] Browser/build/Pages device parity.
+- [ ] Host-clock manifest and generation identity.
+- [ ] Monotonic timestamp admission.
+- [ ] Fixed-step accumulator.
+- [ ] Bounded catch-up and overload policy.
+- [ ] Explicit discarded-time receipts.
+- [ ] Domain clock-revision binding.
+- [ ] Autosave time-source policy.
+- [ ] Interpolation and visible-frame evidence.
+- [ ] Browser/build/Pages timing parity.
 
-## Action coverage gaps
+## Admission gaps
 
 ```txt
-touch movement axes: absent
-touch sprint: absent
-touch interact: absent
-touch seed cycle: absent
-touch direct seed selection: absent
-touch intro skip: absent
-complete DeviceActionMap: absent
-DeviceControlAdmissionResult: absent
+HostClockFrameCommand: absent
+HostClockFrameResult: absent
+clock generation: absent
+expected simulation revision: absent
+monotonic timestamp validation: absent
+stale callback rejection: absent
+duplicate command rejection: absent
+lifecycle interval classification: absent
+```
+
+## Simulation gaps
+
+```txt
+fixedStepSeconds descriptor: absent
+elapsed-time accumulator: absent
+maxStepsPerFrame policy: absent
+maxAccumulatedSeconds policy: absent
+catch-up result: absent
+residual-time retention: absent
+discarded-time receipt: absent
+pause versus overload classification: absent
+```
+
+## Consumer gaps
+
+```txt
+scenario clock revision binding: absent
+player movement/stamina clock binding: absent
+Agriculture growth clock binding: absent
+Foraging respawn clock binding: absent
+autosave wall-time/simulation-time policy: implicit simulation time
 ```
 
 ## Presentation gaps
 
 ```txt
-narrow-screen control instructions: hidden
-movement control surface: absent
-interaction control surface: absent
-sprint control surface: absent
-seed slots: non-actionable divs
-hotbar pointer policy: pointer-events:none
-semantic labels and focus behavior: absent for touch actions
-safe-area control layout receipt: absent
-```
-
-## Gesture gaps
-
-```txt
-movement-stick pointer owner: absent
-look-region pointer owner: implicit full canvas
-multi-touch arbitration: absent
-control generation identity: absent
-stale gesture rejection: absent
-pointer-cancel held-action settlement: absent
-viewport/orientation retirement result: absent
-```
-
-## Frame gaps
-
-```txt
-FirstDeviceControlSurfaceFrameAck: absent
-FirstDeviceActionEffectFrameAck: absent
-device/action revision correlation: absent
-semantic control artifact: absent
-mobile HUD/world action artifact: absent
+interpolation alpha: absent
+clock command ID in frame snapshot: absent
+simulation revision in frame acknowledgement: absent
+FirstClockAlignedFrameAck: absent
+clock-loss diagnostics: absent
 ```
 
 ## Validation gaps
 
 ```txt
-coarse-pointer browser fixture: absent
-phone portrait fixture: absent
-phone landscape fixture: absent
-tablet fixture: absent
-hybrid-input fixture: absent
-multi-touch movement/look fixture: absent
-touch interaction and seed fixture: absent
+60/30/20 FPS browser baseline: absent
+10/5 FPS overload fixture: absent
+long-callback-gap fixture: absent
+preload suspension clock fixture: absent
+visibility/BFCache clock fixture: absent
+autosave cadence fixture: absent
+WebGPU/WebGL2 clock-frame parity: absent
 source/build/Pages parity: absent
 ```
 
 ## Retained gaps
 
 ```txt
+device-control action coverage
 embed-context route admission
 preload suspension lease and resumed-frame authority
 postcard atlas cell and backend parity
@@ -97,13 +99,14 @@ bounded public capabilities
 ## Dependency order
 
 ```txt
-action map and device capability
-  -> semantic control layout
-  -> gesture arbitration
-  -> normalized command production
-  -> DeviceControlAdmissionResult
-  -> control/action frame acknowledgements
+clock manifest
+  -> timestamp/lifecycle classification
+  -> accumulator and step budget
+  -> HostClockFrameResult
+  -> domain bindings
+  -> autosave policy
+  -> interpolation and FirstClockAlignedFrameAck
   -> source/build/Pages parity
 ```
 
-No mobile, touch-control or production-readiness claim is made.
+No fixed-step, wall-time pacing or production-readiness claim is made.

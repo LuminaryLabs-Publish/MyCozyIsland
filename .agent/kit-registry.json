@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 98,
-  "lastUpdated": "2026-07-15T01-04-57-04-00",
+  "schemaVersion": 99,
+  "lastUpdated": "2026-07-15T05-00-28-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "device-control-surface-action-coverage-authority-audited",
-  "technicalStatus": "device-control-surface-action-coverage-authority-audited",
+  "status": "host-clock-fixed-step-simulation-authority-audited",
+  "technicalStatus": "host-clock-fixed-step-simulation-authority-audited",
   "retainedStatuses": [
+    "device-control-surface-action-coverage-authority-audited",
     "embed-context-route-admission-authority-audited",
     "preload-suspension-lease-resume-frame-authority-audited",
     "menu-postcard-atlas-frame-admission-audited",
@@ -22,7 +23,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "complete semantic keyboard, pointer and touch action coverage through one normalized cozyInput path, with gesture arbitration and first control/action frame proof",
+  "currentFocus": "monotonic RAF timestamp admission through a bounded fixed-step accumulator with explicit overload receipts, domain clock binding and first clock-aligned frame proof",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -33,8 +34,8 @@
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
     "reason": "oldest synchronized central documentation timestamp after all higher-priority classes were cleared",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "priorCentralTimestamp": "2026-07-14T20-05-56-04-00",
-    "priorRepoLocalDocumentationHead": "eac42511d9c462fb2e68604288810687d12f9bbf",
+    "priorCentralTimestamp": "2026-07-15T01-04-57-04-00",
+    "priorRepoLocalDocumentationHead": "a8733b506ecbd43190a280942790cdaa0bd1b983",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -50,7 +51,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedDeviceControlSurfaces": 21
+    "plannedHostClockSurfaces": 20
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","waiting","working","ready","failure","retry-fallback-descriptor","continuation-selection","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -130,41 +131,39 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress-projection","play-gate","entry-request","crossfade","history-transition","focus-transfer","fallback-reveal","error-display"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["startup-descriptor-polling","embed-context-classification","parent-messaging","simulation-freeze","simulation-resume","presentation-sleep","presentation-resume","player-entry-preparation","entry-acknowledgement"]}
   ],
-  "deviceControlState": {
-    "narrowControlInstructions": "hidden-below-760px",
-    "hotbarPointerPolicy": "pointer-events-none",
-    "seedControlSemantics": "non-actionable-divs",
-    "touchLook": true,
-    "touchMovement": false,
-    "touchSprint": false,
-    "touchInteract": false,
-    "touchSeedCycle": false,
-    "touchSeedSelect": false,
-    "touchIntroSkip": false,
-    "deviceControlAdmissionResult": "missing",
-    "firstDeviceControlSurfaceFrameAck": "missing",
-    "firstDeviceActionEffectFrameAck": "missing"
+  "hostClockState": {
+    "rafGapCapMilliseconds": 100,
+    "hostDeltaCapSeconds": 0.05,
+    "compositionDeltaCapSeconds": 0.05,
+    "engineTicksPerRafCallback": 1,
+    "fixedStepAccumulator": "missing",
+    "boundedCatchUpResult": "missing",
+    "discardedTimeReceipt": "missing",
+    "pauseOverloadClassification": "missing",
+    "interpolationAlpha": "missing",
+    "hostClockFrameResult": "missing",
+    "firstClockAlignedFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-device-control-surface-action-coverage-authority-domain",
+  "plannedParentDomain": "cozy-island-host-clock-fixed-step-simulation-authority-domain",
   "plannedKits": [
-    "device-capability-manifest-kit","viewport-control-policy-kit","action-map-descriptor-kit","touch-control-layout-kit","virtual-movement-stick-kit","touch-look-surface-kit","touch-sprint-action-kit","touch-interact-action-kit","touch-seed-cycle-action-kit","touch-seed-select-action-kit","touch-intro-skip-action-kit","semantic-control-surface-kit","pointer-gesture-arbitration-kit","control-generation-kit","device-control-admission-kit","normalized-control-command-kit","stale-control-rejection-kit","first-control-surface-frame-ack-kit","first-device-action-frame-ack-kit","device-control-browser-fixture-kit","source-build-pages-device-parity-kit"
+    "host-clock-manifest-kit","raf-timestamp-adapter-kit","elapsed-time-classifier-kit","fixed-step-accumulator-kit","step-budget-policy-kit","catch-up-policy-kit","dropped-time-receipt-kit","pause-suspension-classifier-kit","simulation-clock-generation-kit","clock-admission-kit","clock-step-result-kit","interpolation-alpha-kit","scenario-clock-binding-kit","player-clock-binding-kit","agriculture-clock-binding-kit","foraging-clock-binding-kit","autosave-wall-clock-policy-kit","first-clock-aligned-frame-ack-kit","clock-browser-fixture-kit","source-build-pages-clock-parity-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-15T01-04-57-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-15T01-04-57-04-00.md",
-    ".agent/architecture-audit/2026-07-15T01-04-57-04-00-device-control-surface-action-coverage-dsk-map.md",
-    ".agent/render-audit/2026-07-15T01-04-57-04-00-touch-controls-visible-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-15T01-04-57-04-00-touch-player-immobility-loop.md",
-    ".agent/interaction-audit/2026-07-15T01-04-57-04-00-device-control-command-result-map.md",
-    ".agent/device-control-audit/2026-07-15T01-04-57-04-00-touch-action-layout-gesture-contract.md",
-    ".agent/deploy-audit/2026-07-15T01-04-57-04-00-device-control-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-15T01-04-57-04-00-oldest-selection-device-control-reconciliation.md"
+    ".agent/trackers/2026-07-15T05-00-28-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-15T05-00-28-04-00.md",
+    ".agent/architecture-audit/2026-07-15T05-00-28-04-00-host-clock-fixed-step-simulation-dsk-map.md",
+    ".agent/render-audit/2026-07-15T05-00-28-04-00-clock-aligned-render-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-15T05-00-28-04-00-low-fps-slow-simulation-loop.md",
+    ".agent/interaction-audit/2026-07-15T05-00-28-04-00-host-clock-command-result-map.md",
+    ".agent/simulation-clock-audit/2026-07-15T05-00-28-04-00-raf-delta-accumulator-contract.md",
+    ".agent/deploy-audit/2026-07-15T05-00-28-04-00-host-clock-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-15T05-00-28-04-00-oldest-selection-host-clock-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "deviceBrowserFixturesRun": false,
+    "hostClockBrowserFixturesRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false,

@@ -1,106 +1,147 @@
-# Current audit: MyCozyIsland save, world and content compatibility
+# Current audit: live motion preference and animation projection
 
-**Timestamp:** `2026-07-16T05-41-12-04-00`  
-**Status:** `save-world-content-compatibility-admission-authority-audited`  
-**Branch:** `main`  
-**Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit documentation head:** `75a1941e1305780b06276b15a3d9d8834f6a3530`
+**Timestamp:** `2026-07-16T13-01-43-04-00`  
+**Status:** `motion-preference-live-animation-projection-authority-audited`
 
 ## Summary
 
-MyCozyIsland was selected after the current Publish comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Save v2 proves payload integrity and one legacy schema migration, but not compatibility with the current world-generation algorithm, world config, content pack, dependency revisions or installed participant schemas.
+MyCozyIsland has partial reduced-motion handling, not a shared motion policy. CSS removes selected transitions. The menu JavaScript reads the media query once, uses that frozen value for palm deformation and entry timing, and still animates its water shader. The game route does not observe the preference and continuously projects an automatic aerial camera, shader-time ocean waves, sine-driven foam and environmental motion.
 
 ## Plan ledger
 
-**Goal:** make restore compatibility an explicit admission result before participant mutation and visible gameplay projection.
+**Goal:** define one live motion policy that adapts optional presentation without changing authoritative gameplay outcomes or direct controls.
 
-- [x] Confirm selection and synchronization.
-- [x] Inspect save capture, validation, migration, restore and rollback.
-- [x] Inspect world-model construction and loadSnapshot behavior.
-- [x] Inspect Agriculture, Foraging and render-snapshot adoption.
-- [x] Preserve all kits and services.
-- [x] Define 20 coordinating compatibility surfaces.
-- [ ] Implement and execute the authority.
+- [x] Inspect menu media-query use and transition CSS.
+- [x] Inspect menu shader-time frond, trunk and water motion.
+- [x] Inspect game camera intro progression.
+- [x] Inspect ocean, foam, world and post-processing updates.
+- [x] Separate essential simulation from optional presentation.
+- [x] Map command, result and frame acknowledgement surfaces.
+- [ ] Implement and test the authority.
 
-## Selection comparison
+## Source-backed behavior
 
-```txt
-accessible Publish repositories: 11
-eligible after Cavalry exclusion: 10
-central ledger entries: 10
-root .agent states: 10
-new or ledger-missing: 0
-root-agent-missing: 0
-undocumented: 0
-runtime-ahead: 0
-
-selected: LuminaryLabs-Publish/MyCozyIsland
-prior timestamp: 2026-07-16T00-59-16-04-00
-next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-16T01-38-56-04-00
-excluded: LuminaryLabs-Publish/TheCavalryOfRome
-```
-
-## Source-backed finding
-
-`cozy-save-domain-kit` captures world, transaction ledger, scenario, Inventory, Agriculture, Foraging and Player state under `cozy-island-adventure-save/2`. The envelope contains `version: 1.0.0` and a checksum, but no complete release/world/content/participant compatibility manifest.
-
-`validateEnvelope()` checks the checksum. `migrateSavePayload()` recognizes v1 and v2 only. Restore begins loading participants without first comparing world-generation, config, content or installed-domain fingerprints.
-
-`createCozyWorldDomain()` constructs a closed-over runtime model from current `COZY_WORLD_CONFIG` before restore. `loadSnapshot()` merges saved state but forces the current configured ID and seed. `getRenderBase()`, `getPlots()`, `getForageNodes()`, `surfaceAt()` and movement constraints continue to use the current model rather than rebuilding from the accepted save.
-
-Agriculture is installed from the current tropical config before restore. Render Snapshot then combines current model descriptors with restored participant state without a RestoreGeneration or compatibility revision.
-
-The current same-version path is coherent under its fixed configuration. The gap concerns future release changes and lacks an executable mismatch reproduction.
-
-## Interaction loop
+### Menu
 
 ```txt
-boot current release
-  -> create current world model and participant topology
-  -> read save
-  -> checksum and schema validation
-  -> optional v1 farming migration
-  -> ordered participant loads
-  -> current model remains active
-  -> first frame combines current model and restored state
-  -> no compatibility result or restored-frame acknowledgement
+const reducedMotion = matchMedia(...).matches
 ```
 
-## Domains and census
+The value is captured once. It is not backed by a `MediaQueryList` change listener, preference revision or product override.
 
 ```txt
-routes and preload
-Core Startup, Object and Transaction Ledger
-world, input, Inventory, Agriculture and Foraging
-player, scenario, interaction, camera, save and render snapshots
-WebGPU/WebGL2 presentation and atmosphere
-save/world/content compatibility admission
-migration, rebuild, quarantine and fallback
-restored-frame convergence
-build, Pages and central proof
+frond and trunk shader amplitude
+  -> multiplied by the frozen reducedMotion boolean
 
-implemented surfaces: 70
-planned save-compatibility surfaces: 20
+water shader
+  -> always reads global shader time
+
+entry handoff
+  -> uses 0 ms or 780 ms from the frozen boolean
 ```
+
+CSS independently disables selected DOM transitions. CSS and JavaScript therefore do not consume one shared policy revision.
+
+### Game
+
+```txt
+frame
+  -> adventure.tick(dt)
+  -> camera descriptor
+  -> worldRenderer.update(elapsed)
+  -> foamRenderer.update(elapsed)
+  -> postPipeline.render()
+```
+
+The player domain advances the aerial intro automatically. The ocean material derives wave displacement and normals from shader time. Foam opacity and vertical offset use elapsed-time sine functions. No game-route motion observer or reduced-motion descriptor is installed.
+
+## Main gap
+
+```txt
+operating-system preference changes
+  -> CSS may update immediately
+  -> menu JavaScript retains its startup boolean
+  -> game JavaScript has no preference state
+  -> menu and game motion can diverge
+  -> no policy generation identifies the accepted behavior
+  -> no matching reduced-motion frame is acknowledged
+```
+
+This is a source-backed policy and evidence gap. It is not a claim that the current experience causes harm or fails a specific accessibility standard.
 
 ## Required authority
 
 ```txt
-cozy-island-save-world-content-compatibility-admission-authority-domain
+cozy-island-motion-preference-live-animation-projection-authority-domain
+```
+
+### Admission
+
+```txt
+MotionPreferenceAdmissionCommand
+  documentRevision
+  routeRevision
+  observedSystemPreference
+  requestedProductOverride
+  expectedPolicyRevision
+```
+
+### Result
+
+```txt
+MotionPreferenceAdmissionResult
+  accepted
+  source: system | product
+  mode: normal | reduced
+  policyRevision
+  routeRevision
+  classificationRevision
+```
+
+### Projection
+
+```txt
+MotionProjectionCommand
+  policyRevision
+  frameRevision
+  surface: menu | game
+  descriptorSet
 ```
 
 ```txt
-SaveCompatibilityAdmissionCommand
-  -> bind save schema/checksum and release identities
-  -> compare world generation, config, content, dependencies and participant schemas
-  -> classify exact, migratable, rebuild-required, incompatible or corrupt
-  -> create one RestoreGeneration
-  -> migrate/rebuild/rebind participants atomically
-  -> quarantine or fall back when required
-  -> publish SaveCompatibilityAdmissionResult
-  -> publish FirstRestoredWorldFrameAck
+MotionProjectionResult
+  appliedDescriptorIds
+  preservedSimulationRevision
+  presentedFrameRevision
+  reducedMotion
 ```
 
-## Existing proof boundary
+### First-frame receipts
 
-Current tests verify successful same-version Agriculture, Foraging, v2 save/restore and v1 migration. They do not change world seed/config, farm or forage topology, items/crops, DSK schemas or dependencies and then prove compatibility rejection, migration, rebuild, quarantine, fallback or a matching restored visible frame.
+```txt
+FirstReducedMotionMenuFrameAck
+FirstReducedMotionGameplayFrameAck
+```
+
+## Motion classification
+
+| Surface | Current behavior | Proposed reduced policy |
+|---|---|---|
+| Direct player look and movement | Input-driven | Preserve |
+| Farming, Foraging, growth and scenario | Authoritative simulation | Preserve |
+| Menu palm wind | Continuous shader/compute motion | Freeze or strongly attenuate |
+| Menu water | Continuous shader-time displacement | Freeze or replace with static surface |
+| Menu/game crossfade | Timed transition | Immediate or near-immediate |
+| Aerial intro | Automatic camera rail | Skip to first-person or use one static establishing frame |
+| Ocean waves | Continuous shader-time displacement | Low-amplitude slow mode or static normal profile |
+| Shoreline foam | Sine opacity and vertical motion | Static placement and opacity |
+| Cloud/fog/world wind | Continuous environment motion | Policy-driven static or low-motion descriptor |
+| Loading/progress transitions | DOM transitions | Immediate while preserving state changes |
+
+## Domains and services
+
+The active composition remains unchanged: 14 engine-installed kits, 50 cataloged environment/render kits, one ocean composition kit and five browser/product adapters. Their full IDs and service families are recorded in the timestamped tracker and machine registry.
+
+## Validation boundary
+
+This run changes documentation only. It does not alter JavaScript, shaders, CSS, dependencies, tests, workflows or deployment.

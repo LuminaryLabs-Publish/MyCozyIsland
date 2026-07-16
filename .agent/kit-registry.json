@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 104,
-  "lastUpdated": "2026-07-16T05-41-12-04-00",
+  "schemaVersion": 105,
+  "lastUpdated": "2026-07-16T13-01-43-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "save-world-content-compatibility-admission-authority-audited",
-  "technicalStatus": "save-world-content-compatibility-admission-authority-audited",
+  "status": "motion-preference-live-animation-projection-authority-audited",
+  "technicalStatus": "motion-preference-live-animation-projection-authority-audited",
   "retainedStatuses": [
+    "save-world-content-compatibility-admission-authority-audited",
     "renderer-device-context-loss-recovery-authority-audited",
     "accessible-hud-progress-interaction-projection-authority-audited",
     "save-writer-lease-revision-admission-authority-audited",
@@ -28,7 +29,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "release-aware save compatibility admission across world generation, world config, content definitions, dependency and participant schemas, migration or rebuild, quarantine or fallback, and one matching restored world frame",
+  "currentFocus": "live operating-system and product motion preference resolution across menu wind and water, route transitions, aerial camera, ocean, foam, cloud, fog and world-wind projection while preserving authoritative simulation",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -38,13 +39,11 @@
     "runtimeAheadOfCentralCount": 0,
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
     "reason": "oldest synchronized central documentation timestamp after higher-priority classes were cleared",
-    "excluded": [
-      "LuminaryLabs-Publish/TheCavalryOfRome"
-    ],
-    "priorCentralTimestamp": "2026-07-16T00-59-16-04-00",
+    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
+    "priorCentralTimestamp": "2026-07-16T05-41-12-04-00",
     "nextOldestRepository": "LuminaryLabs-Publish/IntoTheMeadow",
-    "nextOldestTimestamp": "2026-07-16T01-38-56-04-00",
-    "priorRepoLocalDocumentationHead": "75a1941e1305780b06276b15a3d9d8834f6a3530",
+    "nextOldestTimestamp": "2026-07-16T05-58-36-04-00",
+    "priorRepoLocalDocumentationHead": "ba23c6462e120fd0673347e8a039f10941cf6fb7",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -60,7 +59,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedSaveCompatibilitySurfaces": 20
+    "plannedMotionPreferenceSurfaces": 20
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -90,49 +89,50 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "saveCompatibilityState": {
-    "releaseManifest": "missing",
-    "worldGenerationVersion": "missing",
-    "worldConfigDigest": "missing",
-    "contentPackDigest": "missing",
-    "dependencyFingerprint": "missing",
-    "participantSchemaFingerprints": "missing",
-    "compatibilityAdmission": "missing",
-    "currentModelComparison": "missing",
-    "worldModelRebuild": "missing",
-    "agricultureLayoutRebind": "missing",
-    "foragingLayoutRebind": "missing",
-    "objectRegistryRebind": "missing",
-    "incompatibleSaveQuarantine": "missing",
-    "restoreGeneration": "missing",
-    "staleRestoreRejection": "missing",
-    "firstRestoredWorldFrameAck": "missing"
+  "motionPreferenceState": {
+    "systemObserver": "partial-startup-sample-only",
+    "liveMediaQueryChange": "missing",
+    "productOverride": "missing",
+    "policyRevision": "missing",
+    "classificationRegistry": "missing",
+    "cssJsConvergence": "missing",
+    "menuFrondPolicy": "frozen-startup-boolean",
+    "menuWaterPolicy": "missing",
+    "menuTransitionPolicy": "frozen-startup-boolean-and-css",
+    "aerialIntroPolicy": "missing",
+    "oceanPolicy": "missing",
+    "foamPolicy": "missing",
+    "cloudFogWindPolicy": "missing",
+    "stalePolicyRejection": "missing",
+    "firstReducedMotionMenuFrameAck": "missing",
+    "firstReducedMotionGameplayFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-save-world-content-compatibility-admission-authority-domain",
+  "plannedParentDomain": "cozy-island-motion-preference-live-animation-projection-authority-domain",
   "plannedKits": [
-    "save-release-manifest-kit","world-generation-version-kit","world-config-digest-kit","content-pack-identity-kit","dependency-contract-fingerprint-kit","participant-schema-fingerprint-kit","save-compatibility-admission-kit","save-migration-graph-kit","world-model-rebuild-kit","agriculture-layout-rebind-kit","foraging-layout-rebind-kit","object-registry-rebind-kit","transaction-ledger-compatibility-kit","incompatible-save-quarantine-kit","new-island-fallback-kit","restore-generation-identity-kit","stale-restore-rejection-kit","restored-frame-convergence-kit","first-restored-world-frame-ack-kit","save-compatibility-source-build-pages-fixture-kit"
+    "motion-capability-observer-kit","motion-preference-revision-kit","product-motion-override-kit","motion-policy-resolution-kit","essential-motion-classification-kit","menu-motion-descriptor-kit","menu-frond-motion-adapter-kit","menu-water-motion-adapter-kit","menu-transition-motion-adapter-kit","aerial-intro-motion-adapter-kit","gameplay-camera-motion-adapter-kit","ocean-motion-adapter-kit","foam-motion-adapter-kit","cloud-motion-adapter-kit","fog-motion-adapter-kit","world-wind-motion-adapter-kit","live-preference-change-settlement-kit","stale-motion-policy-rejection-kit","first-reduced-motion-frame-ack-kit","motion-preference-source-build-pages-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-16T05-41-12-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-16T05-41-12-04-00.md",
-    ".agent/architecture-audit/2026-07-16T05-41-12-04-00-save-world-content-compatibility-dsk-map.md",
-    ".agent/render-audit/2026-07-16T05-41-12-04-00-restored-state-current-world-visible-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-16T05-41-12-04-00-save-restore-world-version-loop.md",
-    ".agent/interaction-audit/2026-07-16T05-41-12-04-00-save-compatibility-command-result-map.md",
-    ".agent/save-compatibility-audit/2026-07-16T05-41-12-04-00-world-seed-content-migration-contract.md",
-    ".agent/deploy-audit/2026-07-16T05-41-12-04-00-save-compatibility-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-16T05-41-12-04-00-oldest-selection-save-compatibility-reconciliation.md"
+    ".agent/trackers/2026-07-16T13-01-43-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-16T13-01-43-04-00.md",
+    ".agent/architecture-audit/2026-07-16T13-01-43-04-00-motion-preference-live-projection-dsk-map.md",
+    ".agent/render-audit/2026-07-16T13-01-43-04-00-frozen-preference-continuous-motion-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-16T13-01-43-04-00-reduced-motion-essential-simulation-loop.md",
+    ".agent/interaction-audit/2026-07-16T13-01-43-04-00-motion-preference-command-result-map.md",
+    ".agent/motion-preference-audit/2026-07-16T13-01-43-04-00-system-override-animation-policy-contract.md",
+    ".agent/deploy-audit/2026-07-16T13-01-43-04-00-motion-preference-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-16T13-01-43-04-00-oldest-selection-motion-preference-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "exactManifestRestoreFixtureRun": false,
-    "changedWorldFixtureRun": false,
-    "changedContentFixtureRun": false,
-    "migrationGraphFixtureRun": false,
-    "quarantineFallbackFixtureRun": false,
-    "firstRestoredWorldFrameFixtureRun": false,
+    "systemReducedMotionStartupFixtureRun": false,
+    "liveMediaQueryChangeFixtureRun": false,
+    "productOverrideFixtureRun": false,
+    "menuMotionFixtureRun": false,
+    "gameMotionFixtureRun": false,
+    "simulationParityFixtureRun": false,
+    "firstReducedMotionFrameFixturesRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

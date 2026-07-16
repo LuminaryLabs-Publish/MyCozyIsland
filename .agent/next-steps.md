@@ -1,69 +1,36 @@
-# Next steps: MyCozyIsland save, world and content compatibility
-
-**Timestamp:** `2026-07-16T05-41-12-04-00`  
-**Status:** `save-world-content-compatibility-admission-authority-audited`
-
-## Summary
-
-Add one release-aware save compatibility boundary before restore mutates any participant. Exact-compatible saves may load directly; all other saves must follow a registered migration, world rebuild, quarantine or new-island fallback path.
+# Next steps: live motion preference projection
 
 ## Plan ledger
 
-**Goal:** make save upgrades deterministic, topology-aware and bound to one accepted restored world frame.
+**Goal:** implement one shared motion policy from browser capability through menu and gameplay frame proof.
 
-- [ ] Define a save release manifest containing product, world-generation, config, content, dependency and participant-schema identities.
-- [ ] Add stable digests for `COZY_WORLD_CONFIG`, item definitions, crop definitions and the tropical Agriculture content pack.
-- [ ] Record installed DSK IDs, versions and participant schema fingerprints.
-- [ ] Extend the save envelope without silently invalidating existing v1/v2 migration behavior.
-- [ ] Compare the save manifest with the current release before participant mutation.
-- [ ] Classify each envelope as exact, migratable, rebuild-required, incompatible or corrupt.
-- [ ] Add one deterministic migration graph with explicit source and destination manifests.
-- [ ] Rebuild the world runtime model when the accepted save requires a different compatible model.
-- [ ] Rebind Core Object descriptors, Agriculture plots and Foraging nodes to the accepted topology.
-- [ ] Validate transaction-ledger records against the installed participant contracts.
-- [ ] Validate the restored player position against the accepted terrain and apply only an authored safe-relocation policy.
-- [ ] Allocate one `RestoreGeneration` and reject stale or duplicate restore callbacks.
-- [ ] Stage all participant state and commit atomically or restore the prior generation.
-- [ ] Preserve the original incompatible envelope in quarantine.
-- [ ] Publish an explicit new-island or user-decision fallback result.
-- [ ] Capture one canonical post-migration save after successful adoption.
-- [ ] Publish `SaveCompatibilityAdmissionResult` and `RestoreGenerationResult`.
-- [ ] Publish `FirstRestoredWorldFrameAck` with save, world, participant, renderer and frame revisions.
-- [ ] Add source, built-artifact and Pages fixtures for changed world/content/domain releases.
+- [ ] Add `cozy-motion-preference-domain-kit` with system observation, product override, revisions and snapshots.
+- [ ] Keep one live `MediaQueryList` and handle its `change` event.
+- [ ] Define `system`, `normal` and `reduced` override modes.
+- [ ] Publish immutable `MotionPolicyDescriptor` records.
+- [ ] Classify direct input and authoritative simulation as preserved behavior.
+- [ ] Classify menu wind, menu water, crossfades, aerial camera, ocean, foam, cloud, fog and world wind as policy-controlled presentation.
+- [ ] Make menu CSS and JavaScript consume the same resolved policy.
+- [ ] Replace the frozen module-level `reducedMotion` boolean.
+- [ ] Stop or attenuate menu compute work when reduced motion is active.
+- [ ] Freeze or replace menu water shader-time displacement.
+- [ ] Skip the aerial rail or present one static establishing frame in reduced mode.
+- [ ] Add motion uniforms/descriptors for ocean, foam, cloud, fog and wind.
+- [ ] Settle live preference changes without resetting gameplay state.
+- [ ] Reject stale callbacks from retired route or policy generations.
+- [ ] Publish `MotionProjectionResult` for menu and game.
+- [ ] Publish `FirstReducedMotionMenuFrameAck` and `FirstReducedMotionGameplayFrameAck`.
+- [ ] Add normal/reduced simulation-parity fixtures.
+- [ ] Add live media-query change and product-override fixtures.
+- [ ] Run source, built artifact and deployed Pages browser fixtures.
+- [ ] Update `.agent` only after executable evidence exists.
 
-## Minimal implementation order
+## Implementation order
 
-```txt
-1. release manifest and stable digests
-2. save-envelope compatibility metadata
-3. pre-mutation admission and result classes
-4. migration graph
-5. restore generation and staging
-6. world-model rebuild
-7. object, Agriculture and Foraging topology rebind
-8. ledger and player-position validation
-9. quarantine and fallback
-10. canonical post-migration save
-11. restored-frame acknowledgement
-12. source, artifact and Pages fixtures
-```
-
-## Target files
-
-```txt
-src/adventure/definitions.js
-src/adventure/world-domain.js
-src/adventure/agriculture-config.js
-src/adventure/resource-domains.js
-src/adventure/persistence-render-domains.js
-src/adventure/composition-runtime.js
-src/main-adventure.js
-tests/save-compatibility.fixture.mjs
-tests/adventure-domains-smoke.mjs
-package.json
-.github/workflows/pages.yml
-```
-
-## Preserve
-
-Do not move world generation into Save, crop rules into the migration coordinator, item balances into the renderer or GPU state into the portable envelope. Each owning domain validates and migrates its own state; the product compatibility authority only coordinates admission, ordering, rollback, fallback and restored-frame proof.
+1. Policy and revision authority.
+2. Menu projection.
+3. Aerial camera policy.
+4. Environment projection.
+5. Live-change settlement.
+6. Frame acknowledgements.
+7. Browser and deployment fixtures.

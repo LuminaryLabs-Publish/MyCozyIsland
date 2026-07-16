@@ -1,53 +1,55 @@
-# Validation: MyCozyIsland save, world and content compatibility
+# Validation: live motion preference projection audit
 
-**Timestamp:** `2026-07-16T05-41-12-04-00`  
-**Status:** `documentation-only`
-
-## Summary
-
-Source inspection confirms the missing release/world/content compatibility-admission and restored-frame boundary. No save envelope, world model, gameplay behavior or deployment artifact was changed or executed.
+**Timestamp:** `2026-07-16T13-01-43-04-00`
 
 ## Plan ledger
 
-**Goal:** state exactly what was and was not validated.
+**Goal:** record exactly what this documentation run proves and does not prove.
 
-- [x] Inspected save capture, checksum validation, schema migration, restore ordering and rollback.
-- [x] Inspected current world-model creation, snapshot loading and model-backed queries.
-- [x] Inspected current Agriculture and Foraging configuration and topology.
-- [x] Inspected renderer-neutral static/frame snapshot construction.
-- [x] Inspected successful same-version v2 restore and v1 migration smoke coverage.
-- [x] Confirmed no complete release compatibility manifest or pre-mutation admission result.
-- [x] Confirmed no world-model rebuild, topology rebind or first restored-frame acknowledgement.
-- [ ] Run cross-version source, artifact and Pages fixtures.
+- [x] Full Publish inventory compared.
+- [x] Cavalry of Rome excluded.
+- [x] Central ledgers and root `.agent` state compared.
+- [x] Current MyCozyIsland head matched the central documented head before the audit.
+- [x] Menu and game source paths inspected.
+- [x] Motion-related camera, water, foam and frame paths inspected.
+- [x] Required `.agent` documents added or refreshed.
+- [ ] Runtime implementation tested.
+
+## Change boundary
 
 ```txt
 documentation changed: yes
 runtime JavaScript changed: no
-save schemas or envelopes changed: no
-world generation or configuration changed: no
-items, crops or Agriculture config changed: no
-Inventory, Agriculture or Foraging behavior changed: no
-player, interaction or transaction-ledger behavior changed: no
-render behavior changed: no
+HTML or CSS changed: no
+shader behavior changed: no
+input or simulation changed: no
+gameplay changed: no
+rendering changed: no
+save behavior changed: no
 dependencies changed: no
 tests or workflows changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-
-npm test: not run
-exact-manifest restore fixture: not run
-changed-world-seed fixture: unavailable
-changed-world-config fixture: unavailable
-changed-farm/forage-topology fixture: unavailable
-changed-item/crop-content fixture: unavailable
-changed-DSK-schema fixture: unavailable
-migration-graph fixture: unavailable
-quarantine and fallback fixture: unavailable
-restore rollback fixture: unavailable
-first restored world frame fixture: unavailable
-built-output smoke: not run
-Pages smoke: not run
 ```
 
-No cross-version compatibility, deterministic migration, world-model rebuild, topology rebind, incompatible-save safety, canonical post-migration save, restored-frame convergence, artifact parity, Pages parity or production readiness is claimed.
+## Executable evidence
+
+```txt
+npm test: not run
+OS reduced-motion startup fixture: not run
+live media-query change fixture: unavailable
+product override fixture: unavailable
+menu motion fixture: unavailable
+aerial-intro fixture: unavailable
+ocean/foam/environment fixture: unavailable
+normal/reduced simulation parity: unavailable
+first reduced-motion menu frame fixture: unavailable
+first reduced-motion gameplay frame fixture: unavailable
+built-output smoke: not run
+Pages-origin smoke: not run
+```
+
+## Claims withheld
+
+No live preference adoption, product override correctness, motion classification correctness, vestibular safety, simulation parity, frame convergence, artifact parity, Pages parity or production readiness is claimed.

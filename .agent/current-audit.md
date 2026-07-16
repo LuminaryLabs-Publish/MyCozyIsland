@@ -1,24 +1,25 @@
-# Current audit: MyCozyIsland accessible HUD, progress and interaction projection
+# Current audit: MyCozyIsland renderer device and context loss recovery
 
-**Timestamp:** `2026-07-15T19-58-42-04-00`  
-**Status:** `accessible-hud-progress-interaction-projection-authority-audited`  
+**Timestamp:** `2026-07-16T00-59-16-04-00`  
+**Status:** `renderer-device-context-loss-recovery-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit documentation head:** `dc3ef1a0c638fcef11123e4819af53f71f8aeb5e`
+**Reviewed pre-audit documentation head:** `6505b5dd0c3ff9b6524e93b1d7bf841a6de4df54`
 
 ## Summary
 
-MyCozyIsland was selected after a fresh Publish inventory comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Its accepted startup and gameplay state is visually rich, but the semantic projection is incomplete and not revision-bound.
+MyCozyIsland was selected after the current Publish inventory comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Its renderer startup and first-frame path are explicit, but renderer lifetime loss and recovery are not owned by a product domain.
 
 ## Plan ledger
 
-**Goal:** make startup, objective, resource, stamina, seed, interaction, save and focus state readable as stable semantic results.
+**Goal:** make renderer loss, suspension, reconstruction, fallback and recovered-frame proof explicit across the menu, hidden preload and active game.
 
 - [x] Confirm selection and synchronization.
-- [x] Inspect the menu, game document, startup host, HUD updater and focus handoff.
-- [x] Identify the semantic projection boundary.
+- [x] Inspect renderer initialization and animation on both visual surfaces.
+- [x] Inspect hidden presentation freeze/resume and startup error capture.
+- [x] Identify the renderer generation and recovery boundary.
 - [x] Preserve all kits and services.
-- [x] Define 21 coordinating surfaces.
+- [x] Define 20 coordinating recovery surfaces.
 - [ ] Implement and execute the authority.
 
 ## Selection comparison
@@ -35,85 +36,87 @@ runtime-ahead: 0
 
 selected: LuminaryLabs-Publish/MyCozyIsland
 selection rule: oldest synchronized central timestamp
-prior timestamp: 2026-07-15T15-01-22-04-00
-next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T15-41-21-04-00
+prior timestamp: 2026-07-15T19-58-42-04-00
+next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T20-38-13-04-00
 excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
 ## Source-backed finding
 
-`menu.html` gives the Play button `aria-live="polite"` while it is disabled and uses the button text as a 1–99 percent preload readout. `src/menu.js` rewrites that text for progress, readiness, entry and failure, so one control owns both status and action semantics.
+`src/menu.js` creates a `THREE.WebGPURenderer`, awaits initialization, creates a `RenderPipeline` and starts an animation loop. Its explicit failure path catches `main()` startup rejection, but no product-owned runtime loss result is defined.
 
-`game.html` exposes the loader as a live region but marks its visual track `aria-hidden`; it has no `role="progressbar"` or `aria-valuenow`. Stamina is a nested visual span, seed slots are class-selected `div` elements, the interaction prompt is not a live/status region, and changing resource/save values have no explicit semantic update contract.
+`src/main-adventure.js` creates a second `THREE.WebGPURenderer`, bounds initialization through Core Startup, constructs atmosphere and post resources and starts the game animation loop. The inspected product source does not define a renderer-generation identity, WebGPU device-loss observer or WebGL context lost/restored observer.
 
-`src/main-adventure.js` calls `updateHud(frame)` on every animation frame and unconditionally rewrites objective, prompt, resource counts, stamina width, save copy and seed-slot classes. There is no semantic snapshot ID, meaningful-change filter, announcement priority, duplicate suppression, accessible result or frame acknowledgement.
+`src/adventure/startup-host.js` deliberately ignores global errors after the startup descriptor becomes playable, so its startup failure authority is not a runtime renderer-health authority.
 
-The menu-to-game path does attempt focus handoff into the iframe canvas, but there is no typed focus-admission result proving the active document, hidden-state removal and accepted gameplay frame agree.
+`src/game-preload-bridge.js` freezes the hidden renderer by removing its animation loop and later restores the same callback. It publishes successful entry without first requiring a fresh renderer-health result or recovered-frame acknowledgement.
+
+This is a source-backed ownership and proof gap. It does not assert that the browser or Three.js has no internal behavior, and no forced-loss incident was reproduced.
 
 ## Interaction loop
 
 ```txt
-preload
-  -> progress message
-  -> disabled live Play button text mutation
-  -> ready message
-  -> same element becomes enabled action
+menu renderer startup
+  -> WebGPU/WebGL2 backend admitted
+  -> menu frame loop begins
+  -> hidden game preload begins
+
+hidden game readiness
+  -> game renderer and resources admitted
+  -> first frame presented
+  -> animation loop removed while hidden
 
 entry
-  -> Play request
-  -> iframe aria-hidden removal
-  -> delayed iframe/canvas focus
-  -> no focus result or semantic entry acknowledgement
+  -> old animation callback restored
+  -> game revealed
+  -> no renderer-health re-admission
 
-gameplay
-  -> accepted engine frame
-  -> visual WebGPU/WebGL2 frame
-  -> RAF-wide DOM rewrite
-  -> no revision-bound semantic snapshot
-  -> no meaningful-transition announcement result
+runtime renderer loss
+  -> no product loss observation result
+  -> no presentation suspension result
+  -> no renderer/resource generation rebuild
+  -> no fallback result
+  -> no first recovered frame acknowledgement
 ```
 
 ## Domains and census
 
 ```txt
-menu progress and action-gate semantics
-same-origin iframe visibility and focus adoption
-Core Startup and playable-entry projection
-objective, inventory, stamina, seed and save status
-interaction target/prompt/result projection
-gameplay canvas alternative and focus state
-semantic change filtering and announcement arbitration
-accessible-frame acknowledgement
-WebGPU/WebGL2 and DOM visible-frame convergence
-validation, build and Pages
+menu and game renderer providers
+hidden-preload and active-route presentation lifecycle
+Core Startup and first playable frame
+renderer-neutral world and frame snapshots
+WebGPU device and WebGL context observation
+renderer/resource generation retirement
+bounded recovery and fallback
+simulation/input policy during presentation loss
+recovered visible-frame acknowledgement
+build, artifact and Pages proof
 ```
 
 ```txt
 implemented surfaces: 70
-planned accessibility surfaces: 21
+planned renderer-recovery surfaces: 20
 ```
 
 ## Required authority
 
 ```txt
-cozy-island-accessible-hud-progress-focus-authority-domain
+cozy-island-render-device-context-recovery-authority-domain
 ```
 
 ```txt
-AccessibleProjectionCommand
-  -> bind document, route, startup, frame, HUD, interaction and focus revisions
-  -> resolve one immutable semantic snapshot
-  -> separate progress status from the Play action
-  -> expose determinate startup and stamina progress
-  -> expose seed selection and resource values
-  -> announce authored objective, interaction, save and terminal transitions once
-  -> reject duplicate RAF-only rewrites
-  -> adopt focus only after the game document and frame are accepted
-  -> publish AccessibleProjectionResult
-  -> publish FirstAccessibleMenuFrameAck
-  -> publish FirstAccessibleGameplayFrameAck
+RenderRecoveryAdmissionCommand
+  -> bind document, route, renderer, backend, device/context and resource generations
+  -> normalize WebGPU/WebGL loss evidence
+  -> retire the stale renderer generation
+  -> suspend presentation and apply simulation/input policy
+  -> reconstruct renderer and registered GPU resources under a deadline
+  -> reject stale recovery work
+  -> publish RenderRecoveryResult or RenderFallbackResult
+  -> publish FirstRecoveredFrameAck
 ```
 
 ## Existing proof boundary
 
-Current Node tests verify shell structure, visual menu composition, preload messages and domain behavior. They do not inspect the accessibility tree, run a screen reader, validate progressbar values, measure announcement duplication, verify semantic seed/stamina state or prove focus after iframe entry.
+Current tests verify shell structure, source patterns, startup-domain behavior and adventure-domain behavior. They do not force WebGPU device loss, WebGL context loss/restoration, hidden-preload loss, renderer reconstruction, resource rehydration, stale callback rejection, fallback or a recovered visible frame.

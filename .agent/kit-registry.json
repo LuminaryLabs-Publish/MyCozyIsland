@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 105,
-  "lastUpdated": "2026-07-16T13-01-43-04-00",
+  "schemaVersion": 106,
+  "lastUpdated": "2026-07-16T18-41-23-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "motion-preference-live-animation-projection-authority-audited",
-  "technicalStatus": "motion-preference-live-animation-projection-authority-audited",
+  "status": "pointer-look-gesture-ownership-authority-audited",
+  "technicalStatus": "pointer-look-gesture-ownership-authority-audited",
   "retainedStatuses": [
+    "motion-preference-live-animation-projection-authority-audited",
     "save-world-content-compatibility-admission-authority-audited",
     "renderer-device-context-loss-recovery-authority-audited",
     "accessible-hud-progress-interaction-projection-authority-audited",
@@ -29,7 +30,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "live operating-system and product motion preference resolution across menu wind and water, route transitions, aerial camera, ocean, foam, cloud, fog and world-wind projection while preserving authoritative simulation",
+  "currentFocus": "owner-specific pointer-look gesture admission, capture leasing, mixed-pointer rejection, exact terminal settlement and first matching camera-frame acknowledgement",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -40,10 +41,10 @@
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
     "reason": "oldest synchronized central documentation timestamp after higher-priority classes were cleared",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "priorCentralTimestamp": "2026-07-16T05-41-12-04-00",
-    "nextOldestRepository": "LuminaryLabs-Publish/IntoTheMeadow",
-    "nextOldestTimestamp": "2026-07-16T05-58-36-04-00",
-    "priorRepoLocalDocumentationHead": "ba23c6462e120fd0673347e8a039f10941cf6fb7",
+    "priorCentralTimestamp": "2026-07-16T13-01-43-04-00",
+    "nextOldestRepository": "LuminaryLabs-Publish/TheLongHaul",
+    "nextOldestTimestamp": "2026-07-16T14-01-02-04-00",
+    "priorRepoLocalDocumentationHead": "02ef4b2ab98a36a7e744ff8dce36e796ed15f1ec",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -59,7 +60,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedMotionPreferenceSurfaces": 20
+    "plannedPointerGestureSurfaces": 18
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -89,50 +90,44 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "motionPreferenceState": {
-    "systemObserver": "partial-startup-sample-only",
-    "liveMediaQueryChange": "missing",
-    "productOverride": "missing",
-    "policyRevision": "missing",
-    "classificationRegistry": "missing",
-    "cssJsConvergence": "missing",
-    "menuFrondPolicy": "frozen-startup-boolean",
-    "menuWaterPolicy": "missing",
-    "menuTransitionPolicy": "frozen-startup-boolean-and-css",
-    "aerialIntroPolicy": "missing",
-    "oceanPolicy": "missing",
-    "foamPolicy": "missing",
-    "cloudFogWindPolicy": "missing",
-    "stalePolicyRejection": "missing",
-    "firstReducedMotionMenuFrameAck": "missing",
-    "firstReducedMotionGameplayFrameAck": "missing"
+  "pointerGestureState": {
+    "pointerIdStoredOnDown": true,
+    "moveOwnerComparison": "missing",
+    "upOwnerComparison": "missing",
+    "cancelOwnerComparison": "missing",
+    "lostPointerCaptureSettlement": "missing",
+    "secondaryPointerPolicy": "implicit-shared-drag-replacement",
+    "inputPointerIdentity": "missing",
+    "gestureRevision": "missing",
+    "captureRevision": "missing",
+    "routeRevision": "missing",
+    "terminalResult": "missing",
+    "firstPointerLookFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-motion-preference-live-animation-projection-authority-domain",
+  "plannedParentDomain": "cozy-island-pointer-look-gesture-ownership-authority-domain",
   "plannedKits": [
-    "motion-capability-observer-kit","motion-preference-revision-kit","product-motion-override-kit","motion-policy-resolution-kit","essential-motion-classification-kit","menu-motion-descriptor-kit","menu-frond-motion-adapter-kit","menu-water-motion-adapter-kit","menu-transition-motion-adapter-kit","aerial-intro-motion-adapter-kit","gameplay-camera-motion-adapter-kit","ocean-motion-adapter-kit","foam-motion-adapter-kit","cloud-motion-adapter-kit","fog-motion-adapter-kit","world-wind-motion-adapter-kit","live-preference-change-settlement-kit","stale-motion-policy-rejection-kit","first-reduced-motion-frame-ack-kit","motion-preference-source-build-pages-fixture-kit"
+    "pointer-capability-admission-kit","pointer-gesture-generation-kit","active-pointer-lease-kit","pointer-capture-adapter-kit","pointer-down-admission-kit","pointer-move-admission-kit","pointer-up-settlement-kit","pointer-cancel-settlement-kit","lost-pointer-capture-settlement-kit","secondary-pointer-rejection-kit","pointer-coordinate-normalization-kit","look-delta-command-kit","gesture-revision-kit","stale-pointer-event-rejection-kit","route-input-retirement-kit","pointer-gesture-result-kit","first-pointer-look-frame-ack-kit","pointer-gesture-browser-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-16T13-01-43-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-16T13-01-43-04-00.md",
-    ".agent/architecture-audit/2026-07-16T13-01-43-04-00-motion-preference-live-projection-dsk-map.md",
-    ".agent/render-audit/2026-07-16T13-01-43-04-00-frozen-preference-continuous-motion-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-16T13-01-43-04-00-reduced-motion-essential-simulation-loop.md",
-    ".agent/interaction-audit/2026-07-16T13-01-43-04-00-motion-preference-command-result-map.md",
-    ".agent/motion-preference-audit/2026-07-16T13-01-43-04-00-system-override-animation-policy-contract.md",
-    ".agent/deploy-audit/2026-07-16T13-01-43-04-00-motion-preference-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-16T13-01-43-04-00-oldest-selection-motion-preference-reconciliation.md"
+    ".agent/trackers/2026-07-16T18-41-23-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-16T18-41-23-04-00.md",
+    ".agent/architecture-audit/2026-07-16T18-41-23-04-00-pointer-look-gesture-ownership-dsk-map.md",
+    ".agent/render-audit/2026-07-16T18-41-23-04-00-mixed-pointer-camera-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-16T18-41-23-04-00-multi-pointer-look-traversal-loop.md",
+    ".agent/interaction-audit/2026-07-16T18-41-23-04-00-pointer-gesture-command-result-map.md",
+    ".agent/pointer-gesture-audit/2026-07-16T18-41-23-04-00-pointer-owner-capture-settlement-contract.md",
+    ".agent/deploy-audit/2026-07-16T18-41-23-04-00-pointer-gesture-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-16T18-41-23-04-00-oldest-selection-pointer-gesture-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "systemReducedMotionStartupFixtureRun": false,
-    "liveMediaQueryChangeFixtureRun": false,
-    "productOverrideFixtureRun": false,
-    "menuMotionFixtureRun": false,
-    "gameMotionFixtureRun": false,
-    "simulationParityFixtureRun": false,
-    "firstReducedMotionFrameFixturesRun": false,
+    "singlePointerFixtureRun": false,
+    "multiPointerFixtureRun": false,
+    "lostCaptureFixtureRun": false,
+    "lifecycleRetirementFixtureRun": false,
+    "firstPointerLookFrameFixtureRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

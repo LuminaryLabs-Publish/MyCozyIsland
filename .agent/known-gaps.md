@@ -1,33 +1,34 @@
-# Known gaps: live motion preference projection
+# Known gaps: pointer-look gesture ownership
 
 ## Plan ledger
 
-**Goal:** keep unresolved motion-policy work explicit until runtime evidence closes it.
+**Goal:** keep unresolved pointer ownership and capture work explicit until executable evidence closes it.
 
-- [ ] No shared motion-preference domain.
-- [ ] No product override.
-- [ ] No preference or policy revision.
-- [ ] No essential-versus-optional motion classification registry.
-- [ ] Menu media-query value is captured once.
-- [ ] No live `MediaQueryList` change settlement.
-- [ ] CSS and JavaScript do not consume one policy result.
-- [ ] Menu water remains shader-time animated in reduced mode.
-- [ ] Menu compute wind may still execute when deformation is attenuated.
-- [ ] Entry timing depends on a frozen startup boolean.
-- [ ] Game route has no JavaScript reduced-motion observation.
-- [ ] Aerial intro advances automatically without a reduced-motion policy.
-- [ ] Ocean waves always consume shader time.
-- [ ] Foam always consumes elapsed time.
-- [ ] Cloud, fog and world-wind motion have no shared motion descriptor.
-- [ ] No stale-policy rejection across route handoff.
-- [ ] No menu reduced-motion frame acknowledgement.
-- [ ] No gameplay reduced-motion frame acknowledgement.
-- [ ] No normal/reduced simulation-parity fixture.
-- [ ] No source/build/Pages motion-preference proof.
+- [ ] No pointer gesture authority domain.
+- [ ] No active owner lease.
+- [ ] No gesture or capture revision.
+- [ ] Pointermove does not compare `event.pointerId` with the stored drag owner.
+- [ ] Pointerup clears the drag without owner comparison.
+- [ ] Pointercancel clears the drag without owner comparison.
+- [ ] No `lostpointercapture` settlement.
+- [ ] Secondary pointers can overwrite the shared drag coordinates.
+- [ ] Secondary-pointer policy is implicit.
+- [ ] Input pointer commands contain no pointer ID.
+- [ ] Input pointer commands contain no gesture ID.
+- [ ] Input pointer commands contain no route or canvas revision.
+- [ ] No stale-event rejection after gesture settlement.
+- [ ] No typed pointer admission result.
+- [ ] No typed pointer delta result.
+- [ ] No typed terminal settlement result.
+- [ ] No exact capture-release receipt.
+- [ ] No `FirstPointerLookFrameAck`.
+- [ ] No mouse, pen, touch or mixed-pointer fixture.
+- [ ] No lost-capture or lifecycle-retirement fixture.
+- [ ] No source/build/Pages pointer-gesture proof.
 
 ## Non-findings
 
-- No claim is made that direct player movement should be reduced.
-- No claim is made that gameplay time, crop growth or Foraging should change.
-- No user-facing defect was reproduced in this documentation run.
-- No accessibility conformance claim is made.
+- No claim is made that a visible multi-touch failure occurs on every device.
+- No change to player, camera or input architecture was implemented.
+- No pointer gesture was reproduced in a real browser during this documentation run.
+- No accessibility, deployment or production-readiness claim is made.

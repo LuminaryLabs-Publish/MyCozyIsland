@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 102,
-  "lastUpdated": "2026-07-15T19-58-42-04-00",
+  "schemaVersion": 103,
+  "lastUpdated": "2026-07-16T00-59-16-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "accessible-hud-progress-interaction-projection-authority-audited",
-  "technicalStatus": "accessible-hud-progress-interaction-projection-authority-audited",
+  "status": "renderer-device-context-loss-recovery-authority-audited",
+  "technicalStatus": "renderer-device-context-loss-recovery-authority-audited",
   "retainedStatuses": [
+    "accessible-hud-progress-interaction-projection-authority-audited",
     "save-writer-lease-revision-admission-authority-audited",
     "game-audio-event-projection-authority-audited",
     "host-clock-fixed-step-simulation-authority-audited",
@@ -26,7 +27,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "revision-bound semantic startup and gameplay projection for progress, objective, resources, stamina, seed selection, interaction, save status and menu-to-game focus",
+  "currentFocus": "product-owned WebGPU device and WebGL context loss admission, renderer/resource generation recovery, fallback and first recovered frame proof across menu, hidden preload and active game",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -39,10 +40,10 @@
     "excluded": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
-    "priorCentralTimestamp": "2026-07-15T15-01-22-04-00",
+    "priorCentralTimestamp": "2026-07-15T19-58-42-04-00",
     "nextOldestRepository": "LuminaryLabs-Publish/IntoTheMeadow",
-    "nextOldestTimestamp": "2026-07-15T15-41-21-04-00",
-    "priorRepoLocalDocumentationHead": "dc3ef1a0c638fcef11123e4819af53f71f8aeb5e",
+    "nextOldestTimestamp": "2026-07-15T20-38-13-04-00",
+    "priorRepoLocalDocumentationHead": "6505b5dd0c3ff9b6524e93b1d7bf841a6de4df54",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -58,7 +59,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedAccessibilitySurfaces": 21
+    "plannedRendererRecoverySurfaces": 20
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -88,43 +89,47 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "accessibleProjectionState": {
-    "menuProgressStatus": "shares-disabled-live-play-button",
-    "menuPlayActionIdentity": "mixed-with-progress-status",
-    "gameStartupProgressbar": "missing-determinate-value",
-    "staminaProgressbar": "missing",
-    "seedSelectionSemantics": "class-only",
-    "resourceSemanticGroup": "partial-static-labels",
-    "interactionStatus": "visible-text-without-transition-result",
-    "saveAnnouncementPolicy": "missing",
-    "semanticRevision": "missing",
-    "announcementDeduplication": "missing",
-    "focusAdmissionResult": "missing",
-    "firstAccessibleMenuFrameAck": "missing",
-    "firstAccessibleGameplayFrameAck": "missing"
+  "rendererRecoveryState": {
+    "rendererGenerationIdentity": "missing",
+    "webgpuDeviceLossObserver": "missing-product-owned-result",
+    "webglContextLossObserver": "missing",
+    "lossAdmission": "missing",
+    "renderSuspensionResult": "missing",
+    "simulationPolicyDuringLoss": "unspecified",
+    "inputPolicyDuringLoss": "unspecified",
+    "resourceReconstructionRegistry": "missing",
+    "rendererReconstruction": "missing",
+    "postPipelineRebuild": "missing",
+    "hiddenPreloadHealthReadmission": "missing",
+    "staleGenerationRejection": "missing",
+    "recoveryTimeoutPolicy": "missing",
+    "fallbackResult": "missing",
+    "firstRecoveredFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-accessible-hud-progress-focus-authority-domain",
+  "plannedParentDomain": "cozy-island-render-device-context-recovery-authority-domain",
   "plannedKits": [
-    "accessible-semantic-snapshot-kit","accessible-semantic-revision-kit","semantic-change-classification-kit","menu-progress-status-kit","menu-play-action-identity-kit","startup-progressbar-projection-kit","stamina-progressbar-projection-kit","resource-group-semantic-kit","seed-selection-semantic-kit","interaction-status-projection-kit","objective-announcement-policy-kit","save-status-announcement-policy-kit","failure-alert-policy-kit","announcement-deduplication-kit","announcement-rate-policy-kit","gameplay-canvas-alternative-kit","document-focus-identity-kit","focus-admission-result-kit","first-accessible-menu-frame-ack-kit","first-accessible-gameplay-frame-ack-kit","accessibility-source-build-pages-fixture-kit"
+    "renderer-capability-observation-kit","renderer-generation-identity-kit","webgpu-device-loss-observer-kit","webgl-context-loss-observer-kit","context-loss-admission-kit","render-suspension-on-loss-kit","simulation-policy-on-render-loss-kit","input-policy-on-render-loss-kit","recovery-attempt-command-kit","renderer-reconstruction-kit","render-resource-rehydration-kit","scene-resource-registry-kit","post-pipeline-rebuild-kit","preload-recovery-coordination-kit","stale-render-generation-rejection-kit","recovery-timeout-policy-kit","renderer-failure-fallback-kit","render-recovery-result-kit","first-recovered-frame-ack-kit","renderer-loss-source-build-pages-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-15T19-58-42-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-15T19-58-42-04-00.md",
-    ".agent/architecture-audit/2026-07-15T19-58-42-04-00-accessible-hud-progress-projection-dsk-map.md",
-    ".agent/render-audit/2026-07-15T19-58-42-04-00-semantic-visible-frame-convergence-gap.md",
-    ".agent/gameplay-audit/2026-07-15T19-58-42-04-00-visual-only-status-interaction-loop.md",
-    ".agent/interaction-audit/2026-07-15T19-58-42-04-00-accessible-projection-command-result-map.md",
-    ".agent/accessibility-audit/2026-07-15T19-58-42-04-00-semantic-hud-progress-focus-contract.md",
-    ".agent/deploy-audit/2026-07-15T19-58-42-04-00-accessibility-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-15T19-58-42-04-00-oldest-selection-accessibility-reconciliation.md"
+    ".agent/trackers/2026-07-16T00-59-16-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-16T00-59-16-04-00.md",
+    ".agent/architecture-audit/2026-07-16T00-59-16-04-00-renderer-device-context-loss-recovery-dsk-map.md",
+    ".agent/render-audit/2026-07-16T00-59-16-04-00-gpu-loss-recovered-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-16T00-59-16-04-00-render-loss-noninteractive-loop.md",
+    ".agent/interaction-audit/2026-07-16T00-59-16-04-00-render-recovery-command-result-map.md",
+    ".agent/renderer-recovery-audit/2026-07-16T00-59-16-04-00-webgpu-device-webgl-context-loss-contract.md",
+    ".agent/deploy-audit/2026-07-16T00-59-16-04-00-renderer-loss-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-16T00-59-16-04-00-oldest-selection-renderer-recovery-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "accessibilityTreeFixtureRun": false,
-    "screenReaderFixtureRun": false,
-    "focusFixtureRun": false,
+    "webgpuDeviceLossFixtureRun": false,
+    "webglContextLossFixtureRun": false,
+    "hiddenPreloadLossFixtureRun": false,
+    "resourceRehydrationFixtureRun": false,
+    "firstRecoveredFrameFixtureRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

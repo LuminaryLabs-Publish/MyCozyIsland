@@ -1,55 +1,60 @@
-# Next steps: MyCozyIsland save-writer lease and revision admission
+# Next steps: MyCozyIsland accessible HUD, progress and interaction projection
 
-**Timestamp:** `2026-07-15T15-01-22-04-00`  
-**Status:** `save-writer-lease-revision-admission-authority-audited`
+**Timestamp:** `2026-07-15T19-58-42-04-00`  
+**Status:** `accessible-hud-progress-interaction-projection-authority-audited`
 
 ## Summary
 
-Insert a conflict-aware save-writer authority between portable capture and localStorage. Hidden preload must be read-only until accepted entry.
+Add one renderer-neutral semantic snapshot and a thin DOM projection adapter. Keep visual animation frequent, but update assistive semantics only when accepted meaning changes.
 
 ## Plan ledger
 
-**Goal:** guarantee monotonic durable progress across multiple documents.
+**Goal:** provide complete low-noise startup and gameplay semantics with deterministic focus handoff.
 
-- [ ] Add `DocumentId`, `WriterSessionId`, `SaveSlotId`, `CommitId` and `commitRevision`.
-- [ ] Extend the durable record with predecessor/base revision and writer metadata.
-- [ ] Add a read-only preload policy.
-- [ ] Acquire a bounded writer lease on accepted game entry.
-- [ ] Renew while active; expire safely after crash or abandonment.
-- [ ] Observe external slot-head changes with `storage`.
-- [ ] Require compare-and-swap against the current head.
-- [ ] Reject stale autosave and pagehide commits.
-- [ ] Verify writes by readback before publishing success.
-- [ ] Publish `SaveCommitResult` and `SaveConflictResult`.
-- [ ] Bind HUD save status to accepted durable revision.
-- [ ] Release leases on retirement and pagehide.
-- [ ] Add two-tab and two-preload browser fixtures.
+- [ ] Add `AccessibleHudSnapshot` to the render-snapshot domain.
+- [ ] Give each semantic snapshot a stable revision and source frame revision.
+- [ ] Separate menu preload status from the Play button.
+- [ ] Add determinate startup progress semantics.
+- [ ] Add stamina `progressbar` semantics and current value.
+- [ ] Represent seed selection as a labeled set with selected state.
+- [ ] Expose resource counts through stable labels.
+- [ ] Publish interaction prompt/result transitions through a polite status region.
+- [ ] Publish failures and blocked actions through an assertive alert only when authored.
+- [ ] Gate objective, prompt, save and resource announcements by semantic change.
+- [ ] Add duplicate suppression and minimum announcement intervals.
+- [ ] Add `DocumentFocusId` and `FocusAdmissionResult` for menu-to-game entry.
+- [ ] Remove hidden/inert state before focus and verify the accepted canvas target.
+- [ ] Publish `FirstAccessibleMenuFrameAck` and `FirstAccessibleGameplayFrameAck`.
+- [ ] Add accessibility-tree, keyboard, focus and screen-reader fixtures.
 - [ ] Run source/build/Pages parity.
 
 ## Minimal implementation order
 
 ```txt
-1. durable record v3 and migration
-2. document/writer identity
-3. slot-head observer
-4. lease admission and expiry
-5. preload read-only policy
-6. compare-and-swap commit
-7. conflict and readback results
-8. HUD durable-revision projection
-9. lifecycle release
-10. browser fixture matrix
+1. semantic snapshot descriptor
+2. semantic revision and change classification
+3. separate menu status/action elements
+4. startup and stamina progressbars
+5. resource and seed-selection semantics
+6. interaction/save announcement policy
+7. focus-admission result
+8. accessible-frame acknowledgements
+9. browser fixture matrix
+10. build and Pages parity
 ```
 
 ## Target files
 
 ```txt
-src/adventure/persistence-render-domains.js
-src/adventure/composition-runtime.js
+menu.html
+game.html
+src/menu.js
 src/main-adventure.js
+src/adventure/persistence-render-domains.js
+src/adventure/startup-host.js
 src/game-preload-bridge.js
-tests/save-multi-document.fixture.mjs
-tests/adventure-domains-smoke.mjs
+tests/menu-game-shell-smoke.mjs
+tests/accessibility-projection.fixture.mjs
 package.json
 .github/workflows/pages.yml
 ```

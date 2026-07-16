@@ -1,28 +1,29 @@
-# Known gaps: MyCozyIsland save-writer lease and revision admission
+# Known gaps: MyCozyIsland accessible HUD, progress and interaction projection
 
-**Timestamp:** `2026-07-15T15-01-22-04-00`
+**Timestamp:** `2026-07-15T19-58-42-04-00`
 
 ## Summary
 
-The current durable slot protects payload integrity but not writer freshness or cross-document ordering.
+Visual state exists, but semantic state is incomplete, mixed with action controls or updated without meaningful-change admission.
 
 ## Plan ledger
 
-**Goal:** keep unresolved risks explicit until implementation and proof exist.
+**Goal:** keep accessibility risks explicit until implementation and executable proof exist.
 
-- [ ] No durable slot-head revision.
-- [ ] No document or writer-session identity.
-- [ ] No writer lease, heartbeat or expiry.
-- [ ] Hidden preload is not storage-read-only.
-- [ ] No base-revision compare-and-swap.
-- [ ] No stale autosave/pagehide rejection.
-- [ ] No `storage`-event head synchronization.
-- [ ] No conflict result or user recovery policy.
-- [ ] Save success is not bound to the durable head.
-- [ ] No predecessor/readback verification for concurrent commits.
-- [ ] No two-tab, two-preload or crash-takeover fixture.
-- [ ] No source/build/Pages concurrency parity proof.
+- [ ] Menu progress and Play action share one button.
+- [ ] Menu progress has no independent progressbar/status descriptor.
+- [ ] Game startup progress has no exposed numeric value.
+- [ ] Stamina is visual width only.
+- [ ] Seed selection is class-only and not semantically selected.
+- [ ] Resource counts have no stable semantic grouping contract.
+- [ ] Interaction prompts/results are not state-bound live/status results.
+- [ ] Save status changes have no authored announcement policy.
+- [ ] `updateHud` rewrites state every RAF callback without semantic deduplication.
+- [ ] Canvas alternative does not describe current target, action or selected seed.
+- [ ] Menu-to-game focus handoff has no typed admission result.
+- [ ] No accessible menu/game frame acknowledgement.
+- [ ] No accessibility-tree, screen-reader, focus or Pages fixture.
 
 ## Important distinction
 
-Checksum validation answers “are these bytes internally consistent?” It does not answer “is this the newest accepted save?” A stale document can produce a perfectly valid checksum.
+Adding `aria-live` to every changing HUD node would create noise rather than accessibility. The required boundary must classify meaningful transitions, suppress frame-only duplicates and keep frequently changing telemetry queryable without announcing every frame.

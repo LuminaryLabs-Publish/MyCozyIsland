@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 103,
-  "lastUpdated": "2026-07-16T00-59-16-04-00",
+  "schemaVersion": 104,
+  "lastUpdated": "2026-07-16T05-41-12-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "renderer-device-context-loss-recovery-authority-audited",
-  "technicalStatus": "renderer-device-context-loss-recovery-authority-audited",
+  "status": "save-world-content-compatibility-admission-authority-audited",
+  "technicalStatus": "save-world-content-compatibility-admission-authority-audited",
   "retainedStatuses": [
+    "renderer-device-context-loss-recovery-authority-audited",
     "accessible-hud-progress-interaction-projection-authority-audited",
     "save-writer-lease-revision-admission-authority-audited",
     "game-audio-event-projection-authority-audited",
@@ -27,7 +28,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "product-owned WebGPU device and WebGL context loss admission, renderer/resource generation recovery, fallback and first recovered frame proof across menu, hidden preload and active game",
+  "currentFocus": "release-aware save compatibility admission across world generation, world config, content definitions, dependency and participant schemas, migration or rebuild, quarantine or fallback, and one matching restored world frame",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -40,10 +41,10 @@
     "excluded": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
-    "priorCentralTimestamp": "2026-07-15T19-58-42-04-00",
+    "priorCentralTimestamp": "2026-07-16T00-59-16-04-00",
     "nextOldestRepository": "LuminaryLabs-Publish/IntoTheMeadow",
-    "nextOldestTimestamp": "2026-07-15T20-38-13-04-00",
-    "priorRepoLocalDocumentationHead": "6505b5dd0c3ff9b6524e93b1d7bf841a6de4df54",
+    "nextOldestTimestamp": "2026-07-16T01-38-56-04-00",
+    "priorRepoLocalDocumentationHead": "75a1941e1305780b06276b15a3d9d8834f6a3530",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -59,7 +60,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedRendererRecoverySurfaces": 20
+    "plannedSaveCompatibilitySurfaces": 20
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -89,47 +90,49 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "rendererRecoveryState": {
-    "rendererGenerationIdentity": "missing",
-    "webgpuDeviceLossObserver": "missing-product-owned-result",
-    "webglContextLossObserver": "missing",
-    "lossAdmission": "missing",
-    "renderSuspensionResult": "missing",
-    "simulationPolicyDuringLoss": "unspecified",
-    "inputPolicyDuringLoss": "unspecified",
-    "resourceReconstructionRegistry": "missing",
-    "rendererReconstruction": "missing",
-    "postPipelineRebuild": "missing",
-    "hiddenPreloadHealthReadmission": "missing",
-    "staleGenerationRejection": "missing",
-    "recoveryTimeoutPolicy": "missing",
-    "fallbackResult": "missing",
-    "firstRecoveredFrameAck": "missing"
+  "saveCompatibilityState": {
+    "releaseManifest": "missing",
+    "worldGenerationVersion": "missing",
+    "worldConfigDigest": "missing",
+    "contentPackDigest": "missing",
+    "dependencyFingerprint": "missing",
+    "participantSchemaFingerprints": "missing",
+    "compatibilityAdmission": "missing",
+    "currentModelComparison": "missing",
+    "worldModelRebuild": "missing",
+    "agricultureLayoutRebind": "missing",
+    "foragingLayoutRebind": "missing",
+    "objectRegistryRebind": "missing",
+    "incompatibleSaveQuarantine": "missing",
+    "restoreGeneration": "missing",
+    "staleRestoreRejection": "missing",
+    "firstRestoredWorldFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-render-device-context-recovery-authority-domain",
+  "plannedParentDomain": "cozy-island-save-world-content-compatibility-admission-authority-domain",
   "plannedKits": [
-    "renderer-capability-observation-kit","renderer-generation-identity-kit","webgpu-device-loss-observer-kit","webgl-context-loss-observer-kit","context-loss-admission-kit","render-suspension-on-loss-kit","simulation-policy-on-render-loss-kit","input-policy-on-render-loss-kit","recovery-attempt-command-kit","renderer-reconstruction-kit","render-resource-rehydration-kit","scene-resource-registry-kit","post-pipeline-rebuild-kit","preload-recovery-coordination-kit","stale-render-generation-rejection-kit","recovery-timeout-policy-kit","renderer-failure-fallback-kit","render-recovery-result-kit","first-recovered-frame-ack-kit","renderer-loss-source-build-pages-fixture-kit"
+    "save-release-manifest-kit","world-generation-version-kit","world-config-digest-kit","content-pack-identity-kit","dependency-contract-fingerprint-kit","participant-schema-fingerprint-kit","save-compatibility-admission-kit","save-migration-graph-kit","world-model-rebuild-kit","agriculture-layout-rebind-kit","foraging-layout-rebind-kit","object-registry-rebind-kit","transaction-ledger-compatibility-kit","incompatible-save-quarantine-kit","new-island-fallback-kit","restore-generation-identity-kit","stale-restore-rejection-kit","restored-frame-convergence-kit","first-restored-world-frame-ack-kit","save-compatibility-source-build-pages-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-16T00-59-16-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-16T00-59-16-04-00.md",
-    ".agent/architecture-audit/2026-07-16T00-59-16-04-00-renderer-device-context-loss-recovery-dsk-map.md",
-    ".agent/render-audit/2026-07-16T00-59-16-04-00-gpu-loss-recovered-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-16T00-59-16-04-00-render-loss-noninteractive-loop.md",
-    ".agent/interaction-audit/2026-07-16T00-59-16-04-00-render-recovery-command-result-map.md",
-    ".agent/renderer-recovery-audit/2026-07-16T00-59-16-04-00-webgpu-device-webgl-context-loss-contract.md",
-    ".agent/deploy-audit/2026-07-16T00-59-16-04-00-renderer-loss-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-16T00-59-16-04-00-oldest-selection-renderer-recovery-reconciliation.md"
+    ".agent/trackers/2026-07-16T05-41-12-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-16T05-41-12-04-00.md",
+    ".agent/architecture-audit/2026-07-16T05-41-12-04-00-save-world-content-compatibility-dsk-map.md",
+    ".agent/render-audit/2026-07-16T05-41-12-04-00-restored-state-current-world-visible-frame-gap.md",
+    ".agent/gameplay-audit/2026-07-16T05-41-12-04-00-save-restore-world-version-loop.md",
+    ".agent/interaction-audit/2026-07-16T05-41-12-04-00-save-compatibility-command-result-map.md",
+    ".agent/save-compatibility-audit/2026-07-16T05-41-12-04-00-world-seed-content-migration-contract.md",
+    ".agent/deploy-audit/2026-07-16T05-41-12-04-00-save-compatibility-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-16T05-41-12-04-00-oldest-selection-save-compatibility-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "webgpuDeviceLossFixtureRun": false,
-    "webglContextLossFixtureRun": false,
-    "hiddenPreloadLossFixtureRun": false,
-    "resourceRehydrationFixtureRun": false,
-    "firstRecoveredFrameFixtureRun": false,
+    "exactManifestRestoreFixtureRun": false,
+    "changedWorldFixtureRun": false,
+    "changedContentFixtureRun": false,
+    "migrationGraphFixtureRun": false,
+    "quarantineFallbackFixtureRun": false,
+    "firstRestoredWorldFrameFixtureRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

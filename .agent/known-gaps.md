@@ -1,29 +1,35 @@
-# Known gaps: MyCozyIsland accessible HUD, progress and interaction projection
+# Known gaps: MyCozyIsland renderer device and context loss recovery
 
-**Timestamp:** `2026-07-15T19-58-42-04-00`
+**Timestamp:** `2026-07-16T00-59-16-04-00`
 
 ## Summary
 
-Visual state exists, but semantic state is incomplete, mixed with action controls or updated without meaningful-change admission.
+Renderer startup is explicit, but renderer lifetime health, loss, recovery and recovered-frame proof remain outside the product's owned domain model.
 
 ## Plan ledger
 
-**Goal:** keep accessibility risks explicit until implementation and executable proof exist.
+**Goal:** keep renderer-loss risks explicit until backend adapters, reconstruction and executable proof exist.
 
-- [ ] Menu progress and Play action share one button.
-- [ ] Menu progress has no independent progressbar/status descriptor.
-- [ ] Game startup progress has no exposed numeric value.
-- [ ] Stamina is visual width only.
-- [ ] Seed selection is class-only and not semantically selected.
-- [ ] Resource counts have no stable semantic grouping contract.
-- [ ] Interaction prompts/results are not state-bound live/status results.
-- [ ] Save status changes have no authored announcement policy.
-- [ ] `updateHud` rewrites state every RAF callback without semantic deduplication.
-- [ ] Canvas alternative does not describe current target, action or selected seed.
-- [ ] Menu-to-game focus handoff has no typed admission result.
-- [ ] No accessible menu/game frame acknowledgement.
-- [ ] No accessibility-tree, screen-reader, focus or Pages fixture.
+- [ ] No product-owned renderer-generation identity.
+- [ ] No product-owned WebGPU device-loss observation result.
+- [ ] No WebGL context lost/restored contract.
+- [ ] No duplicate or stale loss-evidence rejection.
+- [ ] No explicit render suspension result.
+- [ ] No declared simulation policy during renderer loss.
+- [ ] No declared input policy or held-action clearing during renderer loss.
+- [ ] Hidden preload resumes the prior animation callback without renderer-health re-admission.
+- [ ] Hidden preload does not revoke readiness while renderer recovery is pending.
+- [ ] No stable GPU resource reconstruction registry.
+- [ ] No renderer and post-pipeline reconstruction command.
+- [ ] No atmosphere, ocean, foam, cloud, fog, world or gameplay resource rehydration result.
+- [ ] No recovery deadline, retry budget or supersession policy.
+- [ ] No stale renderer-generation callback rejection proof.
+- [ ] No WebGPU-to-WebGL2 fallback admission result.
+- [ ] No semantic runtime renderer-failure surface.
+- [ ] No `RenderRecoveryResult` or `RenderFallbackResult`.
+- [ ] No `FirstRecoveredFrameAck`.
+- [ ] No forced-loss browser, artifact or Pages fixture.
 
 ## Important distinction
 
-Adding `aria-live` to every changing HUD node would create noise rather than accessibility. The required boundary must classify meaningful transitions, suppress frame-only duplicates and keep frequently changing telemetry queryable without announcing every frame.
+The absence of a product-owned contract does not prove Three.js or the browser performs no internal recovery. Internal provider behavior is not sufficient product evidence because it does not bind route, simulation, input, renderer resources and one accepted visible frame to stable revisions.

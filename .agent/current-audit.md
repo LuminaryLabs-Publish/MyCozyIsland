@@ -1,25 +1,25 @@
-# Current audit: MyCozyIsland renderer device and context loss recovery
+# Current audit: MyCozyIsland save, world and content compatibility
 
-**Timestamp:** `2026-07-16T00-59-16-04-00`  
-**Status:** `renderer-device-context-loss-recovery-authority-audited`  
+**Timestamp:** `2026-07-16T05-41-12-04-00`  
+**Status:** `save-world-content-compatibility-admission-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit documentation head:** `6505b5dd0c3ff9b6524e93b1d7bf841a6de4df54`
+**Reviewed pre-audit documentation head:** `75a1941e1305780b06276b15a3d9d8834f6a3530`
 
 ## Summary
 
-MyCozyIsland was selected after the current Publish inventory comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Its renderer startup and first-frame path are explicit, but renderer lifetime loss and recovery are not owned by a product domain.
+MyCozyIsland was selected after the current Publish comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Save v2 proves payload integrity and one legacy schema migration, but not compatibility with the current world-generation algorithm, world config, content pack, dependency revisions or installed participant schemas.
 
 ## Plan ledger
 
-**Goal:** make renderer loss, suspension, reconstruction, fallback and recovered-frame proof explicit across the menu, hidden preload and active game.
+**Goal:** make restore compatibility an explicit admission result before participant mutation and visible gameplay projection.
 
 - [x] Confirm selection and synchronization.
-- [x] Inspect renderer initialization and animation on both visual surfaces.
-- [x] Inspect hidden presentation freeze/resume and startup error capture.
-- [x] Identify the renderer generation and recovery boundary.
+- [x] Inspect save capture, validation, migration, restore and rollback.
+- [x] Inspect world-model construction and loadSnapshot behavior.
+- [x] Inspect Agriculture, Foraging and render-snapshot adoption.
 - [x] Preserve all kits and services.
-- [x] Define 20 coordinating recovery surfaces.
+- [x] Define 20 coordinating compatibility surfaces.
 - [ ] Implement and execute the authority.
 
 ## Selection comparison
@@ -35,88 +35,72 @@ undocumented: 0
 runtime-ahead: 0
 
 selected: LuminaryLabs-Publish/MyCozyIsland
-selection rule: oldest synchronized central timestamp
-prior timestamp: 2026-07-15T19-58-42-04-00
-next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T20-38-13-04-00
+prior timestamp: 2026-07-16T00-59-16-04-00
+next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-16T01-38-56-04-00
 excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
 ## Source-backed finding
 
-`src/menu.js` creates a `THREE.WebGPURenderer`, awaits initialization, creates a `RenderPipeline` and starts an animation loop. Its explicit failure path catches `main()` startup rejection, but no product-owned runtime loss result is defined.
+`cozy-save-domain-kit` captures world, transaction ledger, scenario, Inventory, Agriculture, Foraging and Player state under `cozy-island-adventure-save/2`. The envelope contains `version: 1.0.0` and a checksum, but no complete release/world/content/participant compatibility manifest.
 
-`src/main-adventure.js` creates a second `THREE.WebGPURenderer`, bounds initialization through Core Startup, constructs atmosphere and post resources and starts the game animation loop. The inspected product source does not define a renderer-generation identity, WebGPU device-loss observer or WebGL context lost/restored observer.
+`validateEnvelope()` checks the checksum. `migrateSavePayload()` recognizes v1 and v2 only. Restore begins loading participants without first comparing world-generation, config, content or installed-domain fingerprints.
 
-`src/adventure/startup-host.js` deliberately ignores global errors after the startup descriptor becomes playable, so its startup failure authority is not a runtime renderer-health authority.
+`createCozyWorldDomain()` constructs a closed-over runtime model from current `COZY_WORLD_CONFIG` before restore. `loadSnapshot()` merges saved state but forces the current configured ID and seed. `getRenderBase()`, `getPlots()`, `getForageNodes()`, `surfaceAt()` and movement constraints continue to use the current model rather than rebuilding from the accepted save.
 
-`src/game-preload-bridge.js` freezes the hidden renderer by removing its animation loop and later restores the same callback. It publishes successful entry without first requiring a fresh renderer-health result or recovered-frame acknowledgement.
+Agriculture is installed from the current tropical config before restore. Render Snapshot then combines current model descriptors with restored participant state without a RestoreGeneration or compatibility revision.
 
-This is a source-backed ownership and proof gap. It does not assert that the browser or Three.js has no internal behavior, and no forced-loss incident was reproduced.
+The current same-version path is coherent under its fixed configuration. The gap concerns future release changes and lacks an executable mismatch reproduction.
 
 ## Interaction loop
 
 ```txt
-menu renderer startup
-  -> WebGPU/WebGL2 backend admitted
-  -> menu frame loop begins
-  -> hidden game preload begins
-
-hidden game readiness
-  -> game renderer and resources admitted
-  -> first frame presented
-  -> animation loop removed while hidden
-
-entry
-  -> old animation callback restored
-  -> game revealed
-  -> no renderer-health re-admission
-
-runtime renderer loss
-  -> no product loss observation result
-  -> no presentation suspension result
-  -> no renderer/resource generation rebuild
-  -> no fallback result
-  -> no first recovered frame acknowledgement
+boot current release
+  -> create current world model and participant topology
+  -> read save
+  -> checksum and schema validation
+  -> optional v1 farming migration
+  -> ordered participant loads
+  -> current model remains active
+  -> first frame combines current model and restored state
+  -> no compatibility result or restored-frame acknowledgement
 ```
 
 ## Domains and census
 
 ```txt
-menu and game renderer providers
-hidden-preload and active-route presentation lifecycle
-Core Startup and first playable frame
-renderer-neutral world and frame snapshots
-WebGPU device and WebGL context observation
-renderer/resource generation retirement
-bounded recovery and fallback
-simulation/input policy during presentation loss
-recovered visible-frame acknowledgement
-build, artifact and Pages proof
-```
+routes and preload
+Core Startup, Object and Transaction Ledger
+world, input, Inventory, Agriculture and Foraging
+player, scenario, interaction, camera, save and render snapshots
+WebGPU/WebGL2 presentation and atmosphere
+save/world/content compatibility admission
+migration, rebuild, quarantine and fallback
+restored-frame convergence
+build, Pages and central proof
 
-```txt
 implemented surfaces: 70
-planned renderer-recovery surfaces: 20
+planned save-compatibility surfaces: 20
 ```
 
 ## Required authority
 
 ```txt
-cozy-island-render-device-context-recovery-authority-domain
+cozy-island-save-world-content-compatibility-admission-authority-domain
 ```
 
 ```txt
-RenderRecoveryAdmissionCommand
-  -> bind document, route, renderer, backend, device/context and resource generations
-  -> normalize WebGPU/WebGL loss evidence
-  -> retire the stale renderer generation
-  -> suspend presentation and apply simulation/input policy
-  -> reconstruct renderer and registered GPU resources under a deadline
-  -> reject stale recovery work
-  -> publish RenderRecoveryResult or RenderFallbackResult
-  -> publish FirstRecoveredFrameAck
+SaveCompatibilityAdmissionCommand
+  -> bind save schema/checksum and release identities
+  -> compare world generation, config, content, dependencies and participant schemas
+  -> classify exact, migratable, rebuild-required, incompatible or corrupt
+  -> create one RestoreGeneration
+  -> migrate/rebuild/rebind participants atomically
+  -> quarantine or fall back when required
+  -> publish SaveCompatibilityAdmissionResult
+  -> publish FirstRestoredWorldFrameAck
 ```
 
 ## Existing proof boundary
 
-Current tests verify shell structure, source patterns, startup-domain behavior and adventure-domain behavior. They do not force WebGPU device loss, WebGL context loss/restoration, hidden-preload loss, renderer reconstruction, resource rehydration, stale callback rejection, fallback or a recovered visible frame.
+Current tests verify successful same-version Agriculture, Foraging, v2 save/restore and v1 migration. They do not change world seed/config, farm or forage topology, items/crops, DSK schemas or dependencies and then prove compatibility rejection, migration, rebuild, quarantine, fallback or a matching restored visible frame.

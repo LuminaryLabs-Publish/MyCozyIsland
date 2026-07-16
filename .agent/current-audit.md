@@ -1,147 +1,137 @@
-# Current audit: live motion preference and animation projection
+# Current audit: pointer-look gesture ownership
 
-**Timestamp:** `2026-07-16T13-01-43-04-00`  
-**Status:** `motion-preference-live-animation-projection-authority-audited`
+**Timestamp:** `2026-07-16T18-41-23-04-00`  
+**Status:** `pointer-look-gesture-ownership-authority-audited`
 
 ## Summary
 
-MyCozyIsland has partial reduced-motion handling, not a shared motion policy. CSS removes selected transitions. The menu JavaScript reads the media query once, uses that frozen value for palm deformation and entry timing, and still animates its water shader. The game route does not observe the preference and continuously projects an automatic aerial camera, shader-time ocean waves, sine-driven foam and environmental motion.
+MyCozyIsland has deterministic input-frame accumulation but no browser-level pointer gesture authority. The host stores a pointer ID on pointerdown, then accepts move events from any pointer while a shared drag record exists and clears the gesture for any pointerup or pointercancel. The input domain strips pointer identity and queues only anonymous look deltas.
 
 ## Plan ledger
 
-**Goal:** define one live motion policy that adapts optional presentation without changing authoritative gameplay outcomes or direct controls.
+**Goal:** make each pointer-look gesture owner-specific, capture-bound, revisioned and exactly settled before it changes player or camera truth.
 
-- [x] Inspect menu media-query use and transition CSS.
-- [x] Inspect menu shader-time frond, trunk and water motion.
-- [x] Inspect game camera intro progression.
-- [x] Inspect ocean, foam, world and post-processing updates.
-- [x] Separate essential simulation from optional presentation.
-- [x] Map command, result and frame acknowledgement surfaces.
+- [x] Inspect pointerdown, pointermove, pointerup and pointercancel handling.
+- [x] Inspect input command normalization and frame admission.
+- [x] Inspect player yaw, pitch and movement basis.
+- [x] Inspect camera and presented-frame projection.
+- [x] Map admission, delta, settlement and frame acknowledgement surfaces.
 - [ ] Implement and test the authority.
 
 ## Source-backed behavior
 
-### Menu
+### Browser host
 
 ```txt
-const reducedMotion = matchMedia(...).matches
+pointerdown
+  -> drag = { x, y, id: event.pointerId }
+  -> setPointerCapture(event.pointerId)
+
+pointermove
+  -> if drag exists, enqueue event.client - drag coordinates
+  -> no event.pointerId comparison
+
+pointerup
+  -> drag = null
+  -> releasePointerCapture(event.pointerId)
+  -> no owner comparison
+
+pointercancel
+  -> drag = null
+  -> no owner comparison
+
+lostpointercapture
+  -> no listener
 ```
 
-The value is captured once. It is not backed by a `MediaQueryList` change listener, preference revision or product override.
+### Input domain
 
 ```txt
-frond and trunk shader amplitude
-  -> multiplied by the frozen reducedMotion boolean
-
-water shader
-  -> always reads global shader time
-
-entry handoff
-  -> uses 0 ms or 780 ms from the frozen boolean
+enqueuePointer(deltaX, deltaY)
+  -> command type pointer
+  -> fixed generation 1
+  -> no pointerId
+  -> no gestureId
+  -> no captureRevision
+  -> no routeRevision
 ```
 
-CSS independently disables selected DOM transitions. CSS and JavaScript therefore do not consume one shared policy revision.
+The input frame sums all admitted pointer commands, clamps lookX/lookY and publishes accepted command IDs. It cannot identify whether a command came from the active pointer owner.
 
-### Game
+### Player and camera
 
-```txt
-frame
-  -> adventure.tick(dt)
-  -> camera descriptor
-  -> worldRenderer.update(elapsed)
-  -> foamRenderer.update(elapsed)
-  -> postPipeline.render()
-```
-
-The player domain advances the aerial intro automatically. The ocean material derives wave displacement and normals from shader time. Foam opacity and vertical offset use elapsed-time sine functions. No game-route motion observer or reduced-motion descriptor is installed.
+`cozy-player-domain-kit` applies lookX/lookY directly to yaw and pitch. Yaw also defines the forward/right basis used for first-person movement. The camera and renderer then project that state without a gesture-bound frame receipt.
 
 ## Main gap
 
 ```txt
-operating-system preference changes
-  -> CSS may update immediately
-  -> menu JavaScript retains its startup boolean
-  -> game JavaScript has no preference state
-  -> menu and game motion can diverge
-  -> no policy generation identifies the accepted behavior
-  -> no matching reduced-motion frame is acknowledged
+secondary pointer event
+  -> can overwrite shared drag coordinates
+  -> can publish a look delta against another pointer's history
+  -> can clear the owner gesture
+  -> input frame cannot classify the source
+  -> player and camera consume the result
+  -> no terminal result or matching frame acknowledgement exists
 ```
 
-This is a source-backed policy and evidence gap. It is not a claim that the current experience causes harm or fails a specific accessibility standard.
+This is a source-backed ownership and evidence gap. It is not a claim that every touch device reproduces a visible defect.
 
 ## Required authority
 
 ```txt
-cozy-island-motion-preference-live-animation-projection-authority-domain
+cozy-island-pointer-look-gesture-ownership-authority-domain
 ```
 
 ### Admission
 
 ```txt
-MotionPreferenceAdmissionCommand
+PointerGestureAdmissionCommand
   documentRevision
   routeRevision
-  observedSystemPreference
-  requestedProductOverride
-  expectedPolicyRevision
+  canvasRevision
+  pointerId
+  pointerType
+  button
+  coordinates
+  expectedGestureRevision
 ```
 
-### Result
+### Delta
 
 ```txt
-MotionPreferenceAdmissionResult
-  accepted
-  source: system | product
-  mode: normal | reduced
-  policyRevision
-  routeRevision
-  classificationRevision
+PointerGestureDeltaCommand
+  gestureId
+  gestureRevision
+  pointerId
+  captureRevision
+  eventSequence
+  coordinates
+  delta
 ```
 
-### Projection
+### Settlement
 
 ```txt
-MotionProjectionCommand
-  policyRevision
-  frameRevision
-  surface: menu | game
-  descriptorSet
+PointerGestureSettlementCommand
+  gestureId
+  gestureRevision
+  pointerId
+  reason
 ```
+
+### Results and frame proof
 
 ```txt
-MotionProjectionResult
-  appliedDescriptorIds
-  preservedSimulationRevision
-  presentedFrameRevision
-  reducedMotion
+PointerGestureAdmissionResult
+PointerGestureDeltaResult
+PointerGestureSettlementResult
+FirstPointerLookFrameAck
 ```
-
-### First-frame receipts
-
-```txt
-FirstReducedMotionMenuFrameAck
-FirstReducedMotionGameplayFrameAck
-```
-
-## Motion classification
-
-| Surface | Current behavior | Proposed reduced policy |
-|---|---|---|
-| Direct player look and movement | Input-driven | Preserve |
-| Farming, Foraging, growth and scenario | Authoritative simulation | Preserve |
-| Menu palm wind | Continuous shader/compute motion | Freeze or strongly attenuate |
-| Menu water | Continuous shader-time displacement | Freeze or replace with static surface |
-| Menu/game crossfade | Timed transition | Immediate or near-immediate |
-| Aerial intro | Automatic camera rail | Skip to first-person or use one static establishing frame |
-| Ocean waves | Continuous shader-time displacement | Low-amplitude slow mode or static normal profile |
-| Shoreline foam | Sine opacity and vertical motion | Static placement and opacity |
-| Cloud/fog/world wind | Continuous environment motion | Policy-driven static or low-motion descriptor |
-| Loading/progress transitions | DOM transitions | Immediate while preserving state changes |
 
 ## Domains and services
 
-The active composition remains unchanged: 14 engine-installed kits, 50 cataloged environment/render kits, one ocean composition kit and five browser/product adapters. Their full IDs and service families are recorded in the timestamped tracker and machine registry.
+The active composition remains unchanged: 14 engine-installed kits, 50 cataloged environment/render kits, one ocean composition kit and five browser/product adapters. Their complete IDs and service families are recorded in the timestamped tracker and machine registry.
 
 ## Validation boundary
 
-This run changes documentation only. It does not alter JavaScript, shaders, CSS, dependencies, tests, workflows or deployment.
+This run changes documentation only. It does not alter JavaScript, HTML, CSS, input behavior, player behavior, camera behavior, rendering, dependencies, tests, workflows or deployment.

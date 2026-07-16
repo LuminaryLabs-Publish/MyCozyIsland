@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 101,
-  "lastUpdated": "2026-07-15T15-01-22-04-00",
+  "schemaVersion": 102,
+  "lastUpdated": "2026-07-15T19-58-42-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "save-writer-lease-revision-admission-authority-audited",
-  "technicalStatus": "save-writer-lease-revision-admission-authority-audited",
+  "status": "accessible-hud-progress-interaction-projection-authority-audited",
+  "technicalStatus": "accessible-hud-progress-interaction-projection-authority-audited",
   "retainedStatuses": [
+    "save-writer-lease-revision-admission-authority-audited",
     "game-audio-event-projection-authority-audited",
     "host-clock-fixed-step-simulation-authority-audited",
     "device-control-surface-action-coverage-authority-audited",
@@ -25,7 +26,7 @@
     "durable-save-commit-authority-audited",
     "browser-input-authority-audited"
   ],
-  "currentFocus": "cross-document save-slot ownership through writer identity, bounded lease, monotonic durable revision, compare-and-swap admission, stale-write rejection and visible durable-head proof",
+  "currentFocus": "revision-bound semantic startup and gameplay projection for progress, objective, resources, stamina, seed selection, interaction, save status and menu-to-game focus",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -38,8 +39,10 @@
     "excluded": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
-    "priorCentralTimestamp": "2026-07-15T10-01-08-04-00",
-    "priorRepoLocalDocumentationHead": "e6947c349442520aaddf7e8a0788cfd4fb56f97e",
+    "priorCentralTimestamp": "2026-07-15T15-01-22-04-00",
+    "nextOldestRepository": "LuminaryLabs-Publish/IntoTheMeadow",
+    "nextOldestTimestamp": "2026-07-15T15-41-21-04-00",
+    "priorRepoLocalDocumentationHead": "dc3ef1a0c638fcef11123e4819af53f71f8aeb5e",
     "reviewedRuntimeRevision": "6c5e465b7b431ff6758f78e7ceb25d0f763f658f"
   },
   "dependencyState": {
@@ -55,7 +58,7 @@
     "sourceBackedKitTotal": 65,
     "browserProductAdapters": 5,
     "totalDocumentedKitAndAdapterSurfaces": 70,
-    "plannedSaveWriterSurfaces": 20
+    "plannedAccessibilitySurfaces": 21
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -76,6 +79,7 @@
   "catalogedKitIds": [
     "debug-overlay-host-kit","webgl2-fallback-renderer-kit","webgpu-compute-atmosphere-renderer-kit","webgpu-foam-renderer-kit","webgpu-ocean-renderer-kit","webgpu-performance-budget-kit","webgpu-post-processing-renderer-kit","webgpu-rolling-fog-renderer-kit","webgpu-stylized-material-renderer-kit","webgpu-volumetric-cloud-renderer-kit","camera-rail-sequence-kit","cozy-island-scenario-kit","terrain-surface-domain-kit","vegetation-placement-domain-kit","aerial-perspective-domain-kit","campfire-atmosphere-domain-kit","cloud-density-field-domain-kit","cloud-horizon-band-domain-kit","cloud-lighting-domain-kit","cloud-lod-domain-kit","cloud-shadow-domain-kit","cloud-weather-domain-kit","fog-advection-domain-kit","fog-field-domain-kit","fog-volume-placement-domain-kit","ground-contact-domain-kit","illumination-domain-kit","ocean-caustics-domain-kit","ocean-floor-profile-domain-kit","ocean-optics-domain-kit","ocean-wave-domain-kit","prop-archetype-domain-kit","render-archetype-domain-kit","render-quality-domain-kit","render-snapshot-domain-kit","rock-archetype-domain-kit","shoreline-field-domain-kit","shoreline-foam-domain-kit","stylized-material-descriptor-domain-kit","sun-glitter-domain-kit","terrain-biome-field-domain-kit","terrain-lod-domain-kit","underwater-atmosphere-domain-kit","vegetation-archetype-domain-kit","vegetation-lod-domain-kit","vegetation-wind-domain-kit","weather-state-domain-kit","wind-field-domain-kit","deterministic-seed-domain-kit","environment-clock-domain-kit"
   ],
+  "catalogedServiceFamilies": ["renderer fallback","atmosphere volume preparation","ocean, foam and post-processing","adaptive quality","camera and scenario descriptors","terrain and vegetation queries","cloud, fog and weather fields","illumination and shoreline/ocean optics","render archetypes","deterministic seeds","environment time"],
   "additionalCompositionKits": [{"id":"cozy-ocean-composition-kit","services":["layer-graph","pass-order-validation","transparent-depth-validation","terrain-handoff-validation","depth-blend-contracts"]}],
   "browserProductAdapters": [
     {"id":"browser-startup-presentation-adapter","services":["descriptor-dom-projection","failure-projection","timeout-helper","render-update-bridge"]},
@@ -84,42 +88,43 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "saveWriterState": {
-    "storageKey": "my-cozy-island.adventure-save.v1",
-    "loadAtStartup": true,
-    "autosaveIntervalAdmittedSeconds": 5,
-    "pagehideWrite": "unconditional",
-    "durableCommitRevision": "missing",
-    "writerDocumentIdentity": "missing",
-    "writerSessionIdentity": "missing",
-    "writerLease": "missing",
-    "candidateBaseRevision": "missing",
-    "compareAndSwap": "missing",
-    "storageHeadObserver": "missing",
-    "preloadReadOnlyPolicy": "missing",
-    "staleWriteResult": "missing",
-    "firstDurableSaveFrameAck": "missing"
+  "accessibleProjectionState": {
+    "menuProgressStatus": "shares-disabled-live-play-button",
+    "menuPlayActionIdentity": "mixed-with-progress-status",
+    "gameStartupProgressbar": "missing-determinate-value",
+    "staminaProgressbar": "missing",
+    "seedSelectionSemantics": "class-only",
+    "resourceSemanticGroup": "partial-static-labels",
+    "interactionStatus": "visible-text-without-transition-result",
+    "saveAnnouncementPolicy": "missing",
+    "semanticRevision": "missing",
+    "announcementDeduplication": "missing",
+    "focusAdmissionResult": "missing",
+    "firstAccessibleMenuFrameAck": "missing",
+    "firstAccessibleGameplayFrameAck": "missing"
   },
-  "plannedParentDomain": "cozy-island-save-writer-lease-revision-authority-domain",
+  "plannedParentDomain": "cozy-island-accessible-hud-progress-focus-authority-domain",
   "plannedKits": [
-    "save-document-identity-kit","save-writer-session-kit","save-slot-head-revision-kit","save-candidate-base-revision-kit","writer-lease-admission-kit","writer-lease-heartbeat-expiry-kit","preload-readonly-save-policy-kit","storage-head-observer-kit","cross-document-head-sync-kit","stale-write-rejection-kit","compare-and-swap-save-commit-kit","predecessor-readback-verification-kit","save-conflict-result-kit","pagehide-save-policy-kit","writer-retirement-kit","save-commit-result-kit","first-durable-save-frame-ack-kit","multi-tab-conflict-fixture-kit","hidden-preload-stale-writer-fixture-kit","source-build-pages-save-parity-kit"
+    "accessible-semantic-snapshot-kit","accessible-semantic-revision-kit","semantic-change-classification-kit","menu-progress-status-kit","menu-play-action-identity-kit","startup-progressbar-projection-kit","stamina-progressbar-projection-kit","resource-group-semantic-kit","seed-selection-semantic-kit","interaction-status-projection-kit","objective-announcement-policy-kit","save-status-announcement-policy-kit","failure-alert-policy-kit","announcement-deduplication-kit","announcement-rate-policy-kit","gameplay-canvas-alternative-kit","document-focus-identity-kit","focus-admission-result-kit","first-accessible-menu-frame-ack-kit","first-accessible-gameplay-frame-ack-kit","accessibility-source-build-pages-fixture-kit"
   ],
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-15T15-01-22-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-15T15-01-22-04-00.md",
-    ".agent/architecture-audit/2026-07-15T15-01-22-04-00-save-writer-lease-revision-dsk-map.md",
-    ".agent/render-audit/2026-07-15T15-01-22-04-00-save-status-conflict-visible-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-15T15-01-22-04-00-stale-document-save-regression-loop.md",
-    ".agent/interaction-audit/2026-07-15T15-01-22-04-00-save-commit-command-result-map.md",
-    ".agent/save-concurrency-audit/2026-07-15T15-01-22-04-00-cross-document-writer-lease-contract.md",
-    ".agent/deploy-audit/2026-07-15T15-01-22-04-00-multi-document-save-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-15T15-01-22-04-00-oldest-selection-save-writer-reconciliation.md"
+    ".agent/trackers/2026-07-15T19-58-42-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-15T19-58-42-04-00.md",
+    ".agent/architecture-audit/2026-07-15T19-58-42-04-00-accessible-hud-progress-projection-dsk-map.md",
+    ".agent/render-audit/2026-07-15T19-58-42-04-00-semantic-visible-frame-convergence-gap.md",
+    ".agent/gameplay-audit/2026-07-15T19-58-42-04-00-visual-only-status-interaction-loop.md",
+    ".agent/interaction-audit/2026-07-15T19-58-42-04-00-accessible-projection-command-result-map.md",
+    ".agent/accessibility-audit/2026-07-15T19-58-42-04-00-semantic-hud-progress-focus-contract.md",
+    ".agent/deploy-audit/2026-07-15T19-58-42-04-00-accessibility-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-15T19-58-42-04-00-oldest-selection-accessibility-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
-    "multiDocumentBrowserFixturesRun": false,
+    "accessibilityTreeFixtureRun": false,
+    "screenReaderFixtureRun": false,
+    "focusFixtureRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

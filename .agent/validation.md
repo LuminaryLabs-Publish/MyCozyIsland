@@ -1,31 +1,34 @@
-# Validation: MyCozyIsland renderer device and context loss recovery
+# Validation: MyCozyIsland save, world and content compatibility
 
-**Timestamp:** `2026-07-16T00-59-16-04-00`  
+**Timestamp:** `2026-07-16T05-41-12-04-00`  
 **Status:** `documentation-only`
 
 ## Summary
 
-Source inspection confirms the missing product-owned renderer-loss and recovered-frame boundary. No GPU device/context loss was forced and no runtime behavior changed.
+Source inspection confirms the missing release/world/content compatibility-admission and restored-frame boundary. No save envelope, world model, gameplay behavior or deployment artifact was changed or executed.
 
 ## Plan ledger
 
 **Goal:** state exactly what was and was not validated.
 
-- [x] Inspected menu renderer initialization and animation.
-- [x] Inspected game renderer initialization, resources and animation.
-- [x] Inspected hidden game presentation freeze/resume.
-- [x] Inspected startup failure and post-playable global error handling.
-- [x] Confirmed no product-owned WebGPU/WebGL loss result in the inspected paths.
-- [x] Confirmed no renderer generation, resource rehydration result or first recovered frame acknowledgement.
-- [ ] Run forced-loss browser and deployment fixtures.
+- [x] Inspected save capture, checksum validation, schema migration, restore ordering and rollback.
+- [x] Inspected current world-model creation, snapshot loading and model-backed queries.
+- [x] Inspected current Agriculture and Foraging configuration and topology.
+- [x] Inspected renderer-neutral static/frame snapshot construction.
+- [x] Inspected successful same-version v2 restore and v1 migration smoke coverage.
+- [x] Confirmed no complete release compatibility manifest or pre-mutation admission result.
+- [x] Confirmed no world-model rebuild, topology rebind or first restored-frame acknowledgement.
+- [ ] Run cross-version source, artifact and Pages fixtures.
 
 ```txt
 documentation changed: yes
 runtime JavaScript changed: no
-HTML or CSS changed: no
-simulation or gameplay changed: no
+save schemas or envelopes changed: no
+world generation or configuration changed: no
+items, crops or Agriculture config changed: no
+Inventory, Agriculture or Foraging behavior changed: no
+player, interaction or transaction-ledger behavior changed: no
 render behavior changed: no
-GPU resource behavior changed: no
 dependencies changed: no
 tests or workflows changed: no
 deployment changed: no
@@ -33,15 +36,18 @@ branch created: no
 pull request created: no
 
 npm test: not run
-WebGPU device-loss fixture: unavailable
-WebGL context-loss fixture: unavailable
-hidden-preload loss fixture: unavailable
-resource rehydration fixture: unavailable
-stale callback fixture: unavailable
-fallback fixture: unavailable
-first recovered frame fixture: unavailable
+exact-manifest restore fixture: not run
+changed-world-seed fixture: unavailable
+changed-world-config fixture: unavailable
+changed-farm/forage-topology fixture: unavailable
+changed-item/crop-content fixture: unavailable
+changed-DSK-schema fixture: unavailable
+migration-graph fixture: unavailable
+quarantine and fallback fixture: unavailable
+restore rollback fixture: unavailable
+first restored world frame fixture: unavailable
 built-output smoke: not run
 Pages smoke: not run
 ```
 
-No device-loss recovery, context restoration, renderer reconstruction, resource rehydration, hidden-preload safety, stale-generation rejection, fallback correctness, artifact parity or production readiness is claimed.
+No cross-version compatibility, deterministic migration, world-model rebuild, topology rebind, incompatible-save safety, canonical post-migration save, restored-frame convergence, artifact parity, Pages parity or production readiness is claimed.

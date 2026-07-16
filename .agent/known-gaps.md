@@ -1,35 +1,43 @@
-# Known gaps: MyCozyIsland renderer device and context loss recovery
+# Known gaps: MyCozyIsland save, world and content compatibility
 
-**Timestamp:** `2026-07-16T00-59-16-04-00`
+**Timestamp:** `2026-07-16T05-41-12-04-00`
 
 ## Summary
 
-Renderer startup is explicit, but renderer lifetime health, loss, recovery and recovered-frame proof remain outside the product's owned domain model.
+Save integrity and one schema migration exist, but release, world, content and participant compatibility remain implicit. A checksum-valid save can be accepted without proving that the current runtime model has the same meaning and topology.
 
 ## Plan ledger
 
-**Goal:** keep renderer-loss risks explicit until backend adapters, reconstruction and executable proof exist.
+**Goal:** keep every compatibility and restored-frame blocker explicit until implementation and executable proof exist.
 
-- [ ] No product-owned renderer-generation identity.
-- [ ] No product-owned WebGPU device-loss observation result.
-- [ ] No WebGL context lost/restored contract.
-- [ ] No duplicate or stale loss-evidence rejection.
-- [ ] No explicit render suspension result.
-- [ ] No declared simulation policy during renderer loss.
-- [ ] No declared input policy or held-action clearing during renderer loss.
-- [ ] Hidden preload resumes the prior animation callback without renderer-health re-admission.
-- [ ] Hidden preload does not revoke readiness while renderer recovery is pending.
-- [ ] No stable GPU resource reconstruction registry.
-- [ ] No renderer and post-pipeline reconstruction command.
-- [ ] No atmosphere, ocean, foam, cloud, fog, world or gameplay resource rehydration result.
-- [ ] No recovery deadline, retry budget or supersession policy.
-- [ ] No stale renderer-generation callback rejection proof.
-- [ ] No WebGPU-to-WebGL2 fallback admission result.
-- [ ] No semantic runtime renderer-failure surface.
-- [ ] No `RenderRecoveryResult` or `RenderFallbackResult`.
-- [ ] No `FirstRecoveredFrameAck`.
-- [ ] No forced-loss browser, artifact or Pages fixture.
+- [ ] No complete save release manifest.
+- [ ] No world-generation algorithm identity in the save contract.
+- [ ] No stable world-config digest admission.
+- [ ] No terrain or vegetation generation contract digest.
+- [ ] No farm-layout or forage-layout topology digest.
+- [ ] No item-definition or crop-definition digest.
+- [ ] No Agriculture content-pack compatibility identity.
+- [ ] No NexusEngine or NexusEngine-Kits compatibility fingerprint.
+- [ ] No installed DSK and participant-schema fingerprint set.
+- [ ] Checksum validation proves integrity, not semantic compatibility.
+- [ ] Migration supports v1 farming to v2 Agriculture only.
+- [ ] No general deterministic migration graph.
+- [ ] `cozyWorld.loadSnapshot()` forces the current configured world ID and seed.
+- [ ] The closed-over current runtime model is not rebuilt from an accepted save.
+- [ ] Current `renderBase`, plots, forage nodes, surface queries and movement constraints remain active after restore.
+- [ ] Agriculture plot topology is not explicitly rebound or rejected.
+- [ ] Foraging node topology is not explicitly rebound or rejected.
+- [ ] Core Object descriptors are not reconciled with a restored topology.
+- [ ] Restored player position is not compatibility-validated against a changed terrain model.
+- [ ] Transaction-ledger records are not admitted against installed participant contract versions.
+- [ ] No incompatible-save quarantine result.
+- [ ] No authored new-island or user-decision fallback result.
+- [ ] No `RestoreGeneration` identity or stale-restore rejection.
+- [ ] No canonical post-migration save receipt.
+- [ ] Render Snapshot has no compatibility or restore-generation revision.
+- [ ] No `FirstRestoredWorldFrameAck`.
+- [ ] No changed-seed, changed-layout, changed-content, changed-schema, artifact or Pages fixture.
 
 ## Important distinction
 
-The absence of a product-owned contract does not prove Three.js or the browser performs no internal recovery. Internal provider behavior is not sufficient product evidence because it does not bind route, simulation, input, renderer resources and one accepted visible frame to stable revisions.
+The current fixed release and same-version smoke path can remain coherent. These gaps concern future upgrade safety and evidence; they do not prove that an existing user save is currently corrupt or visibly mismatched.

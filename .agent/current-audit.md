@@ -1,24 +1,24 @@
-# Current audit: MyCozyIsland save-writer lease and revision admission
+# Current audit: MyCozyIsland accessible HUD, progress and interaction projection
 
-**Timestamp:** `2026-07-15T15-01-22-04-00`  
-**Status:** `save-writer-lease-revision-admission-authority-audited`  
+**Timestamp:** `2026-07-15T19-58-42-04-00`  
+**Status:** `accessible-hud-progress-interaction-projection-authority-audited`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `6c5e465b7b431ff6758f78e7ceb25d0f763f658f`  
-**Reviewed pre-audit documentation head:** `e6947c349442520aaddf7e8a0788cfd4fb56f97e`
+**Reviewed pre-audit documentation head:** `dc3ef1a0c638fcef11123e4819af53f71f8aeb5e`
 
 ## Summary
 
-MyCozyIsland was selected after the full Publish comparison found no higher-priority undocumented repository. The active save path has portable checksums and rollback, but durable persistence remains a last-writer-wins host effect shared by all same-origin documents.
+MyCozyIsland was selected after a fresh Publish inventory comparison found no new, ledger-missing, root-agent-missing, undocumented or runtime-ahead eligible repository. Its accepted startup and gameplay state is visually rich, but the semantic projection is incomplete and not revision-bound.
 
 ## Plan ledger
 
-**Goal:** prevent valid but stale documents from regressing the durable adventure slot.
+**Goal:** make startup, objective, resource, stamina, seed, interaction, save and focus state readable as stable semantic results.
 
 - [x] Confirm selection and synchronization.
-- [x] Inspect load, autosave, pagehide, hidden preload and save payload code.
-- [x] Identify the missing writer/slot authority.
+- [x] Inspect the menu, game document, startup host, HUD updater and focus handoff.
+- [x] Identify the semantic projection boundary.
 - [x] Preserve all kits and services.
-- [x] Define 20 coordinating surfaces.
+- [x] Define 21 coordinating surfaces.
 - [ ] Implement and execute the authority.
 
 ## Selection comparison
@@ -35,96 +35,85 @@ runtime-ahead: 0
 
 selected: LuminaryLabs-Publish/MyCozyIsland
 selection rule: oldest synchronized central timestamp
-prior timestamp: 2026-07-15T10-01-08-04-00
-next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T10-40-17-04-00
+prior timestamp: 2026-07-15T15-01-22-04-00
+next oldest: LuminaryLabs-Publish/IntoTheMeadow at 2026-07-15T15-41-21-04-00
 excluded: LuminaryLabs-Publish/TheCavalryOfRome
 ```
 
 ## Source-backed finding
 
-`src/main-adventure.js` owns one fixed key, loads it once during startup, writes every five admitted simulation seconds after a fingerprint change, and writes again unconditionally on `pagehide`.
+`menu.html` gives the Play button `aria-live="polite"` while it is disabled and uses the button text as a 1–99 percent preload readout. `src/menu.js` rewrites that text for progress, readiness, entry and failure, so one control owns both status and action semantics.
 
-`src/game-preload-bridge.js` allows any same-origin menu document to fully start and restore the game before freezing its simulation and presentation. That frozen document remains a potential writer because the host-level `pagehide` handler is still installed.
+`game.html` exposes the loader as a live region but marks its visual track `aria-hidden`; it has no `role="progressbar"` or `aria-valuenow`. Stamina is a nested visual span, seed slots are class-selected `div` elements, the interaction prompt is not a live/status region, and changing resource/save values have no explicit semantic update contract.
 
-`src/adventure/persistence-render-domains.js` checks payload integrity but the envelope contains no durable commit revision, writer/document identity, base revision, timestamp, lease, or compare-and-swap token. The save-domain `revision` is in-memory diagnostic state and is not a storage-head revision.
+`src/main-adventure.js` calls `updateHud(frame)` on every animation frame and unconditionally rewrites objective, prompt, resource counts, stamina width, save copy and seed-slot classes. There is no semantic snapshot ID, meaningful-change filter, announcement priority, duplicate suppression, accessible result or frame acknowledgement.
 
-Permitted conflict:
-
-```txt
-tab A restores save R1 and starts playing
-  -> tab B or a hidden menu preload also restores R1
-  -> tab A progresses and writes R2
-  -> stale tab/preload B later receives pagehide
-  -> B captures its older state and overwrites the same key
-  -> next startup validates B's checksum and accepts the regression
-```
-
-No `storage` event observer, BroadcastChannel, Web Lock, writer heartbeat, head readback, conflict result, or stale-writer rejection was found. This is a source-backed concurrency path, not a reproduced browser incident.
+The menu-to-game path does attempt focus handoff into the iframe canvas, but there is no typed focus-admission result proving the active document, hidden-state removal and accepted gameplay frame agree.
 
 ## Interaction loop
 
 ```txt
-menu
-  -> create a same-origin hidden game iframe
-  -> game restores the shared localStorage save once
-  -> startup reaches playable
-  -> preload bridge freezes simulation and presentation
-  -> Play resumes that document
+preload
+  -> progress message
+  -> disabled live Play button text mutation
+  -> ready message
+  -> same element becomes enabled action
 
-adventure
-  -> input, simulation, Agriculture and Foraging settle
-  -> render/HUD snapshots update
-  -> every five admitted simulation seconds, changed state is captured
-  -> the host writes the snapshot to one shared localStorage key
+entry
+  -> Play request
+  -> iframe aria-hidden removal
+  -> delayed iframe/canvas focus
+  -> no focus result or semantic entry acknowledgement
 
-document exit
-  -> pagehide captures and writes unconditionally
-  -> no writer lease, slot-head comparison or stale-write rejection occurs
+gameplay
+  -> accepted engine frame
+  -> visual WebGPU/WebGL2 frame
+  -> RAF-wide DOM rewrite
+  -> no revision-bound semantic snapshot
+  -> no meaningful-transition announcement result
 ```
 
 ## Domains and census
 
 ```txt
-static menu and game routes
-same-origin iframe preload and cross-window entry messaging
-browser document identity, localStorage, storage events and page lifecycle
-Core Startup, Object and Transaction Ledger
-seeded world, input, Inventory, Agriculture and Foraging
-player, scenario, interaction and camera
-portable save capture, checksum, migration, restore and rollback
-save-slot head revision, writer lease, conflict arbitration and durable commit
-renderer-neutral snapshots and WebGPU/WebGL2 presentation
-terrain, vegetation, atmosphere, ocean, foam and post processing
-HUD, diagnostics, adaptive quality, validation, build and Pages
+menu progress and action-gate semantics
+same-origin iframe visibility and focus adoption
+Core Startup and playable-entry projection
+objective, inventory, stamina, seed and save status
+interaction target/prompt/result projection
+gameplay canvas alternative and focus state
+semantic change filtering and announcement arbitration
+accessible-frame acknowledgement
+WebGPU/WebGL2 and DOM visible-frame convergence
+validation, build and Pages
 ```
 
 ```txt
 implemented surfaces: 70
-planned save-writer surfaces: 20
+planned accessibility surfaces: 21
 ```
 
 ## Required authority
 
 ```txt
-cozy-island-save-writer-lease-revision-authority-domain
+cozy-island-accessible-hud-progress-focus-authority-domain
 ```
 
 ```txt
-SaveCommitCommand
-  -> bind SaveSlotId, DocumentId, WriterSessionId and CommitId
-  -> bind candidate base revision and durable fingerprint
-  -> classify active player, hidden preload, suspended and retiring writers
-  -> require an admitted writer lease before mutation
-  -> read and verify the current slot head
-  -> compare-and-swap one new monotonic commit revision
-  -> reject stale, duplicate, expired, read-only and superseded writers
-  -> preserve the predecessor and verify write/readback identity
-  -> publish SaveCommitResult or SaveConflictResult
-  -> synchronize other documents through storage/head-change observation
-  -> release the lease on pagehide, retirement or expiry
-  -> publish FirstDurableSaveFrameAck
+AccessibleProjectionCommand
+  -> bind document, route, startup, frame, HUD, interaction and focus revisions
+  -> resolve one immutable semantic snapshot
+  -> separate progress status from the Play action
+  -> expose determinate startup and stamina progress
+  -> expose seed selection and resource values
+  -> announce authored objective, interaction, save and terminal transitions once
+  -> reject duplicate RAF-only rewrites
+  -> adopt focus only after the game document and frame are accepted
+  -> publish AccessibleProjectionResult
+  -> publish FirstAccessibleMenuFrameAck
+  -> publish FirstAccessibleGameplayFrameAck
 ```
 
 ## Existing proof boundary
 
-Current Node tests can prove deterministic capture, checksum validation, migration and restore. They do not create two same-origin browser documents, arbitrate a shared slot, force stale pagehide, observe storage changes or prove the visible save label matches the durable head.
+Current Node tests verify shell structure, visual menu composition, preload messages and domain behavior. They do not inspect the accessibility tree, run a screen reader, validate progressbar values, measure announcement duplication, verify semantic seed/stamina state or prove focus after iframe entry.

@@ -1,36 +1,37 @@
-# Next steps: live motion preference projection
+# Next steps: pointer-look gesture ownership
 
 ## Plan ledger
 
-**Goal:** implement one shared motion policy from browser capability through menu and gameplay frame proof.
+**Goal:** implement one owner-specific pointer gesture path from browser capture through input, player, camera and frame proof.
 
-- [ ] Add `cozy-motion-preference-domain-kit` with system observation, product override, revisions and snapshots.
-- [ ] Keep one live `MediaQueryList` and handle its `change` event.
-- [ ] Define `system`, `normal` and `reduced` override modes.
-- [ ] Publish immutable `MotionPolicyDescriptor` records.
-- [ ] Classify direct input and authoritative simulation as preserved behavior.
-- [ ] Classify menu wind, menu water, crossfades, aerial camera, ocean, foam, cloud, fog and world wind as policy-controlled presentation.
-- [ ] Make menu CSS and JavaScript consume the same resolved policy.
-- [ ] Replace the frozen module-level `reducedMotion` boolean.
-- [ ] Stop or attenuate menu compute work when reduced motion is active.
-- [ ] Freeze or replace menu water shader-time displacement.
-- [ ] Skip the aerial rail or present one static establishing frame in reduced mode.
-- [ ] Add motion uniforms/descriptors for ocean, foam, cloud, fog and wind.
-- [ ] Settle live preference changes without resetting gameplay state.
-- [ ] Reject stale callbacks from retired route or policy generations.
-- [ ] Publish `MotionProjectionResult` for menu and game.
-- [ ] Publish `FirstReducedMotionMenuFrameAck` and `FirstReducedMotionGameplayFrameAck`.
-- [ ] Add normal/reduced simulation-parity fixtures.
-- [ ] Add live media-query change and product-override fixtures.
+- [ ] Add `cozy-pointer-gesture-domain-kit` or an equivalent product authority.
+- [ ] Allocate one `GestureId`, `GestureRevision` and `CaptureRevision` on accepted pointerdown.
+- [ ] Choose and document the primary-pointer and secondary-pointer policy.
+- [ ] Require `event.pointerId === activePointerId` for admitted move, up and cancel events.
+- [ ] Do not overwrite owner coordinates for rejected secondary pointers.
+- [ ] Release only the accepted owner's pointer capture.
+- [ ] Add a `lostpointercapture` listener and exact settlement result.
+- [ ] Settle the active gesture on blur, hidden state, route retirement and canvas replacement.
+- [ ] Add pointer, gesture, capture and route revisions to look-delta commands.
+- [ ] Reject delayed or duplicate events from settled gestures.
+- [ ] Preserve deterministic ordering in `cozy-input-domain-kit`.
+- [ ] Preserve yaw, pitch and movement ownership in `cozy-player-domain-kit`.
+- [ ] Publish `PointerGestureAdmissionResult`.
+- [ ] Publish `PointerGestureDeltaResult`.
+- [ ] Publish `PointerGestureSettlementResult`.
+- [ ] Publish `FirstPointerLookFrameAck`.
+- [ ] Add mouse, pen, touch and mixed-pointer fixtures.
+- [ ] Add owner/non-owner pointerup and pointercancel fixtures.
+- [ ] Add lost-capture, blur, hidden and route-retirement fixtures.
 - [ ] Run source, built artifact and deployed Pages browser fixtures.
 - [ ] Update `.agent` only after executable evidence exists.
 
 ## Implementation order
 
-1. Policy and revision authority.
-2. Menu projection.
-3. Aerial camera policy.
-4. Environment projection.
-5. Live-change settlement.
-6. Frame acknowledgements.
-7. Browser and deployment fixtures.
+1. Gesture identity and owner lease.
+2. Pointer capture adapter and terminal settlement.
+3. Identity-bound look-delta commands.
+4. Stale and secondary-pointer rejection.
+5. Player/camera/frame correlation.
+6. Browser fixture matrix.
+7. Artifact and Pages parity.

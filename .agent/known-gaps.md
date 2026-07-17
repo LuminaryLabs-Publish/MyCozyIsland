@@ -1,34 +1,33 @@
-# Known gaps: pointer-look gesture ownership
+# Known gaps: menu frame-budget adaptive quality
 
-## Plan ledger
+## Current focus
 
-**Goal:** keep unresolved pointer ownership and capture work explicit until executable evidence closes it.
+- [ ] Menu quality is admitted only during renderer initialization.
+- [ ] Runtime frame cost is not sampled into a bounded evidence window.
+- [ ] GPU completion evidence is not admitted.
+- [ ] Missed-frame evidence is not classified.
+- [ ] Resize does not re-run quality admission.
+- [ ] DPR changes do not produce a quality revision.
+- [ ] Tier-bound water and horizon geometry are not replaced after admission.
+- [ ] Particle and shadow budgets are not transitioned after admission.
+- [ ] Bloom/post budget has no transition contract.
+- [ ] No overload or recovery hysteresis exists.
+- [ ] No transition cooldown or oscillation guard exists.
+- [ ] No quality generation or resource-generation identity exists.
+- [ ] No typed quality admission result exists.
+- [ ] No typed transition result exists.
+- [ ] No stale-resource rejection exists.
+- [ ] No `FirstMenuQualityBoundFrameAck` exists.
+- [ ] No real-browser adaptive-quality fixture exists.
+- [ ] No artifact or Pages parity proof exists.
 
-- [ ] No pointer gesture authority domain.
-- [ ] No active owner lease.
-- [ ] No gesture or capture revision.
-- [ ] Pointermove does not compare `event.pointerId` with the stored drag owner.
-- [ ] Pointerup clears the drag without owner comparison.
-- [ ] Pointercancel clears the drag without owner comparison.
-- [ ] No `lostpointercapture` settlement.
-- [ ] Secondary pointers can overwrite the shared drag coordinates.
-- [ ] Secondary-pointer policy is implicit.
-- [ ] Input pointer commands contain no pointer ID.
-- [ ] Input pointer commands contain no gesture ID.
-- [ ] Input pointer commands contain no route or canvas revision.
-- [ ] No stale-event rejection after gesture settlement.
-- [ ] No typed pointer admission result.
-- [ ] No typed pointer delta result.
-- [ ] No typed terminal settlement result.
-- [ ] No exact capture-release receipt.
-- [ ] No `FirstPointerLookFrameAck`.
-- [ ] No mouse, pen, touch or mixed-pointer fixture.
-- [ ] No lost-capture or lifecycle-retirement fixture.
-- [ ] No source/build/Pages pointer-gesture proof.
+## Retained unresolved work
+
+The prior pointer-look gesture ownership, capture settlement and mixed-pointer fixture gaps remain unresolved and are tracked in the `2026-07-16T18-41-23-04-00` audit family.
 
 ## Non-findings
 
-- No claim is made that a visible multi-touch failure occurs on every device.
-- No change to player, camera or input architecture was implemented.
-- No pointer gesture was reproduced in a real browser during this documentation run.
-- No accessibility, deployment or production-readiness claim is made.
+- No claim is made that the menu currently misses frame targets on a specific device.
+- No runtime adaptive-quality implementation was added.
+- No browser performance capture was run.
+- No production-readiness claim is made.

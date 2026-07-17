@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#78a9c4">
-  <meta name="description" content="A high-fidelity WebGPU sunset menu for My Cozy Island.">
+  <meta name="description" content="A fast WebGPU sunset menu for My Cozy Island with cozy waves and drifting particles.">
   <title>My Cozy Island</title>
   <style>
     :root {
@@ -32,7 +32,7 @@
       border-radius:999px;
       background:linear-gradient(180deg,rgba(255,250,214,.98),rgba(238,207,126,.96));
       color:#31594f;
-      box-shadow:0 16px 44px rgba(39,71,68,.24),inset 0 1px rgba(255,255,255,.96),0 0 28px rgba(255,222,139,.12);
+      box-shadow:0 16px 44px rgba(39,71,68,.24),inset 0 1px rgba(255,255,255,.96);
       font-size:15px;
       font-weight:860;
       letter-spacing:.035em;
@@ -44,7 +44,7 @@
     #play:hover:not(:disabled),#play:focus-visible:not(:disabled) {
       transform:translateX(-50%) translateY(-3px) scale(1.025);
       filter:brightness(1.04);
-      box-shadow:0 20px 52px rgba(39,71,68,.28),inset 0 1px rgba(255,255,255,.98),0 0 34px rgba(255,222,139,.2);
+      box-shadow:0 20px 52px rgba(39,71,68,.28),inset 0 1px rgba(255,255,255,.98);
       outline:none;
     }
     #play:active:not(:disabled) { transform:translateX(-50%) scale(.99); }
@@ -65,16 +65,15 @@
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
         "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.webgpu.js",
-        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.tsl.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/"
+        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.tsl.js"
       }
     }
   </script>
 </head>
 <body>
   <iframe id="game-preload" title="My Cozy Island game" aria-hidden="true" tabindex="-1"></iframe>
-  <canvas id="menu-scene" aria-label="A cozy palm tree above sunset water with drifting wind motes"></canvas>
+  <canvas id="menu-scene" aria-label="A cozy palm tree above sunset water with drifting wind, sparkles, and petals"></canvas>
   <button id="play" type="button" disabled aria-live="polite">Preparing 1%</button>
-  <script type="module" src="./src/menu.js?v=cozy-aaa-sunset-menu-1"></script>
+  <script type="module" src="./src/menu.js?v=cozy-particle-performance-menu-1"></script>
 </body>
 </html>

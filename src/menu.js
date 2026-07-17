@@ -138,6 +138,8 @@ async function main() {
     recipe: MENU_SCENE_RECIPE,
     reducedMotion
   });
+  menuRenderer.camera.position.set(...MENU_SCENE_RECIPE.camera.position);
+  menuRenderer.camera.lookAt(...MENU_SCENE_RECIPE.camera.target);
 
   globalThis.CozyMenu = Object.freeze({
     ...menuRenderer,

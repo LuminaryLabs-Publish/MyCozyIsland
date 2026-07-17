@@ -1,34 +1,36 @@
-# Next steps: menu frame-budget adaptive quality
+# Next steps: menu preload-to-ready presentation handoff
 
 ## Checklist
 
-- [ ] Add one product-level menu quality authority without moving Three.js rendering into simulation.
-- [ ] Give initial quality admission stable viewport, DPR, backend, hardware and recipe revisions.
-- [ ] Measure bounded CPU frame duration and missed-frame evidence.
-- [ ] Add backend-appropriate GPU completion evidence where available.
-- [ ] Exclude hidden, disposed and entry-transition periods from evidence.
-- [ ] Define frame-budget targets for high, balanced and low tiers.
-- [ ] Require sustained overload before downgrade.
-- [ ] Require a longer sustained recovery window before upgrade.
-- [ ] Add transition cooldown and oscillation prevention.
-- [ ] Re-admit policy after viewport-shape and DPR changes.
-- [ ] Separate DPR-only transitions from resource-rebuild transitions.
-- [ ] Stage replacement shadow, particle, geometry and post resources before retirement.
-- [ ] Reject stale resource generations after commit.
-- [ ] Preserve reduced-motion policy independently from performance policy.
-- [ ] Preserve Core Startup as the only factual Play-readiness source.
-- [ ] Publish `MenuQualityAdmissionResult` and `MenuQualityTransitionResult`.
-- [ ] Publish `FirstMenuQualityBoundFrameAck`.
-- [ ] Add WebGPU, WebGL2, resize, DPR, overload, recovery and oscillation fixtures.
-- [ ] Validate source, built artifact and deployed Pages parity.
-- [ ] Retain prior pointer-gesture work as a separate unresolved authority.
+- [ ] Add one product-level handoff authority without moving Three.js rendering into simulation.
+- [ ] Allocate `PreloadSessionId`, iframe document revision and presentation generation.
+- [ ] Bind `cozy-game-ready` to the exact Core Startup continuation revision.
+- [ ] Return a typed `GamePreloadReadyAdmissionResult`.
+- [ ] Reject stale, duplicate, retired or wrong-document ready evidence.
+- [ ] Model preload and ready DPR/frame policies explicitly.
+- [ ] Return a typed `MenuPresentationBudgetTransitionResult`.
+- [ ] Record viewport, DPR, backend, quality and recipe revisions in the transition.
+- [ ] Publish `MenuRenderCommitResult` from the first accepted ready frame.
+- [ ] Publish `FirstReadyMenuFrameAck`.
+- [ ] Keep Play disabled until game readiness and the matching ready frame both settle.
+- [ ] Return a typed `PlayGateAdmissionResult`.
+- [ ] Bind pointer, touch, Enter and Space activation to the same Play result.
+- [ ] Bind entry, game resume, crossfade and menu disposal to one `EntryHandoffResult`.
+- [ ] Make fallback entry timeout reuse the same apply-once entry result.
+- [ ] Preserve reduced-motion policy without bypassing identity or settlement.
+- [ ] Add WebGPU and WebGL2 browser fixtures.
+- [ ] Add resize, DPR-change, visibility, stale-message and duplicate-message fixtures.
+- [ ] Add immediate-activation and renderer-failure fixtures.
+- [ ] Validate source, built artifact and Pages-origin parity.
+- [ ] Retain broader adaptive-quality work as a separate unresolved authority.
+- [ ] Retain pointer-look gesture ownership as a separate unresolved authority.
 
 ## Implementation order
 
-1. Quality identity and evidence schema.
-2. Frame-budget sampler and lifecycle filtering.
-3. Hysteresis and cooldown policy.
-4. DPR-only transition path.
-5. Resource-generation replacement path.
-6. Visible-frame acknowledgement.
+1. Session, continuation and presentation identity.
+2. Ready-message admission and apply-once result.
+3. Preload-to-ready DPR/frame policy transition.
+4. First ready render commit and acknowledgement.
+5. Play-gate convergence.
+6. Entry handoff and retirement settlement.
 7. Browser, artifact and Pages fixtures.

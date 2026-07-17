@@ -1,16 +1,16 @@
-# START HERE: MyCozyIsland menu preload-to-ready handoff
+# START HERE: MyCozyIsland host save durability
 
-**Last updated:** `2026-07-17T01-39-36-04-00`  
+**Last updated:** `2026-07-17T03-06-12-04-00`  
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `347c78f358994822f9fedf91c3e16d33d6909e7e`  
-**Status:** `menu-preload-ready-presentation-handoff-authority-audited`
+**Status:** `host-save-commit-durability-projection-authority-audited`
 
 ## Summary
 
-The current menu is a direct particle-first WebGPU/WebGL2 presentation with no bloom or dynamic shadows. During background preload it targets 24 rendered FPS and caps DPR at one; after the game reports ready it restores the selected quality DPR cap and targets 30 FPS.
+MyCozyIsland has a versioned, checksum-protected and rollback-safe save domain. The unresolved boundary is host durability: `cozySave.capture()` marks the domain as captured before `localStorage.setItem` succeeds, while the HUD renders `Saved` from that capture status.
 
-The unresolved handoff is ordering: `markReady()` requests the ready presentation transition and immediately enables Play. No first frame proves that the ready DPR, viewport and frame mode reached the canvas before entry can begin.
+A failed storage write is returned only from the browser helper. The engine save state can remain captured, its error remains clear, and the visible HUD can still say `Saved` even though the host retained the previous durable fingerprint.
 
 ## Census
 
@@ -21,49 +21,49 @@ additional composition kits:           1
 explicit menu domain/kit surfaces:     16
 other browser/product adapters:         4
 total implemented surfaces:            85
-planned ready-handoff surfaces:        18
+planned save-durability surfaces:       18
 ```
 
 ## Active authority proposal
 
-`cozy-island-menu-preload-ready-presentation-handoff-authority-domain`
+`cozy-island-host-save-commit-durability-projection-authority-domain`
 
 ```txt
-GamePreloadReadyAdmissionCommand
-  -> admit one session-bound game-ready result
+SaveEnvelopeCaptureCommand
+  -> produce an immutable envelope without claiming persistence
 
-MenuPresentationBudgetTransitionCommand
-  -> settle preload DPR/frame policy into ready policy
+HostSaveCommitCommand
+  -> execute and receipt one browser storage commit
 
-ReadyMenuFrameCommitCommand
-  -> render the accepted ready generation
-  -> publish FirstReadyMenuFrameAck
+SaveDurabilitySettlementCommand
+  -> advance the durable digest only from the matching persisted result
 
-PlayGateAdmissionCommand
-  -> enable Play only for the matching ready frame
+SaveStatusProjectionCommand
+  -> project saving, saved, failed or unavailable
+  -> publish FirstDurableSaveStatusFrameAck
 
-EntryHandoffCommand
-  -> resume the game and retire the menu exactly once
+PageLifecycleSaveCommand
+  -> settle one apply-once retirement save attempt
 ```
 
 ## Read this run first
 
 1. `current-audit.md`
-2. `trackers/2026-07-17T01-39-36-04-00/project-breakdown.md`
-3. `architecture-audit/2026-07-17T01-39-36-04-00-menu-preload-ready-handoff-dsk-map.md`
-4. `menu-handoff-audit/2026-07-17T01-39-36-04-00-preload-ready-presentation-contract.md`
-5. `render-audit/2026-07-17T01-39-36-04-00-ready-budget-first-frame-gap.md`
-6. `gameplay-audit/2026-07-17T01-39-36-04-00-preload-ready-play-entry-loop.md`
-7. `interaction-audit/2026-07-17T01-39-36-04-00-ready-handoff-command-result-map.md`
-8. `deploy-audit/2026-07-17T01-39-36-04-00-ready-handoff-browser-fixture-gate.md`
+2. `trackers/2026-07-17T03-06-12-04-00/project-breakdown.md`
+3. `architecture-audit/2026-07-17T03-06-12-04-00-host-save-durability-dsk-map.md`
+4. `save-system-audit/2026-07-17T03-06-12-04-00-host-persistence-settlement-contract.md`
+5. `render-audit/2026-07-17T03-06-12-04-00-saved-label-without-durable-receipt-gap.md`
+6. `gameplay-audit/2026-07-17T03-06-12-04-00-autosave-capture-commit-loop.md`
+7. `interaction-audit/2026-07-17T03-06-12-04-00-save-commit-command-result-map.md`
+8. `deploy-audit/2026-07-17T03-06-12-04-00-storage-failure-browser-fixture-gate.md`
 9. `next-steps.md`
 10. `known-gaps.md`
 11. `validation.md`
 
 ## Retained audit state
 
-The prior adaptive-quality and pointer-look gesture authority audits remain unresolved and retained in their timestamped audit families.
+The menu ready-handoff, adaptive-quality and pointer-look gesture authority audits remain unresolved in their timestamped audit families.
 
 ## Do not claim
 
-Do not claim first-ready-frame convergence, Play-gate convergence, stale-ready rejection, duplicate-ready safety, entry-generation correctness, browser parity, artifact parity, Pages parity or production readiness until executable fixtures pass.
+Do not claim durable-save correctness, storage-failure resilience, HUD convergence, page-retirement correctness, artifact parity, Pages parity or production readiness until executable fixtures pass.

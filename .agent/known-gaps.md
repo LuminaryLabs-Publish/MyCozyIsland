@@ -1,43 +1,46 @@
-# Known gaps: host save commit durability projection
+# Known gaps: page lifecycle runtime suspension and retirement
 
 ## Current focus
 
-- [ ] Save capture and durable persistence have no separate generation states.
-- [ ] `capture()` marks the domain as captured before the host write settles.
-- [ ] Host storage availability has no typed capability result.
-- [ ] Browser storage writes have no admitted command.
-- [ ] Browser storage writes have no retained terminal result.
-- [ ] Failed host writes cannot update authoritative save diagnostics.
-- [ ] A failed write can leave the domain status as captured.
-- [ ] The HUD can render `Saved` without a durable commit receipt.
-- [ ] The last durable digest is not stored separately from the captured checksum.
-- [ ] Stale host results have no generation rejection path.
-- [ ] Duplicate host results have no apply-once settlement identity.
-- [ ] Retry state and retry count are not represented in save state.
-- [ ] Pagehide save attempts have no lifecycle result.
-- [ ] No `FirstDurableSaveStatusFrameAck` exists.
-- [ ] Corrupt or unsupported stored records have no quarantine record.
-- [ ] Storage quota, security and unavailability fixtures do not exist.
-- [ ] Artifact and Pages save parity are unproved.
+- [ ] `pagehide` does not inspect `event.persisted`.
+- [ ] BFCache suspension and terminal retirement share one incomplete handler.
+- [ ] The gameplay animation loop is not stopped on page retirement.
+- [ ] Held input and active pointer drag are not retired by page lifecycle.
+- [ ] Anonymous gameplay listeners have no stored leases or removal path.
+- [ ] `startupHost.dispose()` is not called from gameplay retirement.
+- [ ] `gameplayRenderer.dispose()` is the only explicit gameplay-host resource retirement.
+- [ ] World, cloud, fog, ocean, foam, post-processing and sky ownership have no composed disposal result.
+- [ ] Atmosphere volume textures and compute resources have no terminal retirement receipt.
+- [ ] The WebGPU/WebGL2 renderer and canvas context are not explicitly disposed.
+- [ ] `globalThis.CozyIsland` has no publication-retirement policy.
+- [ ] BFCache `pageshow` has no admission or retained-resource validation.
+- [ ] The frame clock is not rebased after suspension.
+- [ ] Stale callbacks have no runtime-generation rejection.
+- [ ] Terminal save and resource retirement have no shared apply-once transition identity.
+- [ ] No `RuntimeSuspensionResult`, `RuntimeRetirementResult` or `RuntimeResumeResult` exists.
+- [ ] No `FirstResumedFrameAck` exists.
+- [ ] Browser BFCache, repeat-navigation and resource-count fixtures do not exist.
+- [ ] Artifact and Pages lifecycle parity are unproved.
 
-## Implemented save state
+## Implemented lifecycle/resource state
 
-- [x] Versioned v2 save envelope.
-- [x] Stable checksum validation.
-- [x] v1 Agriculture migration.
-- [x] Multi-domain rollback-safe restore.
-- [x] Durable-state fingerprinting.
-- [x] Five-second changed-state autosave cadence.
-- [x] Pagehide save attempt.
-- [x] In-memory capture/restore/migration smoke coverage.
+- [x] Menu renderer can stop its animation loop.
+- [x] Menu renderer removes its resize listener.
+- [x] Menu renderer disposes scene geometry, materials, atlases and renderer.
+- [x] Gameplay renderer can dispose its own group and maps.
+- [x] Startup host exposes global-error listener disposal.
+- [x] Input clears on window blur and hidden visibility during normal operation.
+- [x] Preload bridge can freeze and resume engine ticking and renderer presentation.
+- [x] Pagehide attempts a save before disposing the gameplay child renderer.
 
 ## Retained unresolved work
 
-The menu ready-handoff audit from `2026-07-17T01-39-36-04-00`, adaptive-quality audit from `2026-07-16T21-38-30-04-00`, and pointer-look gesture audit from `2026-07-16T18-41-23-04-00` remain unresolved.
+The save-durability audit from `2026-07-17T03-06-12-04-00`, menu ready-handoff audit from `2026-07-17T01-39-36-04-00`, adaptive-quality audit from `2026-07-16T21-38-30-04-00`, and pointer-look gesture audit from `2026-07-16T18-41-23-04-00` remain unresolved.
 
 ## Non-findings
 
-- No save-loss incident was reproduced.
-- No runtime persistence implementation was added.
-- No browser storage or deployment fixture was run.
+- No BFCache restore failure was reproduced.
+- No runtime resource leak was measured.
+- No lifecycle implementation was added.
+- No browser or deployment fixture was run.
 - No production-readiness claim is made.

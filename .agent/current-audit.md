@@ -1,53 +1,54 @@
-# Current audit: host save commit durability projection
+# Current audit: page lifecycle runtime suspension and retirement
 
-**Timestamp:** `2026-07-17T03-06-12-04-00`  
-**Status:** `host-save-commit-durability-projection-authority-audited`
+**Timestamp:** `2026-07-17T08-01-59-04-00`  
+**Status:** `page-lifecycle-runtime-suspension-retirement-authority-audited`
 
 ## Summary
 
-MyCozyIsland was selected through the oldest synchronized documented-selection rule. The runtime has a strong in-memory save envelope, checksum, migration and rollback path, but host persistence is not represented by a typed command/result boundary.
+MyCozyIsland was selected through the oldest synchronized documented-selection rule. The menu renderer owns a bounded `dispose()` path, but the gameplay host does not own one lifecycle transaction for page suspension, BFCache restoration and terminal retirement.
 
 ## Source-backed behavior
 
 ```txt
-autosave demand
-  -> compare current durable-state fingerprint
-  -> cozySave.capture()
-  -> save domain becomes captured
-  -> saveCount increments and lastError clears
-  -> browser calls localStorage.setItem
-  -> success advances host fingerprint
-  -> failure returns only from the host helper
-
-HUD
-  -> reads frame.save.status
-  -> status captured renders Saved
+active gameplay
+  -> WebGPURenderer animation loop ticks simulation and renders
+  -> anonymous pointer, keyboard, blur, visibility and resize listeners remain installed
+  -> startup host retains global error listeners
 
 pagehide
-  -> calls the same store helper
-  -> disposes gameplay renderer
+  -> storeSave(adventure)
+  -> gameplayRenderer.dispose()
+  -> no event.persisted classification
+  -> no renderer-loop stop
+  -> no input retirement
+  -> no full scene/GPU/post/volume disposal
+  -> no startupHost.dispose()
+  -> no terminal or suspended result
+
+pageshow/BFCache restore
+  -> no admission or resource-validity check
+  -> no clock rebase
+  -> no first resumed-frame acknowledgement
 ```
 
 ## Main gap
 
-Capture state and durable persistence state are conflated. The save domain claims `captured` before the host effect settles, and a failed host write cannot publish an authoritative failure into the save state. The HUD can therefore render `Saved` without a matching durable commit receipt.
+The page can be retained with one gameplay presentation subtree disposed while the outer animation loop, engine, renderer, listeners and remaining GPU resources still exist. Terminal retirement is also incomplete and has no apply-once identity. The menu renderer demonstrates explicit loop, listener, texture, geometry, material and renderer retirement, but the gameplay host does not compose equivalent ownership.
 
-Existing tests validate capture, checksum restore, migration and rollback in memory. They do not exercise actual `localStorage`, quota or availability failure, page retirement, stale results, retries or save-status frame convergence.
-
-This is an ownership and durability-projection gap, not proof that a player has lost a save.
+This is a lifecycle convergence and resource-ownership gap, not proof of a production crash, memory leak or corrupted BFCache restore.
 
 ## Required authority
 
-`cozy-island-host-save-commit-durability-projection-authority-domain`
+`cozy-island-page-lifecycle-runtime-suspension-retirement-authority-domain`
 
 Required results:
 
-- `SaveEnvelopeCaptureResult`
-- `HostSaveCommitResult`
-- `SaveDurabilitySettlementResult`
-- `SaveStatusProjectionResult`
-- `FirstDurableSaveStatusFrameAck`
-- `PageLifecycleSaveResult`
+- `PageLifecycleAdmissionResult`
+- `RuntimeSuspensionResult`
+- `RuntimeRetirementResult`
+- `RuntimeResumeResult`
+- `SaveRetirementSettlementResult`
+- `FirstResumedFrameAck`
 
 ## Domains and services
 
@@ -55,4 +56,4 @@ The current composition contains 14 engine-installed core/adventure kits, 50 cat
 
 ## Validation boundary
 
-Documentation only. No runtime JavaScript, HTML, CSS, save envelope, localStorage behavior, gameplay, rendering, test, workflow or deployment behavior was changed.
+Documentation only. No runtime JavaScript, HTML, CSS, simulation, input, save, renderer, resource-disposal, test, workflow or deployment behavior was changed.

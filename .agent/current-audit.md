@@ -1,57 +1,67 @@
-# Current audit: menu frame-budget adaptive quality
+# Current audit: menu preload-to-ready presentation handoff
 
-**Timestamp:** `2026-07-16T21-38-30-04-00`  
-**Status:** `menu-frame-budget-adaptive-quality-authority-audited`
+**Timestamp:** `2026-07-17T01-39-36-04-00`  
+**Status:** `menu-preload-ready-presentation-handoff-authority-audited`
 
 ## Summary
 
-MyCozyIsland now has a declarative high-fidelity menu with explicit quality tiers, WebGPU/WebGL2 backend detection, procedural atlases, GPU wind, animated water, responsive composition, shadows and bloom. Quality admission remains startup-only.
+MyCozyIsland is six runtime commits ahead of its previous documentation head. The current menu replaces the former bloom/shadow-heavy renderer with a direct particle-first path, explicit preload/idle/interactive frame targets, preload DPR reduction, one frond batch and one combined atmosphere particle batch.
 
 ## Source-backed behavior
 
 ```txt
 createMenuThreeRenderer
-  -> initialize renderer and backend
-  -> chooseMenuQuality(initial width, height, DPR, CPU concurrency)
-  -> allocate tier-bound geometry, particles, shadows and post pipeline
-  -> start animation loop
+  -> initialize WebGPURenderer and backend
+  -> choose one startup quality tier
+  -> disable dynamic shadows
+  -> build direct scene resources
+  -> set preloading=true
+  -> use DPR <= 1 and 24 FPS target
 
-resize
-  -> set DPR using original quality.dprCap
-  -> set renderer dimensions
-  -> update camera and palm composition
-  -> do not re-run chooseMenuQuality
-  -> do not replace tier-bound resources
+cozy-game-ready
+  -> game bridge has already frozen game simulation and presentation
+  -> menu host calls markReady
+  -> markReady calls setPreloading(false)
+  -> setPreloading(false) clears lastFrame and calls resize
+  -> resize restores the selected quality DPR cap
+  -> markReady enables Play immediately
+  -> a later animation-loop callback renders the ready frame
 
-render
-  -> update pointer parallax and wind boost
-  -> dispatch WebGPU compute when available
-  -> render scene plus bloom
-  -> do not publish frame-cost evidence
-  -> do not transition quality
+interaction
+  -> pointer or Play focus wakes a 60 FPS target for 900 ms
+
+entry
+  -> post cozy-game-enter
+  -> game resumes
+  -> game is revealed and focused
+  -> menu renderer is disposed
 ```
 
 ## Main gap
 
-The renderer has no authority connecting sustained runtime frame pressure to a controlled quality transition. It also has no quality generation, transition result, stale-resource rejection or first matching visible-frame acknowledgement.
+The factual game-ready result, menu DPR/frame-mode transition, first visible ready frame, Play enablement and game-entry retirement are not bound by one session and presentation generation.
 
-This is an ownership and executable-proof gap, not proof of a visible performance failure on a particular device.
+No `FirstReadyMenuFrameAck` is required before Play becomes actionable. No typed ready-admission, presentation-transition, Play-admission or entry-handoff result exists.
+
+This is an ownership and visible-frame convergence gap, not proof of a user-visible failure on a particular device.
 
 ## Required authority
 
-`cozy-island-menu-frame-budget-adaptive-quality-authority-domain`
+`cozy-island-menu-preload-ready-presentation-handoff-authority-domain`
 
 Required results:
 
-- `MenuQualityAdmissionResult`
-- `MenuFrameBudgetEvidenceResult`
-- `MenuQualityTransitionResult`
-- `FirstMenuQualityBoundFrameAck`
+- `GamePreloadReadyAdmissionResult`
+- `MenuPresentationBudgetTransitionResult`
+- `MenuRenderCommitResult`
+- `FirstReadyMenuFrameAck`
+- `PlayGateAdmissionResult`
+- `EntryHandoffResult`
 
 ## Domains and services
 
-The current composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 15 explicit menu domain/kit surfaces and four other browser/product adapters. Complete IDs, interaction loops and services are in the timestamped tracker and `.agent/kit-registry.json`.
+The current composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 16 explicit menu domain/kit surfaces and four other browser/product adapters. Complete IDs, interaction loops and services are in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Validation boundary
 
-Documentation only. No JavaScript, HTML, CSS, shaders, scene content, tests, workflows or deployment were changed by this audit.
+Documentation only. No runtime JavaScript, HTML, CSS, recipe, renderer, test, workflow or deployment behavior was changed by this audit.

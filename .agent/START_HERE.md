@@ -1,17 +1,17 @@
-# START HERE: MyCozyIsland page lifecycle retirement
+# START HERE: MyCozyIsland device input action coverage
 
-**Last updated:** `2026-07-17T08-01-59-04-00`  
+**Last updated:** `2026-07-17T18-38-56-04-00`  
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `347c78f358994822f9fedf91c3e16d33d6909e7e`  
-**Previous documentation head:** `9f2543ed2d6aa346ce5339a3eb215ba1c452dbd0`  
-**Status:** `page-lifecycle-runtime-suspension-retirement-authority-audited`
+**Previous documentation head:** `3cf8b764c861e922413df41b847c7bdd93dc60af`  
+**Status:** `device-input-action-coverage-semantic-command-authority-audited`
 
 ## Summary
 
-MyCozyIsland has explicit menu-renderer disposal and a gameplay child-renderer disposal helper, but the active game host has no single page-lifecycle authority. Its `pagehide` listener saves and disposes only `gameplayRenderer`; it does not classify BFCache persistence, stop the main animation loop, clear input, remove host listeners, retire the startup host, dispose the renderer or settle the remaining scene, atmosphere and post-processing resources.
+MyCozyIsland has a complete keyboard gameplay path and touch pointer-drag camera look, but no touch-only movement, sprint, interaction, or seed-selection path. The visible hotbar is non-interactive, the HUD rejects pointer input, and compact-screen CSS hides the control legend.
 
-A BFCache restore can therefore resume a partially disposed generation, while a terminal unload can leave ownership without an exact retirement receipt. This is a source-backed lifecycle and resource-ownership gap; no browser crash or production leak was reproduced.
+The normalized input DSK interprets physical key codes into gameplay meaning instead of admitting source-neutral semantic actions. This is a source-backed device-action coverage gap; no desktop failure or mobile incident was reproduced.
 
 ## Census
 
@@ -22,47 +22,49 @@ additional composition kits:           1
 explicit menu domain/kit surfaces:     16
 other browser/product adapters:         4
 total implemented surfaces:            85
-planned lifecycle surfaces:            19
+proposed device-input surfaces:        20
 ```
 
-## Active authority proposal
+## Active authority proposal — not implemented
 
-`cozy-island-page-lifecycle-runtime-suspension-retirement-authority-domain`
+`cozy-island-device-input-action-coverage-semantic-command-authority-domain`
 
 ```txt
-PageLifecycleAdmissionCommand
-  -> classify hidden, pagehide-persisted, pagehide-terminal or pageshow-persisted
-  -> bind host, runtime, renderer and save generations
+InputCapabilityManifestCommand
+  -> declare required actions and available sources for the active device profile
 
-RuntimeSuspensionCommand
-  -> pause the loop, clear held input and retain restart-safe BFCache resources
+SemanticActionAdmissionCommand
+  -> admit source-neutral move, look, sprint, interact, seed, and intro actions
 
-RuntimeRetirementCommand
-  -> stop stale callbacks, settle save, remove listeners and dispose owned resources once
+TouchControlProjectionCommand
+  -> project reachable, labeled, safe-area-aware controls
 
-RuntimeResumeCommand
-  -> validate retained resources, rebase the clock and restore the accepted generation
-  -> publish FirstResumedFrameAck
+InputSourceSettlementCommand
+  -> arbitrate mixed sources and retire held actions exactly once
+
+SemanticInputFrameCommitCommand
+  -> InputFrameDigest
+  -> FirstInputActionBoundFrameAck
 ```
 
 ## Read this run first
 
 1. `current-audit.md`
-2. `trackers/2026-07-17T08-01-59-04-00/project-breakdown.md`
-3. `architecture-audit/2026-07-17T08-01-59-04-00-page-lifecycle-retirement-dsk-map.md`
-4. `runtime-lifecycle-audit/2026-07-17T08-01-59-04-00-suspension-retirement-resume-contract.md`
-5. `render-audit/2026-07-17T08-01-59-04-00-bfcache-disposed-child-resume-gap.md`
-6. `gameplay-audit/2026-07-17T08-01-59-04-00-pagehide-resume-gameplay-loop.md`
-7. `interaction-audit/2026-07-17T08-01-59-04-00-page-lifecycle-command-result-map.md`
-8. `deploy-audit/2026-07-17T08-01-59-04-00-bfcache-browser-fixture-gate.md`
+2. `trackers/2026-07-17T18-38-56-04-00/project-breakdown.md`
+3. `architecture-audit/2026-07-17T18-38-56-04-00-device-input-action-coverage-dsk-map.md`
+4. `input-system-audit/2026-07-17T18-38-56-04-00-device-action-coverage-contract.md`
+5. `render-audit/2026-07-17T18-38-56-04-00-touch-controls-visible-command-gap.md`
+6. `gameplay-audit/2026-07-17T18-38-56-04-00-touch-only-gameplay-loop.md`
+7. `interaction-audit/2026-07-17T18-38-56-04-00-semantic-action-command-result-map.md`
+8. `deploy-audit/2026-07-17T18-38-56-04-00-mobile-input-browser-fixture-gate.md`
 9. `next-steps.md`
 10. `known-gaps.md`
 11. `validation.md`
 
 ## Retained audit state
 
-The save-durability, menu ready-handoff, adaptive-quality and pointer-look gesture audits remain unresolved in their timestamped audit families.
+The page-lifecycle, save-durability, menu-ready handoff, adaptive-quality, and pointer-look gesture audits remain unresolved in their timestamped audit families.
 
 ## Do not claim
 
-Do not claim BFCache safety, complete runtime retirement, resource-leak freedom, clock-resume correctness, durable page-retirement saves, artifact parity, Pages parity or production readiness until executable fixtures pass.
+Do not claim touch-complete gameplay, mobile-complete action coverage, mixed-input correctness, accessible control semantics, browser parity, artifact parity, Pages parity, or production readiness until executable fixtures pass.

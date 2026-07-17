@@ -1,137 +1,57 @@
-# Current audit: pointer-look gesture ownership
+# Current audit: menu frame-budget adaptive quality
 
-**Timestamp:** `2026-07-16T18-41-23-04-00`  
-**Status:** `pointer-look-gesture-ownership-authority-audited`
+**Timestamp:** `2026-07-16T21-38-30-04-00`  
+**Status:** `menu-frame-budget-adaptive-quality-authority-audited`
 
 ## Summary
 
-MyCozyIsland has deterministic input-frame accumulation but no browser-level pointer gesture authority. The host stores a pointer ID on pointerdown, then accepts move events from any pointer while a shared drag record exists and clears the gesture for any pointerup or pointercancel. The input domain strips pointer identity and queues only anonymous look deltas.
-
-## Plan ledger
-
-**Goal:** make each pointer-look gesture owner-specific, capture-bound, revisioned and exactly settled before it changes player or camera truth.
-
-- [x] Inspect pointerdown, pointermove, pointerup and pointercancel handling.
-- [x] Inspect input command normalization and frame admission.
-- [x] Inspect player yaw, pitch and movement basis.
-- [x] Inspect camera and presented-frame projection.
-- [x] Map admission, delta, settlement and frame acknowledgement surfaces.
-- [ ] Implement and test the authority.
+MyCozyIsland now has a declarative high-fidelity menu with explicit quality tiers, WebGPU/WebGL2 backend detection, procedural atlases, GPU wind, animated water, responsive composition, shadows and bloom. Quality admission remains startup-only.
 
 ## Source-backed behavior
 
-### Browser host
-
 ```txt
-pointerdown
-  -> drag = { x, y, id: event.pointerId }
-  -> setPointerCapture(event.pointerId)
+createMenuThreeRenderer
+  -> initialize renderer and backend
+  -> chooseMenuQuality(initial width, height, DPR, CPU concurrency)
+  -> allocate tier-bound geometry, particles, shadows and post pipeline
+  -> start animation loop
 
-pointermove
-  -> if drag exists, enqueue event.client - drag coordinates
-  -> no event.pointerId comparison
+resize
+  -> set DPR using original quality.dprCap
+  -> set renderer dimensions
+  -> update camera and palm composition
+  -> do not re-run chooseMenuQuality
+  -> do not replace tier-bound resources
 
-pointerup
-  -> drag = null
-  -> releasePointerCapture(event.pointerId)
-  -> no owner comparison
-
-pointercancel
-  -> drag = null
-  -> no owner comparison
-
-lostpointercapture
-  -> no listener
+render
+  -> update pointer parallax and wind boost
+  -> dispatch WebGPU compute when available
+  -> render scene plus bloom
+  -> do not publish frame-cost evidence
+  -> do not transition quality
 ```
-
-### Input domain
-
-```txt
-enqueuePointer(deltaX, deltaY)
-  -> command type pointer
-  -> fixed generation 1
-  -> no pointerId
-  -> no gestureId
-  -> no captureRevision
-  -> no routeRevision
-```
-
-The input frame sums all admitted pointer commands, clamps lookX/lookY and publishes accepted command IDs. It cannot identify whether a command came from the active pointer owner.
-
-### Player and camera
-
-`cozy-player-domain-kit` applies lookX/lookY directly to yaw and pitch. Yaw also defines the forward/right basis used for first-person movement. The camera and renderer then project that state without a gesture-bound frame receipt.
 
 ## Main gap
 
-```txt
-secondary pointer event
-  -> can overwrite shared drag coordinates
-  -> can publish a look delta against another pointer's history
-  -> can clear the owner gesture
-  -> input frame cannot classify the source
-  -> player and camera consume the result
-  -> no terminal result or matching frame acknowledgement exists
-```
+The renderer has no authority connecting sustained runtime frame pressure to a controlled quality transition. It also has no quality generation, transition result, stale-resource rejection or first matching visible-frame acknowledgement.
 
-This is a source-backed ownership and evidence gap. It is not a claim that every touch device reproduces a visible defect.
+This is an ownership and executable-proof gap, not proof of a visible performance failure on a particular device.
 
 ## Required authority
 
-```txt
-cozy-island-pointer-look-gesture-ownership-authority-domain
-```
+`cozy-island-menu-frame-budget-adaptive-quality-authority-domain`
 
-### Admission
+Required results:
 
-```txt
-PointerGestureAdmissionCommand
-  documentRevision
-  routeRevision
-  canvasRevision
-  pointerId
-  pointerType
-  button
-  coordinates
-  expectedGestureRevision
-```
-
-### Delta
-
-```txt
-PointerGestureDeltaCommand
-  gestureId
-  gestureRevision
-  pointerId
-  captureRevision
-  eventSequence
-  coordinates
-  delta
-```
-
-### Settlement
-
-```txt
-PointerGestureSettlementCommand
-  gestureId
-  gestureRevision
-  pointerId
-  reason
-```
-
-### Results and frame proof
-
-```txt
-PointerGestureAdmissionResult
-PointerGestureDeltaResult
-PointerGestureSettlementResult
-FirstPointerLookFrameAck
-```
+- `MenuQualityAdmissionResult`
+- `MenuFrameBudgetEvidenceResult`
+- `MenuQualityTransitionResult`
+- `FirstMenuQualityBoundFrameAck`
 
 ## Domains and services
 
-The active composition remains unchanged: 14 engine-installed kits, 50 cataloged environment/render kits, one ocean composition kit and five browser/product adapters. Their complete IDs and service families are recorded in the timestamped tracker and machine registry.
+The current composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 15 explicit menu domain/kit surfaces and four other browser/product adapters. Complete IDs, interaction loops and services are in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Validation boundary
 
-This run changes documentation only. It does not alter JavaScript, HTML, CSS, input behavior, player behavior, camera behavior, rendering, dependencies, tests, workflows or deployment.
+Documentation only. No JavaScript, HTML, CSS, shaders, scene content, tests, workflows or deployment were changed by this audit.

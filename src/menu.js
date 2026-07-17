@@ -1,5 +1,5 @@
 import { MENU_DOMAIN_REGISTRY, MENU_SCENE_RECIPE } from "./menu/menu-scene-recipe.js";
-import { createMenuThreeRenderer } from "./menu/menu-three-renderer.js";
+import { createMenuThreeRenderer } from "./menu/menu-three-renderer-lite.js";
 
 const canvas = document.querySelector("#menu-scene");
 const frame = document.querySelector("#game-preload");
@@ -25,6 +25,7 @@ function markReady() {
   if (gameReady) return;
   gameReady = true;
   setProgress(0.99);
+  menuRenderer?.setPreloading(false);
   if (playButton) {
     playButton.disabled = false;
     playButton.textContent = "Play";
@@ -114,7 +115,6 @@ addEventListener("message", (event) => {
 
 playButton?.addEventListener("click", requestEntry);
 playButton?.addEventListener("pointerenter", () => menuRenderer?.setFocus(true));
-playButton?.addEventListener("pointerleave", () => menuRenderer?.setFocus(false));
 canvas.addEventListener("pointermove", handlePointer, { passive: true });
 canvas.addEventListener("pointerleave", () => {
   lastPointer = null;
@@ -138,8 +138,6 @@ async function main() {
     recipe: MENU_SCENE_RECIPE,
     reducedMotion
   });
-  menuRenderer.camera.position.set(...MENU_SCENE_RECIPE.camera.position);
-  menuRenderer.camera.lookAt(...MENU_SCENE_RECIPE.camera.target);
 
   globalThis.CozyMenu = Object.freeze({
     ...menuRenderer,

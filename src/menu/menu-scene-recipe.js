@@ -10,20 +10,21 @@ export const MENU_DOMAIN_REGISTRY = deepFreeze([
   { path: "n:entry:menu:camera", kind: "presentation-kit", owner: "camera descriptor and responsive framing" },
   { path: "n:entry:menu:hero-palm", kind: "object-domain", owner: "hero palm descriptor" },
   { path: "n:entry:menu:palm-material", kind: "renderer-kit", owner: "bark and alpha-cut frond shading" },
-  { path: "n:entry:menu:palm-motion", kind: "renderer-kit", owner: "wind field and palm deformation" },
+  { path: "n:entry:menu:palm-motion", kind: "renderer-kit", owner: "GPU vertex wind deformation" },
   { path: "n:entry:menu:sky", kind: "renderer-kit", owner: "sunset sky and sun presentation" },
   { path: "n:entry:menu:shoreline", kind: "renderer-kit", owner: "curved distant shoreline" },
-  { path: "n:entry:menu:water", kind: "renderer-kit", owner: "cozy wave strip and foam glints" },
-  { path: "n:entry:menu:flowers", kind: "content-kit", owner: "soft distant flower clusters" },
-  { path: "n:entry:menu:lighting", kind: "renderer-kit", owner: "key, fill, rim, and shadow policy" },
+  { path: "n:entry:menu:water", kind: "renderer-kit", owner: "opaque cozy wave strip and foam edge" },
+  { path: "n:entry:menu:flowers", kind: "content-kit", owner: "batched soft flower accents" },
+  { path: "n:entry:menu:particles", kind: "renderer-kit", owner: "batched wind motes, water sparkles, and petals" },
+  { path: "n:entry:menu:lighting", kind: "renderer-kit", owner: "key, fill, rim, and contact-lighting policy" },
   { path: "n:entry:menu:atmosphere", kind: "renderer-kit", owner: "deep horizon haze and depth separation" },
-  { path: "n:entry:menu:post-effects", kind: "renderer-kit", owner: "exposure, bloom, and final output" },
+  { path: "n:entry:menu:post-effects", kind: "renderer-kit", owner: "ACES exposure and direct final output" },
   { path: "n:entry:menu:play-gate", kind: "product-domain", owner: "ready state and player entry request" },
   { path: "n:entry:menu:game-preload", kind: "host-adapter", owner: "background game preparation and handoff" }
 ]);
 
 export const MENU_SCENE_RECIPE = deepFreeze({
-  id: "my-cozy-island.menu-scene.v4",
+  id: "my-cozy-island.menu-scene.v5",
   taxonomy: [
     "MyCozyIsland",
     "Entry Experience",
@@ -43,11 +44,15 @@ export const MENU_SCENE_RECIPE = deepFreeze({
     negativeSpace: "right"
   },
   renderer: {
-    dprCaps: { high: 1.65, balanced: 1.35, low: 1.05 },
-    shadowMapSize: { high: 1536, balanced: 1024, low: 768 },
-    particleCount: { high: 112, balanced: 72, low: 40 },
-    waterSegments: { high: [72, 12], balanced: [48, 8], low: [30, 5] },
-    horizonSegments: { high: 72, balanced: 48, low: 30 }
+    dprCaps: { high: 1.45, balanced: 1.2, low: 1 },
+    particles: {
+      high: { wind: 64, sparkles: 28, petals: 14 },
+      balanced: { wind: 40, sparkles: 18, petals: 9 },
+      low: { wind: 20, sparkles: 9, petals: 4 }
+    },
+    waterSegments: { high: [48, 8], balanced: [36, 6], low: [24, 4] },
+    horizonSegments: { high: 48, balanced: 36, low: 24 },
+    frameRate: { preload: 24, idle: 30, interactive: 60, interactionMs: 900 }
   },
   camera: {
     fov: 35,
@@ -99,7 +104,7 @@ export const MENU_SCENE_RECIPE = deepFreeze({
     position: [0.4, -1.8, -10.9],
     width: 27,
     depth: 1.1,
-    segments: 64,
+    segments: 48,
     color: "#ead2a2",
     highlight: "#fff0c5",
     opacity: 0.66,
@@ -112,20 +117,19 @@ export const MENU_SCENE_RECIPE = deepFreeze({
     nearColor: "#63b4ba",
     farColor: "#8bc9c3",
     highlightColor: "#d9f3df",
-    opacity: 0.88,
-    roughness: 0.29,
-    clearcoat: 0.65,
+    roughness: 0.31,
+    clearcoat: 0.58,
     waveA: { amplitude: 0.045, frequency: 0.72, speed: 0.31 },
     waveB: { amplitude: 0.024, frequency: 1.34, speed: -0.2 },
-    foam: { width: 26, depth: 0.52, opacity: 0.34, position: [0.4, -1.98, -10.35] }
+    foam: { width: 26, depth: 0.52, opacity: 0.3, position: [0.4, -1.98, -10.35] }
   },
   palm: {
     position: [-3.35, -2.12, -0.55],
     rotation: [0.02, -0.26, -0.02],
     scale: 0.9,
     trunkRadius: 0.31,
-    trunkSegments: 48,
-    radialSegments: 10,
+    trunkSegments: 44,
+    radialSegments: 9,
     trunkPoints: [
       [0, 0, 0],
       [0.02, 0.82, 0.02],
@@ -147,30 +151,47 @@ export const MENU_SCENE_RECIPE = deepFreeze({
     }
   },
   flowers: {
+    opacity: 0.36,
     clusters: [
-      { position: [-5.1, -1.5, -8.0], scale: 0.78, rotationY: 0.14, variant: 0, opacity: 0.4 },
-      { position: [0.4, -1.62, -8.65], scale: 0.62, rotationY: -0.08, variant: 1, opacity: 0.34 },
-      { position: [4.7, -1.53, -9.25], scale: 0.68, rotationY: -0.18, variant: 2, opacity: 0.3 }
+      { position: [-5.1, -1.5, -8.0], scale: 0.78, rotationY: 0.14, variant: 0 },
+      { position: [0.4, -1.62, -8.65], scale: 0.62, rotationY: -0.08, variant: 1 },
+      { position: [4.7, -1.53, -9.25], scale: 0.68, rotationY: -0.18, variant: 2 }
     ]
   },
-  windParticles: {
-    bounds: { x: [-8.5, 8.5], y: [-1.2, 5.4], z: [-8.5, 2.8] },
-    colors: ["#fff2c6", "#d9f2cf", "#f7c7b8"],
-    minSize: 2.1,
-    maxSize: 5.4,
-    baseSpeed: 0.18,
-    gustSpeed: 0.42,
-    opacity: 0.42
+  particles: {
+    wind: {
+      bounds: { x: [-8.5, 8.5], y: [-1.2, 5.4], z: [-8.5, 2.8] },
+      colors: ["#fff2c6", "#d9f2cf", "#f7dfb8"],
+      size: [2.0, 4.6],
+      speed: [0.16, 0.38],
+      motion: [0.48, 0.18, 0.3],
+      opacity: [0.2, 0.42]
+    },
+    sparkles: {
+      bounds: { x: [-8.0, 8.5], y: [-1.78, -1.5], z: [-10.2, -4.5] },
+      colors: ["#fff8d5", "#e8f6dc", "#ffe8ad"],
+      size: [1.5, 3.1],
+      speed: [0.28, 0.62],
+      motion: [0.18, 0.055, 0.12],
+      opacity: [0.26, 0.58]
+    },
+    petals: {
+      bounds: { x: [-6.5, 4.5], y: [-0.4, 4.8], z: [-5.5, 1.8] },
+      colors: ["#f3b0bd", "#f4d57f", "#f2eee5"],
+      size: [3.0, 6.0],
+      speed: [0.1, 0.24],
+      motion: [0.32, 0.24, 0.26],
+      opacity: [0.25, 0.5]
+    }
   },
   lighting: {
     hemisphere: { sky: "#e8f8f4", ground: "#827b5b", intensity: 1.55 },
-    sun: { color: "#ffd7a0", intensity: 2.7, position: [-5.5, 7.8, 5.4] },
+    sun: { color: "#ffd7a0", intensity: 2.55, position: [-5.5, 7.8, 5.4] },
     fill: { color: "#bfe9df", intensity: 0.82, position: [5.5, 4.2, -4.2] },
-    rim: { color: "#ffe9bd", intensity: 0.55, position: [-1.5, 5.5, -6.5] }
+    rim: { color: "#ffe9bd", intensity: 0.48, position: [-1.5, 5.5, -6.5] }
   },
   post: {
-    exposure: 0.96,
-    bloom: { strength: 0.16, radius: 0.3, threshold: 1.18, resolutionScale: 0.5 }
+    exposure: 0.96
   },
   interaction: {
     pointerDamping: 0.075,
@@ -188,9 +209,9 @@ export function chooseMenuQuality({ backend, width, height, devicePixelRatio, ha
   return deepFreeze({
     tier,
     dprCap: MENU_SCENE_RECIPE.renderer.dprCaps[tier],
-    shadowMapSize: MENU_SCENE_RECIPE.renderer.shadowMapSize[tier],
-    particleCount: MENU_SCENE_RECIPE.renderer.particleCount[tier],
+    particles: MENU_SCENE_RECIPE.renderer.particles[tier],
     waterSegments: MENU_SCENE_RECIPE.renderer.waterSegments[tier],
-    horizonSegments: MENU_SCENE_RECIPE.renderer.horizonSegments[tier]
+    horizonSegments: MENU_SCENE_RECIPE.renderer.horizonSegments[tier],
+    frameRate: MENU_SCENE_RECIPE.renderer.frameRate
   });
 }

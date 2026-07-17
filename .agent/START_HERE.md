@@ -1,14 +1,16 @@
-# START HERE: MyCozyIsland menu adaptive quality
+# START HERE: MyCozyIsland menu preload-to-ready handoff
 
-**Last updated:** `2026-07-16T21-38-30-04-00`  
+**Last updated:** `2026-07-17T01-39-36-04-00`  
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
-**Reviewed runtime revision:** `c280f86a7057532bcd4815cd4270846a84effd8a`  
-**Status:** `menu-frame-budget-adaptive-quality-authority-audited`
+**Reviewed runtime revision:** `347c78f358994822f9fedf91c3e16d33d6909e7e`  
+**Status:** `menu-preload-ready-presentation-handoff-authority-audited`
 
 ## Summary
 
-The new WebGPU-first menu uses a declarative scene recipe and three quality tiers. The tier is selected once from startup backend, viewport, DPR and CPU-concurrency heuristics. Resize changes dimensions and responsive framing but reuses the original tier and tier-bound resources. The frame loop supplies no sustained CPU/GPU budget evidence, quality transition result or first matching frame acknowledgement.
+The current menu is a direct particle-first WebGPU/WebGL2 presentation with no bloom or dynamic shadows. During background preload it targets 24 rendered FPS and caps DPR at one; after the game reports ready it restores the selected quality DPR cap and targets 30 FPS.
+
+The unresolved handoff is ordering: `markReady()` requests the ready presentation transition and immediately enables Play. No first frame proves that the ready DPR, viewport and frame mode reached the canvas before entry can begin.
 
 ## Census
 
@@ -16,51 +18,52 @@ The new WebGPU-first menu uses a declarative scene recipe and three quality tier
 engine-installed core/adventure kits: 14
 cataloged world/render/host kits:     50
 additional composition kits:           1
-explicit menu domain/kit surfaces:     15
+explicit menu domain/kit surfaces:     16
 other browser/product adapters:         4
-total implemented surfaces:            84
-planned menu quality surfaces:          18
+total implemented surfaces:            85
+planned ready-handoff surfaces:        18
 ```
 
 ## Active authority proposal
 
-`cozy-island-menu-frame-budget-adaptive-quality-authority-domain`
+`cozy-island-menu-preload-ready-presentation-handoff-authority-domain`
 
 ```txt
-MenuQualityAdmissionCommand
-  -> admit backend, viewport, DPR, hardware and recipe revisions
+GamePreloadReadyAdmissionCommand
+  -> admit one session-bound game-ready result
 
-MenuFrameBudgetEvidenceCommand
-  -> collect bounded CPU/GPU and missed-frame evidence
-  -> exclude hidden, disposed and entering periods
+MenuPresentationBudgetTransitionCommand
+  -> settle preload DPR/frame policy into ready policy
 
-MenuQualityTransitionCommand
-  -> apply sustained overload/recovery hysteresis
-  -> stage and retire quality-bound resources exactly once
+ReadyMenuFrameCommitCommand
+  -> render the accepted ready generation
+  -> publish FirstReadyMenuFrameAck
 
-MenuQualityFrameCommitCommand
-  -> render one accepted quality generation
-  -> publish FirstMenuQualityBoundFrameAck
+PlayGateAdmissionCommand
+  -> enable Play only for the matching ready frame
+
+EntryHandoffCommand
+  -> resume the game and retire the menu exactly once
 ```
 
 ## Read this run first
 
 1. `current-audit.md`
-2. `trackers/2026-07-16T21-38-30-04-00/project-breakdown.md`
-3. `architecture-audit/2026-07-16T21-38-30-04-00-menu-adaptive-quality-dsk-map.md`
-4. `menu-quality-audit/2026-07-16T21-38-30-04-00-frame-budget-transition-contract.md`
-5. `render-audit/2026-07-16T21-38-30-04-00-static-tier-visible-frame-gap.md`
-6. `gameplay-audit/2026-07-16T21-38-30-04-00-menu-readiness-frame-budget-loop.md`
-7. `interaction-audit/2026-07-16T21-38-30-04-00-menu-quality-command-result-map.md`
-8. `deploy-audit/2026-07-16T21-38-30-04-00-menu-quality-browser-fixture-gate.md`
+2. `trackers/2026-07-17T01-39-36-04-00/project-breakdown.md`
+3. `architecture-audit/2026-07-17T01-39-36-04-00-menu-preload-ready-handoff-dsk-map.md`
+4. `menu-handoff-audit/2026-07-17T01-39-36-04-00-preload-ready-presentation-contract.md`
+5. `render-audit/2026-07-17T01-39-36-04-00-ready-budget-first-frame-gap.md`
+6. `gameplay-audit/2026-07-17T01-39-36-04-00-preload-ready-play-entry-loop.md`
+7. `interaction-audit/2026-07-17T01-39-36-04-00-ready-handoff-command-result-map.md`
+8. `deploy-audit/2026-07-17T01-39-36-04-00-ready-handoff-browser-fixture-gate.md`
 9. `next-steps.md`
 10. `known-gaps.md`
 11. `validation.md`
 
 ## Retained audit state
 
-Prior pointer gesture, lifecycle, startup, save, rendering, accessibility, input and deployment audits remain retained in the historical `.agent` folders and machine registry.
+The prior adaptive-quality and pointer-look gesture authority audits remain unresolved and retained in their timestamped audit families.
 
 ## Do not claim
 
-Do not claim runtime adaptive menu quality, resize/DPR re-admission, overload recovery, transition hysteresis, first quality-bound frame convergence, artifact parity, Pages parity or production readiness until executable browser fixtures pass.
+Do not claim first-ready-frame convergence, Play-gate convergence, stale-ready rejection, duplicate-ready safety, entry-generation correctness, browser parity, artifact parity, Pages parity or production readiness until executable fixtures pass.

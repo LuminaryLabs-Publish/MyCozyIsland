@@ -1,59 +1,61 @@
-# Current audit: page lifecycle runtime suspension and retirement
+# Current audit: device input action coverage and semantic commands
 
-**Timestamp:** `2026-07-17T08-01-59-04-00`  
-**Status:** `page-lifecycle-runtime-suspension-retirement-authority-audited`
+**Timestamp:** `2026-07-17T18-38-56-04-00`  
+**Status:** `device-input-action-coverage-semantic-command-authority-audited`
 
 ## Summary
 
-MyCozyIsland was selected through the oldest synchronized documented-selection rule. The menu renderer owns a bounded `dispose()` path, but the gameplay host does not own one lifecycle transaction for page suspension, BFCache restoration and terminal retirement.
+MyCozyIsland was selected through the oldest synchronized documented-selection rule. The current browser adapter provides complete keyboard gameplay controls and touch pointer-drag camera look, but no touch-only movement, sprint, interaction, or seed-selection path.
 
 ## Source-backed behavior
 
 ```txt
-active gameplay
-  -> WebGPURenderer animation loop ticks simulation and renders
-  -> anonymous pointer, keyboard, blur, visibility and resize listeners remain installed
-  -> startup host retains global error listeners
+game.html
+  -> responsive viewport
+  -> #game uses touch-action:none
+  -> hotbar uses non-button divs
+  -> #bottom-hud uses pointer-events:none
+  -> compact-screen CSS hides the control legend
 
-pagehide
-  -> storeSave(adventure)
-  -> gameplayRenderer.dispose()
-  -> no event.persisted classification
-  -> no renderer-loop stop
-  -> no input retirement
-  -> no full scene/GPU/post/volume disposal
-  -> no startupHost.dispose()
-  -> no terminal or suspended result
+src/main-adventure.js
+  -> pointer drag enqueues look deltas
+  -> wheel enqueues intro-camera input
+  -> keyboard enqueues movement, sprint, interaction, seed, and intro commands
+  -> no touch movement/interact/seed controls
 
-pageshow/BFCache restore
-  -> no admission or resource-validity check
-  -> no clock rebase
-  -> no first resumed-frame acknowledgement
+n:cozy-input
+  -> accepts key, pointer, wheel, and clear command types
+  -> interprets gameplay meaning from physical key codes
+  -> publishes one normalized frame
+
+tests
+  -> domain smoke covers actions through enqueueKey()
+  -> no touch-capable browser gameplay fixture
 ```
 
 ## Main gap
 
-The page can be retained with one gameplay presentation subtree disposed while the outer animation loop, engine, renderer, listeners and remaining GPU resources still exist. Terminal retirement is also incomplete and has no apply-once identity. The menu renderer demonstrates explicit loop, listener, texture, geometry, material and renderer retirement, but the gameplay host does not compose equivalent ownership.
+The core walk, farm, forage, sprint, and seed-selection loop cannot be completed through touch controls alone. The simulation domains already expose the required gameplay capabilities, but the browser/input boundary has no device capability manifest, source-neutral semantic action command, touch control projection, mixed-source arbitration, or input-frame-to-visible-control proof.
 
-This is a lifecycle convergence and resource-ownership gap, not proof of a production crash, memory leak or corrupted BFCache restore.
+This is an action-coverage and ownership gap, not proof of a desktop input defect or a reproduced mobile incident.
 
-## Required authority
+## Required authority — proposed
 
-`cozy-island-page-lifecycle-runtime-suspension-retirement-authority-domain`
+`cozy-island-device-input-action-coverage-semantic-command-authority-domain`
 
 Required results:
 
-- `PageLifecycleAdmissionResult`
-- `RuntimeSuspensionResult`
-- `RuntimeRetirementResult`
-- `RuntimeResumeResult`
-- `SaveRetirementSettlementResult`
-- `FirstResumedFrameAck`
+- `InputCapabilityManifestResult`
+- `SemanticActionAdmissionResult`
+- `TouchControlProjectionResult`
+- `InputSourceSettlementResult`
+- `InputFrameDigest`
+- `FirstInputActionBoundFrameAck`
 
 ## Domains and services
 
-The current composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 16 explicit menu domain/kit surfaces and four browser/product adapters. Complete IDs, loops and offered services are in the timestamped tracker and `.agent/kit-registry.json`.
+The composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 16 explicit menu domain/kit surfaces, and four browser/product adapters. Complete IDs and per-kit services are recorded in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Validation boundary
 
-Documentation only. No runtime JavaScript, HTML, CSS, simulation, input, save, renderer, resource-disposal, test, workflow or deployment behavior was changed.
+Documentation only. No runtime JavaScript, HTML, CSS, simulation, input, renderer, test, workflow, artifact, or deployment behavior changed.

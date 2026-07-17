@@ -1,24 +1,23 @@
 {
-  "schemaVersion": 108,
-  "lastUpdated": "2026-07-17T01-39-36-04-00",
+  "schemaVersion": 109,
+  "lastUpdated": "2026-07-17T03-06-12-04-00",
   "repo": "LuminaryLabs-Publish/MyCozyIsland",
   "branch": "main",
-  "status": "menu-preload-ready-presentation-handoff-authority-audited",
-  "technicalStatus": "menu-preload-ready-presentation-handoff-authority-audited",
-  "currentFocus": "session-bound game readiness, preload-to-ready DPR and frame-mode settlement, first ready menu frame acknowledgement, Play-gate convergence and apply-once entry retirement",
+  "status": "host-save-commit-durability-projection-authority-audited",
+  "technicalStatus": "host-save-commit-durability-projection-authority-audited",
+  "currentFocus": "separating in-memory save capture from host persistence commitment, durable digest settlement, accurate HUD projection and page-lifecycle save proof",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
     "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "runtimeAheadOfCentralCount": 1,
+    "undocumentedCount": 0,
+    "runtimeAheadOfCentralCount": 0,
     "selectedRepository": "LuminaryLabs-Publish/MyCozyIsland",
-    "reason": "runtime-ahead priority after the particle-first menu performance rewrite",
+    "reason": "oldest synchronized eligible repository",
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
-    "previousDocumentedHead": "44230778bc1875d34e60abc466ed8573af91f7bb",
-    "reviewedRuntimeRevision": "347c78f358994822f9fedf91c3e16d33d6909e7e",
-    "runtimeAheadByCommits": 6,
-    "runtimeChangedFiles": 6
+    "previousDocumentedHead": "161170e8eb2c2eeff499c45efe1a52350addf0a5",
+    "reviewedRuntimeRevision": "347c78f358994822f9fedf91c3e16d33d6909e7e"
   },
   "dependencyState": {
     "three": "0.185.0",
@@ -33,7 +32,7 @@
     "explicitMenuDomainAndKitSurfaces": 16,
     "otherBrowserProductAdapters": 4,
     "totalDocumentedKitAndAdapterSurfaces": 85,
-    "plannedReadyHandoffSurfaces": 18
+    "plannedSaveDurabilitySurfaces": 18
   },
   "engineInstalledKits": [
     {"id":"core-startup-kit","domainPath":"n:core-startup","services":["launch","preparation-registration","readiness","failure","continuation","first-frame-admission","playable-entry","snapshot","load","reset"]},
@@ -48,7 +47,7 @@
     {"id":"cozy-scenario-domain-kit","domainPath":"n:cozy-scenario","services":["time","objective","snapshot","reset"]},
     {"id":"cozy-interaction-domain-kit","domainPath":"n:cozy-interaction","services":["targeting","context-action","agriculture-settlement","wild-forage-action","prompt","result","snapshot","reset"]},
     {"id":"cozy-camera-domain-kit","domainPath":"n:cozy-camera","services":["aerial-intro","first-person-view","terrain-clearance","descriptor"]},
-    {"id":"cozy-save-domain-kit","domainPath":"n:cozy-save","services":["capture","checksum-validation","migration","restore","rollback","reset","diagnostics"]},
+    {"id":"cozy-save-domain-kit","domainPath":"n:cozy-save","services":["capture","checksum-validation","migration","restore","rollback","reset","fingerprint","diagnostics"]},
     {"id":"cozy-render-snapshot-domain-kit","domainPath":"n:cozy-render-snapshot","services":["static-world","agriculture-descriptors","frame-snapshot","hud-descriptor","debug-descriptor"]}
   ],
   "catalogedKitIds": [
@@ -81,68 +80,55 @@
     {"id":"cozy-menu-game-shell-adapter","services":["iframe-preload","progress","play-gate","entry","crossfade","history","focus","fallback"]},
     {"id":"cozy-game-preload-bridge-adapter","services":["embed-classification","messaging","simulation-freeze-resume","presentation-freeze-resume","entry-preparation","acknowledgement"]}
   ],
-  "menuPerformanceState": {
-    "directAcesRender": true,
-    "fullScreenBloom": false,
-    "dynamicShadowMaps": false,
-    "halfFloatOutputBuffer": false,
-    "mergedFrondBatch": true,
-    "combinedAtmosphereParticleBatch": true,
-    "opaqueDepthWritingWater": true,
-    "preloadFrameRate": 24,
-    "idleFrameRate": 30,
-    "interactiveFrameRate": 60,
-    "interactiveLeaseMs": 900,
-    "preloadDprCap": 1,
-    "readyDprRestoration": true,
-    "visibilitySuspension": true,
-    "runtimeAdaptiveQuality": false
+  "saveDurabilityState": {
+    "versionedEnvelope": true,
+    "checksumValidation": true,
+    "legacyMigration": true,
+    "rollbackSafeRestore": true,
+    "durableFingerprint": true,
+    "hostPersistenceAdapterOwned": true,
+    "captureSeparatedFromDurability": false,
+    "storageCapabilityResult": false,
+    "hostCommitCommand": false,
+    "hostCommitResult": false,
+    "lastDurableDigest": false,
+    "staleResultRejection": false,
+    "duplicateResultSettlement": false,
+    "failureRetainedInDomain": false,
+    "accurateHudProjection": false,
+    "pageLifecycleResult": false,
+    "firstDurableSaveStatusFrameAck": false,
+    "browserFailureFixture": false
   },
-  "readyHandoffState": {
-    "sameOriginSourceValidation": true,
-    "gameSimulationFrozenBeforeReady": true,
-    "gamePresentationFrozenBeforeReady": true,
-    "preloadSessionIdentity": false,
-    "iframeDocumentRevision": false,
-    "typedReadyAdmissionResult": false,
-    "presentationGeneration": false,
-    "typedBudgetTransitionResult": false,
-    "viewportRevision": false,
-    "dprRevision": false,
-    "firstReadyMenuFrameAck": false,
-    "playWaitsForReadyFrame": false,
-    "entryGenerationBinding": false,
-    "duplicateReadyResultRetention": false,
-    "staleReadyRejection": false,
-    "browserFixture": false
-  },
-  "plannedParentDomain": "cozy-island-menu-preload-ready-presentation-handoff-authority-domain",
+  "plannedParentDomain": "cozy-island-host-save-commit-durability-projection-authority-domain",
   "plannedKits": [
-    "preload-session-identity-kit","preload-ready-message-admission-kit","startup-continuation-binding-kit","menu-presentation-generation-kit","preload-frame-budget-policy-kit","ready-frame-budget-policy-kit","menu-dpr-transition-kit","menu-frame-rate-transition-kit","menu-resize-settlement-kit","menu-render-commit-result-kit","first-ready-menu-frame-ack-kit","play-gate-convergence-kit","stale-ready-message-rejection-kit","duplicate-ready-settlement-kit","entry-generation-binding-kit","reduced-motion-handoff-policy-kit","menu-ready-browser-fixture-kit","artifact-pages-ready-handoff-fixture-kit"
+    "save-generation-identity-kit","save-envelope-capture-result-kit","host-storage-capability-kit","host-save-admission-kit","local-storage-commit-adapter-kit","save-commit-receipt-kit","durable-fingerprint-binding-kit","save-state-settlement-kit","save-error-retention-kit","save-retry-policy-kit","page-lifecycle-save-kit","stale-save-result-rejection-kit","duplicate-save-result-kit","save-status-projection-kit","first-durable-save-status-frame-ack-kit","corrupted-save-quarantine-kit","browser-storage-failure-fixture-kit","artifact-pages-save-fixture-kit"
   ],
   "retainedAuditFocus": {
+    "menuReadyHandoffAuditTimestamp": "2026-07-17T01-39-36-04-00",
+    "menuReadyHandoffAuthorityImplemented": false,
     "adaptiveQualityAuditTimestamp": "2026-07-16T21-38-30-04-00",
     "adaptiveQualityAuthorityImplemented": false,
     "pointerGestureAuditTimestamp": "2026-07-16T18-41-23-04-00",
     "pointerGestureAuthorityImplemented": false
   },
   "latestAuditPaths": [
-    ".agent/trackers/2026-07-17T01-39-36-04-00/project-breakdown.md",
-    ".agent/turn-ledger/2026-07-17T01-39-36-04-00.md",
-    ".agent/architecture-audit/2026-07-17T01-39-36-04-00-menu-preload-ready-handoff-dsk-map.md",
-    ".agent/render-audit/2026-07-17T01-39-36-04-00-ready-budget-first-frame-gap.md",
-    ".agent/gameplay-audit/2026-07-17T01-39-36-04-00-preload-ready-play-entry-loop.md",
-    ".agent/interaction-audit/2026-07-17T01-39-36-04-00-ready-handoff-command-result-map.md",
-    ".agent/menu-handoff-audit/2026-07-17T01-39-36-04-00-preload-ready-presentation-contract.md",
-    ".agent/deploy-audit/2026-07-17T01-39-36-04-00-ready-handoff-browser-fixture-gate.md",
-    ".agent/central-sync-audit/2026-07-17T01-39-36-04-00-runtime-ahead-menu-handoff-reconciliation.md"
+    ".agent/trackers/2026-07-17T03-06-12-04-00/project-breakdown.md",
+    ".agent/turn-ledger/2026-07-17T03-06-12-04-00.md",
+    ".agent/architecture-audit/2026-07-17T03-06-12-04-00-host-save-durability-dsk-map.md",
+    ".agent/render-audit/2026-07-17T03-06-12-04-00-saved-label-without-durable-receipt-gap.md",
+    ".agent/gameplay-audit/2026-07-17T03-06-12-04-00-autosave-capture-commit-loop.md",
+    ".agent/interaction-audit/2026-07-17T03-06-12-04-00-save-commit-command-result-map.md",
+    ".agent/save-system-audit/2026-07-17T03-06-12-04-00-host-persistence-settlement-contract.md",
+    ".agent/deploy-audit/2026-07-17T03-06-12-04-00-storage-failure-browser-fixture-gate.md",
+    ".agent/central-sync-audit/2026-07-17T03-06-12-04-00-oldest-selection-save-durability-reconciliation.md"
   ],
   "validation": {
     "documentationOnly": true,
     "sourceFilesInspected": true,
     "npmTestRun": false,
     "npmBuildScriptDeclared": false,
-    "browserReadyHandoffFixturesRun": false,
+    "browserStorageFailureFixturesRun": false,
     "builtOutputSmokeRun": false,
     "pagesSmokeRun": false,
     "runtimeChangedByAudit": false

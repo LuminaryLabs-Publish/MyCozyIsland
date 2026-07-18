@@ -1,61 +1,63 @@
-# Current audit: device input action coverage and semantic commands
+# Current audit: gameplay adaptive-quality recovery parity
 
-**Timestamp:** `2026-07-17T18-38-56-04-00`  
-**Status:** `device-input-action-coverage-semantic-command-authority-audited`
+**Timestamp:** `2026-07-18T06-40-59-04-00`  
+**Status:** `gameplay-adaptive-quality-recovery-parity-authority-audited`
 
 ## Summary
 
-MyCozyIsland was selected through the oldest synchronized documented-selection rule. The current browser adapter provides complete keyboard gameplay controls and touch pointer-drag camera look, but no touch-only movement, sprint, interaction, or seed-selection path.
+MyCozyIsland was selected through the oldest synchronized documented-selection rule. The gameplay frame budget degrades and recovers cloud and fog complexity, but renderer pixel ratio is only changed during degradation.
 
 ## Source-backed behavior
 
 ```txt
-game.html
-  -> responsive viewport
-  -> #game uses touch-action:none
-  -> hotbar uses non-button divs
-  -> #bottom-hud uses pointer-events:none
-  -> compact-screen CSS hides the control legend
+src/kits/render-descriptors.js
+  -> target frame time comes from static quality tier
+  -> moving average uses 0.93 / 0.07 weighting
+  -> 90 sustained over-budget samples increment level
+  -> 360 sustained under-budget samples decrement level
+  -> level is bounded to 0..2
 
-src/main-adventure.js
-  -> pointer drag enqueues look deltas
-  -> wheel enqueues intro-camera input
-  -> keyboard enqueues movement, sprint, interaction, seed, and intro commands
-  -> no touch movement/interact/seed controls
+src/main-adventure.js onDegrade
+  -> cloud step scale
+  -> fog step scale
+  -> fog target resolution scale
+  -> renderer pixel ratio
 
-n:cozy-input
-  -> accepts key, pointer, wheel, and clear command types
-  -> interprets gameplay meaning from physical key codes
-  -> publishes one normalized frame
+src/main-adventure.js onRecover
+  -> cloud step scale
+  -> fog step scale
+  -> fog target resolution scale
+  -> renderer pixel ratio restoration is absent
 
-tests
-  -> domain smoke covers actions through enqueueKey()
-  -> no touch-capable browser gameplay fixture
+resize
+  -> renderer size and camera projection update
+  -> accepted quality effect plan is not reapplied or read back
 ```
 
 ## Main gap
 
-The core walk, farm, forage, sprint, and seed-selection loop cannot be completed through touch controls alone. The simulation domains already expose the required gameplay capabilities, but the browser/input boundary has no device capability manifest, source-neutral semantic action command, touch control projection, mixed-source arbitration, or input-frame-to-visible-control proof.
+A session degraded to level 2 can later recover its budget level to 0 while the renderer remains at the level-2 DPR multiplier. Budget state, cloud/fog cost and physical drawing-buffer resolution can therefore describe different quality levels.
 
-This is an action-coverage and ownership gap, not proof of a desktop input defect or a reproduced mobile incident.
+This is a reversible-effect ownership and readback gap, not proof of a measured performance or visual incident.
 
 ## Required authority — proposed
 
-`cozy-island-device-input-action-coverage-semantic-command-authority-domain`
+`cozy-island-gameplay-adaptive-quality-recovery-parity-authority-domain`
 
 Required results:
 
-- `InputCapabilityManifestResult`
-- `SemanticActionAdmissionResult`
-- `TouchControlProjectionResult`
-- `InputSourceSettlementResult`
-- `InputFrameDigest`
-- `FirstInputActionBoundFrameAck`
+- `AdaptiveQualitySampleResult`
+- `QualityTransitionAdmissionResult`
+- `QualityEffectPlanResult`
+- `QualityTransitionSettlementResult`
+- `QualityEffectReadbackResult`
+- `AdaptiveQualityFrameDigest`
+- `FirstAdaptiveQualityBoundFrameAck`
 
 ## Domains and services
 
-The composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 16 explicit menu domain/kit surfaces, and four browser/product adapters. Complete IDs and per-kit services are recorded in the timestamped tracker and `.agent/kit-registry.json`.
+The composition contains 14 engine-installed core/adventure kits, 50 cataloged world/render/host kits, one additional composition kit, 16 explicit menu domain/kit surfaces and four browser/product adapters. Complete IDs and offered services are recorded in the timestamped tracker and `.agent/kit-registry.json`.
 
 ## Validation boundary
 
-Documentation only. No runtime JavaScript, HTML, CSS, simulation, input, renderer, test, workflow, artifact, or deployment behavior changed.
+Documentation only. Runtime JavaScript, HTML, CSS, gameplay, simulation, input, save, renderer, tests, workflows, artifacts and deployment were unchanged.

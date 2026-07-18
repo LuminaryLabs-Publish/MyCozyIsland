@@ -1,17 +1,17 @@
-# START HERE: MyCozyIsland device input action coverage
+# START HERE: MyCozyIsland gameplay adaptive-quality recovery
 
-**Last updated:** `2026-07-17T18-38-56-04-00`  
+**Last updated:** `2026-07-18T06-40-59-04-00`  
 **Repository:** `LuminaryLabs-Publish/MyCozyIsland`  
 **Branch:** `main`  
 **Reviewed runtime revision:** `347c78f358994822f9fedf91c3e16d33d6909e7e`  
-**Previous documentation head:** `3cf8b764c861e922413df41b847c7bdd93dc60af`  
-**Status:** `device-input-action-coverage-semantic-command-authority-audited`
+**Previous documentation head:** `776fbcc3a258bf3a6f9f038a63be689ee80aefe3`  
+**Status:** `gameplay-adaptive-quality-recovery-parity-authority-audited`
 
 ## Summary
 
-MyCozyIsland has a complete keyboard gameplay path and touch pointer-drag camera look, but no touch-only movement, sprint, interaction, or seed-selection path. The visible hotbar is non-interactive, the HUD rejects pointer input, and compact-screen CSS hides the control legend.
+The gameplay adaptive-quality budget has symmetric cloud and fog projection, but asymmetric renderer-resolution projection. Degradation reduces renderer pixel ratio; recovery does not restore it. A recovered logical level can therefore coexist with a still-degraded drawing buffer.
 
-The normalized input DSK interprets physical key codes into gameplay meaning instead of admitting source-neutral semantic actions. This is a source-backed device-action coverage gap; no desktop failure or mobile incident was reproduced.
+This is source-backed control-flow evidence. No browser performance incident, pixel-quality regression or deployed-origin defect was reproduced.
 
 ## Census
 
@@ -22,49 +22,53 @@ additional composition kits:           1
 explicit menu domain/kit surfaces:     16
 other browser/product adapters:         4
 total implemented surfaces:            85
-proposed device-input surfaces:        20
+proposed adaptive-quality surfaces:     20
 ```
 
 ## Active authority proposal — not implemented
 
-`cozy-island-device-input-action-coverage-semantic-command-authority-domain`
+`cozy-island-gameplay-adaptive-quality-recovery-parity-authority-domain`
 
 ```txt
-InputCapabilityManifestCommand
-  -> declare required actions and available sources for the active device profile
+AdaptiveQualitySampleCommand
+  -> AdaptiveQualitySampleResult
 
-SemanticActionAdmissionCommand
-  -> admit source-neutral move, look, sprint, interact, seed, and intro actions
+QualityTransitionAdmissionCommand
+  -> QualityTransitionAdmissionResult
 
-TouchControlProjectionCommand
-  -> project reachable, labeled, safe-area-aware controls
+QualityEffectPlanCommand
+  -> complete cloud, fog and renderer effect plan
+  -> QualityEffectPlanResult
 
-InputSourceSettlementCommand
-  -> arbitrate mixed sources and retire held actions exactly once
+QualityTransitionSettlementCommand
+  -> applied-state readback
+  -> QualityTransitionSettlementResult
 
-SemanticInputFrameCommitCommand
-  -> InputFrameDigest
-  -> FirstInputActionBoundFrameAck
+QualityProjectionCommitCommand
+  -> AdaptiveQualityFrameDigest
+  -> FirstAdaptiveQualityBoundFrameAck
 ```
+
+The smallest safe runtime correction is one shared `applyQualityLevel(level)` path used by degradation, recovery and resize reconciliation.
 
 ## Read this run first
 
 1. `current-audit.md`
-2. `trackers/2026-07-17T18-38-56-04-00/project-breakdown.md`
-3. `architecture-audit/2026-07-17T18-38-56-04-00-device-input-action-coverage-dsk-map.md`
-4. `input-system-audit/2026-07-17T18-38-56-04-00-device-action-coverage-contract.md`
-5. `render-audit/2026-07-17T18-38-56-04-00-touch-controls-visible-command-gap.md`
-6. `gameplay-audit/2026-07-17T18-38-56-04-00-touch-only-gameplay-loop.md`
-7. `interaction-audit/2026-07-17T18-38-56-04-00-semantic-action-command-result-map.md`
-8. `deploy-audit/2026-07-17T18-38-56-04-00-mobile-input-browser-fixture-gate.md`
+2. `trackers/2026-07-18T06-40-59-04-00/project-breakdown.md`
+3. `architecture-audit/2026-07-18T06-40-59-04-00-gameplay-adaptive-quality-recovery-dsk-map.md`
+4. `performance-system-audit/2026-07-18T06-40-59-04-00-adaptive-quality-recovery-contract.md`
+5. `render-audit/2026-07-18T06-40-59-04-00-pixel-ratio-recovery-parity-gap.md`
+6. `gameplay-audit/2026-07-18T06-40-59-04-00-adaptive-quality-frame-loop.md`
+7. `interaction-audit/2026-07-18T06-40-59-04-00-quality-transition-command-result-map.md`
+8. `deploy-audit/2026-07-18T06-40-59-04-00-quality-degrade-recover-browser-gate.md`
 9. `next-steps.md`
 10. `known-gaps.md`
 11. `validation.md`
 
 ## Retained audit state
 
-The page-lifecycle, save-durability, menu-ready handoff, adaptive-quality, and pointer-look gesture audits remain unresolved in their timestamped audit families.
+Device-input coverage, page lifecycle, save durability, menu-ready handoff, menu adaptive quality and pointer-look gesture audits remain unresolved in their timestamped audit families.
 
 ## Do not claim
 
-Do not claim touch-complete gameplay, mobile-complete action coverage, mixed-input correctness, accessible control semantics, browser parity, artifact parity, Pages parity, or production readiness until executable fixtures pass.
+Do not claim adaptive-quality recovery parity, restored physical resolution, measured performance improvement, browser parity, artifact parity, Pages parity or production readiness until executable transition and frame fixtures pass.

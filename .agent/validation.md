@@ -1,22 +1,21 @@
-# Validation: device input action coverage audit
+# Validation: gameplay adaptive-quality recovery audit
 
-**Timestamp:** `2026-07-17T18-38-56-04-00`
+**Timestamp:** `2026-07-18T06-40-59-04-00`
 
 ## Completed
 
 - [x] Full `LuminaryLabs-Publish` inventory compared.
 - [x] `LuminaryLabs-Publish/TheCavalryOfRome` excluded.
-- [x] Ten eligible central ledgers and root `.agent` states confirmed.
-- [x] All eligible `main` heads matched their documented repo-local heads.
-- [x] No new, missing, undocumented, or runtime-ahead repository found.
+- [x] Ten eligible central ledgers and root `.agent` states retained.
+- [x] No new, missing, undocumented or runtime-ahead repository observed.
 - [x] MyCozyIsland selected by the oldest synchronized documented-selection rule.
-- [x] Interaction loop, domains, kits, adapters, and offered services documented.
+- [x] Interaction loop, domains, kits, adapters and offered services documented.
 - [x] 85 implemented surfaces preserved.
-- [x] 20 proposed device-input authority surfaces defined.
+- [x] 20 proposed adaptive-quality recovery surfaces defined.
 - [x] Required timestamped `.agent` documents added.
 - [x] Required root `.agent` indexes refreshed.
-- [ ] Semantic input authority implemented.
-- [ ] Touch-only and mixed-input browser fixtures executed.
+- [ ] Runtime recovery parity implemented.
+- [ ] Degrade/recover browser fixtures executed.
 
 ## Change boundary
 
@@ -24,7 +23,7 @@
 documentation changed: yes
 runtime JavaScript changed: no
 HTML or CSS changed: no
-gameplay, simulation, input, or save behavior changed: no
+gameplay, simulation, input or save behavior changed: no
 renderer behavior changed: no
 tests or package scripts changed: no
 workflow or deployment changed: no
@@ -35,45 +34,44 @@ pull request created: no
 ## Source evidence inspected
 
 ```txt
+package.json
 game.html
 src/main-adventure.js
-src/adventure/composition-runtime.js
-src/adventure/runtime-domains.js
-src/kits/catalog.js
 src/kits/index.js
-tests/adventure-domains-smoke.mjs
-package.json
-previous .agent tracker and kit registry
+src/kits/render-descriptors.js
+src/kits/renderers.js
+src/kits/renderer-post.js
+current .agent root documents
+current .agent kit registry
 central MyCozyIsland ledger
-current Publish repository heads and root .agent files
+current Publish repository inventory and recent heads
 ```
 
 ## Source-backed assertions
 
-- `game.html` declares mobile viewport and `touch-action:none`.
-- The hotbar uses non-button elements under a pointer-inert HUD.
-- Compact-screen CSS hides the control legend.
-- The browser adapter maps pointer input to look and maps core gameplay actions to keyboard codes.
-- `n:cozy-input` accepts key, pointer, wheel, and clear commands and derives semantic fields from key codes.
-- The domain smoke test exercises gameplay actions through `enqueueKey()`.
+- Static quality tiers define a pixel-ratio cap, fog scale, step counts and target frame time.
+- `createPerformanceBudget()` increments level after sustained over-budget evidence and decrements it after sustained under-budget evidence.
+- Gameplay degradation changes cloud steps, fog steps, fog target resolution and renderer pixel ratio.
+- Gameplay recovery changes cloud steps, fog steps and fog target resolution.
+- Gameplay recovery does not call `renderer.setPixelRatio()`.
+- The resize handler changes renderer dimensions and camera projection but does not explicitly reapply or read back the accepted quality effect plan.
+- Existing package tests do not execute the real browser render loop.
 
 ## Executable evidence
 
 ```txt
 npm test: not run
 npm build: no build script declared
-touch-only browser gameplay fixture: unavailable
-mixed keyboard/touch fixture: unavailable
-pointer-cancel held-action fixture: unavailable
-mobile accessibility fixture: unavailable
-InputCapabilityManifestResult fixture: unavailable
-FirstInputActionBoundFrameAck fixture: unavailable
+forced degrade fixture: unavailable
+forced recover fixture: unavailable
+renderer DPR readback fixture: unavailable
+drawing-buffer parity fixture: unavailable
+resize reconciliation fixture: unavailable
+WebGPU/WebGL2 browser matrix: not run
 built-output smoke: not run
 Pages-origin smoke: not run
 ```
 
-External DNS access was unavailable, so validation was limited to source inspection through the GitHub connector.
-
 ## Claims withheld
 
-No touch-complete gameplay, mobile-complete action coverage, semantic input correctness, mixed-source correctness, accessibility conformance, artifact parity, Pages parity, or production readiness is claimed.
+No adaptive-quality recovery correctness, renderer-resolution restoration, measured performance improvement, visual parity, backend parity, artifact parity, Pages parity or production readiness is claimed.

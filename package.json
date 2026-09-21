@@ -5,13 +5,19 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "node tests/menu-game-shell-smoke.mjs && node tests/startup-domain-smoke.mjs && node tests/adventure-domains-smoke.mjs",
+    "test": "node tests/menu-game-shell-smoke.mjs && node tests/startup-domain-smoke.mjs && node tests/adventure-domains-smoke.mjs && node tests/authoring-scene-manifest.mjs",
     "test:menu": "node tests/menu-game-shell-smoke.mjs",
     "test:startup": "node tests/startup-domain-smoke.mjs",
-    "test:agriculture": "node tests/adventure-domains-smoke.mjs"
+    "test:agriculture": "node tests/adventure-domains-smoke.mjs",
+    "authoring:generate": "node scripts/generate-authoring-scene.mjs",
+    "test:authoring": "node tests/authoring-scene-manifest.mjs"
   },
   "dependencies": {
     "@luminarylabs/nexusengine-kits": "github:LuminaryLabs-Dev/NexusEngine-Kits#2218856ccd729744140d153d738ba8db638b3359",
     "nexusengine": "github:LuminaryLabs-Dev/NexusEngine#4fac5c2eea315ec6cf439c6a41b8f6ed0faba044"
+  },
+  "devDependencies": {
+    "nexusengine-authoring": "github:LuminaryLabs-Dev/NexusEngine#a74e8689d1a71c0b42236c009f0f4c46e9b89387",
+    "three": "0.185.0"
   }
 }

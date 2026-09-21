@@ -17,6 +17,7 @@ import {
 import { createCozyAdventure } from "./adventure/composition-runtime.js";
 import { createCozyGameplayRenderer } from "./adventure/renderer-gameplay.js";
 import { createCozyStartupHost } from "./adventure/startup-host.js";
+import { createAuthoredSceneRenderer, loadAuthoredScene } from "./authoring/authored-scene.js";
 
 const SAVE_KEY = "my-cozy-island.adventure-save.v1";
 const canvas = document.querySelector("#game");
@@ -175,6 +176,12 @@ async function main() {
   const restoreResult = loadSave(adventure);
   startupHost.selectContinuation(restoreResult);
   const staticSnapshot = adventure.getStaticSnapshot();
+  startupHost.working("authoring", 0.28, "Loading the 59-pass authored scene");
+  const authoredManifest = await startupHost.withTimeout(loadAuthoredScene(), {
+    milliseconds: 12000,
+    label: "Authoring scene manifest",
+    code: "cozy.authoring.manifest-timeout"
+  });
   const initialFrame = adventure.getFrameSnapshot();
   renderer.toneMappingExposure = initialFrame.illumination.exposure;
 
@@ -218,6 +225,8 @@ async function main() {
   const worldRenderer = createStylizedWorldRenderer(staticSnapshot);
   scene.add(worldRenderer.group);
   const gameplayRenderer = createCozyGameplayRenderer(staticSnapshot);
+  const authoredRenderer = createAuthoredSceneRenderer(authoredManifest);
+  scene.add(authoredRenderer.group);
   scene.add(gameplayRenderer.group);
   gameplayRenderer.update(initialFrame);
 
@@ -364,6 +373,7 @@ async function main() {
     sun.intensity = Number(frame.illumination.sunIntensity ?? sun.intensity);
 
     worldRenderer.update(frame.clock.elapsedSeconds);
+    authoredRenderer.update(frame.clock.elapsedSeconds);
     gameplayRenderer.update(frame);
     foamRenderer.update(frame.clock.elapsedSeconds);
     updateHud(frame);
@@ -412,6 +422,7 @@ async function main() {
   addEventListener("pagehide", () => {
     storeSave(adventure);
     gameplayRenderer.dispose();
+    authoredRenderer.dispose();
   }, { once: true });
 
   globalThis.CozyIsland = Object.freeze({
@@ -421,6 +432,7 @@ async function main() {
     backend,
     quality,
     adventure,
+    authoring: authoredRenderer.evidence,
     engine: adventure.engine,
     startup: startupHost.startup,
     startupHost,

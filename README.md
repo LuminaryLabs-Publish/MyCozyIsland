@@ -274,3 +274,15 @@ CozyIsland.captureSave()
 ## Source-of-truth rule
 
 NexusEngine supplies neutral mechanisms. Core Startup owns factual launch readiness. Product sequences and adapters own the waiting experience. The menu owns the Play gate. The official Agriculture DSK owns reusable agricultural meaning. MyCozyIsland supplies tropical content, world configuration, cross-domain settlement, sequences, and presentation.
+
+## 59-pass Authoring scene
+
+The island now includes a deterministic Authoring source manifest with 59 sequential passes and 50 stable object edits per pass. The generator uses the pinned `nexusengine-authoring` package and the public `n:authoring` mesh operations, then writes `data/authoring-scene.json`. The game renderer loads that manifest and presents its low-poly authored records through instanced cartoon geometry.
+
+```sh
+npm run authoring:generate
+npm run test:authoring
+npm test
+```
+
+See [`docs/AUTHORING_59_PASS_REVIEW.md`](docs/AUTHORING_59_PASS_REVIEW.md) for the pass goals and review contract.
